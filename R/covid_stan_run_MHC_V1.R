@@ -1,20 +1,4 @@
-library(Hmisc) # random tools
-library(splines)
-library(rstan)
-library(lubridate)
-library(RColorBrewer)
-require(parallel)
-
 ###### ###### SETTINGS ###### ###### ######
-rm(list = ls()) # remove all current objects in the environment. unnecessary?
-
-# Convert a color into an rgb value? TODO: what does this do?
-mTrsp <- function(cl, a) {
-  apply(col2rgb(cl), 2, function(x) {
-    rgb(x[1], x[2], x[3], a, maxColorValue = 255)
-  })
-}
-
 rstan_options(auto_write = TRUE) # save the compiled executable to '.'
 options(mc.cores = parallel::detectCores())
 
@@ -59,38 +43,60 @@ for (i in 1:length(diagnosis_day)) {
 
 ###### ###### LIST ###### ###### ######
 
-datList <- list()
+list(
+  N_conf_cases = length(diagnosis_day),
 
-## Data
-datList[["N_conf_cases"]] <- length(diagnosis_day)  #
-datList[["N_days"]] <- max(diagnosis_day) + N_days_before  #n days to model before first case
-datList[["N_days_extra"]] <- 1  # model days after (for things like death, hospitalizations)
-datList[["Max_delay"]] <- max(days_delay)  # maximum value for delay distribution
-datList[["cases_test_day"]] <- diagnosis_day + N_days_before
-datList[["cases_days_delay"]] <- days_delay  # NEED A PRIOR ON THIS
+  #n days to model before first case
+  N_days = max(diagnosis_day) + N_days_before,
 
-## Priors Parameters of random walk in log space <- new infections per day
-datList[["pri_log_new_inf_0_mu"]] <- -2  # mean of log daily infections on day 1
-datList[["pri_log_new_inf_0_sd"]] <- 2  # sd of log daily infections on day 1
-# drift gives some direction to random walk. stronger prior here.
-datList[["pri_log_new_inf_drift_mu"]] <- 0  # mean of daily change in log infections
-# hyper prior on random walk
-datList[["pri_log_new_inf_drift_sd"]] <- 1  # sd of daily change in log infections
-datList[["pri_sigma_deriv1_log_new_inf_sd"]] <- 0.5  # mean of daily change in log infections
-# priors on the second derivative; penalizes sharp changes in random walk; gives rw momentum
-datList[["pri_deriv2_log_new_inf_sd"]] <- 0.1
-# probability of transitioning between states unlike ODE, not a constant rate in transmission -- allows us to model
-# delays probability of transitioning into the next stage or recovery
-datList[["pri_p_sym_if_inf_mn"]] <- 0.69
-datList[["pri_p_sym_if_inf_ss"]] <- 100  # sum of the beta coeffecients
+  # model days after (for things like death, hospitalizations)
+  N_days_extra = 1,
 
-datList[["pri_p_hos_if_sym_mn"]] <- 0.31  # upper bound from CDC paper
-datList[["pri_p_hos_if_sym_ss"]] <- 100
+  # maximum value for delay distribution
+  Max_delay = max(days_delay),
 
-datList[["pri_p_die_if_hos_mn"]] <- 0.03  # upper bound from CDC paper
-datList[["pri_p_die_if_hos_ss"]] <- 100
+  cases_test_day = diagnosis_day + N_days_before,
 
-datList[["nb_yes"]] <- 0
+  # NEED A PRIOR ON THIS
+  cases_days_delay = days_delay,
+
+  ## Priors Parameters of random walk in log space <- new infections per day
+  # mean of log daily infections on day 1
+  pri_log_new_inf_0_mu = -2,
+
+  # sd of log daily infections on day 1
+  pri_log_new_inf_0_sd = 2,
+
+  # drift gives some direction to random walk. stronger prior here.
+  # mean of daily change in log infections
+  pri_log_new_inf_drift_mu = 0,
+  # hyper prior on random walk
+  # sd of daily change in log infections
+  pri_log_new_inf_drift_sd = 1,
+  # mean of daily change in log infections
+  pri_sigma_deriv1_log_new_inf_sd = 0.5,
+
+  # priors on the second derivative; penalizes sharp changes in random walk;
+  # gives rw momentum
+  pri_deriv2_log_new_inf_sd = 0.1,
+
+  # probability of transitioning between states unlike ODE, not a constant rate
+  # in transmission -- allows us to model delays probability of transitioning
+  # into the next stage or recovery
+  pri_p_sym_if_inf_mn = 0.69,
+  # sum of the beta coeffecients
+  pri_p_sym_if_inf_ss = 100,
+
+  # upper bound from CDC paper
+  pri_p_hos_if_sym_mn = 0.31,
+  pri_p_hos_if_sym_ss = 100,
+
+  # upper bound from CDC paper
+  pri_p_die_if_hos_mn = 0.03,
+  pri_p_die_if_hos_ss = 100,
+
+  nb_yes = 0
+) -> datList
 
 # Delay from infection to symptoms
 # https://annals.org/aim/fullarticle/2762808/incubation-period-coronavirus-disease-2019-covid-19-from-publicly-reported
@@ -131,46 +137,55 @@ gammapar <- function(tgt) {
 }
 
 # shape is fixed, mean can vary
-datList[["pri_inf_prg_delay_mn_mn"]] <- opt_par1[2]
-datList[["pri_inf_prg_delay_mn_cv"]] <- opt_par2
-datList[["inf_prg_delay_cv"]] <- opt_par1[1]
-# prior on the mean of the gamma distribution is distributed gamma with a mean and a cv we could simplify by fixing
-# the mean OR assuming time to recovery and time to progression is same
-datList[["pri_sym_prg_delay_mn_mn"]] <- 4
-datList[["pri_sym_prg_delay_mn_cv"]] <- 0.1
-# cv on the gamma distribution
-datList[["sym_prg_delay_cv"]] <- 0.5
+list(
+  pri_inf_prg_delay_mn_mn = opt_par1[2],
+  pri_inf_prg_delay_mn_cv = opt_par2,
+  inf_prg_delay_cv        = opt_par1[1],
 
-datList[["pri_hos_prg_delay_mn_mn"]] <- 5
-datList[["pri_hos_prg_delay_mn_cv"]] <- 0.1
-datList[["hos_prg_delay_cv"]] <- 0.5
+  # prior on the mean of the gamma distribution is distributed gamma with a
+  # mean and a cv we could simplify by fixing the mean OR assuming time to
+  # recovery and time to progression is same
+  pri_sym_prg_delay_mn_mn = 4,
+  pri_sym_prg_delay_mn_cv = 0.1,
 
-datList[["pri_inf_res_delay_mn_mn"]] <- 14
-datList[["pri_inf_res_delay_mn_cv"]] <- 0.1
-datList[["inf_res_delay_cv"]] <- 0.5
+  # cv on the gamma distribution
+  sym_prg_delay_cv        = 0.5,
 
-datList[["pri_sym_res_delay_mn_mn"]] <- 6
-datList[["pri_sym_res_delay_mn_cv"]] <- 0.1
-datList[["sym_res_delay_cv"]] <- 0.5
+  pri_hos_prg_delay_mn_mn = 5,
+  pri_hos_prg_delay_mn_cv = 0.1,
+  hos_prg_delay_cv        = 0.5,
 
-datList[["pri_hos_res_delay_mn_mn"]] <- 6
-datList[["pri_hos_res_delay_mn_cv"]] <- 0.1
-datList[["hos_res_delay_cv"]] <- 0.5
+  pri_inf_res_delay_mn_mn = 14,
+  pri_inf_res_delay_mn_cv = 0.1,
+  inf_res_delay_cv        = 0.5,
 
-datList[["pri_report_delay_mn_mn"]] <- 7
-datList[["pri_report_delay_mn_cv"]] <- 0.9
+  pri_sym_res_delay_mn_mn = 6,
+  pri_sym_res_delay_mn_cv = 0.1,
+  sym_res_delay_cv        = 0.5,
 
-datList[["pri_report_delay_cv_mn"]] <- 0.5
-datList[["pri_report_delay_cv_cv"]] <- 0.9
-# daily probability of diagnosis as a function of individual health state currently parameterizing beta
-# distributions, but we need to add a function of time probability of diagnosis is a logistic function with
-# intercepts by health state
-datList[["pri_p_diag_if_inf_mn"]] <- 0.01
-datList[["pri_p_diag_if_inf_ss"]] <- 100
-datList[["pri_p_diag_if_sym_mn"]] <- 0.1
-datList[["pri_p_diag_if_sym_ss"]] <- 100
-datList[["pri_p_diag_if_hos_mn"]] <- 0.6
-datList[["pri_p_diag_if_hos_ss"]] <- 100
+  pri_hos_res_delay_mn_mn = 6,
+  pri_hos_res_delay_mn_cv = 0.1,
+  hos_res_delay_cv        = 0.5,
+
+  pri_report_delay_mn_mn  = 7,
+  pri_report_delay_mn_cv  = 0.9,
+
+  pri_report_delay_cv_mn  = 0.5,
+  pri_report_delay_cv_cv  = 0.9,
+
+  # daily probability of diagnosis as a function of individual health state
+  # currently parameterizing beta distributions, but we need to add a function
+  # of time probability of diagnosis is a logistic function with intercepts by
+  # health state
+  pri_p_diag_if_inf_mn    = 0.01,
+  pri_p_diag_if_inf_ss    = 100,
+  pri_p_diag_if_sym_mn    = 0.1,
+  pri_p_diag_if_sym_ss    = 100,
+  pri_p_diag_if_hos_mn    = 0.6,
+  pri_p_diag_if_hos_ss    = 100
+) -> moreParams
+
+datList <- purrr::splice(datList, moreParams)
 
 ###### ###### RUN MODEL ###### ###### ######
 
@@ -827,9 +842,5 @@ mtext("Model parameters: prior (blue) versus posterior (yellow)", 3, 1, outer = 
 dev.off()
 
 system(paste("open", pdfnam))
-
-
-names(samps)
-names(datList)
 
 ######################## 

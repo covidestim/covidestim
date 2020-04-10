@@ -21,6 +21,8 @@ Imports:
   rstan,
   lubridate,
   RColorBrewer
-  parallel
+  parallel,
+  purrr
+  grDevice
 Suggests: 
     testthat
