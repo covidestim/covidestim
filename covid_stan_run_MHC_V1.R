@@ -169,8 +169,14 @@ datList[["pri_p_diag_if_hos_ss"]] <- 100
 
 source("covid_stan_script_MHC_V1.stan")
 
-fit_stan <- stan(model_code = stan_code, control = list(adapt_delta = 0.92, max_treedepth = 12), data = datList, seed = 1234, 
-  chains = 3, iter = 500, warmup = 400)
+fit_stan <-
+  stan(model_code = stan_code,
+       control = list(adapt_delta = 0.92, max_treedepth = 12),
+       data = datList,
+       seed = 1234,
+       chains = 3,
+       iter = 500,
+       warmup = 400)
 
 samps <- extract(fit_stan)
 
@@ -191,20 +197,49 @@ cls <- colorRampPalette(c("red4", "red", "blue", "blue4"))(max_delay)
 
 otcm_mu <- apply(samps[["rep_tri_conf_cases_mu"]], 2:3, mean)
 
-par(mfrow = c(4, 3), mar = c(1.2, 1.5, 0.2, 0.2), oma = c(0.5, 3, 3.5, 0.5))
+par(mfrow = c(4, 3),
+    mar = c(1.2, 1.5, 0.2, 0.2),
+    oma = c(0.5, 3, 3.5, 0.5))
+
 for (i in 1:(max_delay)) {
-  plot(1:(N_days - i + 1), otcm_mu[1:(N_days - i + 1), i], ylim = c(0, max(c(otcm_mu[1:(N_days - i + 1), i], rep_tri_conf_cases[1:(N_days - 
-    i + 1), i]))) * 1.12, xlim = c(N_days_before, N_days), type = "l", col = cls[i], axes = F, xlab = "", ylab = "")
+  plot(1:(N_days - i + 1),
+       otcm_mu[1:(N_days - i + 1), i],
+       ylim = c(0,
+                max(c(otcm_mu[1:(N_days - i + 1), i],
+                      rep_tri_conf_cases[1:(N_days - i + 1), i]))) * 1.12,
+       xlim = c(N_days_before, N_days),
+       type = "l",
+       col = cls[i],
+       axes = F,
+       xlab = "",
+       ylab = "")
+
   axis(2, las = 1, tcl = -0.07, mgp = c(3, 0.15, 0))
   axis(1, las = 1, tcl = -0.07, mgp = c(3, 0.1, 0))
   box()
-  text(N_days_before, max(c(otcm_mu[1:(N_days - i + 1), i], rep_tri_conf_cases[1:(N_days - i + 1), i])) * 1.06, paste0(i - 
-    1, " days delay"), pos = 4, offset = -0.2, font = 2, cex = 1.15)
-  lines(1:(N_days - i + 1), rep_tri_conf_cases[1:(N_days - i + 1), i], col = cls[i], lty = "12")
-  points(1:(N_days - i + 1), rep_tri_conf_cases[1:(N_days - i + 1), i], col = cls[i], pch = 16, cex = 0.6)
+
+  text(N_days_before,
+       max(c(otcm_mu[1:(N_days - i + 1), i],
+             rep_tri_conf_cases[1:(N_days - i + 1), i])) * 1.06,
+       paste0(i - 1, " days delay"),
+       pos = 4,
+       offset = -0.2,
+       font = 2,
+       cex = 1.15)
+
+  lines(1:(N_days - i + 1),
+        rep_tri_conf_cases[1:(N_days - i + 1), i],
+        col = cls[i],
+        lty = "12")
+  points(1:(N_days - i + 1),
+         rep_tri_conf_cases[1:(N_days - i + 1), i],
+         col = cls[i],
+         pch = 16,
+         cex = 0.6)
 }
 mtext("Case count (N)", 2, 1, outer = T)
-mtext("Fit to data: Case time-series, stratified by days delay (points = data, lines = model)", 3, 1, outer = T)
+mtext("Fit to data: Case time-series, stratified by days delay (points = data, lines = model)",
+      3, 1, outer = T)
 
 ########### Comparison to data 2 ###########
 
