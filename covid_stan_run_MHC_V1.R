@@ -1,21 +1,21 @@
-library(Hmisc)
+library(Hmisc) # random tools
 library(splines)
 library(rstan)
 library(lubridate)
 library(RColorBrewer)
+require(parallel)
 
 ###### ###### SETTINGS ###### ###### ######
-rm(list = ls())
+rm(list = ls()) # remove all current objects in the environment. unnecessary?
 
-# BUG:
-setwd("~/Desktop/COVID/nowcasting")
+# Convert a color into an rgb value? TODO: what does this do?
 mTrsp <- function(cl, a) {
   apply(col2rgb(cl), 2, function(x) {
     rgb(x[1], x[2], x[3], a, maxColorValue = 255)
   })
 }
 
-rstan_options(auto_write = TRUE)
+rstan_options(auto_write = TRUE) # save the compiled executable to '.'
 options(mc.cores = parallel::detectCores())
 
 ###### ###### INPUTS ###### ###### ######
@@ -37,12 +37,16 @@ diagnosis_day <- diagnosis_day0[!rmv]
 
 # hist(days_delay0); hist(days_delay,add=T,col=5) hist(diagnosis_day0); hist(diagnosis_day,add=T,col=5)
 range(diagnosis_day)
-### Some real data raw_data <- read.csv('cases_20200325_NYC.csv') diagnosis_day0 <-
-### as.numeric(mdy(as.character(raw_data$diagnosis_date))) report_day0 <-
-### as.numeric(mdy(as.character(raw_data$event_create_date))) days_delay <- report_day0 - diagnosis_day0 diagnosis_day
-### <- diagnosis_day0 - min(diagnosis_day0) + 1 # remove the current day, as seems incomplete rmv <-
-### max(diagnosis_day) - diagnosis_day - days_delay == 0 diagnosis_day <- diagnosis_day[!rmv] days_delay <-
-### days_delay[!rmv]
+
+# Some real data raw_data <- read.csv('cases_20200325_NYC.csv')
+#
+# diagnosis_day0 <- as.numeric(mdy(as.character(raw_data$diagnosis_date)))
+# report_day0    <- as.numeric(mdy(as.character(raw_data$event_create_date)))
+# days_delay     <- report_day0 - diagnosis_day0
+# diagnosis_day  <- diagnosis_day0 - min(diagnosis_day0) + 1 # remove the current day, as seems incomplete
+# rmv            <- max(diagnosis_day) - diagnosis_day - days_delay == 0
+# diagnosis_day  <- diagnosis_day[!rmv]
+# days_delay     <- days_delay[!rmv]
 
 # Create reporting triangle
 N_days_before <- 10
@@ -88,10 +92,13 @@ datList[["pri_p_die_if_hos_ss"]] <- 100
 
 datList[["nb_yes"]] <- 0
 
-#### Delay from infection to symptoms
-#### https://annals.org/aim/fullarticle/2762808/incubation-period-coronavirus-disease-2019-covid-19-from-publicly-reported
-#### Median incubation 5.1 days (4.5, 5.8 ); 97.5 percentile 11.5 days (8.2, 15.6); 2.5 percentile 2.2 days (1.8, 2.9)
-#### functions to get parameters from the Lauer paper
+# Delay from infection to symptoms
+# https://annals.org/aim/fullarticle/2762808/incubation-period-coronavirus-disease-2019-covid-19-from-publicly-reported
+# Median incubation 5.1 days (4.5, 5.8 );
+# 97.5 percentile 11.5 days (8.2, 15.6);
+# 2.5 percentile 2.2 days (1.8, 2.9)
+
+# functions to get parameters from the Lauer paper
 func1 <- function(zz) {
   z <- exp(zz)
   prd <- qgamma(c(1, 20, 39)/40, 1/z[1]/z[1], 1/z[1]/z[1]/z[2])
@@ -167,10 +174,8 @@ datList[["pri_p_diag_if_hos_ss"]] <- 100
 
 ###### ###### RUN MODEL ###### ###### ######
 
-source("covid_stan_script_MHC_V1.stan")
-
 fit_stan <-
-  stan(model_code = stan_code,
+  stan(file = "covid_stan_script_MHC_V2.stan",
        control = list(adapt_delta = 0.92, max_treedepth = 12),
        data = datList,
        seed = 1234,
