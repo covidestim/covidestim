@@ -1,82 +1,79 @@
+// ################# STILL TO DO #################
 
-################# STILL TO DO #################
+// -- change in testing probability by time
+// -- age
+// -- syndromic surveillance inputs
+// -- incorporate data on test negatives --> indicator of testing access?
 
-# -- change in testing probability by time
-# -- age
-# -- syndromic surveillance inputs
-# -- incorporate data on test negatives --> indicator of testing access?
-
-
-stan_code <- "
 
 ///////////////////////////////////////////////////////////
 data {
-///~~~~~~~ Define ~~~~~~~
-int<lower=0>     N_conf_cases;
-int<lower=0>     N_days;
-int<lower=0>     N_days_extra;
-int<lower=0>     Max_delay;
-int<lower=0>     cases_test_day[N_conf_cases]; // test date
-int<lower=0>     cases_days_delay[N_conf_cases]; // delay to diag
+  ///~~~~~~~ Define ~~~~~~~
+  int<lower=0>     N_conf_cases;
+  int<lower=0>     N_days;
+  int<lower=0>     N_days_extra;
+  int<lower=0>     Max_delay;
+  int<lower=0>     cases_test_day[N_conf_cases]; // test date
+  int<lower=0>     cases_days_delay[N_conf_cases]; // delay to diag
 
-real              pri_log_new_inf_0_mu;
-real<lower=0>     pri_log_new_inf_0_sd;
-real              pri_log_new_inf_drift_mu;
-real<lower=0>     pri_log_new_inf_drift_sd;
-real<lower=0>     pri_sigma_deriv1_log_new_inf_sd;
-real<lower=0>     pri_deriv2_log_new_inf_sd;
-// priors on conditional model state
-real<lower=0>     pri_p_sym_if_inf_mn;
-real<lower=0>     pri_p_sym_if_inf_ss;
-real<lower=0>     pri_p_hos_if_sym_mn;
-real<lower=0>     pri_p_hos_if_sym_ss;
-real<lower=0>     pri_p_die_if_hos_mn;
-real<lower=0>     pri_p_die_if_hos_ss;
+  real              pri_log_new_inf_0_mu;
+  real<lower=0>     pri_log_new_inf_0_sd;
+  real              pri_log_new_inf_drift_mu;
+  real<lower=0>     pri_log_new_inf_drift_sd;
+  real<lower=0>     pri_sigma_deriv1_log_new_inf_sd;
+  real<lower=0>     pri_deriv2_log_new_inf_sd;
+  // priors on conditional model state
+  real<lower=0>     pri_p_sym_if_inf_mn;
+  real<lower=0>     pri_p_sym_if_inf_ss;
+  real<lower=0>     pri_p_hos_if_sym_mn;
+  real<lower=0>     pri_p_hos_if_sym_ss;
+  real<lower=0>     pri_p_die_if_hos_mn;
+  real<lower=0>     pri_p_die_if_hos_ss;
 
-// priors on delays in progression to next model state
-real<lower=0>     pri_inf_prg_delay_mn_mn; // simplify
-real<lower=0>     pri_inf_prg_delay_mn_cv; // simplify
-real<lower=0>     inf_prg_delay_cv;
+  // priors on delays in progression to next model state
+  real<lower=0>     pri_inf_prg_delay_mn_mn; // simplify
+  real<lower=0>     pri_inf_prg_delay_mn_cv; // simplify
+  real<lower=0>     inf_prg_delay_cv;
 
-real<lower=0>     pri_sym_prg_delay_mn_mn; // simplify
-real<lower=0>     pri_sym_prg_delay_mn_cv; // simplify
-real<lower=0>     sym_prg_delay_cv;
+  real<lower=0>     pri_sym_prg_delay_mn_mn; // simplify
+  real<lower=0>     pri_sym_prg_delay_mn_cv; // simplify
+  real<lower=0>     sym_prg_delay_cv;
 
-real<lower=0>     pri_hos_prg_delay_mn_mn; // simplify
-real<lower=0>     pri_hos_prg_delay_mn_cv; // simplify
-real<lower=0>     hos_prg_delay_cv;
+  real<lower=0>     pri_hos_prg_delay_mn_mn; // simplify
+  real<lower=0>     pri_hos_prg_delay_mn_cv; // simplify
+  real<lower=0>     hos_prg_delay_cv;
 
-// priors on resoultion delay (state -> recovered)
-real<lower=0>     pri_inf_res_delay_mn_mn; // simplify
-real<lower=0>     pri_inf_res_delay_mn_cv; // simplify
-real<lower=0>     inf_res_delay_cv;
+  // priors on resoultion delay (state -> recovered)
+  real<lower=0>     pri_inf_res_delay_mn_mn; // simplify
+  real<lower=0>     pri_inf_res_delay_mn_cv; // simplify
+  real<lower=0>     inf_res_delay_cv;
 
-real<lower=0>     pri_sym_res_delay_mn_mn; // simplify
-real<lower=0>     pri_sym_res_delay_mn_cv; // simplify
-real<lower=0>     sym_res_delay_cv;
+  real<lower=0>     pri_sym_res_delay_mn_mn; // simplify
+  real<lower=0>     pri_sym_res_delay_mn_cv; // simplify
+  real<lower=0>     sym_res_delay_cv;
 
-real<lower=0>     pri_hos_res_delay_mn_mn; // simplify
-real<lower=0>     pri_hos_res_delay_mn_cv; // simplify
-real<lower=0>     hos_res_delay_cv;
+  real<lower=0>     pri_hos_res_delay_mn_mn; // simplify
+  real<lower=0>     pri_hos_res_delay_mn_cv; // simplify
+  real<lower=0>     hos_res_delay_cv;
 
-// reporting delays
-real<lower=0>     pri_report_delay_mn_mn; // simplify
-real<lower=0>     pri_report_delay_mn_cv; // simplify
+  // reporting delays
+  real<lower=0>     pri_report_delay_mn_mn; // simplify
+  real<lower=0>     pri_report_delay_mn_cv; // simplify
 
-real<lower=0>     pri_report_delay_cv_mn; // simplify
-real<lower=0>     pri_report_delay_cv_cv; // simplify
+  real<lower=0>     pri_report_delay_cv_mn; // simplify
+  real<lower=0>     pri_report_delay_cv_cv; // simplify
 
-// diagnosis delays
-real<lower=0>     pri_p_diag_if_inf_mn;
-real<lower=0>     pri_p_diag_if_inf_ss;
+  // diagnosis delays
+  real<lower=0>     pri_p_diag_if_inf_mn;
+  real<lower=0>     pri_p_diag_if_inf_ss;
 
-real<lower=0>     pri_p_diag_if_sym_mn;
-real<lower=0>     pri_p_diag_if_sym_ss;
+  real<lower=0>     pri_p_diag_if_sym_mn;
+  real<lower=0>     pri_p_diag_if_sym_ss;
 
-real<lower=0>     pri_p_diag_if_hos_mn;
-real<lower=0>     pri_p_diag_if_hos_ss;
+  real<lower=0>     pri_p_diag_if_hos_mn;
+  real<lower=0>     pri_p_diag_if_hos_ss;
 
-int<lower = 0, upper = 1> nb_yes; // turns on a negative binomial (currently fit poisson)
+  int<lower = 0, upper = 1> nb_yes; // turns on a negative binomial (currently fit poisson)
 
 }
 ///////////////////////////////////////////////////////////
@@ -377,7 +374,7 @@ transformed parameters {
       }
     }
   }
-  // could be "prof_inf" <- infections that progress
+  // could be 'prof_inf' <- infections that progress
   for(i in 1:N_days_tot) {
     for(j in 1:N_days_tot) {
       if(i+(j-1) <= N_days_tot){
@@ -600,7 +597,3 @@ model {
 generated quantities {
 
 }
-
-"
-
-###############################
