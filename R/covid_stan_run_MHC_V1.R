@@ -112,6 +112,18 @@ func1 <- function(zz) {
 }
 
 opt_par1 <- exp(optim(c(-1, -1), func1, method = "BFGS")$par)
+exp(
+  stats::optim(
+    c(-1, -1),
+    function(zz) {
+      z   <- exp(zz)
+      prd <- qgamma(c(1, 20, 39)/40, 1/z[1]/z[1], 1/z[1]/z[1]/z[2])
+      sum( (prd - c(2.2, 5.1, 11.5))^2 * c(1, 5, 1) )
+    },
+    method="BFGS"
+  )
+)$par -> opt_par1
+
 # qgamma(c(1, 20, 39)/40, opt_par1[1]^-2, opt_par1[1]^-2/opt_par1[2])
 
 stats::optimize(
