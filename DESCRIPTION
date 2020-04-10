@@ -1,13 +1,26 @@
 Package: covidcast
-Title: What the Package Does (One Line, Title Case)
+Title: Real-time Bayesian forcasting of R_t
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    c(person(given = "Melanie", family = "Chitwood",
+             role = c("aut", "cre"),
+             email = "melanie.chitwood@yale.edu"),
+      person(given = "Joshua", family = "Havumaki",
+             role = c("aut", "cre"),            
+             email = "joshua.havumaki@yale.edu"), 
+      person(given = "First", family = "Last",  
+             role = c("aut", "cre"),            
+             email = "marcus.russi@yale.edu")) 
 Description: What the package does (one paragraph).
-License: What license it uses
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports:
+  Hmisc,
+  splines,
+  rstan,
+  lubridate,
+  RColorBrewer
+  parallel
+Suggests: 
+    testthat
