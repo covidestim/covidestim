@@ -112,29 +112,30 @@ func1 <- function(zz) {
 }
 
 opt_par1 <- exp(optim(c(-1, -1), func1, method = "BFGS")$par)
-qgamma(c(1, 20, 39)/40, opt_par1[1]^-2, opt_par1[1]^-2/opt_par1[2])
+# qgamma(c(1, 20, 39)/40, opt_par1[1]^-2, opt_par1[1]^-2/opt_par1[2])
 
-func2 <- function(z) {
-  prd <- qgamma(c(1, 39)/40, 1/z[1]/z[1], 1/z[1]/z[1]/5.1)
-  sum((prd - c(4.5, 5.8))^2)
-}
+stats::optimize(
+  function(z) {
+    prd <- qgamma(c(1, 39)/40, 1/z[1]/z[1], 1/z[1]/z[1]/5.1)
+    sum((prd - c(4.5, 5.8))^2)
+  },
+  c(0.01, 1)
+)$minimum -> opt_par2
 
-opt_par2 <- optimize(func2, c(0.01, 1))$minimum
-qgamma(c(1, 39)/40, opt_par2^-2, opt_par2^-2/5.1)
+# qgamma(c(1, 39)/40, opt_par2^-2, opt_par2^-2/5.1)
 
-
-gammapar <- function(tgt) {
-  tgt <- as.numeric(tgt)
-  mn <- tgt[1]
-  cir <- (tgt[3] - tgt[2])
-  xopt <- function(b, mn, cir) {
-    cir2 <- qgamma(c(1, 39)/40, mn * b, b)
-    cir2 <- cir2[2] - cir2[1]
-    (cir2 - cir)^2
-  }
-  zz <- optimize(xopt, c(0.1, 1e+05), mn = mn, cir = cir)$minimum
-  c(zz * mn, zz)
-}
+# gammapar <- function(tgt) {
+#   tgt <- as.numeric(tgt)
+#   mn <- tgt[1]
+#   cir <- (tgt[3] - tgt[2])
+#   xopt <- function(b, mn, cir) {
+#     cir2 <- qgamma(c(1, 39)/40, mn * b, b)
+#     cir2 <- cir2[2] - cir2[1]
+#     (cir2 - cir)^2
+#   }
+#   zz <- optimize(xopt, c(0.1, 1e+05), mn = mn, cir = cir)$minimum
+#   c(zz * mn, zz)
+# }
 
 # shape is fixed, mean can vary
 list(
