@@ -111,42 +111,31 @@ func2 <- function(z){
 opt_par2 <- optimize(func2,c(0.01,1))$minimum
 qgamma(c(1,39)/40,opt_par2^-2,opt_par2^-2/5.1)
 
-
-gammapar <- function(tgt) {
-  tgt <- as.numeric(tgt)
-  mn <- tgt[1]; cir <- (tgt[3]-tgt[2])
-  xopt <- function(b,mn,cir) {
-    cir2 <- qgamma(c(1,39)/40,mn*b,b); cir2 <- cir2[2]-cir2[1]
-    (cir2-cir)^2 }
-  zz <- optimize(xopt,c(0.1,100000),mn=mn,cir=cir)$minimum 
-  c(zz*mn,zz) }
-
 # shape is fixed, mean can vary
 datList[["pri_inf_prg_delay_mn_mn"]] <-  opt_par1[2]
 datList[["pri_inf_prg_delay_mn_cv"]] <-  opt_par2
 datList[["inf_prg_delay_cv"]]        <-  opt_par1[1]
 # prior on the mean of the gamma distribution is distributed gamma with a mean and a cv
 # we could simplify by fixing the mean OR assuming time to recovery and time to progression is same
-datList[["pri_sym_prg_delay_mn_mn"]] <-  4
-datList[["pri_sym_prg_delay_mn_cv"]] <-  0.1
-# cv on the gamma distribution
-datList[["sym_prg_delay_cv"]]        <-  0.5
+datList[["pri_sym_prg_delay_mn"]]  <-  11 # Zhou et al. 
+datList[["pri_sym_prg_delay_low"]] <-  8
+datList[["pri_sym_prg_delay_up"]]      <-  14
 
-datList[["pri_hos_prg_delay_mn_mn"]] <-  5
-datList[["pri_hos_prg_delay_mn_cv"]] <-  0.1
-datList[["hos_prg_delay_cv"]]        <-  0.5
+datList[["pri_hos_prg_delay_mn"]] <-  8.8 # Linton et al. 
+datList[["pri_hos_prg_delay_low"]] <-  7.2
+datList[["pri_hos_prg_delay_up"]]  <-  10.8
 
-datList[["pri_inf_res_delay_mn_mn"]] <-  14
+datList[["pri_inf_res_delay_mn_mn"]] <-  14 # assumption 
 datList[["pri_inf_res_delay_mn_cv"]] <-  0.1
 datList[["inf_res_delay_cv"]]        <-  0.5
 
-datList[["pri_sym_res_delay_mn_mn"]] <-  6
+datList[["pri_sym_res_delay_mn_mn"]] <-  6 #assumption
 datList[["pri_sym_res_delay_mn_cv"]] <-  0.1
 datList[["sym_res_delay_cv"]]        <-  0.5
 
-datList[["pri_hos_res_delay_mn_mn"]] <-  6
-datList[["pri_hos_res_delay_mn_cv"]] <-  0.1
-datList[["hos_res_delay_cv"]]        <-  0.5
+datList[["pri_hos_res_delay_mn"]] <-  17 # Pan et al. 
+datList[["pri_hos_res_delay_low"]] <-  13
+datList[["pri_hos_res_delay_up"]]  <-  21
 
 datList[["pri_report_delay_mn_mn"]]  <-  7
 datList[["pri_report_delay_mn_cv"]]  <-  0.9
