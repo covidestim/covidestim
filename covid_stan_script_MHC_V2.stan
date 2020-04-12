@@ -1,4 +1,15 @@
 stan_code <- "
+////////////////////////////////////////////////////////////
+functions{
+gammapar <- function(tgt) {
+  tgt <- as.numeric(tgt)
+  mn <- tgt[1]; cir <- (tgt[3]-tgt[2])
+  xopt <- function(b,mn,cir) {
+    cir2 <- qgamma(c(1,39)/40,mn*b,b); cir2 <- cir2[2]-cir2[1]
+    (cir2-cir)^2 }
+  zz <- optimize(xopt,c(0.1,100000),mn=mn,cir=cir)$minimum 
+  c(zz*mn,zz) }
+}
 
 ///////////////////////////////////////////////////////////
 data {
@@ -31,13 +42,13 @@ real<lower=0>     pri_inf_prg_delay_mn_mn; // simplify
 real<lower=0>     pri_inf_prg_delay_mn_cv; // simplify
 real<lower=0>     inf_prg_delay_cv;
 
-real<lower=0>     pri_sym_prg_delay_mn_mn; // simplify
-real<lower=0>     pri_sym_prg_delay_mn_cv; // simplify
-real<lower=0>     sym_prg_delay_cv;
+real<lower=0>     pri_sym_prg_delay_mn; 
+real<lower=0>     pri_sym_prg_delay_low; 
+real<lower=0>     pri_sym_prg_delay_up;
 
-real<lower=0>     pri_hos_prg_delay_mn_mn; // simplify
-real<lower=0>     pri_hos_prg_delay_mn_cv; // simplify
-real<lower=0>     hos_prg_delay_cv;
+real<lower=0>     pri_hos_prg_delay_mn; 
+real<lower=0>     pri_hos_prg_delay_low; 
+real<lower=0>     pri_hos_prg_delay_up;
 
 // priors on resoultion delay (state -> recovered)
 real<lower=0>     pri_inf_res_delay_mn_mn; // simplify
@@ -48,9 +59,9 @@ real<lower=0>     pri_sym_res_delay_mn_mn; // simplify
 real<lower=0>     pri_sym_res_delay_mn_cv; // simplify
 real<lower=0>     sym_res_delay_cv;
 
-real<lower=0>     pri_hos_res_delay_mn_mn; // simplify
-real<lower=0>     pri_hos_res_delay_mn_cv; // simplify
-real<lower=0>     hos_res_delay_cv;
+real<lower=0>     pri_hos_res_delay_mn; 
+real<lower=0>     pri_hos_res_delay_low; 
+real<lower=0>     pri_hos_res_delay_up;
 
 // reporting delays
 real<lower=0>     pri_report_delay_mn_mn; // simplify
@@ -91,10 +102,10 @@ transformed data {
   real          pri_inf_prg_delay_mn_shap;
   real          pri_inf_prg_delay_mn_rate;
   
-  real          pri_sym_prg_delay_mn_shap;
+  real          pri_sym_prg_delay_mn_shape;
   real          pri_sym_prg_delay_mn_rate;
   
-  real          pri_hos_prg_delay_mn_shap;
+  real          pri_hos_prg_delay_mn_shape;
   real          pri_hos_prg_delay_mn_rate;
 // time to recovered 
   real          pri_inf_res_delay_mn_shap;
@@ -103,7 +114,7 @@ transformed data {
   real          pri_sym_res_delay_mn_shap;
   real          pri_sym_res_delay_mn_rate;
   
-  real          pri_hos_res_delay_mn_shap;
+  real          pri_hos_res_delay_mn_shape;
   real          pri_hos_res_delay_mn_rate;
 // report delay
 // shape and mean of delay distribution
@@ -143,11 +154,11 @@ transformed data {
   pri_inf_prg_delay_mn_shap = pow(pri_inf_prg_delay_mn_cv,-2); 
   pri_inf_prg_delay_mn_rate = pow(pri_inf_prg_delay_mn_cv,-2)/pri_inf_prg_delay_mn_mn;
   
-  pri_sym_prg_delay_mn_shap = pow(pri_sym_prg_delay_mn_cv,-2);
-  pri_sym_prg_delay_mn_rate = pow(pri_sym_prg_delay_mn_cv,-2)/pri_sym_prg_delay_mn_mn;
+  pri_sym_prg_delay_mn_shape = gammapar(c(pri_sym_prg_delay_mn, pri_sym_prg_delay_low, pri_sym_prg_delay_up))[1];
+  pri_sym_prg_delay_mn_rate = gammapar(c(pri_sym_prg_delay_mn, pri_sym_prg_delay_low, pri_sym_prg_delay_up))[2];
   
-  pri_hos_prg_delay_mn_shap = pow(pri_hos_prg_delay_mn_cv,-2);
-  pri_hos_prg_delay_mn_rate = pow(pri_hos_prg_delay_mn_cv,-2)/pri_hos_prg_delay_mn_mn;
+  pri_hos_prg_delay_mn_shape = gammapar(c(pri_hos_prg_delay_mn, pri_hos_prg_delay_low, pri_hos_prg_delay_up))[1];
+  pri_hos_prg_delay_mn_rate = gammapar(c(pri_hos_prg_delay_mn, pri_hos_prg_delay_low, pri_hos_prg_delay_up))[2];
  
   pri_inf_res_delay_mn_shap = pow(pri_inf_res_delay_mn_cv,-2);
   pri_inf_res_delay_mn_rate = pow(pri_inf_res_delay_mn_cv,-2)/pri_inf_res_delay_mn_mn;
@@ -155,8 +166,8 @@ transformed data {
   pri_sym_res_delay_mn_shap = pow(pri_sym_res_delay_mn_cv,-2);
   pri_sym_res_delay_mn_rate = pow(pri_sym_res_delay_mn_cv,-2)/pri_sym_res_delay_mn_mn;
   
-  pri_hos_res_delay_mn_shap = pow(pri_hos_res_delay_mn_cv,-2);
-  pri_hos_res_delay_mn_rate = pow(pri_hos_res_delay_mn_cv,-2)/pri_hos_res_delay_mn_mn;
+  pri_hos_res_delay_mn_shape = gammapar(c(pri_hos_res_delay_mn, pri_hos_res_delay_low, pri_hos_res_delay_up))[1];
+  pri_hos_res_delay_mn_rate = gammapar(c(pri_hos_res_delay_mn, pri_hos_res_delay_low, pri_hos_res_delay_up))[2];
 
   pri_report_delay_mn_shap = pow(pri_report_delay_mn_cv,-2);
   pri_report_delay_mn_rate = pow(pri_report_delay_mn_cv,-2)/pri_report_delay_mn_mn;
@@ -556,12 +567,12 @@ model {
   p_die_if_hos              ~ beta(pri_p_die_if_hos_a, pri_p_die_if_hos_b);
 
   inf_prg_delay_mn          ~ gamma(pri_inf_prg_delay_mn_shap, pri_inf_prg_delay_mn_rate);
-  sym_prg_delay_mn          ~ gamma(pri_sym_prg_delay_mn_shap, pri_sym_prg_delay_mn_rate);
-  hos_prg_delay_mn          ~ gamma(pri_hos_prg_delay_mn_shap, pri_hos_prg_delay_mn_rate);
+  sym_prg_delay_mn          ~ gamma(pri_sym_prg_delay_mn_shape, pri_sym_prg_delay_mn_rate);
+  hos_prg_delay_mn          ~ gamma(pri_hos_prg_delay_mn_shape, pri_hos_prg_delay_mn_rate);
 
   inf_res_delay_mn          ~ gamma(pri_inf_res_delay_mn_shap, pri_inf_res_delay_mn_rate);
   sym_res_delay_mn          ~ gamma(pri_sym_res_delay_mn_shap, pri_sym_res_delay_mn_rate);
-  hos_res_delay_mn          ~ gamma(pri_hos_res_delay_mn_shap, pri_hos_res_delay_mn_rate);
+  hos_res_delay_mn          ~ gamma(pri_hos_res_delay_mn_shape, pri_hos_res_delay_mn_rate);
 
   report_delay_mn           ~ gamma(pri_report_delay_mn_shap, pri_report_delay_mn_rate); 
   report_delay_cv           ~ gamma(pri_report_delay_cv_shap, pri_report_delay_cv_rate);
