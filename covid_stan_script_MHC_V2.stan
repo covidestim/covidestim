@@ -1,12 +1,3 @@
-
-################# STILL TO DO #################
-
-# -- change in testing probability by time
-# -- age
-# -- syndromic surveillance inputs
-# -- incorporate data on test negatives --> indicator of testing access?
-
-
 stan_code <- "
 
 ///////////////////////////////////////////////////////////
@@ -18,6 +9,8 @@ int<lower=0>     N_days_extra;
 int<lower=0>     Max_delay;
 int<lower=0>     cases_test_day[N_conf_cases]; // test date
 int<lower=0>     cases_days_delay[N_conf_cases]; // delay to diag
+int<lower=1>     n_spl_par; // term for the spline
+matrix[N_days,n_spl_par] spl_basis; // term for the spline
 
 real              pri_log_new_inf_0_mu;
 real<lower=0>     pri_log_new_inf_0_sd;
@@ -205,12 +198,8 @@ transformed data {
 ///////////////////////////////////////////////////////////
 parameters {
 ///~~~~~~~ Define ~~~~~~~
-// INCIDENCE // building the random walk 
-  real                  log_new_inf_0; // intercept in log space
-  real                  log_new_inf_drift; // mean day on day change
-  vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of the random walk 
-  real<lower=0>         sigma_deriv1_log_new_inf; // parameter for the SD of the rw
-//  real<lower=0> sigma_deriv2_log_new_inf;
+// INCIDENCE // spline 
+vector[n_spl_par]  b_spline;
 
 // SYMPTOMS AND CARE // probability of transitioning to next illnesses state
 // currently assume a fixed cv
@@ -242,9 +231,10 @@ parameters {
 transformed parameters {
 ///~~~~~~~ Define ~~~~~~~
 // INCIDENCE
-  vector[N_days_tot]     log_new_inf;
-  vector[N_days_tot]     new_inf;
-  vector[N_days_tot-2]   deriv2_log_new_inf;
+vector[N_days]              new_inf_log;
+vector[N_days]              new_inf;
+vector[n_spl_par-2]         deriv2_b_spline;
+vector[n_spl_par-1]         deriv1_b_spline;
 
 // DELAYS probabilitily of reporting w x days delay (PDF of delay distribution)
   vector[N_days_tot]  inf_prg_delay;
@@ -319,17 +309,18 @@ transformed parameters {
   phi = pow(inv_sqrt_phi,-2);
 
 // INCIDENCE
-  log_new_inf[1] = log_new_inf_0;
-  for(i in 1:(N_days_tot-1)) {
-  //  log_new_inf[i+1] =  log_new_inf[i] + log_new_inf_drift + deriv1_log_new_inf[i] * sigma_deriv1_log_new_inf;
-    log_new_inf[i+1] =  log_new_inf[i] + log_new_inf_drift + deriv1_log_new_inf[i] ;
-  }
+new_inf_log = spl_basis * b_spline;
+new_inf  = exp(new_inf_log);
 
-  new_inf = exp(log_new_inf);
+// second derivative
+for(i in 1:(n_spl_par-2)) {
+  deriv2_b_spline[i] = b_spline[i+2] * 2 - b_spline[i+1] - b_spline[i+3];
+}
 
-  for(i in 1:(N_days_tot-2)) {
-    deriv2_log_new_inf[i] = log_new_inf[i+1] * 2 - log_new_inf[i] - log_new_inf[i+2];
-  }
+// first derivative
+for(i in 1:(n_spl_par-1)) {
+  deriv1_b_spline[i] = b_spline[i+2] - b_spline[i+1];
+}
 
 // DELAYS // progression
   inf_prg_delay_rate = inf_prg_delay_shap/inf_prg_delay_mn;
