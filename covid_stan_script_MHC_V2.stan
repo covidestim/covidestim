@@ -555,12 +555,9 @@ model {
 ///~~~~~~~ Assign values ~~~~~~~
 //// PRIORS
 // INCIDENCE
-  log_new_inf_0             ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd); // 
-  log_new_inf_drift         ~ normal(0, pri_log_new_inf_drift_sd); // 
-  sigma_deriv1_log_new_inf  ~ normal(0, pri_sigma_deriv1_log_new_inf_sd);  // should be cauchy // sd of randomw walk
-  deriv1_log_new_inf        ~ normal(0, 1);
-  deriv2_log_new_inf        ~ normal(0, pri_deriv2_log_new_inf_sd);
-
+  deriv2_log_entry_tot      ~ student_t(10, 0, 5);
+  deriv1_log_entry_tot      ~ student_t(10, 0, 1);
+  
 // SYMPTOMS AND CARE
   p_sym_if_inf              ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
   p_hos_if_sym              ~ beta(pri_p_hos_if_sym_a, pri_p_hos_if_sym_b);
