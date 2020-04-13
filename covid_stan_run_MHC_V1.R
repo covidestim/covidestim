@@ -63,10 +63,8 @@ des_mat <- bs(1:(N_days+days_extra), df=n_spl_par, degree=3, intercept=T)
 # this produces a cubic b-spline with n_spl_par basis functions
 spl_basis <- as.matrix(as.data.frame(des_mat))
 
-# Here rnorm(10) is creating a vector of 10 weights. The %*% operator does 
-# matrix multiplication.The weights are the spline parameters, so if n_spl_par 
-# is ten, then we need 10 parameters for the spline
-
+## creating priors from Lauer paper
+# progression from infected to symptomatic 
 func1 <- function(zz){
   z <- exp(zz)
   prd <- qgamma(c(1,20,39)/40,1/z[1]/z[1],1/z[1]/z[1]/z[2])
@@ -118,7 +116,7 @@ datList[["nb_yes"]]              <-  0
 # functions to get parameters from the Lauer paper
 
 # shape is fixed, mean can vary
-datList[["pri_inf_prg_delay_mn_mn"]] <-  opt_par1[2]
+datList[["pri_inf_prg_delay_mn_mn"]] <-  opt_par1[2] # Lauer et al. 
 datList[["pri_inf_prg_delay_mn_cv"]] <-  opt_par2
 datList[["inf_prg_delay_cv"]]        <-  opt_par1[1]
 # prior on the mean of the gamma distribution is distributed gamma with a mean and a cv
