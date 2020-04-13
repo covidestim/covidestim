@@ -30,6 +30,7 @@ rmv <- (diagnosis_day0+days_delay0)>max(diagnosis_day0)
 days_delay <- days_delay0[!rmv]
 diagnosis_day <- diagnosis_day0[!rmv]
 
+days_extra <- 1
 # hist(days_delay0); hist(days_delay,add=T,col=5)
 # hist(diagnosis_day0); hist(diagnosis_day,add=T,col=5)
 range(diagnosis_day)
@@ -46,6 +47,7 @@ range(diagnosis_day)
 # rmv <- max(diagnosis_day) - diagnosis_day - days_delay == 0
 # diagnosis_day <- diagnosis_day[!rmv]
 # days_delay    <- days_delay[!rmv]
+# days_extra <- 1
 
 # Create reporting triangle
 N_days_before <- 10
@@ -57,7 +59,7 @@ for(i in 1:length(diagnosis_day)){
 }
 
 n_spl_par <- 10
-des_mat <- bs(1:N_days, df=n_spl_par, degree=3, intercept=T)
+des_mat <- bs(1:(N_days+days_extra), df=n_spl_par, degree=3, intercept=T)
 # this produces a cubic b-spline with n_spl_par basis functions
 spl_basis <- as.matrix(as.data.frame(des_mat))
 
@@ -87,7 +89,7 @@ datList <- list()
 ## Data
 datList[["N_conf_cases"]]     <-  length(diagnosis_day) #
 datList[["N_days"]]           <-  max(diagnosis_day) + N_days_before #n days to model before first case
-datList[["N_days_extra"]]     <-  1 # model days after (for things like death, hospitalizations)
+datList[["N_days_extra"]]     <-  days_extra # model days after (for things like death, hospitalizations)
 datList[["Max_delay"]]        <-  max(days_delay) # maximum value for delay distribution
 datList[["cases_test_day"]]   <-  diagnosis_day + N_days_before
 datList[["cases_days_delay"]] <-  days_delay # NEED A PRIOR ON THIS
