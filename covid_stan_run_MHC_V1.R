@@ -57,18 +57,9 @@ for(i in 1:length(diagnosis_day)){
 }
 
 n_spl_par <- 10
-
 des_mat <- bs(1:N_days, df=n_spl_par, degree=3, intercept=T)
 # this produces a cubic b-spline with n_spl_par basis functions
 spl_basis <- as.matrix(as.data.frame(des_mat))
-
-plot(spl_basis[,1],type="l")
-for(i in 2:n_spl_par) lines(spl_basis[,i],col=i)
-# each color is a basis function. the spline is calculated by multiplying 
-# these basis functions by a weight, and summing, e.g...
-
-plot(spl_basis%*%rnorm(10),type="l",ylim=c(-3,3))
-for(i in 2:20) lines(spl_basis%*%rnorm(10),col=i)
 
 # Here rnorm(10) is creating a vector of 10 weights. The %*% operator does 
 # matrix multiplication.The weights are the spline parameters, so if n_spl_par 
