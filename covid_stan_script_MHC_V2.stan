@@ -21,7 +21,7 @@ int<lower=0>     Max_delay;
 int<lower=0>     cases_test_day[N_conf_cases]; // test date
 int<lower=0>     cases_days_delay[N_conf_cases]; // delay to diag
 int<lower=1>     n_spl_par; // term for the spline
-matrix[N_days,n_spl_par] spl_basis; // term for the spline
+matrix[(N_days+N_days_extra),n_spl_par] spl_basis; // term for the spline
 
 real              pri_log_new_inf_0_mu;
 real<lower=0>     pri_log_new_inf_0_sd;
@@ -242,10 +242,10 @@ vector[n_spl_par]  b_spline;
 transformed parameters {
 ///~~~~~~~ Define ~~~~~~~
 // INCIDENCE
-vector[N_days]              new_inf_log;
-vector[N_days]              new_inf;
-vector[n_spl_par-2]         deriv2_b_spline;
-vector[n_spl_par-1]         deriv1_b_spline;
+vector[N_days_tot]    new_inf_log;
+vector[N_days_tot]    new_inf;
+vector[n_spl_par-2]   deriv2_b_spline;
+vector[n_spl_par-1]   deriv1_b_spline;
 
 // DELAYS probabilitily of reporting w x days delay (PDF of delay distribution)
   vector[N_days_tot]  inf_prg_delay;
@@ -325,12 +325,12 @@ new_inf  = exp(new_inf_log);
 
 // second derivative
 for(i in 1:(n_spl_par-2)) {
-  deriv2_b_spline[i] = b_spline[i+2] * 2 - b_spline[i+1] - b_spline[i+3];
+  deriv2_b_spline[i] = b_spline[i+1] * 2 - b_spline[i] - b_spline[i+2];
 }
 
 // first derivative
 for(i in 1:(n_spl_par-1)) {
-  deriv1_b_spline[i] = b_spline[i+2] - b_spline[i+1];
+  deriv1_b_spline[i] = b_spline[i+1] - b_spline[i];
 }
 
 // DELAYS // progression
@@ -555,8 +555,8 @@ model {
 ///~~~~~~~ Assign values ~~~~~~~
 //// PRIORS
 // INCIDENCE
-  deriv2_log_entry_tot      ~ student_t(10, 0, 5);
-  deriv1_log_entry_tot      ~ student_t(10, 0, 1);
+ deriv2_b_spline            ~ student_t(10, 0, 5);
+ deriv1_b_spline            ~ student_t(10, 0, 1);
   
 // SYMPTOMS AND CARE
   p_sym_if_inf              ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
