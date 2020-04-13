@@ -8,6 +8,7 @@ library(splines)
 library(rstan)
 library(lubridate)
 library(RColorBrewer)
+library(splines)
 
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
@@ -55,6 +56,39 @@ for(i in 1:length(diagnosis_day)){
     rep_tri_conf_cases[(diagnosis_day + N_days_before)[i], days_delay[i]+1] + 1;
 }
 
+n_spl_par <- 10
+
+des_mat <- bs(1:N_days, df=n_spl_par, degree=3, intercept=T)
+# this produces a cubic b-spline with n_spl_par basis functions
+spl_basis <- as.matrix(as.data.frame(des_mat))
+
+plot(spl_basis[,1],type="l")
+for(i in 2:n_spl_par) lines(spl_basis[,i],col=i)
+# each color is a basis function. the spline is calculated by multiplying 
+# these basis functions by a weight, and summing, e.g...
+
+plot(spl_basis%*%rnorm(10),type="l",ylim=c(-3,3))
+for(i in 2:20) lines(spl_basis%*%rnorm(10),col=i)
+
+# Here rnorm(10) is creating a vector of 10 weights. The %*% operator does 
+# matrix multiplication.The weights are the spline parameters, so if n_spl_par 
+# is ten, then we need 10 parameters for the spline
+
+func1 <- function(zz){
+  z <- exp(zz)
+  prd <- qgamma(c(1,20,39)/40,1/z[1]/z[1],1/z[1]/z[1]/z[2])
+  sum( (prd-c(2.2,5.1,11.5))^2 * c(1,5,1))  }
+
+opt_par1 <- exp(optim(c(-1,-1),func1,method="BFGS")$par)
+qgamma(c(1,20,39)/40,opt_par1[1]^-2,opt_par1[1]^-2/opt_par1[2])
+
+func2 <- function(z){
+  prd <- qgamma(c(1,39)/40,1/z[1]/z[1],1/z[1]/z[1]/5.1)
+  sum( (prd-c(4.5,5.8))^2)   }
+
+opt_par2 <- optimize(func2,c(0.01,1))$minimum
+qgamma(c(1,39)/40,opt_par2^-2,opt_par2^-2/5.1)
+
 ###### ######  LIST  ###### ###### ###### 
 
 datList <- list()
@@ -68,16 +102,9 @@ datList[["cases_test_day"]]   <-  diagnosis_day + N_days_before
 datList[["cases_days_delay"]] <-  days_delay # NEED A PRIOR ON THIS
 
 ## Priors
-#### Parameters of random walk in log space <-  new infections per day
-datList[["pri_log_new_inf_0_mu"]]            <-  -2 # mean of log daily infections on day 1
-datList[["pri_log_new_inf_0_sd"]]            <-  2  # sd of log daily infections on day 1
-# drift gives some direction to random walk. stronger prior here. 
-datList[["pri_log_new_inf_drift_mu"]]        <-  0   # mean of daily change in log infections
-# hyper prior on random walk 
-datList[["pri_log_new_inf_drift_sd"]]        <-  1   # sd of daily change in log infections
-datList[["pri_sigma_deriv1_log_new_inf_sd"]] <-  0.5   # mean of daily change in log infections
-# priors on the second derivative; penalizes sharp changes in random walk; gives rw momentum
-datList[["pri_deriv2_log_new_inf_sd"]]       <-  0.1
+# priors on spline
+datList[["spl_basis"]]  <-  spl_basis
+datList[["n_spl_par"]]  <-  n_spl_par
 # probability of transitioning between states 
 # unlike ODE, not a constant rate in transmission -- allows us to model delays
 # probability of transitioning into the next stage or recovery
@@ -96,20 +123,6 @@ datList[["nb_yes"]]              <-  0
 # https://annals.org/aim/fullarticle/2762808/incubation-period-coronavirus-disease-2019-covid-19-from-publicly-reported
 #  Median incubation 5.1 days (4.5, 5.8 ); 97.5 percentile 11.5 days (8.2, 15.6); 2.5 percentile 2.2 days (1.8, 2.9) 
 # functions to get parameters from the Lauer paper
-func1 <- function(zz){
-  z <- exp(zz)
-  prd <- qgamma(c(1,20,39)/40,1/z[1]/z[1],1/z[1]/z[1]/z[2])
-  sum( (prd-c(2.2,5.1,11.5))^2 * c(1,5,1))  }
-
-opt_par1 <- exp(optim(c(-1,-1),func1,method="BFGS")$par)
-qgamma(c(1,20,39)/40,opt_par1[1]^-2,opt_par1[1]^-2/opt_par1[2])
-
-func2 <- function(z){
-  prd <- qgamma(c(1,39)/40,1/z[1]/z[1],1/z[1]/z[1]/5.1)
-  sum( (prd-c(4.5,5.8))^2)   }
-
-opt_par2 <- optimize(func2,c(0.01,1))$minimum
-qgamma(c(1,39)/40,opt_par2^-2,opt_par2^-2/5.1)
 
 # shape is fixed, mean can vary
 datList[["pri_inf_prg_delay_mn_mn"]] <-  opt_par1[2]
