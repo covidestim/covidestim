@@ -6,10 +6,10 @@ Authors@R:
              role = c("aut", "cre"),
              email = "melanie.chitwood@yale.edu"),
       person(given = "Joshua", family = "Havumaki",
-             role = c("aut", "cre"),            
+             role = c("aut"),            
              email = "joshua.havumaki@yale.edu"), 
       person(given = "First", family = "Last",  
-             role = c("aut", "cre"),            
+             role = c("aut"),            
              email = "marcus.russi@yale.edu")) 
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
@@ -20,9 +20,9 @@ Imports:
   splines,
   rstan,
   lubridate,
-  RColorBrewer
+  RColorBrewer,
   parallel,
-  purrr
-  grDevice
+  purrr,
 Suggests: 
-    testthat
+  testthat,
+  grDevice
