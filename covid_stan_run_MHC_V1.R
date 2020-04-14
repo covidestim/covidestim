@@ -63,22 +63,6 @@ des_mat <- bs(1:(N_days+days_extra), df=n_spl_par, degree=3, intercept=T)
 # this produces a cubic b-spline with n_spl_par basis functions
 spl_basis <- as.matrix(as.data.frame(des_mat))
 
-## creating priors from Lauer paper
-# progression from infected to symptomatic 
-func1 <- function(zz){
-  z <- exp(zz)
-  prd <- qgamma(c(1,20,39)/40,1/z[1]/z[1],1/z[1]/z[1]/z[2])
-  sum( (prd-c(2.2,5.1,11.5))^2 * c(1,5,1))  }
-
-opt_par1 <- exp(optim(c(-1,-1),func1,method="BFGS")$par)
-qgamma(c(1,20,39)/40,opt_par1[1]^-2,opt_par1[1]^-2/opt_par1[2])
-
-func2 <- function(z){
-  prd <- qgamma(c(1,39)/40,1/z[1]/z[1],1/z[1]/z[1]/5.1)
-  sum( (prd-c(4.5,5.8))^2)   }
-
-opt_par2 <- optimize(func2,c(0.01,1))$minimum
-qgamma(c(1,39)/40,opt_par2^-2,opt_par2^-2/5.1)
 
 ###### ######  LIST  ###### ###### ###### 
 
@@ -92,69 +76,62 @@ datList[["Max_delay"]]        <-  max(days_delay) # maximum value for delay dist
 datList[["cases_test_day"]]   <-  diagnosis_day + N_days_before
 datList[["cases_days_delay"]] <-  days_delay # NEED A PRIOR ON THIS
 
-## Priors
+### NEED IF/ELSE HERE: 
+# Priors on random walk
+datList[["pri_log_new_inf_0_mu"]]            <-  -2 # mean of log daily infections on day 1
+datList[["pri_log_new_inf_0_sd"]]            <-  2  # sd of log daily infections on day 1
+# drift gives some direction to random walk. stronger prior here. 
+datList[["pri_log_new_inf_drift_mu"]]        <-  0   # mean of daily change in log infections
+# hyper prior on random walk 
+datList[["pri_log_new_inf_drift_sd"]]        <-  1   # sd of daily change in log infections
+datList[["pri_sigma_deriv1_log_new_inf_sd"]] <-  0.5   # mean of daily change in log infections
+# priors on the second derivative; penalizes sharp changes in random walk; gives rw momentum
+datList[["pri_deriv2_log_new_inf_sd"]]       <-  0.1
+
 # priors on spline
-datList[["spl_basis"]]  <-  spl_basis
-datList[["n_spl_par"]]  <-  n_spl_par
-# probability of transitioning between states 
-# unlike ODE, not a constant rate in transmission -- allows us to model delays
-# probability of transitioning into the next stage or recovery
-datList[["pri_p_sym_if_inf_mn"]] <-  0.69
-datList[["pri_p_sym_if_inf_ss"]] <-  100 # sum of the beta coeffecients
+datList[["spl_basis"]] <-  spl_basis
+datList[["n_spl_par"]] <-  n_spl_par
+###
 
-datList[["pri_p_hos_if_sym_mn"]] <-  0.31 # upper bound from CDC paper
-datList[["pri_p_hos_if_sym_ss"]] <-  100
+# poisson or negative binomial 
+datList[["nb_yes"]]    <-  0
+datList[["rw_yes"]]    <-  0 
 
-datList[["pri_p_die_if_hos_mn"]] <-  0.03 # upper bound from CDC paper
-datList[["pri_p_die_if_hos_ss"]] <-  100
+## Priors
+  # tranisionts
+datList[["pri_p_sym_if_inf_a"]]
+datList[["pri_p_sym_if_inf_b"]]
+datList[["pri_p_hos_if_sym_a"]]
+datList[["pri_p_hos_if_sym_b"]]
+datList[["pri_p_die_if_hos_a"]]
+datList[["pri_p_die_if_hos_b"]]
+  # delay to progression
+datList[["inf_prg_delay_shap"]]
+datList[["inf_prg_delay_rate"]]
+datList[["sym_prg_delay_shap"]]
+datList[["sym_prg_delay_rate"]]
+datList[["hos_prg_delay_shap"]]
+datList[["hos_prg_delay_rate"]]
+  # delay to recovered  
+datList[["inf_res_delay_shap"]]
+datList[["inf_res_delay_rate"]]
+datList[["sym_res_delay_shap"]]
+datList[["sym_res_delay_rate"]]
+datList[["hos_res_delay_shap"]]
+datList[["hos_res_delay_rate"]]
+  # report delay, to be simplified later?
+datList[["pri_report_delay_mn_shap"]]
+datList[["pri_report_delay_mn_rate"]]
+datList[["pri_report_delay_cv_shap"]]
+datList[["pri_report_delay_cv_rate"]]
+  # probability of diagnosis 
+datList[["pri_p_diag_if_inf_a"]]
+datList[["pri_p_diag_if_inf_b"]]
+datList[["pri_p_diag_if_sym_a"]]
+datList[["pri_p_diag_if_sym_b"]]
+datList[["pri_p_diag_if_hos_a"]]
+datList[["pri_p_diag_if_hos_b"]]
 
-datList[["nb_yes"]]              <-  0
-
-#### Delay from infection to symptoms
-# https://annals.org/aim/fullarticle/2762808/incubation-period-coronavirus-disease-2019-covid-19-from-publicly-reported
-#  Median incubation 5.1 days (4.5, 5.8 ); 97.5 percentile 11.5 days (8.2, 15.6); 2.5 percentile 2.2 days (1.8, 2.9) 
-# functions to get parameters from the Lauer paper
-
-# shape is fixed, mean can vary
-datList[["pri_inf_prg_delay_mn_mn"]] <-  opt_par1[2] # Lauer et al. 
-datList[["pri_inf_prg_delay_mn_cv"]] <-  opt_par2
-datList[["inf_prg_delay_cv"]]        <-  opt_par1[1]
-# prior on the mean of the gamma distribution is distributed gamma with a mean and a cv
-# we could simplify by fixing the mean OR assuming time to recovery and time to progression is same
-datList[["pri_sym_prg_delay_mn"]]  <-  11 # Zhou et al. 
-datList[["pri_sym_prg_delay_low"]] <-  8
-datList[["pri_sym_prg_delay_up"]]      <-  14
-
-datList[["pri_hos_prg_delay_mn"]] <-  8.8 # Linton et al. 
-datList[["pri_hos_prg_delay_low"]] <-  7.2
-datList[["pri_hos_prg_delay_up"]]  <-  10.8
-
-datList[["pri_inf_res_delay_mn_mn"]] <-  14 # assumption 
-datList[["pri_inf_res_delay_mn_cv"]] <-  0.1
-datList[["inf_res_delay_cv"]]        <-  0.5
-
-datList[["pri_sym_res_delay_mn_mn"]] <-  6 #assumption
-datList[["pri_sym_res_delay_mn_cv"]] <-  0.1
-datList[["sym_res_delay_cv"]]        <-  0.5
-
-datList[["pri_hos_res_delay_mn"]] <-  17 # Pan et al. 
-datList[["pri_hos_res_delay_low"]] <-  13
-datList[["pri_hos_res_delay_up"]]  <-  21
-
-datList[["pri_report_delay_mn_mn"]]  <-  7
-datList[["pri_report_delay_mn_cv"]]  <-  0.9
-
-datList[["pri_report_delay_cv_mn"]]  <-  0.5
-datList[["pri_report_delay_cv_cv"]]  <-  0.9
-# daily probability of diagnosis as a function of individual health state
-# currently parameterizing beta distributions, but we need to add a function of time
-    # probability of diagnosis is a logistic function with intercepts by health state
-datList[["pri_p_diag_if_inf_mn"]] <-  0.01
-datList[["pri_p_diag_if_inf_ss"]] <-  100
-datList[["pri_p_diag_if_sym_mn"]] <-  0.1
-datList[["pri_p_diag_if_sym_ss"]] <-  100
-datList[["pri_p_diag_if_hos_mn"]] <-  0.6
-datList[["pri_p_diag_if_hos_ss"]] <-  100
 
 ###### ######  RUN MODEL  ###### ###### ###### 
 
@@ -251,8 +228,8 @@ mtext("Case count (N)",2,2.3)
 mtext("Days since start",1,1.3)
 mtext("Fit to data: Incident outcomes compared to data",3,0.6)
 legend("topleft",c("Model: new infections","Model: new symptomatics","Model: new hospitalizations",
-       "Model: deaths","Model: recoveries",
-       "Model: new diagnoses (all)","Model: new diagnoses (reported)","Data: new diagnoses (reported)"),
+                   "Model: deaths","Model: recoveries",
+                   "Model: new diagnoses (all)","Model: new diagnoses (reported)","Data: new diagnoses (reported)"),
        col=c("grey40","red","forestgreen","blue","purple","brown","orange","navy","navy"),lty=c(rep(1,8),NA),
        pch=c(rep(NA,8),16),pt.cex=0.7,seg.len=1.2,lwd=2,cex=0.9,bty="n",ncol=2)
 
@@ -265,7 +242,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
      main="",axes=F,xlab="",ylab="")
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                                 apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"New infections per day",pos=4,offset=0.2,font=2,cex=1.15)
@@ -277,7 +254,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"New symptomatic per day",pos=4,offset=.2,font=2,cex=1.15)
@@ -289,7 +266,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"New hospitalizations per day",pos=4,offset=.2,font=2,cex=1.15)
@@ -301,7 +278,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"Deaths per day",pos=4,offset=.2,font=2,cex=1.15)
@@ -313,7 +290,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"Recoveries per day",pos=4,offset=.2,font=2,cex=1.15)
@@ -333,7 +310,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"Current asymptomatic",pos=4,offset=.2,font=2,cex=1.15)
@@ -345,7 +322,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"Current symptomatic, non-hospitalized",pos=4,offset=.2,font=2,cex=1.15)
@@ -357,7 +334,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"Current hospitalized",pos=4,offset=.2,font=2,cex=1.15)
@@ -369,7 +346,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"Cumulative dead",pos=4,offset=.2,font=2,cex=1.15)
@@ -381,7 +358,7 @@ plot(1:N_days_tot,apply(otcm,2,mean),type="l",ylim=c(0,quantile(otcm[,N_days_tot
 axis(2,las=1,tcl=-.07,mgp=c(3, 0.15, 0));axis(1,las=1,tcl=-.07,mgp=c(3, 0.1, 0));box()
 
 polygon(c(1:N_days_tot,N_days_tot:1),c(apply(otcm,2,function(x) quantile(x,0.025)),
-                             apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
+                                       apply(otcm,2,function(x) quantile(x,0.975))[N_days_tot:1]),border="grey82",col="grey90")
 for(i in smp) lines(1:N_days_tot,otcm[i,],col=mTrsp(3,120))
 lines(1:N_days_tot,apply(otcm,2,mean))
 text(0,quantile(otcm[,N_days_tot],.975)*1.01,"Cumulative recovered",pos=4,offset=.2,font=2,cex=1.15)
@@ -463,5 +440,3 @@ names(samps)
 names(datList)
 
 ########################
-
-
