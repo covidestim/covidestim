@@ -107,7 +107,7 @@ genData <- function(diagData)
     pri_p_diag_if_sym_a = 60,
     pri_p_diag_if_sym_b = 40,
     pri_p_diag_if_hos_a = 95,
-    pri_p_diag_if_hos_b = 5,
+    pri_p_diag_if_hos_b = 5
 
   ) -> moreParams
 

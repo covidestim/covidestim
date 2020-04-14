@@ -16,7 +16,7 @@ genFakeData <- function() { # Should add some params here
   #range(diagnosis_day)
 
   # Some real data 
-  raw_data <- read.csv('cases_20200325_NYC.csv')
+  raw_data <- read.csv('data/cases_20200325_NYC.csv')
   
    diagnosis_day0 <- as.numeric(mdy(as.character(raw_data$diagnosis_date)))
    report_day0    <- as.numeric(mdy(as.character(raw_data$event_create_date)))

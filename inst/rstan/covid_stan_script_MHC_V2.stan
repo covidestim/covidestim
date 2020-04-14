@@ -8,13 +8,12 @@ int<lower=0>     Max_delay;
 int<lower=0>     cases_test_day[N_conf_cases]; // test date
 int<lower=0>     cases_days_delay[N_conf_cases]; // delay to diag
 
-// NEED IF/ELSE HERE
-real              pri_log_new_inf_0_mu;
-real<lower=0>     pri_log_new_inf_0_sd;
-real              pri_log_new_inf_drift_mu;
-real<lower=0>     pri_log_new_inf_drift_sd;
-real<lower=0>     pri_sigma_deriv1_log_new_inf_sd;
-real<lower=0>     pri_deriv2_log_new_inf_sd;
+//real              pri_log_new_inf_0_mu;
+//real<lower=0>     pri_log_new_inf_0_sd;
+//real              pri_log_new_inf_drift_mu;
+//real<lower=0>     pri_log_new_inf_drift_sd;
+//real<lower=0>     pri_sigma_deriv1_log_new_inf_sd;
+//real<lower=0>     pri_deriv2_log_new_inf_sd;
 
 int<lower=1>     n_spl_par; // term for the spline
 matrix[(N_days+N_days_extra),n_spl_par] spl_basis; // term for the spline
@@ -80,15 +79,14 @@ transformed data {
 parameters {
   
 // INCIDENCE  
-if(rw_yes == 1){
-  real                  log_new_inf_0; // intercept in log space
-  real                  log_new_inf_drift; // mean day on day change
-  vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of the random walk 
-  real<lower=0>         sigma_deriv1_log_new_inf; // parameter for the SD of the rw
-} else {
-  vector[n_spl_par]       b_spline;
-}
- 
+
+//  real                  log_new_inf_0; // intercept in log space
+//  real                  log_new_inf_drift; // mean day on day change
+//  vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of the random walk 
+//  real<lower=0>         sigma_deriv1_log_new_inf; // parameter for the SD of the rw
+
+  vector[n_spl_par]     b_spline;
+
 // SYMPTOMS AND CARE 
   real<lower=0, upper=1>  p_sym_if_inf;
   real<lower=0, upper=1>  p_hos_if_sym;
@@ -120,12 +118,11 @@ transformed parameters {
 // INCIDENCE
   vector[N_days_tot]      new_inf_log;
   vector[N_days_tot]      new_inf;
- if(rw_yes == 1) {
-    vector[N_days_tot-2]   deriv2_log_new_inf;
- } else {
-    vector[n_spl_par-2]     deriv2_b_spline;
-    vector[n_spl_par-1]     deriv1_b_spline;
- }
+
+  //vector[N_days_tot-2]   deriv2_log_new_inf;
+
+  vector[n_spl_par-2]     deriv2_b_spline;
+  vector[n_spl_par-1]     deriv1_b_spline;
  
 // DELAYS probabilitily of reporting w x days delay (PDF of delay distribution)
   vector[N_days_tot]      inf_prg_delay;
@@ -181,17 +178,17 @@ transformed parameters {
   
 // INCIDENCE
 
-if(rw_yes == 1){
-   log_new_inf[1] = log_new_inf_0;
-  for(i in 1:(N_days_tot-1)) {
-    log_new_inf[i+1] =  log_new_inf[i] + log_new_inf_drift + deriv1_log_new_inf[i] ;
-  }
-  new_inf = exp(log_new_inf);
-  for(i in 1:(N_days_tot-2)) {
-    deriv2_log_new_inf[i] = log_new_inf[i+1] * 2 - log_new_inf[i] - log_new_inf[i+2];
-  }
-} else {
-    new_inf_log = spl_basis * b_spline;
+//if(rw_yes == 1){
+//   new_inf_log[1] = log_new_inf_0;
+//  for(i in 1:(N_days_tot-1)) {
+//    new_inf_log[i+1] =  log_new_inf[i] + log_new_inf_drift + deriv1_log_new_inf[i] ;
+//  }
+//  new_inf = exp(log_new_inf);
+//  for(i in 1:(N_days_tot-2)) {
+//    deriv2_log_new_inf[i] = new_inf_log[i+1] * 2 - new_inf_log[i] - new_inf_log[i+2];
+//  }
+//} else {
+  new_inf_log = spl_basis * b_spline;
   new_inf  = exp(new_inf_log);
 // second derivative
 for(i in 1:(n_spl_par-2)) {
@@ -201,7 +198,7 @@ for(i in 1:(n_spl_par-2)) {
 for(i in 1:(n_spl_par-1)) {
   deriv1_b_spline[i] = b_spline[i+1] - b_spline[i];
 }
-}
+//}
 
 // DELAYS // progression
   for(i in 1:N_days_tot) {
@@ -225,8 +222,8 @@ for(i in 1:(n_spl_par-1)) {
   
 // DELAYS // reporting // needs to be simplified 
   for(i in 1:N_days_tot) {
-    report_delay[i] = gamma_cdf(i+0.0, report_delay_shap, report_delay_rate) -
-      gamma_cdf(i-1.0, report_delay_shap, report_delay_rate);
+    report_delay[i] = gamma_cdf(i+0.0, pri_report_delay_shap, pri_report_delay_rate) -
+      gamma_cdf(i-1.0, pri_report_delay_shap, pri_report_delay_rate);
   }
   report_delay = report_delay/sum(report_delay);
   
@@ -410,29 +407,29 @@ model {
 //// PRIORS
 
 // INCIDENCE
-if(rw_yes == 1){
-  log_new_inf_0             ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd); // 
-  log_new_inf_drift         ~ normal(0, pri_log_new_inf_drift_sd); // 
+//if(rw_yes == 1){
+//  log_new_inf_0             ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd); // 
+//  log_new_inf_drift         ~ normal(0, pri_log_new_inf_drift_sd); // 
 
   // should be cauchy // sd of randomw walk
-  sigma_deriv1_log_new_inf  ~ normal(0, pri_sigma_deriv1_log_new_inf_sd);  
-  deriv1_log_new_inf        ~ normal(0, 1);
-  deriv2_log_new_inf        ~ normal(0, pri_deriv2_log_new_inf_sd);
-} else {
+ // sigma_deriv1_log_new_inf  ~ normal(0, pri_sigma_deriv1_log_new_inf_sd);  
+//  deriv1_log_new_inf        ~ normal(0, 1);
+//  deriv2_log_new_inf        ~ normal(0, pri_deriv2_log_new_inf_sd);
+//} else {
  deriv2_b_spline            ~ student_t(10, 0, 5);
  deriv1_b_spline            ~ student_t(10, 0, 1);
-}
+//}
   
 // SYMPTOMS AND CARE
   p_sym_if_inf              ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
   p_hos_if_sym              ~ beta(pri_p_hos_if_sym_a, pri_p_hos_if_sym_b);
   p_die_if_hos              ~ beta(pri_p_die_if_hos_a, pri_p_die_if_hos_b);
-  inf_prg_delay_mn          ~ gamma(pri_inf_prg_delay_shap, pri_inf_prg_delay_rate);
-  sym_prg_delay_mn          ~ gamma(pri_sym_prg_delay_shap, pri_sym_prg_delay_rate);
-  hos_prg_delay_mn          ~ gamma(pri_hos_prg_delay_shap, pri_hos_prg_delay_rate);
-  inf_res_delay_mn          ~ gamma(pri_inf_res_delay_shap, pri_inf_res_delay_rate);
-  sym_res_delay_mn          ~ gamma(pri_sym_res_delay_shap, pri_sym_res_delay_rate);
-  hos_res_delay_mn          ~ gamma(pri_hos_res_delay_shap, pri_hos_res_delay_rate);
+  inf_prg_delay_mn          ~ gamma(inf_prg_delay_shap, inf_prg_delay_rate);
+  sym_prg_delay_mn          ~ gamma(sym_prg_delay_shap, sym_prg_delay_rate);
+  hos_prg_delay_mn          ~ gamma(hos_prg_delay_shap, hos_prg_delay_rate);
+  inf_res_delay_mn          ~ gamma(inf_res_delay_shap, inf_res_delay_rate);
+  sym_res_delay_mn          ~ gamma(sym_res_delay_shap, sym_res_delay_rate);
+  hos_res_delay_mn          ~ gamma(hos_res_delay_shap, hos_res_delay_rate);
   report_delay_mn           ~ gamma(pri_report_delay_shap, pri_report_delay_rate); 
   p_diag_if_inf             ~ beta(pri_p_diag_if_inf_a, pri_p_diag_if_inf_b);
   p_diag_if_sym             ~ beta(pri_p_diag_if_sym_a, pri_p_diag_if_sym_b);
