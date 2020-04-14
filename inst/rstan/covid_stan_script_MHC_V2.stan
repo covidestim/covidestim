@@ -80,7 +80,7 @@ transformed data {
 parameters {
   
 // INCIDENCE  
-if (rw_yes == 1) {
+if(rw_yes == 1){
   real                  log_new_inf_0; // intercept in log space
   real                  log_new_inf_drift; // mean day on day change
   vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of the random walk 

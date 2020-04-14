@@ -29,15 +29,18 @@
 
   # qgamma(c(1, 39)/40, opt_par2^-2, opt_par2^-2/5.1)
 
-  # gammapar <- function(tgt) {
-  #   tgt <- as.numeric(tgt)
-  #   mn <- tgt[1]
-  #   cir <- (tgt[3] - tgt[2])
-  #   xopt <- function(b, mn, cir) {
-  #     cir2 <- qgamma(c(1, 39)/40, mn * b, b)
-  #     cir2 <- cir2[2] - cir2[1]
-  #     (cir2 - cir)^2
-  #   }
-  #   zz <- optimize(xopt, c(0.1, 1e+05), mn = mn, cir = cir)$minimum
-  #   c(zz * mn, zz)
-  # }
+  gammapar <- function(tgt) {
+     tgt <- as.numeric(tgt)
+     mn <- tgt[1]
+     cir <- (tgt[3] - tgt[2])
+     xopt <- function(b, mn, cir) {
+       cir2 <- qgamma(c(1, 39)/40, mn * b, b)
+       cir2 <- cir2[2] - cir2[1]
+       (cir2 - cir)^2
+     }
+     zz <- optimize(xopt, c(0.1, 1e+05), mn = mn, cir = cir)$minimum
+     c(zz * mn, zz)
+   }
+   
+   
+   

@@ -55,12 +55,12 @@ genData <- function(diagData)
     n_spl_par = n_spl_par,
 
     # transitions
-    pri_p_sym_if_inf_a = NULL,
-    pri_p_sym_if_inf_b = NULL,
-    pri_p_hos_if_sym_a = NULL,
-    pri_p_hos_if_sym_b = NULL,
-    pri_p_die_if_hos_a = NULL,
-    pri_p_die_if_hos_b = NULL,
+    pri_p_sym_if_inf_a = 69,
+    pri_p_sym_if_inf_b = 31,
+    pri_p_hos_if_sym_a = 31,
+    pri_p_hos_if_sym_b = 69,
+    pri_p_die_if_hos_a = 3,
+    pri_p_die_if_hos_b = 97,
 
     # poisson or negative binomial 
     nb_yes = 0,
@@ -69,34 +69,39 @@ genData <- function(diagData)
 
   list(
     # delay to progression
-    inf_prg_delay_shap = NULL,
-    inf_prg_delay_rate = NULL,
-    sym_prg_delay_shap = NULL,
-    sym_prg_delay_rate = NULL,
-    hos_prg_delay_shap = NULL,
-    hos_prg_delay_rate = NULL,
+    inf_prg_delay_shap = 5.202,
+    inf_prg_delay_rate = 0.946,
+    sym_prg_delay_shap = 51.47,
+    sym_prg_delay_rate = 4.679,
+    hos_prg_delay_shap = 91.64,
+    hos_prg_delay_rate = 10.41,
 
     # delay to recovered  
-    inf_res_delay_shap = NULL,
-    inf_res_delay_rate = NULL,
-    sym_res_delay_shap = NULL,
-    sym_res_delay_rate = NULL,
-    hos_res_delay_shap = NULL,
-    hos_res_delay_rate = NULL,
+      # inf to res not well supported in data, guess: 
+      # assume mean 10 days, CI 5, 13
+      # based on 5 days inf -> sym, 5 days sym -> res (CI 2,8)
+      # adjust later? 
+    inf_res_delay_shap = 23.83, 
+    inf_res_delay_rate = 2.383,
+    sym_res_delay_shap = 10.50,
+    sym_res_delay_rate = 2.099,
+    hos_res_delay_shap = 60.86,
+    hos_res_delay_rate = 3.567,
 
     # report delay, to be simplified later?
-    pri_report_delay_mn_shap = NULL,
-    pri_report_delay_mn_rate = NULL,
-    pri_report_delay_cv_shap = NULL,
-    pri_report_delay_cv_rate = NULL,
+    pri_report_delay_mn_shap = 7,
+    pri_report_delay_mn_rate = 0.9,
+    pri_report_delay_cv_shap = 0.5,
+    pri_report_delay_cv_rate = 0.9,
 
     # probability of diagnosis 
-    pri_p_diag_if_inf_a = NULL,
-    pri_p_diag_if_inf_b = NULL,
-    pri_p_diag_if_sym_a = NULL,
-    pri_p_diag_if_sym_b = NULL,
-    pri_p_diag_if_hos_a = NULL,
-    pri_p_diag_if_hos_b = NULL,
+      # assumed
+    pri_p_diag_if_inf_a = 1,
+    pri_p_diag_if_inf_b = 99,
+    pri_p_diag_if_sym_a = 60,
+    pri_p_diag_if_sym_b = 40,
+    pri_p_diag_if_hos_a = 95,
+    pri_p_diag_if_hos_b = 5,
   ) -> moreParams
 
   datList <- purrr::splice(datList, moreParams)
