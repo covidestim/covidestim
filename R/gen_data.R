@@ -75,8 +75,8 @@ genData <- function(diagData)
         sum( (prd - c(2.2, 5.1, 11.5))^2 * c(1, 5, 1) )
       },
       method="BFGS"
-    )
-  )$par -> opt_par1
+    )$par
+  ) -> opt_par1
 
   # qgamma(c(1, 20, 39)/40, opt_par1[1]^-2, opt_par1[1]^-2/opt_par1[2])
 
