@@ -7,7 +7,9 @@ runModel <- function(data = defaultData(), chains=3, iter=500) {
 
 # fit_stan <-
   rstan::stan(
-    file    = system.file("inst/rstan/covid_stan_script_MHC_V2.stan", mustWork=TRUE),
+    file    = system.file("rstan/covid_stan_script_MHC_V2.stan",
+                          package="covidcast",
+                          mustWork=TRUE),
     control = list(adapt_delta = 0.92, max_treedepth = 12),
     data    = defaultData(),
     seed    = 1234,

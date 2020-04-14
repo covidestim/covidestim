@@ -2,26 +2,31 @@ set.seed(123)
 
 genData <- function(diagData)
 {
-  n_spl_par <- 10 # Number of parameters used to specify spline
-  des_mat <- bs(1:(N_days+days_extra),
-                df=n_spl_par,
-                degree=3,
-                intercept=T)
+  N_days <- max(diagData$diagnosis_day) + diagData$N_days_before
+  N_days_extra <- 1
+
+  # Number of parameters used to specify spline
+  n_spl_par <- 10
+
+  splines::bs(
+    1:(N_days + N_days_extra),
+    df        = n_spl_par,
+    degree    = 3,
+    intercept = T
+  ) -> des_mat
 
   # this produces a cubic b-spline with n_spl_par basis functions
   spl_basis <- as.matrix(as.data.frame(des_mat))
 
-
-  datList <- list()
-
+  # The first set of components of 'datList'
   list(
     N_conf_cases = length(diagData$diagnosis_day),
 
     #n days to model before first case
-    N_days = max(diagData$diagnosis_day) + diagData$N_days_before,
+    N_days = N_days,
 
     # model days after (for things like death, hospitalizations)
-    N_days_extra = 1,
+    N_days_extra = N_days_extra,
 
     # maximum value for delay distribution
     Max_delay = max(diagData$days_delay),
@@ -67,6 +72,7 @@ genData <- function(diagData)
     rw_yes = 0
   ) -> datList
 
+  # The second set of components of 'datList'
   list(
     # delay to progression
     inf_prg_delay_shap = 5.202,
@@ -102,6 +108,7 @@ genData <- function(diagData)
     pri_p_diag_if_sym_b = 40,
     pri_p_diag_if_hos_a = 95,
     pri_p_diag_if_hos_b = 5,
+
   ) -> moreParams
 
   datList <- purrr::splice(datList, moreParams)
