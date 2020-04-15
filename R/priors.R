@@ -1,4 +1,139 @@
-set.seed(123)
+att <- assertthat::assert_that
+
+splice_priors <- function(defaults, args)
+  structure(
+    rlang::dots_list(
+      !!! defaults,
+      !!! args,
+      .homonyms     = 'last',
+      .ignore_empty = 'trailing'),
+    class='priors')
+
+#' Priors for transitions
+#'
+#' Slightly longer description
+#'
+#' @param ... Keys of the list!
+#'
+#' @return An S3 object of class 'priors'
+#' @export
+priors_transitions <- function(...) {
+  args <- list(...)
+
+  list(
+    pri_p_sym_if_inf_a = 69,
+    pri_p_sym_if_inf_b = 31,
+    pri_p_hos_if_sym_a = 31,
+    pri_p_hos_if_sym_b = 69,
+    pri_p_die_if_hos_a = 3,
+    pri_p_die_if_hos_b = 97
+  ) -> defaults
+
+  att(all(args %in% defaults))
+
+  splice_priors(defaults, args)
+}
+
+#' Priors on delay to progression
+#'
+#' Slightly longer description
+#'
+#' @param ... Keys of the list!
+#'
+#' @return An S3 object of class 'priors'
+#' @export
+priors_progression <- function(...) {
+  args <- list(...)
+
+  list(
+    inf_prg_delay_shap = 5.202,
+    inf_prg_delay_rate = 0.946,
+    sym_prg_delay_shap = 51.47,
+    sym_prg_delay_rate = 4.679,
+    hos_prg_delay_shap = 91.64,
+    hos_prg_delay_rate = 10.41
+  ) -> defaults
+
+  att(all(args %in% defaults))
+
+  splice_priors(defaults, args)
+}
+
+# inf to res not well supported in data, guess:           
+# assume mean 10 days, CI 5, 13                           
+# based on 5 days inf -> sym, 5 days sym -> res (CI 2,8)  
+# adjust later?                                           
+#
+
+#' Priors on delay to recovered                                      
+#'
+#' Slightly longer description
+#'
+#' @param ... Keys of the list!
+#'
+#' @return An S3 object of class 'priors'
+#' @export
+priors_recovery <- function(...) {
+  args <- list(...)
+
+  list(
+    inf_res_delay_shap = 23.83,                               
+    inf_res_delay_rate = 2.383,                               
+    sym_res_delay_shap = 10.50,                               
+    sym_res_delay_rate = 2.099,                               
+    hos_res_delay_shap = 60.86,                               
+    hos_res_delay_rate = 3.567                                
+  ) -> defaults
+
+  att(all(args %in% defaults))
+
+  splice_priors(defaults, args)
+}
+
+#' Priors on reporting delay: assumed                                    
+#'
+#' Slightly longer description
+#'
+#' @param ... Keys of the list!
+#'
+#' @return An S3 object of class 'priors'
+#' @export
+priors_reporting_delay <- function(...) {
+  args <- list(...)
+
+  list(
+    pri_report_delay_shap = 7,                                 
+    pri_report_delay_rate = 0.9
+  ) -> defaults
+
+  att(all(args %in% defaults))
+
+  splice_priors(defaults, args)
+}
+
+#' Priors on probability of diagnosis (assumed)
+#'
+#' Slightly longer description
+#'
+#' @param ... Keys of the list!
+#'
+#' @return An S3 object of class 'priors'
+priors_diagnosis <- function(...) {
+  args <- list(...)
+
+  list(
+    pri_p_diag_if_inf_a = 1,                                   
+    pri_p_diag_if_inf_b = 99,                                  
+    pri_p_diag_if_sym_a = 60,                                  
+    pri_p_diag_if_sym_b = 40,                                  
+    pri_p_diag_if_hos_a = 95,                                  
+    pri_p_diag_if_hos_b = 5                                    
+  ) -> defaults
+
+  att(all(args %in% defaults))
+
+  splice_priors(defaults, args)
+}
 
 #' @export
 #' High level description of the function
@@ -35,22 +170,24 @@ genData <- function(diagData)
   spl_basis <- as.matrix(as.data.frame(des_mat))
 
   # The first set of components of 'datList'
-  list(
-    N_conf_cases = length(diagData$diagnosis_day),
+  rlang::dots_list(
+    .homonyms = "error", # Ensure that no keys are entered twice
 
-    #n days to model before first case
-    N_days = N_days,
-
-    # model days after (for things like death, hospitalizations)
-    N_days_extra = N_days_extra,
-
-    # maximum value for delay distribution
-    Max_delay = max(diagData$days_delay),
-
-    cases_test_day = diagData$diagnosis_day + diagData$N_days_before,
-
-    # NEED A PRIOR ON THIS
-    cases_days_delay = diagData$days_delay,
+    N_conf_cases = length(diagData$diagnosis_day),                     # !!
+                                                                       # !!
+    #n days to model before first case                                 # !!
+    N_days = N_days,                                                   # !!
+                                                                       # !!
+    # model days after (for things like death, hospitalizations)       # !!
+    N_days_extra = N_days_extra,                                       # !!
+                                                                       # !!
+    # maximum value for delay distribution                             # !!
+    Max_delay = max(diagData$days_delay),                              # !!
+                                                                       # !!
+    cases_test_day = diagData$diagnosis_day + diagData$N_days_before,  # !!
+                                                                       # !!
+    # NEED A PRIOR ON THIS                                             # !!
+    cases_days_delay = diagData$days_delay,                            # !!
 
     ## Priors Parameters of random walk in log space <- new infections per day
     # mean of log daily infections on day 1
@@ -72,62 +209,59 @@ genData <- function(diagData)
     # gives rw momentum
     # pri_deriv2_log_new_inf_sd = 0.1,
 
-    spl_basis = spl_basis,
-    n_spl_par = n_spl_par,
+    spl_basis = spl_basis,                  # !!
+    n_spl_par = n_spl_par,                  # !!
+                                            # !!
+    # transitions                               
+    # pri_p_sym_if_inf_a = 69,                    
+    # pri_p_sym_if_inf_b = 31,                    
+    # pri_p_hos_if_sym_a = 31,                    
+    # pri_p_hos_if_sym_b = 69,                    
+    # pri_p_die_if_hos_a = 3,                     
+    # pri_p_die_if_hos_b = 97,                    
+    !!! priors_transitions(),
+                                            # !!
+    # poisson or negative binomial          # !!
+    nb_yes = 0,                             # !!
+    rw_yes = 0,                             # !!
 
-    # transitions
-    pri_p_sym_if_inf_a = 69,
-    pri_p_sym_if_inf_b = 31,
-    pri_p_hos_if_sym_a = 31,
-    pri_p_hos_if_sym_b = 69,
-    pri_p_die_if_hos_a = 3,
-    pri_p_die_if_hos_b = 97,
-
-    # poisson or negative binomial 
-    nb_yes = 0,
-    rw_yes = 0
-  ) -> datList
-
-  # The second set of components of 'datList'
-  list(
     # delay to progression
-    inf_prg_delay_shap = 5.202,
-    inf_prg_delay_rate = 0.946,
-    sym_prg_delay_shap = 51.47,
-    sym_prg_delay_rate = 4.679,
-    hos_prg_delay_shap = 91.64,
-    hos_prg_delay_rate = 10.41,
-
-    # delay to recovered  
-      # inf to res not well supported in data, guess: 
-      # assume mean 10 days, CI 5, 13
-      # based on 5 days inf -> sym, 5 days sym -> res (CI 2,8)
-      # adjust later? 
-    inf_res_delay_shap = 23.83, 
-    inf_res_delay_rate = 2.383,
-    sym_res_delay_shap = 10.50,
-    sym_res_delay_rate = 2.099,
-    hos_res_delay_shap = 60.86,
-    hos_res_delay_rate = 3.567,
-
-    # report delay: assumed
-    pri_report_delay_shap = 7,
-    pri_report_delay_rate = 0.9,
-
-    # probability of diagnosis 
-      # assumed
-    pri_p_diag_if_inf_a = 1,
-    pri_p_diag_if_inf_b = 99,
-    pri_p_diag_if_sym_a = 60,
-    pri_p_diag_if_sym_b = 40,
-    pri_p_diag_if_hos_a = 95,
-    pri_p_diag_if_hos_b = 5
-
-  ) -> moreParams
-
-  datList <- purrr::splice(datList, moreParams)
-
-  datList
+    # inf_prg_delay_shap = 5.202,                                
+    # inf_prg_delay_rate = 0.946,                                
+    # sym_prg_delay_shap = 51.47,                                
+    # sym_prg_delay_rate = 4.679,                                
+    # hos_prg_delay_shap = 91.64,                                
+    # hos_prg_delay_rate = 10.41,                                
+    !!! priors_progression(),
+                                                                   
+    # delay to recovered                                           
+    # inf to res not well supported in data, guess:                
+    # assume mean 10 days, CI 5, 13                                
+    # based on 5 days inf -> sym, 5 days sym -> res (CI 2,8)       
+    # adjust later?                                                
+    # inf_res_delay_shap = 23.83,                                    
+    # inf_res_delay_rate = 2.383,                                    
+    # sym_res_delay_shap = 10.50,                                    
+    # sym_res_delay_rate = 2.099,                                    
+    # hos_res_delay_shap = 60.86,                                    
+    # hos_res_delay_rate = 3.567,                                    
+    !!! priors_recovery(),
+                                                               
+    # report delay: assumed                                    
+    # pri_report_delay_shap = 7,                                 
+    # pri_report_delay_rate = 0.9,                               
+    !!! priors_reporting_delay(),
+                                                               
+    # probability of diagnosis                                 
+    # assumed                                                  
+    # pri_p_diag_if_inf_a = 1,                                   
+    # pri_p_diag_if_inf_b = 99,                                  
+    # pri_p_diag_if_sym_a = 60,                                  
+    # pri_p_diag_if_sym_b = 40,                                  
+    # pri_p_diag_if_hos_a = 95,                                  
+    # pri_p_diag_if_hos_b = 5,
+    !!! priors_diagnosis()
+  )
 }
 
 #' High level description of the function
@@ -146,3 +280,4 @@ genData <- function(diagData)
 #' print(mtcars)
 #' @export
 defaultData <- function() genData(genFakeData())
+
