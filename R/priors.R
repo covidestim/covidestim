@@ -1,10 +1,9 @@
-# A list with arbitrary values, of class 'priors'
-priors <- function(...) structure(list(...), class='priors')
-
-# BUG: the following description needs information about what the defaults
-# were sourced from
+source('R/common.R')
 
 #' Priors for transitions
+#'
+#' BUG: the following description needs information about what the defaults
+#' were sourced from
 #'
 #' This function returns a keyed list of priors related to progression to
 #' various health states. Called with no arguments, the default values are
@@ -24,7 +23,7 @@ priors <- function(...) structure(list(...), class='priors')
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultData() + priors_progression(inf_prg_delay_shap = 3.5)
+#' myData <- defaultConfig + priors_progression(inf_prg_delay_shap = 3.5)
 #' @export
 priors_transitions <- function(...) {
   args <- list(...)
@@ -43,10 +42,13 @@ priors_transitions <- function(...) {
   splice_class(defaults, args, 'priors')
 }
 
-# BUG: the following description needs information about what the defaults
-# were sourced from
+# A list with arbitrary values, of class 'priors'
+priors <- function(...) structure(list(...), class='priors')
 
 #' Priors on delay to progression
+#'
+#' BUG: the following description needs information about what the defaults
+#' were sourced from
 #'
 #' This function returns a keyed list of priors related to progression to
 #' the infectious state. Called with no arguments, the default values are
@@ -66,7 +68,7 @@ priors_transitions <- function(...) {
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultData() + priors_progression(inf_prg_delay_shap = 3.5)
+#' myData <- defaultConfig + priors_progression(inf_prg_delay_shap = 3.5)
 #' @export
 priors_progression <- function(...) {
   args <- list(...)
@@ -85,13 +87,13 @@ priors_progression <- function(...) {
   splice_class(defaults, args, 'priors')
 }
 
-# inf to res not well supported in data, guess:
-# assume mean 10 days, CI 5, 13
-# based on 5 days inf -> sym, 5 days sym -> res (CI 2,8)
-# adjust later?
-# BUG: ^ This needs to be integrated into the documentation!
-
 #' Priors on delay to recovered
+#'
+#' inf to res not well supported in data, guess:
+#' assume mean 10 days, CI 5, 13
+#' based on 5 days inf -> sym, 5 days sym -> res (CI 2,8)
+#' adjust later?
+#' BUG: ^ This needs to be integrated into the documentation!
 #'
 #' This function returns a keyed list of priors related to recovery from
 #' the infectious state. Called with no arguments, the default values are
@@ -111,7 +113,7 @@ priors_progression <- function(...) {
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultData() + priors_recovery(inf_res_delay_shap = 20.12)
+#' myData <- defaultConfig + priors_recovery(inf_res_delay_shap = 20.12)
 #' @export
 priors_recovery <- function(...) {
   args <- list(...)
@@ -147,7 +149,7 @@ priors_recovery <- function(...) {
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultData() + priors_reporting_delay(pri_report_delay_shap = 6)
+#' myData <- defaultConfig + priors_reporting_delay(pri_report_delay_shap = 6)
 #' @export
 priors_reporting_delay <- function(...) {
   args <- list(...)
@@ -183,7 +185,7 @@ priors_reporting_delay <- function(...) {
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultData() + priors_diagnosis(pri_p_diag_if_inf_a = 1.2)
+#' myData <- defaultConfig + priors_diagnosis(pri_p_diag_if_inf_a = 1.2)
 #' @export
 priors_diagnosis <- function(...) {
   args <- list(...)

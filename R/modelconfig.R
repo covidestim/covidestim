@@ -1,5 +1,10 @@
-# Example model configuration object. It can be modified through overloading
-# the addition operator
+source('R/priors.R')
+source('R/common.R')
+source('R/gen_fakedata.R')
+
+#' Model configuration object. It can be modified through overloading
+#' the addition operator
+#' @export
 modelconfig <- function(...) {
   config <- list(...)
 
@@ -7,17 +12,23 @@ modelconfig <- function(...) {
   structure(config, class='modelconfig')
 }
 
-
 modelconfig_add <- function(rightside, leftside) UseMethod('modelconfig_add') 
 
-# Specialization for 'priors' classes. Splices in all the keys from a 'priors'
-# obj into a 'modelconfig' (leftside) object
+#' Specialization for 'priors' classes.
+#'
+#' Splices in all the keys from a 'priors' obj into a 'modelconfig' (leftside)
+#' object.
+#'
+#' @export
 modelconfig_add.priors <- function(rightside, leftside)
   rlang::dots_list(!!!leftside, !!!rightside, .homonyms='last')
           
-# An overloaded addition operator, dispatched on the type of the lhs argument.
-# Flips the order of the arguments and calls 'modelconfig_add' to enable type
-# matching on the rhs operand.
+#' An overloaded addition operator, dispatched on the type of the lhs argument.
+#'
+#' Flips the order of the arguments and calls 'modelconfig_add' to enable type
+#' matching on the rhs operand.
+#'
+#' @export
 "+.modelconfig" <- function(a, b) {
   # Dispatching on the type of 'b', which should be 'priors' for now.
   modelconfig_add(b, a)
@@ -128,5 +139,5 @@ genData <- function(diagData)
 #' @examples
 #' print(mtcars)
 #' @export
-defaultData <- genData(genFakeData())
+defaultConfig <- genData(genFakeData())
 
