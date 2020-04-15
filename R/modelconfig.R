@@ -1,6 +1,5 @@
 source('R/priors.R')
 source('R/common.R')
-source('R/gen_fakedata.R')
 
 #' Model configuration object. It can be modified through overloading
 #' the addition operator
