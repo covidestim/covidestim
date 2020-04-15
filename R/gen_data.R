@@ -1,5 +1,6 @@
 set.seed(123)
 
+#' @export
 #' High level description of the function
 #'
 #' More extended description of the function
