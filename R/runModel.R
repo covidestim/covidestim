@@ -1,3 +1,18 @@
+#' @export
+#' High level description of the function
+#'
+#' More extended description of the function
+#'
+#' @param param1 Description
+#'
+#' @param param2 Description
+#'
+#' @param param3 Description
+#'
+#' @return The return value
+#'
+#' @examples
+#' print(mtcars)
 runModel <- function(data = defaultData(), chains=3, iter=500) {
   ###### ###### SETTINGS ###### ###### ######
   rstan::rstan_options(auto_write = TRUE) # save the compiled executable to '.'
