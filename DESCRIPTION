@@ -18,12 +18,12 @@ LazyData: true
 Imports:
   Hmisc,
   splines,
-  rstan,
+  rstan (>= 2.19.3),
   lubridate,
   RColorBrewer,
   parallel,
   purrr,
-  Rcpp
+  Rcpp (>= 1.0.4.6)
 Suggests: 
   testthat,
   grDevice
