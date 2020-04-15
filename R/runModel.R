@@ -5,11 +5,11 @@ runModel <- function(data = defaultData(), chains=3, iter=500) {
 
   ###### ###### RUN MODEL ###### ###### ######
 
-# fit_stan <-
+#fit_stan <-
   rstan::stan(
     file    = system.file("rstan/covid_stan_script_MHC_V2.stan",
-                          package="covidcast",
-                          mustWork=TRUE),
+                         package="covidcast",
+                         mustWork=TRUE),
     control = list(adapt_delta = 0.92, max_treedepth = 12),
     data    = defaultData(),
     seed    = 1234,

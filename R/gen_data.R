@@ -38,23 +38,23 @@ genData <- function(diagData)
 
     ## Priors Parameters of random walk in log space <- new infections per day
     # mean of log daily infections on day 1
-    pri_log_new_inf_0_mu = -2,
-
+    # pri_log_new_inf_0_mu = -2,
+ 
     # sd of log daily infections on day 1
-    pri_log_new_inf_0_sd = 2,
+    # pri_log_new_inf_0_sd = 2,
 
     # drift gives some direction to random walk. stronger prior here.
     # mean of daily change in log infections
-    pri_log_new_inf_drift_mu = 0,
+    #pri_log_new_inf_drift_mu = 0,
     # hyper prior on random walk
     # sd of daily change in log infections
-    pri_log_new_inf_drift_sd = 1,
+    # pri_log_new_inf_drift_sd = 1,
     # mean of daily change in log infections
-    pri_sigma_deriv1_log_new_inf_sd = 0.5,
+    # pri_sigma_deriv1_log_new_inf_sd = 0.5,
 
     # priors on the second derivative; penalizes sharp changes in random walk;
     # gives rw momentum
-    pri_deriv2_log_new_inf_sd = 0.1,
+    # pri_deriv2_log_new_inf_sd = 0.1,
 
     spl_basis = spl_basis,
     n_spl_par = n_spl_par,
@@ -94,11 +94,9 @@ genData <- function(diagData)
     hos_res_delay_shap = 60.86,
     hos_res_delay_rate = 3.567,
 
-    # report delay, to be simplified later?
-    pri_report_delay_mn_shap = 7,
-    pri_report_delay_mn_rate = 0.9,
-    pri_report_delay_cv_shap = 0.5,
-    pri_report_delay_cv_rate = 0.9,
+    # report delay: assumed
+    pri_report_delay_shap = 7,
+    pri_report_delay_rate = 0.9,
 
     # probability of diagnosis 
       # assumed

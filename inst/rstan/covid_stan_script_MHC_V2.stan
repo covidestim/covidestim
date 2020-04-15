@@ -1,4 +1,5 @@
 ///////////////////////////////////////////////////////////
+
 data {
 ///~~~~~~~ Define ~~~~~~~
 int<lower=0>     N_conf_cases;
@@ -109,7 +110,7 @@ parameters {
   real<lower=0>           report_delay_mn;
   
 // LIKELIHOOD
-  real<lower=0>           inv_sqrt_phi;
+//  real<lower=0>           inv_sqrt_phi;
 }
 
 ///////////////////////////////////////////////////////////
@@ -170,11 +171,11 @@ transformed parameters {
   vector[N_days_tot]  diag_hos;
   vector[N_days_tot]  diag_all;
   
-  real                phi;
+//  real                phi;
   matrix[N_days,Max_delay+1]  rep_tri_conf_cases_mu;
   
 ///~~~~~~~ Assign values ~~~~~~~
-  phi = pow(inv_sqrt_phi,-2);
+//  phi = pow(inv_sqrt_phi,-2);
   
 // INCIDENCE
 
@@ -419,7 +420,6 @@ model {
  deriv2_b_spline            ~ student_t(10, 0, 5);
  deriv1_b_spline            ~ student_t(10, 0, 1);
 //}
-  
 // SYMPTOMS AND CARE
   p_sym_if_inf              ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
   p_hos_if_sym              ~ beta(pri_p_hos_if_sym_a, pri_p_hos_if_sym_b);
@@ -434,17 +434,18 @@ model {
   p_diag_if_inf             ~ beta(pri_p_diag_if_inf_a, pri_p_diag_if_inf_b);
   p_diag_if_sym             ~ beta(pri_p_diag_if_sym_a, pri_p_diag_if_sym_b);
   p_diag_if_hos             ~ beta(pri_p_diag_if_hos_a, pri_p_diag_if_hos_b);
-  inv_sqrt_phi              ~ normal(0, 1); 
+  //inv_sqrt_phi              ~ normal(0, 1); 
+  
 ////   LIKELIHOOD
 // REPORTED CASES
   for(i in 1:N_days) {
     for(j in 1:(Max_delay+1)) {
       if((i+j) < (N_days+2)){
-        if(nb_yes==1){
-          rep_tri_conf_cases[i,j] ~ neg_binomial_2(rep_tri_conf_cases_mu[i,j], phi);
-        } else {
+       // if(nb_yes==1){
+        //  rep_tri_conf_cases[i,j] ~ neg_binomial_2(rep_tri_conf_cases_mu[i,j], phi);
+        //} else {
           rep_tri_conf_cases[i,j] ~ poisson(rep_tri_conf_cases_mu[i,j]);
-        }
+        //}
       }
     }
   }

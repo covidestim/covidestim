@@ -23,6 +23,7 @@ Imports:
   RColorBrewer,
   parallel,
   purrr,
+  Rcpp
 Suggests: 
   testthat,
   grDevice
