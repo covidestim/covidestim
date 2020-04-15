@@ -1,4 +1,3 @@
-#' @export
 #' High level description of the function
 #'
 #' More extended description of the function
@@ -13,6 +12,7 @@
 #'
 #' @examples
 #' print(mtcars)
+#' @export
 genFakeData <- function() { # Should add some params here
   zz <- round(rgamma(1000, 5, 0.3))
   diagnosis_day0 <- max(zz) - zz + 1

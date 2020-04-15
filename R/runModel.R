@@ -1,4 +1,3 @@
-#' @export
 #' High level description of the function
 #'
 #' More extended description of the function
@@ -13,6 +12,7 @@
 #'
 #' @examples
 #' print(mtcars)
+#' @export
 runModel <- function(data = defaultData(), chains=3, iter=500) {
   ###### ###### SETTINGS ###### ###### ######
   rstan::rstan_options(auto_write = TRUE) # save the compiled executable to '.'

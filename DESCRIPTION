@@ -8,7 +8,7 @@ Authors@R:
       person(given = "Joshua", family = "Havumaki",
              role = c("aut"),            
              email = "joshua.havumaki@yale.edu"), 
-      person(given = "First", family = "Last",  
+      person(given = "Marcus", family = "Russi",  
              role = c("aut"),            
              email = "marcus.russi@yale.edu")) 
 Description: What the package does (one paragraph).
@@ -27,3 +27,4 @@ Imports:
 Suggests: 
   testthat,
   grDevice
+RoxygenNote: 7.1.0

@@ -1,6 +1,5 @@
 set.seed(123)
 
-#' @export
 #' High level description of the function
 #'
 #' More extended description of the function
@@ -15,6 +14,7 @@ set.seed(123)
 #'
 #' @examples
 #' print(mtcars)
+#' @export
 genData <- function(diagData)
 {
   N_days <- max(diagData$diagnosis_day) + diagData$N_days_before
@@ -129,7 +129,6 @@ genData <- function(diagData)
   datList
 }
 
-#' @export
 #' High level description of the function
 #'
 #' More extended description of the function
@@ -144,4 +143,5 @@ genData <- function(diagData)
 #'
 #' @examples
 #' print(mtcars)
+#' @export
 defaultData <- function() genData(genFakeData())
