@@ -20,15 +20,24 @@ covidcast <- function(config=defaultConfig(), chains=3, iter=500) {
   rstan::rstan_options(auto_write = TRUE) 
   options(mc.cores = parallel::detectCores())
 
-  rstan::stan(
+  result <- rstan::stan(
     file    = system.file("rstan/covid_stan_script_MHC_V2.stan",
                           package="covidcast",
                           mustWork=TRUE),
     control = list(adapt_delta = 0.92, max_treedepth = 12),
-    data    = defaultConfig,
+    data    = config,
     seed    = 1234,
     chains  = chains,
     iter    = iter,
     warmup  = round(0.8*iter) # Warmup runs should be 80% of iter runs
-  ) %>% rstan::extract
+  )
+
+  fitted <- rstan::extract(result)
+
+  structure(
+    list(result=result,
+         fitted=fitted,
+         config=config),
+    class='covidcast'
+  )
 }
