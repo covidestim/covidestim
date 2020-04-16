@@ -38,10 +38,10 @@ genData <- function(diagData)
 
     ## Priors Parameters of random walk in log space <- new infections per day
     # mean of log daily infections on day 1
-    # pri_log_new_inf_0_mu = -2,
+     pri_log_new_inf_0_mu = 0,
  
     # sd of log daily infections on day 1
-    # pri_log_new_inf_0_sd = 2,
+     pri_log_new_inf_0_sd = 10,
 
     # drift gives some direction to random walk. stronger prior here.
     # mean of daily change in log infections
@@ -50,22 +50,22 @@ genData <- function(diagData)
     # sd of daily change in log infections
     # pri_log_new_inf_drift_sd = 1,
     # mean of daily change in log infections
-    # pri_sigma_deriv1_log_new_inf_sd = 0.5,
+     pri_sigma_deriv1_log_new_inf_sd = 1,
 
     # priors on the second derivative; penalizes sharp changes in random walk;
     # gives rw momentum
-    # pri_deriv2_log_new_inf_sd = 0.1,
+     pri_deriv2_log_new_inf_sd = 0.05,
 
-    spl_basis = spl_basis,
-    n_spl_par = n_spl_par,
+    #spl_basis = spl_basis,
+    #n_spl_par = n_spl_par,
 
-    # transitions
-    pri_p_sym_if_inf_a = 69,
-    pri_p_sym_if_inf_b = 31,
-    pri_p_hos_if_sym_a = 31,
-    pri_p_hos_if_sym_b = 69,
-    pri_p_die_if_hos_a = 3,
-    pri_p_die_if_hos_b = 97,
+    # transitions // weaker
+    pri_p_sym_if_inf_a = 690,
+    pri_p_sym_if_inf_b = 310,
+    pri_p_hos_if_sym_a = 310,
+    pri_p_hos_if_sym_b = 690,
+    pri_p_die_if_hos_a = 30,
+    pri_p_die_if_hos_b = 970,
 
     # poisson or negative binomial 
     nb_yes = 0,
@@ -99,13 +99,13 @@ genData <- function(diagData)
     pri_report_delay_rate = 0.9,
 
     # probability of diagnosis 
-      # assumed
-    pri_p_diag_if_inf_a = 1,
-    pri_p_diag_if_inf_b = 99,
-    pri_p_diag_if_sym_a = 60,
-    pri_p_diag_if_sym_b = 40,
-    pri_p_diag_if_hos_a = 95,
-    pri_p_diag_if_hos_b = 5
+      # assumed //weaker
+    pri_p_diag_if_inf_a = .1,
+    pri_p_diag_if_inf_b = 9.9,
+    pri_p_diag_if_sym_a = 7.0,
+    pri_p_diag_if_sym_b = 3.0,
+    pri_p_diag_if_hos_a = 9.75,
+    pri_p_diag_if_hos_b = 0.25
 
   ) -> moreParams
 

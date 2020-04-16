@@ -1,4 +1,5 @@
 genFakeData <- function() { # Should add some params here
+  set.seed(123)
   zz <- round(rgamma(1000, 5, 0.3))
   diagnosis_day0 <- max(zz) - zz + 1
   #hist(diagnosis_day0)
