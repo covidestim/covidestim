@@ -2,6 +2,7 @@
 
 S3method("+",modelconfig)
 S3method(modelconfig_add,priors)
+export(covidcast)
 export(defaultConfig)
 export(genData)
 export(genFakeData)
@@ -11,4 +12,4 @@ export(priors_progression)
 export(priors_recovery)
 export(priors_reporting_delay)
 export(priors_transitions)
-export(runModel)
+importFrom(magrittr,"%>%")

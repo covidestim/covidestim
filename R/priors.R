@@ -1,5 +1,3 @@
-source('R/common.R')
-
 #' Priors for transitions
 #'
 #' BUG: the following description needs information about what the defaults

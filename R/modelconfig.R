@@ -1,6 +1,3 @@
-source('R/priors.R')
-source('R/common.R')
-
 #' Model configuration object. It can be modified through overloading
 #' the addition operator
 #' @export
@@ -138,5 +135,4 @@ genData <- function(diagData)
 #' @examples
 #' print(mtcars)
 #' @export
-defaultConfig <- genData(genFakeData())
-
+defaultConfig <- function() genData(genFakeData())
