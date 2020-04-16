@@ -1,11 +1,25 @@
+#' High level description of the function
+#'
+#' More extended description of the function
+#'
+#' @param param1 Description
+#'
+#' @param param2 Description
+#'
+#' @param param3 Description
+#'
+#' @return The return value
+#'
+#' @examples
+#' print(mtcars)
+#' @export
 genFakeData <- function() { # Should add some params here
-  set.seed(123)
-  zz <- round(rgamma(1000, 5, 0.3))
+  zz <- round(stats::rgamma(1000, 5, 0.3))
   diagnosis_day0 <- max(zz) - zz + 1
   #hist(diagnosis_day0)
 
   set.seed(124)
-  zz <- round(rgamma(1000, 3, 0.9))
+  zz <- round(stats::rgamma(1000, 3, 0.9))
   days_delay0 <- zz
 
   rmv <- (diagnosis_day0 + days_delay0) > max(diagnosis_day0)
