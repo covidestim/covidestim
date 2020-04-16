@@ -21,8 +21,8 @@ covidcast <- function(config=defaultConfig(), chains=3, iter=500) {
   options(mc.cores = parallel::detectCores())
 
   result <- rstan::stan(
-    file    = system.file("rstan/covid_stan_script_MHC_V2.stan",
-                          package="covidcast",
+    file    = system.file("rstan/stan_program_default.stan",
+                          package=pkgload::pkg_name(),
                           mustWork=TRUE),
     control = list(adapt_delta = 0.92, max_treedepth = 12),
     data    = config,
