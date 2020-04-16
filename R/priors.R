@@ -21,7 +21,7 @@
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultConfig + priors_progression(inf_prg_delay_shap = 3.5)
+#' myData <- defaultConfig() + priors_progression(inf_prg_delay_shap = 3.5)
 #' @export
 priors_transitions <- function(...) {
   args <- list(...)
@@ -66,7 +66,7 @@ priors <- function(...) structure(list(...), class='priors')
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultConfig + priors_progression(inf_prg_delay_shap = 3.5)
+#' myData <- defaultConfig() + priors_progression(inf_prg_delay_shap = 3.5)
 #' @export
 priors_progression <- function(...) {
   args <- list(...)
@@ -111,7 +111,7 @@ priors_progression <- function(...) {
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultConfig + priors_recovery(inf_res_delay_shap = 20.12)
+#' myData <- defaultConfig() + priors_recovery(inf_res_delay_shap = 20.12)
 #' @export
 priors_recovery <- function(...) {
   args <- list(...)
@@ -147,7 +147,7 @@ priors_recovery <- function(...) {
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultConfig + priors_reporting_delay(pri_report_delay_shap = 6)
+#' myData <- defaultConfig() + priors_reporting_delay(pri_report_delay_shap = 6)
 #' @export
 priors_reporting_delay <- function(...) {
   args <- list(...)
@@ -183,7 +183,7 @@ priors_reporting_delay <- function(...) {
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' myData <- defaultConfig + priors_diagnosis(pri_p_diag_if_inf_a = 1.2)
+#' myData <- defaultConfig() + priors_diagnosis(pri_p_diag_if_inf_a = 1.2)
 #' @export
 priors_diagnosis <- function(...) {
   args <- list(...)
