@@ -20,3 +20,6 @@ reference:
 - contents:
   - starts_with("priors")
 
+- title: Visualization
+- contents:
+  - starts_with("viz")
