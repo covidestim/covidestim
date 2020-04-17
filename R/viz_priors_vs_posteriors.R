@@ -1,4 +1,10 @@
-priors_vs_posteriors <- function(samps, datList) {
+#' Priors vs. Posteriors figure
+#'
+#' @inheritParams viz_comparison_to_data_1
+#'
+#' @return Side effects of plotting
+#' @export
+viz_priors_vs_posteriors <- function(samps, datList, ...) {
   ############ Priors vs. Posteriors ###########
 
   par(mfrow = c(3, 4),
@@ -34,6 +40,7 @@ priors_vs_posteriors <- function(samps, datList) {
   mu = datList[["pri_log_new_inf_drift_mu"]]
   sd = datList[["pri_log_new_inf_drift_sd"]]
   mod = samps[["log_new_inf_drift"]]
+  print(mod)
   hist(mod,
        col = "goldenrod",
        border = F,

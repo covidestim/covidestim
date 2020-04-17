@@ -15,3 +15,6 @@ reference:
   desc: These functions allow customization of model priors
 - contents:
   - starts_with("priors")
+- title: Visualization
+- contents:
+  - starts_with("viz")

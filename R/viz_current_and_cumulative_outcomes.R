@@ -1,4 +1,14 @@
-current_and_cumulative_outcomes <- function(samps, datList) {
+#' Current and cumulative outcomes figure
+#'
+#' @inheritParams viz_comparison_to_data_1
+#'
+#' @return Side effects of plotting
+#' @export
+viz_current_and_cumulative_outcomes <- function(samps, datList, ...) {
+
+  smp  <- ceiling(seq(1,nrow( samps[["new_inf"]]),length.out=10))
+  N_days_tot <- datList[["N_days"]] + datList[["N_days_extra"]]
+
   ########### Current outcomes and cumulative final outcomes ###########
   par(mfrow = c(2, 3), mar = c(1.2, 2.1, 0.2, 0.2), oma = c(3.5, 3, 3.5, 0.5))
 
