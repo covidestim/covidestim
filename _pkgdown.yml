@@ -3,15 +3,20 @@ reference:
 - title: Model execution
 - contents:
   - covidcast
+
 - title: Model configuration
 - contents:
   - defaultConfig
   - modelconfig
   - genData
+
 - subtitle: Data
 - contents:
   - genFakeData
+  - starts_with("input")
+
 - subtitle: Priors
   desc: These functions allow customization of model priors
 - contents:
   - starts_with("priors")
+

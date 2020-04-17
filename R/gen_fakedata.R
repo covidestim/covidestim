@@ -1,14 +1,8 @@
-#' High level description of the function
+#' Create fake diagnosis data for testing the model
 #'
 #' More extended description of the function
 #'
-#' @param param1 Description
-#'
-#' @param param2 Description
-#'
-#' @param param3 Description
-#'
-#' @return The return value
+#' @return A list suitable for use with \code{\link{genData}}
 #'
 #' @examples
 #' print(mtcars)

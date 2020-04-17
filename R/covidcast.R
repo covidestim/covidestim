@@ -30,7 +30,7 @@ covidcast <- function(config = defaultConfig(), chains=3, iter=500) {
 }
 
 #' @export
-run <- function() UseMethod('run')
+run <- function(...) UseMethod('run')
 
 #' @export
 run.default <- function(...) stop("Must pass an object of type `covidcast`")
@@ -75,9 +75,24 @@ covidcast_add <- function(rightside, leftside) UseMethod('covidcast_add')
 #' When adding priors, we want to be sure that a new 'modelconfig' object is
 #' created, in order to check these priors
 #' @export
+#' @importFrom glue glue
 covidcast_add.priors <- function(rightside, leftside) {
   newConfig       <- leftside$config + rightside
   leftside$config <- newConfig
   leftside
 }
 
+print.covidcast <- function(cc) {
+'Covidcast configuration
+
+Seed:\t{cc$seed}
+Chains:\t{cc$chains}
+Iterations:\t{cc$iter}
+Priors: Valid
+Stan file:\t{cc$file}
+' -> model_summary
+
+  substituted_string <- glue(model_summary)
+
+  cat(substituted_string)
+}
