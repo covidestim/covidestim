@@ -1,7 +1,7 @@
 comparison_to_data_1 <- function(samps, datList, diagData) {
   ########### Comparison to data ###########
-  pdfnam <- "covidcast_comparison_to_data_1.pdf"
-  pdf(file = pdfnam, width = 9, height = 6.5)
+  # pdfnam <- "covidcast_comparison_to_data_1.pdf"
+  # pdf(file = pdfnam, width = 9, height = 6.5)
 
   N_days <- datList[["N_days"]]
   N_days_tot <- datList[["N_days"]] + datList[["N_days_extra"]]
