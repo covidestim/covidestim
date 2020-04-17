@@ -1,13 +1,13 @@
+///////////////////////////////////////////////////////////
 parameters {
   
 // INCIDENCE  
 
-//  real                  log_new_inf_0; // intercept in log space
-//  real                  log_new_inf_drift; // mean day on day change
-//  vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of the random walk 
-//  real<lower=0>         sigma_deriv1_log_new_inf; // parameter for the SD of the rw
+  real                  log_new_inf_0; // intercept in log space
+  vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of the random walk 
+  real<lower=0>         sigma_deriv1_log_new_inf; // parameter for the SD of the rw
 
-  vector[n_spl_par]     b_spline;
+  //vector[n_spl_par]       b_spline;
 
 // SYMPTOMS AND CARE 
   real<lower=0, upper=1>  p_sym_if_inf;
@@ -31,5 +31,6 @@ parameters {
   real<lower=0>           report_delay_mn;
   
 // LIKELIHOOD
-//  real<lower=0>           inv_sqrt_phi;
+  real<lower=0>           inv_sqrt_phi;
 }
+

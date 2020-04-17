@@ -1,3 +1,4 @@
+///////////////////////////////////////////////////////////
 transformed parameters {
 ///~~~~~~~ Define ~~~~~~~
 // INCIDENCE
@@ -287,4 +288,3 @@ transformed parameters {
   cum_diag_sym = cumulative_sum(diag_sym);
   cum_diag_hos = cumulative_sum(diag_hos);
 }
-<<<<<<< HEAD:inst/rstan/covid_stan_script_MHC_V2.stan
