@@ -1,7 +1,6 @@
 ///////////////////////////////////////////////////////////
 transformed data {
 
-
   int<lower=1>  N_days_tot;
   
   N_days_tot = N_days + N_days_delay; 
