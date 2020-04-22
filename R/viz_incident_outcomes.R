@@ -1,10 +1,19 @@
-incident_outcomes <- function(samps, datList) {
+#' Incident outcomes figure
+#'
+#' @inheritParams viz_comparison_to_data_1
+#'
+#' @return Side effects of plotting
+#' @export
+viz_incident_outcomes <- function(samps, datList, ...) {
+  smp  <- ceiling(seq(1,nrow( samps[["new_inf"]]),length.out=10))
+
   ########### Incident Outcomes ########### New Infections
   par(mfrow = c(2, 3),
       mar = c(1.2, 2, 0.2, 0.2),
       oma = c(3.5, 3, 3.5, 0.5))
 
   otcm <- samps[["new_inf"]]
+  N_days_tot <- datList[["N_days"]] + datList[["N_days_extra"]]
 
   plot(1:N_days_tot,
        apply(otcm, 2, mean),

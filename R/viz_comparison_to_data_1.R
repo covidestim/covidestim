@@ -1,9 +1,19 @@
-comparison_to_data_1 <- function(samps, datList, diagData) {
+#' Comparison to data figure #1
+#'
+#' @param samps The result of \code{\link[rstan]{extract}}
+#' @param datList The data block passed to \code{\link[rstan]{stan}}
+#' @param diagData The fake diagnosis data returned from \code{\link{genFakeData}}
+#'
+#' @return Side effects of plotting
+#' @export
+viz_comparison_to_data_1 <- function(samps, datList, diagData) {
   ########### Comparison to data ###########
-  pdfnam <- "covidcast_comparison_to_data_1.pdf"
-  pdf(file = pdfnam, width = 9, height = 6.5)
+  # pdfnam <- "covidcast_comparison_to_data_1.pdf"
+  # pdf(file = pdfnam, width = 9, height = 6.5)
 
+  # N_days <- min(datList[["N_days"]], dim(diagData$rep_tri_conf_cases)[1])
   N_days <- datList[["N_days"]]
+  print(N_days)
   N_days_tot <- datList[["N_days"]] + datList[["N_days_extra"]]
 
   max_delay <- max(diagData$days_delay) + 1
@@ -16,6 +26,8 @@ comparison_to_data_1 <- function(samps, datList, diagData) {
       oma = c(0.5, 3, 3.5, 0.5))
 
   for (i in 1:(max_delay)) {
+    print(sprintf("dim(RTCC)==%s, N_days=%s, i=%s", dim(diagData$rep_tri_conf_cases), N_days, i))
+    print(dim(diagData$rep_tri_conf_cases))
     plot(1:(N_days - i + 1),
          otcm_mu[1:(N_days - i + 1), i],
          ylim = c(0,

@@ -1,3 +1,6 @@
+  
+///////////////////////////////////////////////////////////
+
 data {
 ///~~~~~~~ Define ~~~~~~~
 int<lower=0>     N_conf_cases;
@@ -7,15 +10,13 @@ int<lower=0>     Max_delay;
 int<lower=0>     cases_test_day[N_conf_cases]; // test date
 int<lower=0>     cases_days_delay[N_conf_cases]; // delay to diag
 
-//real              pri_log_new_inf_0_mu;
-//real<lower=0>     pri_log_new_inf_0_sd;
-//real              pri_log_new_inf_drift_mu;
-//real<lower=0>     pri_log_new_inf_drift_sd;
-//real<lower=0>     pri_sigma_deriv1_log_new_inf_sd;
-//real<lower=0>     pri_deriv2_log_new_inf_sd;
+real<lower=0>     pri_log_new_inf_0_mu;
+real<lower=0>     pri_log_new_inf_0_sd;
+real<lower=0>     pri_sigma_deriv1_log_new_inf_sd;
+real<lower=0>     pri_deriv2_log_new_inf_sd;
 
-int<lower=1>     n_spl_par; // term for the spline
-matrix[(N_days+N_days_extra),n_spl_par] spl_basis; // term for the spline
+//int<lower=1>     n_spl_par; // term for the spline
+//matrix[(N_days+N_days_extra),n_spl_par] spl_basis; // term for the spline
 //
 //
 
@@ -52,6 +53,6 @@ real<lower=0>          pri_p_diag_if_sym_b;
 real<lower=0>          pri_p_diag_if_hos_a;
 real<lower=0>          pri_p_diag_if_hos_b;
 
-int<lower = 0, upper = 1> nb_yes; // turns on a negative binomial (currently fit poisson)
-int<lower = 0, upper = 1> rw_yes; 
+//int<lower = 0, upper = 1> nb_yes; // turns on a negative binomial (currently fit poisson)
+//int<lower = 0, upper = 1> rw_yes; 
 }
