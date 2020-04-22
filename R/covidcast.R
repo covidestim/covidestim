@@ -88,8 +88,10 @@ print.covidcast <- function(cc) {
 Seed:\t{cc$seed}
 Chains:\t{cc$chains}
 Iterations:\t{cc$iter}
+Warmup runs:\t{cc$warmup}
 Priors: Valid
 Stan file:\t{cc$file}
+
 ' -> model_summary
 
   substituted_string <- glue(model_summary)
