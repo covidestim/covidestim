@@ -61,9 +61,9 @@ genData <- function(diagData)
     N_days_delay = 10,
     
     # vectors of event counts; default to 0 if no input
-    obs_cas = rep(0, N_days) # vector of int by date. should have 0s if no event that day
-    obs_hos = rep(0, N_days) # vector of int by date. should have 0s if no event that day
-    obs_die = rep(0, N_days) # vector of int by date. should have 0s if no event that day
+    obs_cas = rep(0, N_days), # vector of int by date. should have 0s if no event that day
+    obs_hos = rep(0, N_days), # vector of int by date. should have 0s if no event that day
+    obs_die = rep(0, N_days), # vector of int by date. should have 0s if no event that day
 
     ## Priors Parameters of random walk in log space <- new infections per day
     # mean of log daily infections on day 1
