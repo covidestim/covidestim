@@ -73,7 +73,7 @@ priors_progression <- function(...) {
 
   list(
     pri_inf_prg_delay_shap = 5.202, 
-    pri_nf_prg_delay_rate = 0.946,
+    pri_inf_prg_delay_rate = 0.946,
     ori_sym_prg_delay_shap = 5.147,
     pri_sym_prg_delay_rate = 0.468,
     pri_hos_prg_delay_shap = 9.164,
