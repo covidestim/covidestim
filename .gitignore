@@ -1,3 +1,5 @@
 .Rbuildignore
 *.swp
 inst/rstan/*.rds
+.DS_Store
+.Rhistory
