@@ -67,6 +67,10 @@ transformed parameters {
   vector[N_days_tot]  occur_hos; 
   vector[N_days_tot]  occur_die; 
   
+  vector[N_days_tot]  repor_cas; // reported cases by date report
+  vector[N_days_tot]  repor_hos; 
+  vector[N_days_tot]  repor_die; 
+  
   real                phi_cas;
   real                phi_hos;
   real                phi_die;
@@ -293,6 +297,10 @@ for(i in 1:N_days_tot)  {
   occur_die[i] += (new_die[i] - new_die_u[i]) * die_cum_report_delay[N_days_tot - i + 1];
 }
 
+  repor_cas = rep_vector(0, N_days_tot);
+  repor_hos = rep_vector(0, N_days_tot);
+  repor_die = rep_vector(0, N_days_tot);
+
 // for data by reporting date  
  for(i in 1:N_days_tot){
     repor_cas[i] += diag_all[i] * cas_rep_delay[i];
@@ -303,7 +311,7 @@ for(i in 1:N_days_tot)  {
  }
 
  for(i in 1:N_days_tot){
-    repor_cas[i] += (new_die[i] - new_die_u[i]) *  die_rep_delay[i]
+    repor_die[i] += (new_die[i] - new_die_u[i]) *  die_rep_delay[i]
  }
 
 }
