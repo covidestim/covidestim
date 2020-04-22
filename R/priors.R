@@ -210,24 +210,31 @@ priors_diagnosis <- function(...) {
   splice_class(defaults, args, 'priors')
 }
 
-# NEED TO ADD: 
-# probably not user modifable 
-#inf_prg_delay_shap_a = 4, 
-#inf_prg_delay_shap_b = 1, 
-#sym_prg_delay_shap_a = 4, 
-#sym_prg_delay_shap_b = 1, 
-#hos_prg_delay_shap_a = 4,
-#hos_prg_delay_shap_b = 1,
-#inf_res_delay_shap_a = 4,
-#inf_res_delay_shap_b = 1,
-#sym_res_delay_shap_a = 4,
-#sym_res_delay_shap_b = 1,
-#hos_res_delay_shap_a = 4,
-#hos_res_delay_shap_b = 1,
-#cas_rep_delay_shp_a = 3,
-#cas_rep_delay_shp_b = 1.5, 
-#hos_rep_delay_shp_a = 3, 
-#hos_rep_delay_shp_b = 1.5,
-#die_rep_delay_shp_a = 3, 
-#die_rep_delay_shp_b = 1.5,
+priors_fixed <- function(...) {
+  args <- list(...)
 
+  list(
+    inf_prg_delay_shap_a = 4, 
+    inf_prg_delay_shap_b = 1, 
+    sym_prg_delay_shap_a = 4, 
+    sym_prg_delay_shap_b = 1, 
+    hos_prg_delay_shap_a = 4,
+    hos_prg_delay_shap_b = 1,
+    inf_res_delay_shap_a = 4,
+    inf_res_delay_shap_b = 1,
+    sym_res_delay_shap_a = 4,
+    sym_res_delay_shap_b = 1,
+    hos_res_delay_shap_a = 4,
+    hos_res_delay_shap_b = 1,
+    cas_rep_delay_shp_a = 3,
+    cas_rep_delay_shp_b = 1.5, 
+    hos_rep_delay_shp_a = 3, 
+    hos_rep_delay_shp_b = 1.5,
+    die_rep_delay_shp_a = 3, 
+    die_rep_delay_shp_b = 1.5
+  ) -> defaults
+
+  att(all(names(args) %in% names(defaults)))
+
+  splice_class(defaults, args, 'priors')
+}

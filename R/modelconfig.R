@@ -98,7 +98,8 @@ genData <- function(diagData)
     !!! priors_progression(),
     !!! priors_recovery(),
     !!! priors_reporting_delay(),
-    !!! priors_diagnosis()
+    !!! priors_diagnosis(),
+    !!! priors_fixed()
   )
 
   structure(config, class='modelconfig')
