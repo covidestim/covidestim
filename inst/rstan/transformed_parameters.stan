@@ -311,7 +311,7 @@ for(i in 1:N_days_tot)  {
  }
 
  for(i in 1:N_days_tot){
-    repor_die[i] += (new_die[i] - new_die_u[i]) *  die_rep_delay[i]
+    repor_die[i] += (new_die[i] - new_die_u[i]) *  die_rep_delay[i];
  }
 
 }

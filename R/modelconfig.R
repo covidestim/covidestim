@@ -83,6 +83,7 @@ genData <- function(diagData)
 
     # priors on the second derivative; penalizes sharp changes in random walk;
     # gives rw momentum
+     pri_deriv1_log_new_inf_sd = 0.5,
      pri_deriv2_log_new_inf_sd = 0.05,
 
     #spl_basis = spl_basis,
