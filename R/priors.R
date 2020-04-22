@@ -27,12 +27,12 @@ priors_transitions <- function(...) {
   args <- list(...)
 
   list(
-    pri_p_sym_if_inf_a = 69,
-    pri_p_sym_if_inf_b = 31,
-    pri_p_hos_if_sym_a = 31,
-    pri_p_hos_if_sym_b = 69,
-    pri_p_die_if_hos_a = 3,
-    pri_p_die_if_hos_b = 97
+    pri_p_sym_if_inf_a = 50,
+    pri_p_sym_if_inf_b = 50,
+    pri_p_hos_if_sym_a = 30,
+    pri_p_hos_if_sym_b = 70,
+    pri_p_die_if_hos_a = 2.5,
+    pri_p_die_if_hos_b = 97.5
   ) -> defaults
 
   att(all(names(args) %in% names(defaults)))
@@ -72,12 +72,12 @@ priors_progression <- function(...) {
   args <- list(...)
 
   list(
-    inf_prg_delay_shap = 5.202,
-    inf_prg_delay_rate = 0.946,
-    sym_prg_delay_shap = 51.47,
-    sym_prg_delay_rate = 4.679,
-    hos_prg_delay_shap = 91.64,
-    hos_prg_delay_rate = 10.41
+    pri_inf_prg_delay_shap = 5.202, 
+    pri_nf_prg_delay_rate = 0.946,
+    ori_sym_prg_delay_shap = 5.147,
+    pri_sym_prg_delay_rate = 0.468,
+    pri_hos_prg_delay_shap = 9.164,
+    pri_hos_prg_delay_rate = 1.041
   ) -> defaults
 
   att(all(names(args) %in% names(defaults)))
@@ -117,12 +117,12 @@ priors_recovery <- function(...) {
   args <- list(...)
 
   list(
-    inf_res_delay_shap = 23.83,
-    inf_res_delay_rate = 2.383,
-    sym_res_delay_shap = 10.50,
-    sym_res_delay_rate = 2.099,
-    hos_res_delay_shap = 60.86,
-    hos_res_delay_rate = 3.567
+    pri_inf_res_delay_shap = 23.83,
+    pri_inf_res_delay_rate = 2.383,
+    pri_sym_res_delay_shap = 10.50,
+    pri_sym_res_delay_rate = 2.099,
+    pri_hos_res_delay_shap = 60.86,
+    pri_hos_res_delay_rate = 3.567
   ) -> defaults
 
   att(all(names(args) %in% names(defaults)))
@@ -136,8 +136,12 @@ priors_recovery <- function(...) {
 #' Called with no arguments, the default values are returned. The following
 #' arguments can be passed to create different priors:
 #'
-#' \code{pri_report_delay_shap}
-#' \code{pri_report_delay_rate}
+#' \code{pri_cas_rep_delay_shap}
+#' \code{pri_cas_rep_delay_rate}
+#' \code{pri_hos_rep_delay_shap}
+#' \code{pri_hos_rep_delay_rate}
+#' \code{pri_die_rep_delay_shap}
+#' \code{pri_die_rep_delay_rate}
 #'
 #' Default values should be explained here, as well as constraints on custom
 #' values. (Default values are assumed?)
@@ -153,8 +157,12 @@ priors_reporting_delay <- function(...) {
   args <- list(...)
 
   list(
-    pri_report_delay_shap = 7,
-    pri_report_delay_rate = 0.9
+    pri_cas_rep_delay_shap =  1.73,
+    pri_cas_rep_delay_rate =  0.78,
+    pri_hos_rep_delay_shap =  1.73, 
+    pri_hos_rep_delay_rate =  0.78, 
+    pri_die_rep_delay_shap =  1.73, 
+    pri_die_rep_delay_rate =  0.78
   ) -> defaults
 
   att(all(names(args) %in% names(defaults)))
@@ -189,16 +197,37 @@ priors_diagnosis <- function(...) {
   args <- list(...)
 
   list(
-    pri_p_diag_if_inf_a = .1,
+    pri_p_diag_if_inf_a = 0.1,
     pri_p_diag_if_inf_b = 9.9,
-    pri_p_diag_if_sym_a = 7.0,
-    pri_p_diag_if_sym_b = 3.0,
-    pri_p_diag_if_hos_a = 9.75,
-    pri_p_diag_if_hos_b = 0.25
+    pri_p_diag_if_sym_a = 8.0,
+    pri_p_diag_if_sym_b = 2.0,
+    pri_p_diag_if_hos_a = 9.5,
+    pri_p_diag_if_hos_b = 0.5
   ) -> defaults
 
   att(all(names(args) %in% names(defaults)))
 
   splice_class(defaults, args, 'priors')
 }
+
+# NEED TO ADD: 
+# probably not user modifable 
+#inf_prg_delay_shap_a = 4, 
+#inf_prg_delay_shap_b = 1, 
+#sym_prg_delay_shap_a = 4, 
+#sym_prg_delay_shap_b = 1, 
+#hos_prg_delay_shap_a = 4,
+#hos_prg_delay_shap_b = 1,
+#inf_res_delay_shap_a = 4,
+#inf_res_delay_shap_b = 1,
+#sym_res_delay_shap_a = 4,
+#sym_res_delay_shap_b = 1,
+#hos_res_delay_shap_a = 4,
+#hos_res_delay_shap_b = 1,
+#cas_rep_delay_shp_a = 3,
+#cas_rep_delay_shp_b = 1.5, 
+#hos_rep_delay_shp_a = 3, 
+#hos_rep_delay_shp_b = 1.5,
+#die_rep_delay_shp_a = 3, 
+#die_rep_delay_shp_b = 1.5,
 

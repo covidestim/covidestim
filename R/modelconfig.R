@@ -50,38 +50,20 @@ genData <- function(diagData)
   N_days <- max(diagData$diagnosis_day) + diagData$N_days_before
   N_days_extra <- 1
 
-  # Number of parameters used to specify spline
-  n_spl_par <- 10
-
-  splines::bs(
-    1:(N_days + N_days_extra),
-    df        = n_spl_par,
-    degree    = 3,
-    intercept = T
-  ) -> des_mat
-
-  # this produces a cubic b-spline with n_spl_par basis functions
-  spl_basis <- as.matrix(as.data.frame(des_mat))
-
   # The first set of components of 'datList'
   config <- rlang::dots_list(
     .homonyms = "error", # Ensure that no keys are entered twice
 
-    N_conf_cases = length(diagData$diagnosis_day),
-
-    #n days to model before first case
+    #n days of data to model 
     N_days = N_days,
 
-    # model days after (for things like death, hospitalizations)
-    N_days_extra = N_days_extra,
-
-    # maximum value for delay distribution
-    Max_delay = max(diagData$days_delay),
-
-    cases_test_day = diagData$diagnosis_day + diagData$N_days_before,
-
-    # NEED A PRIOR ON THIS
-    cases_days_delay = diagData$days_delay,
+    #n day to model before start of data
+    N_days_delay = 10,
+    
+    # vectors of event counts; default to 0 if no input
+    obs_cas = rep(0, N_days), # vector of int by date. should have 0s if no event that day
+    obs_hos = rep(0, N_days), # vector of int by date. should have 0s if no event that day
+    obs_die = rep(0, N_days), # vector of int by date. should have 0s if no event that day
 
     ## Priors Parameters of random walk in log space <- new infections per day
     # mean of log daily infections on day 1
@@ -108,7 +90,9 @@ genData <- function(diagData)
 
     # poisson or negative binomial
     nb_yes = 0,
-    rw_yes = 0,
+    obs_cas_rep = 0, 
+    obs_hos_rep = 0, 
+    obs_die_rep = 0,
 
     !!! priors_transitions(),
     !!! priors_progression(),
