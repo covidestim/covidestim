@@ -1,3 +1,4 @@
 .Rbuildignore
 *.swp
 inst/rstan/*.rds
+.swo
