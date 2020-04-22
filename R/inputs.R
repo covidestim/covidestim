@@ -43,7 +43,6 @@ input_deaths <- function(data, ddate='date', count='count') {
   structure(list(data=data), class='input')
 }
 
-#' Input hospitalizations data
 #'
 #' Takes hospitalizations data as \code{data}.
 #'
@@ -63,7 +62,6 @@ input_hospitalizations <- function(data, hdate='date', count='count') {
   structure(list(data=data), class='input')
 }
 
-#' Input testing data
 #'
 #' Takes cumulative case data as \code{data}.
 #'
