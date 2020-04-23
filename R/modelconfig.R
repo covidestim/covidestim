@@ -105,10 +105,10 @@ genData <- function(diagData)
 
     ## Priors Parameters of random walk in log space <- new infections per day
     # mean of log daily infections on day 1
-     pri_log_new_inf_0_mu = 0,
+    pri_log_new_inf_0_mu = 0,
  
     # sd of log daily infections on day 1
-     pri_log_new_inf_0_sd = 10,
+    pri_log_new_inf_0_sd = 10,
 
     # drift gives some direction to random walk. stronger prior here.
     # mean of daily change in log infections
@@ -117,12 +117,12 @@ genData <- function(diagData)
     # sd of daily change in log infections
     # pri_log_new_inf_drift_sd = 1,
     # mean of daily change in log infections
-     pri_sigma_deriv1_log_new_inf_sd = 1,
+    pri_sigma_deriv1_log_new_inf_sd = 1,
 
     # priors on the second derivative; penalizes sharp changes in random walk;
     # gives rw momentum
-     pri_deriv1_log_new_inf_sd = 0.5,
-     pri_deriv2_log_new_inf_sd = 0.05,
+    pri_deriv1_log_new_inf_sd = 0.5,
+    pri_deriv2_log_new_inf_sd = 0.05,
 
     #spl_basis = spl_basis,
     #n_spl_par = n_spl_par,
