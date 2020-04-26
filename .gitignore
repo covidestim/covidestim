@@ -4,3 +4,4 @@ inst/rstan/*.rds
 *.swo
 .DS_Store
 .Rhistory
+notes

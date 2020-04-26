@@ -3,37 +3,21 @@
 alpha_ <- function(mv) (mv[1]^2)/mv[2]
 beta_  <- function(mv) (mv[2]^2)/mv[1]
 
-#' Substitute a custom prior
-#'
-#' @param defaults The list of default priors
-#' @param name A string. The prefix of the prior being modified. That is, 
-#'   the name of the key of the prior, minus the '_a' and '_b' part.
-#' @param mv_pair 2-element numeric. The pair of mean and variance that the
-#'   user wants to substitute.
-#'
-#' @return The defaults, with the substitutes transfomed into alpha/beta
-#'   parameters. If \code{mv_pair} was null, returns \code{defaults}
-#'   unmodified.
-subst_custom_prior <- function(defaults, name, mv_pair, postfixes=c('_a', '_b')) {
-  if (is.null(mv_pair))
-    return(defaults)
+#' @importFrom magrittr %>%
+build_priors <- function(..., .postfix = c("_a", "_b")) {
 
-  att(length(mv_pair) == 2)
-  att(is.numeric(mv_pair))
+  arg_names <- purrr::map_chr(rlang::enquos(...), rlang::quo_name)
 
-  defaults[[paste0(name, postfixes[1])]] <- alpha_(mv_pair)
-  defaults[[paste0(name, postfixes[2])]] <-  beta_(mv_pair)
+  args_rekeyed <- stats::setNames(list(...), arg_names)
 
-  message(glue("Set custom prior for {name}:"))
-  message(glue("mean={mv_pair[1]}, variance={mv_pair[2]}, alpha={alpha_(mv_pair)}, beta={beta_(mv_pair)}"))
-
-  defaults
-}
-
-subst_custom_priors <- function(basenames, lst_mvs, postfixes=c('_a', '_b')) {
-  f <- purrr::partial(subst_custom_prior, ...=, postfixes=postfixes)
-
-  purrr::reduce2(basenames, lst_mvs, subst_custom_prior, .init=list())
+  purrr::lmap(
+    args_rekeyed,
+    ~rlang::dots_list(
+      !! glue("pri_{names(.)}{.postfix[1]}") := .[[1]][1],
+      !! glue("pri_{names(.)}{.postfix[2]}") := .[[1]][2],
+      .homonyms = 'error'
+    )
+  )
 }
 
 #' Priors for transitions
@@ -56,31 +40,17 @@ subst_custom_priors <- function(basenames, lst_mvs, postfixes=c('_a', '_b')) {
 #' @examples
 #' setup <- covidcast() + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
-priors_transitions <- function(p_sym_if_inf = NULL, p_hos_if_sym = NULL,
-                               p_die_if_hos = NULL) {
+priors_transitions <- function(p_sym_if_inf = c(50, 50),   # a/b
+                               p_hos_if_sym = c(30, 70),   # a/b
+                               p_die_if_hos = c(2.5, 97.5)) { # a/b
+  build_priors(
+    p_sym_if_inf,
+    p_hos_if_sym,
+    p_die_if_hos
+    .postfix=c("_a", "_b")
+  ) -> ps
 
-  list(
-    pri_p_sym_if_inf_a = 50,
-    pri_p_sym_if_inf_b = 50,
-    pri_p_hos_if_sym_a = 30,
-    pri_p_hos_if_sym_b = 70,
-    pri_p_die_if_hos_a = 2.5,
-    pri_p_die_if_hos_b = 97.5
-  ) -> defaults
-
-  subst_custom_priors(
-    c('pri_p_sym_if_inf',
-      'pri_p_hos_if_sym',
-      'pri_p_die_if_hos'),
-    list(p_sym_if_inf,
-         p_hos_if_sym,
-         p_die_if_hos)
-  ) -> substitutions
-
-  if (length(substitutions) > 0)
-    att(all(names(substitutions) %in% names(defaults)))
-
-  splice_class(defaults, substitutions, 'priors')
+  structure(ps, class='priors')
 }
 
 # A list with arbitrary values, of class 'priors'
@@ -110,32 +80,17 @@ priors <- function(...) structure(list(...), class='priors')
 #' @return An S3 object of class 'modelconfig'
 #' @examples
 #' setup <- covidcast() + priors_progression(inf_prg_delay_shap = 3.5)
-#' @export
-priors_progression <- function(inf_prg_delay = NULL, sym_prg_delay = NULL,
-                               hos_prg_delay = NULL) {
-  list(
-    pri_inf_prg_delay_shap = 5.202, 
-    pri_inf_prg_delay_rate = 0.946,
-    pri_sym_prg_delay_shap = 5.147,
-    pri_sym_prg_delay_rate = 0.468,
-    pri_hos_prg_delay_shap = 9.164,
-    pri_hos_prg_delay_rate = 1.041
-  ) -> defaults
+priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
+                               sym_prg_delay = c(5.147, 0.468), # shap/rate 
+                               hos_prg_delay = c(9.164, 1.041)) {# shap/rate
+  build_priors(
+    inf_prg_delay,
+    sym_prg_delay,
+    hos_prg_delay,
+    .postfix=c("_shap", "_rate")
+  ) -> ps
 
-  subst_custom_priors(
-    c('pri_inf_prg_delay',
-      'pri_sym_prg_delay',
-      'pri_hos_prg_delay'),
-    list(inf_prg_delay,
-         sym_prg_delay,
-         hos_prg_delay),
-    postfixes = c('_shap', '_rate')
-  ) -> substitutions
-
-  if (length(substitutions) > 0)
-    att(all(names(substitutions) %in% names(defaults)))
-
-  splice_class(defaults, substitutions, 'priors')
+  structure(ps, class="priors")
 }
 
 #' Priors on delay to recovered
@@ -165,32 +120,18 @@ priors_progression <- function(inf_prg_delay = NULL, sym_prg_delay = NULL,
 #' @return An S3 object of class 'modelconfig'
 #' @examples
 #' setup <- covidcast() + priors_recovery(inf_res_delay_shap = 20.12)
-#' @export
-priors_recovery <- function(inf_res_delay = NULL, sym_res_delay = NULL,
-                            hos_res_delay = NULL) {
-  list(
-    pri_inf_res_delay_shap = 23.83,
-    pri_inf_res_delay_rate = 2.383,
-    pri_sym_res_delay_shap = 10.50,
-    pri_sym_res_delay_rate = 2.099,
-    pri_hos_res_delay_shap = 60.86,
-    pri_hos_res_delay_rate = 3.567
-  ) -> defaults
+priors_recovery <- function(inf_res_delay = c(23.83, 2.383), # shap/rate
+                            sym_res_delay = c(10.50, 2.099), # shap/rate
+                            hos_res_delay = c(60.86, 3.567)) {# shap/rate
 
-  subst_custom_priors(
-    c('pri_inf_prg_delay',
-      'pri_sym_res_delay',
-      'pri_hos_rep_delay'),
-    list(inf_res_delay,
-         sym_res_delay,
-         hos_res_delay),
-    postfixes = c('_shap', '_rate')
-  ) -> substitutions
+  build_priors(
+    inf_res_delay,
+    sym_res_delay,
+    hos_res_delay,
+    .postfix=c("_shap", "_rate")
+  ) -> ps
 
-  if (length(substitutions) > 0)
-    att(all(names(substitutions) %in% names(defaults)))
-
-  splice_class(defaults, substitutions, 'priors')
+  structure(ps, class="priors")
 }
 
 #' Priors on reporting delay
@@ -215,31 +156,17 @@ priors_recovery <- function(inf_res_delay = NULL, sym_res_delay = NULL,
 #' @return An S3 object of class 'modelconfig'
 #' @examples
 #' setup <- covidcast() + priors_reporting_delay(pri_report_delay_shap = 6)
-priors_reporting_delay <- function(cas_rep_delay = NULL, hos_rep_delay = NULL,
-                                   die_rep_delay = NULL) {
-  list(
-    pri_cas_rep_delay_shap = 1.73,
-    pri_cas_rep_delay_rate = 0.78,
-    pri_hos_rep_delay_shap = 1.73, 
-    pri_hos_rep_delay_rate = 0.78, 
-    pri_die_rep_delay_shap = 1.73, 
-    pri_die_rep_delay_rate = 0.78
-  ) -> defaults
+priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate 
+                                   hos_rep_delay = c(1.73, 0.78), # shap/rate 
+                                   die_rep_delay = c(1.73, 0.78)) { # shap/rate
+  build_priors(
+    cas_rep_delay,
+    hos_rep_delay,
+    die_rep_delay,
+    .postfix=c("_shap", "_rate")
+  ) -> ps
 
-  subst_custom_priors(
-    c('pri_cas_rep_delay',
-      'pri_hos_rep_delay',
-      'pri_die_rep_delay'),
-    list(cas_rep_delay,
-         hos_rep_delay,
-         die_rep_delay),
-    postfixes = c('_shap', '_rate')
-  ) -> substitutions
-
-  if (length(substitutions) > 0)
-    att(all(names(substitutions) %in% names(defaults)))
-
-  splice_class(defaults, substitutions, 'priors')
+  structure(ps, class="priors")
 }
 
 #' Priors on probability of diagnosis
@@ -261,31 +188,17 @@ priors_reporting_delay <- function(cas_rep_delay = NULL, hos_rep_delay = NULL,
 #' @examples
 #' setup <- covidcast() + priors_diagnosis(p_diag_if_inf = c(0.5, 0.1))
 #' @export
-priors_diagnosis <- function(p_diag_if_inf = NULL, p_diag_if_sym = NULL,
-                             p_diag_if_hos = NULL) {
+priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
+                             p_diag_if_sym = c(8.0, 2.0), # a/b
+                             p_diag_if_hos = c(9.5, 0.5)) {# a/b
+  build_priors(
+    p_diag_if_inf,
+    p_diag_if_sym,
+    p_diag_if_hos,
+    .postfix=c("_a", "_b")
+  ) -> ps
 
-  list(
-    pri_p_diag_if_inf_a = 0.1,
-    pri_p_diag_if_inf_b = 9.9,
-    pri_p_diag_if_sym_a = 8.0,
-    pri_p_diag_if_sym_b = 2.0,
-    pri_p_diag_if_hos_a = 9.5,
-    pri_p_diag_if_hos_b = 0.5
-  ) -> defaults
-
-  subst_custom_priors(
-    c('pri_p_diag_if_inf',
-      'pri_p_diag_if_sym',
-      'pri_p_diag_if_hos'),
-      list(p_diag_if_inf,
-           p_diag_if_sym,
-           p_diag_if_hos),
-  ) -> substitutions
-
-  if (length(substitutions) > 0)
-    att(all(names(substitutions) %in% names(defaults)))
-
-  splice_class(defaults, substitutions, 'priors')
+  structure(ps, class="priors")
 }
 
 priors_fixed <- function() {
@@ -310,5 +223,5 @@ priors_fixed <- function() {
     die_rep_delay_shp_b  = 1.5
   ) -> defaults
 
-  splice_class(defaults, list(), 'priors')
+  structure(defaults, class = 'priors')
 }
