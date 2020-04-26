@@ -3,6 +3,31 @@
 alpha_ <- function(mv) (mv[1]^2)/mv[2]
 beta_  <- function(mv) (mv[2]^2)/mv[1]
 
+# A list with arbitrary values, of class 'priors'
+priors <- function(...) structure(list(...), class='priors')
+
+print.priors <- function(ps) {
+  for (idx in names(ps)) {
+    cat(glue("{idx}:\t{ps[[idx]]}\n\n"))
+  }
+}
+
+is_nonNegativeReal <- function(x, .element_names = NULL) {
+  att(is.numeric(x))
+  
+  all(x >= 0)
+}
+
+# assertthat::on_failure(is_nonNegativeReal) <- function(call, env) {
+#   idxs <- which(deparse(call$x) < 0)
+#   
+#   if (!is.null(env$.element_names))
+#     els <- env$.element_names[idxs]
+# 
+# #  glue("{els} were not non-negative real numbers: {idxs}")
+#   names(env)
+# }
+
 #' @importFrom magrittr %>%
 build_priors <- function(..., .postfix = c("_a", "_b")) {
 
@@ -43,18 +68,20 @@ build_priors <- function(..., .postfix = c("_a", "_b")) {
 priors_transitions <- function(p_sym_if_inf = c(50, 50),   # a/b
                                p_hos_if_sym = c(30, 70),   # a/b
                                p_die_if_hos = c(2.5, 97.5)) { # a/b
+
+  att(is_nonNegativeReal(p_sym_if_inf))
+  att(is_nonNegativeReal(p_hos_if_sym))
+  att(is_nonNegativeReal(p_die_if_hos))
+
   build_priors(
     p_sym_if_inf,
     p_hos_if_sym,
-    p_die_if_hos
+    p_die_if_hos,
     .postfix=c("_a", "_b")
   ) -> ps
-
+  
   structure(ps, class='priors')
 }
-
-# A list with arbitrary values, of class 'priors'
-priors <- function(...) structure(list(...), class='priors')
 
 #' Priors on delay to progression
 #'
@@ -83,6 +110,11 @@ priors <- function(...) structure(list(...), class='priors')
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
                                hos_prg_delay = c(9.164, 1.041)) {# shap/rate
+
+  att(is_nonNegativeReal(inf_prg_delay))
+  att(is_nonNegativeReal(sym_prg_delay))
+  att(is_nonNegativeReal(hos_prg_delay))
+
   build_priors(
     inf_prg_delay,
     sym_prg_delay,
@@ -124,6 +156,10 @@ priors_recovery <- function(inf_res_delay = c(23.83, 2.383), # shap/rate
                             sym_res_delay = c(10.50, 2.099), # shap/rate
                             hos_res_delay = c(60.86, 3.567)) {# shap/rate
 
+  att(is_nonNegativeReal(inf_res_delay))
+  att(is_nonNegativeReal(sym_res_delay))
+  att(is_nonNegativeReal(hos_res_delay))
+
   build_priors(
     inf_res_delay,
     sym_res_delay,
@@ -159,6 +195,11 @@ priors_recovery <- function(inf_res_delay = c(23.83, 2.383), # shap/rate
 priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate 
                                    hos_rep_delay = c(1.73, 0.78), # shap/rate 
                                    die_rep_delay = c(1.73, 0.78)) { # shap/rate
+
+  att(is_nonNegativeReal(cas_rep_delay))
+  att(is_nonNegativeReal(hos_rep_delay))
+  att(is_nonNegativeReal(die_rep_delay))
+
   build_priors(
     cas_rep_delay,
     hos_rep_delay,
@@ -191,6 +232,11 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
 priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
                              p_diag_if_sym = c(8.0, 2.0), # a/b
                              p_diag_if_hos = c(9.5, 0.5)) {# a/b
+
+  att(is_nonNegativeReal(p_diag_if_inf))
+  att(is_nonNegativeReal(p_diag_if_sym))
+  att(is_nonNegativeReal(p_diag_if_hos))
+
   build_priors(
     p_diag_if_inf,
     p_diag_if_sym,
