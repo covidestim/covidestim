@@ -7,8 +7,21 @@ beta_  <- function(mv) (mv[2]^2)/mv[1]
 priors <- function(...) structure(list(...), class='priors')
 
 print.priors <- function(ps) {
+'Priors:
+
+' -> msg
+
+  cat(msg)
+
   for (idx in names(ps)) {
-    cat(glue("{idx}:\t{ps[[idx]]}\n\n"))
+    if (str_detect(idx, '^pri')) {
+      idx_better <- str_replace(idx, '^pri_', '')
+      idx_better <- str_replace(idx_better, '_a', '\t[alpha]')
+      idx_better <- str_replace(idx_better, '_b', '\t[beta]')
+      idx_better <- str_replace(idx_better, '_shap', '\t[shape]')
+      idx_better <- str_replace(idx_better, '_rate', '\t[rate]')
+      cat(glue("{idx_better}\t{ps[[idx]]}\n\n"))
+    }
   }
 }
 

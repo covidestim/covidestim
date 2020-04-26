@@ -92,9 +92,12 @@ Warmup runs:\t{cc$warmup}
 Priors: Valid
 Stan file:\t{cc$file}
 
+
 ' -> model_summary
 
   substituted_string <- glue(model_summary)
 
   cat(substituted_string)
+
+  print.priors(cc$config)
 }
