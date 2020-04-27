@@ -1,54 +1,75 @@
+plot.covidcast_result <- function(obj) viz_melanie(obj)
+
 ## COVID viz 
-viz_melanie <- function() {
-  fit <- rstan::extract(result)
+viz_melanie <- function(obj) {
+  result <- obj$result
+  fit    <- obj$extracted
 
   summary_fit <- rstan::summary(result)
 
-  new_inf <- as.data.frame(fit[["new_inf"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "new_inf")
-  new_sym <- as.data.frame(fit[["new_sym"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "new_sym") 
-  new_hos <- as.data.frame(fit[["new_hos"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "new_hos") 
-  new_die <- as.data.frame(fit[["new_die"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "new_die") 
+  outcomeGen <- function(idx) {
+    as.data.frame(fit[[idx]]) %>% 
+    gather(key = day, value = estim) %>%
+    mutate(outcome = idx)
+  }
 
-  diag_inf <- as.data.frame(fit[["diag_inf"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "diag_inf") 
-  diag_sym <- as.data.frame(fit[["diag_sym"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "diag_sym") 
-  diag_hos <- as.data.frame(fit[["diag_hos"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "diag_hos") 
-  diag_all <- as.data.frame(fit[["diag_all"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "diag_all") 
+  new_inf <- outcomeGen("new_inf")
+  new_sym <- outcomeGen("new_sym")
+  new_hos <- outcomeGen("new_hos")
+  new_die <- outcomeGen("new_die")
 
-  occur_cas <- as.data.frame(fit[["occur_cas"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "occur_cas")
-  occur_hos <- as.data.frame(fit[["occur_hos"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "occur_hos")
-  occur_die <- as.data.frame(fit[["occur_die"]]) %>% gather(key = day, value = estim) %>% mutate(outcome = "occur_die")
+  diag_inf <- outcomeGen("diag_inf")
+  diag_sym <- outcomeGen("diag_sym")
+  diag_hos <- outcomeGen("diag_hos")
+  diag_all <- outcomeGen("diag_all")
 
-  obs_cas <- select(cases, NEW_COVID_CASE_COUNT) %>% mutate(day = seq(1, n(), 1), outcome = "obs_cas") %>% 
-    rename(estim = NEW_COVID_CASE_COUNT) %>% select(day, estim, outcome) 
-  obs_hos <- select(cases, HOSPITALIZED_CASE_COUNT) %>%mutate(day = seq(1, n(), 1), outcome = "obs_hos") %>% 
-    rename(estim = HOSPITALIZED_CASE_COUNT) %>% select(day, estim, outcome) 
-  obs_die <- select(cases, DEATH_COUNT) %>% mutate(day = seq(1, n(), 1), outcome = "obs_die") %>% 
-    rename(estim = DEATH_COUNT) %>% select(day, estim, outcome) 
+  occur_cas <- outcomeGen("occur_cas")
+  occur_hos <- outcomeGen("occur_hos")
+  occur_die <- outcomeGen("occur_die")
+
+  obs_cas <- select(cases, NEW_COVID_CASE_COUNT) %>%
+    mutate(day = seq(1, n(), 1), outcome = "obs_cas") %>% 
+    rename(estim = NEW_COVID_CASE_COUNT) %>%
+    select(day, estim, outcome) 
+  
+  obs_hos <- select(cases, HOSPITALIZED_CASE_COUNT) %>%
+    mutate(day = seq(1, n(), 1), outcome = "obs_hos") %>% 
+    rename(estim = HOSPITALIZED_CASE_COUNT) %>%
+    select(day, estim, outcome) 
+
+  obs_die <- select(cases, DEATH_COUNT) %>%
+    mutate(day = seq(1, n(), 1), outcome = "obs_die") %>% 
+    rename(estim = DEATH_COUNT) %>%
+    select(day, estim, outcome) 
 
 
   new <- rbind(new_inf, new_sym, new_hos, new_die) %>%
-                group_by(day, outcome) %>% summarise(median = median(estim), 
-                                                 lo = quantile(estim, 0.025), 
-                                                 hi = quantile(estim, 0.975)) %>%
-                ungroup() %>%
-                mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 10) %>%
-                arrange(day)
+    group_by(day, outcome) %>%
+      summarise(median = median(estim), 
+      lo = quantile(estim, 0.025), 
+      hi = quantile(estim, 0.975)) %>%
+    ungroup() %>%
+    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 10) %>%
+    arrange(day)
 
   diag <- rbind(diag_inf, diag_sym, diag_hos, diag_all) %>%
-    group_by(day, outcome) %>% summarise(median = median(estim), 
-                                         lo = quantile(estim, 0.025), 
-                                         hi = quantile(estim, 0.975)) %>%
+    group_by(day, outcome) %>%
+    summarise(median = median(estim), 
+              lo = quantile(estim, 0.025), 
+              hi = quantile(estim, 0.975)) %>%
     ungroup() %>%
     mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 10) %>%
     arrange(day)
 
 
   fit_to_data <- rbind(occur_cas, occur_hos, occur_die) %>%
-                   group_by(day, outcome) %>% summarise(median = median(estim), 
-                                                         lo = quantile(estim, 0.025), 
-                                                         hi = quantile(estim, 0.975)) %>%
-                    ungroup() %>% mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 10) %>%
-                    arrange(day)
+    group_by(day, outcome) %>%
+    summarise(median = median(estim), 
+              lo = quantile(estim, 0.025), 
+              hi = quantile(estim, 0.975)) %>%
+    ungroup() %>%
+    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 10) %>%
+    arrange(day)
 
 
   input_data <- rbind(obs_cas, obs_hos, obs_die) %>%
@@ -160,66 +181,60 @@ viz_melanie <- function() {
          color = "")
 
 
-  mTrsp <- function(cl,a)  { apply(col2rgb(cl), 2, function(x){ rgb(x[1],x[2],x[3],a,maxColorValue=255)}) }
   new.par <- par(mfrow=c(2,3))
-   mod <- fit[["p_sym_if_inf"]]
-   mn <- as.numeric(datList[["pri_p_sym_if_inf_a"]])
-   ss <- as.numeric(datList[["pri_p_sym_if_inf_b"]])
-   hist(mod, main = "P(Progression to Symptomatic)", xlab = "", ylab = "")
-   zz <- range(c(mod,0,1))
-   x_pts <- seq(zz[1],zz[2],length.out=101)
-   y_pts <- dbeta(x_pts,mn,ss)
-   lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-   
-   mod <- fit[["p_hos_if_sym"]]
-   mn <- as.numeric(datList[["pri_p_hos_if_sym_a"]])
-   ss <- as.numeric(datList[["pri_p_hos_if_sym_b"]])
-   hist(mod, main = "P(Progression to Hospitalizable)", xlab = "", ylab = "")
-   zz <- range(c(mod,0,1))
-   x_pts <- seq(zz[1],zz[2],length.out=101)
-   y_pts <- dbeta(x_pts,mn,ss)
-   lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-   
-   mod <- fit[["p_die_if_hos"]]
-   mn <- as.numeric(datList[["pri_p_die_if_hos_a"]])
-   ss <- as.numeric(datList[["pri_p_die_if_hos_b"]])
-   hist(mod, main = "P(Progression to Death)", xlab = "", ylab = "")
-   zz <- range(c(mod,0,1))
-   x_pts <- seq(zz[1],zz[2],length.out=101)
-   y_pts <- dbeta(x_pts,mn,ss)
-   lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-   
-   mod <- fit[["p_diag_if_inf"]]
-   mn <- as.numeric(datList[["pri_p_diag_if_inf_a"]])
-   ss <- as.numeric(datList[["pri_p_diag_if_inf_b"]])
-   hist(mod, main = "P(Diagnosis at Infectious)", xlab = "", ylab = "")
-   zz <- range(c(mod,0,1))
-   x_pts <- seq(zz[1],zz[2],length.out=101)
-   y_pts <- dbeta(x_pts,mn,ss)
-   lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-   
-   mod <- fit[["p_diag_if_sym"]]
-   mn <- as.numeric(datList[["pri_p_diag_if_sym_a"]])
-   ss <- as.numeric(datList[["pri_p_diag_if_sym_b"]])
-   hist(mod, main = "P(Diagnosis at Symptomatic)", xlab = "", ylab = "")
-   zz <- range(c(mod,0,1))
-   x_pts <- seq(zz[1],zz[2],length.out=101)
-   y_pts <- dbeta(x_pts,mn,ss)
-   lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-   
-   mod <- fit[["p_diag_if_hos"]]
-   mn <- as.numeric(datList[["pri_p_diag_if_hos_a"]])
-   ss <- as.numeric(datList[["pri_p_diag_if_hos_b"]])
-   hist(mod, main = "P(Diagnosis at Hospitalizable)", xlab = "", ylab = "")
-   zz <- range(c(mod,0,1))
-   x_pts <- seq(zz[1],zz[2],length.out=101)
-   y_pts <- dbeta(x_pts,mn,ss)
-   lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-   
-  par(new.par)
-
-
-  ## Attempt Epi Estim Run!
+  mod <- fit[["p_sym_if_inf"]]
+  mn <- as.numeric(datList[["pri_p_sym_if_inf_a"]])
+  ss <- as.numeric(datList[["pri_p_sym_if_inf_b"]])
+  hist(mod, main = "P(Progression to Symptomatic)", xlab = "", ylab = "")
+  zz <- range(c(mod,0,1))
+  x_pts <- seq(zz[1],zz[2],length.out=101)
+  y_pts <- dbeta(x_pts,mn,ss)
+  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
+  
+  mod <- fit[["p_hos_if_sym"]]
+  mn <- as.numeric(datList[["pri_p_hos_if_sym_a"]])
+  ss <- as.numeric(datList[["pri_p_hos_if_sym_b"]])
+  hist(mod, main = "P(Progression to Hospitalizable)", xlab = "", ylab = "")
+  zz <- range(c(mod,0,1))
+  x_pts <- seq(zz[1],zz[2],length.out=101)
+  y_pts <- dbeta(x_pts,mn,ss)
+  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
+  
+  mod <- fit[["p_die_if_hos"]]
+  mn <- as.numeric(datList[["pri_p_die_if_hos_a"]])
+  ss <- as.numeric(datList[["pri_p_die_if_hos_b"]])
+  hist(mod, main = "P(Progression to Death)", xlab = "", ylab = "")
+  zz <- range(c(mod,0,1))
+  x_pts <- seq(zz[1],zz[2],length.out=101)
+  y_pts <- dbeta(x_pts,mn,ss)
+  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
+  
+  mod <- fit[["p_diag_if_inf"]]
+  mn <- as.numeric(datList[["pri_p_diag_if_inf_a"]])
+  ss <- as.numeric(datList[["pri_p_diag_if_inf_b"]])
+  hist(mod, main = "P(Diagnosis at Infectious)", xlab = "", ylab = "")
+  zz <- range(c(mod,0,1))
+  x_pts <- seq(zz[1],zz[2],length.out=101)
+  y_pts <- dbeta(x_pts,mn,ss)
+  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
+  
+  mod <- fit[["p_diag_if_sym"]]
+  mn <- as.numeric(datList[["pri_p_diag_if_sym_a"]])
+  ss <- as.numeric(datList[["pri_p_diag_if_sym_b"]])
+  hist(mod, main = "P(Diagnosis at Symptomatic)", xlab = "", ylab = "")
+  zz <- range(c(mod,0,1))
+  x_pts <- seq(zz[1],zz[2],length.out=101)
+  y_pts <- dbeta(x_pts,mn,ss)
+  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
+  
+  mod <- fit[["p_diag_if_hos"]]
+  mn <- as.numeric(datList[["pri_p_diag_if_hos_a"]])
+  ss <- as.numeric(datList[["pri_p_diag_if_hos_b"]])
+  hist(mod, main = "P(Diagnosis at Hospitalizable)", xlab = "", ylab = "")
+  zz <- range(c(mod,0,1))
+  x_pts <- seq(zz[1],zz[2],length.out=101)
+  y_pts <- dbeta(x_pts,mn,ss)
+  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
 
 
   library("EpiEstim")
@@ -247,13 +262,7 @@ viz_melanie <- function() {
     labs(title = "Preliminary R Effective Estimate, NYC", 
          subtitle = "Assuming mean SI of 4.1 days (sd 2.1 days)") )
 
-
   dev.off()
-
-
-
-
-
   ############
 
 
