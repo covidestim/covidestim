@@ -24,6 +24,70 @@ modelconfig_add.priors <- function(rightside, leftside) {
   cfg
 }
 
+print.inputs <- function(cfg, .tab = FALSE) {
+
+  t <- ifelse(.tab, '\t', '')
+
+  status_cases <-
+    ifelse(is.null(cfg$obs_cas), '[      ]', glue('[loaded]\t[{length(cfg$obs_cas)} obs]'))
+  status_deaths <-
+    ifelse(is.null(cfg$obs_die), '[      ]', glue('[loaded]\t[{length(cfg$obs_cas)} obs]'))
+  status_hospitalizations <-
+    ifelse(is.null(cfg$obs_hos), '[      ]', glue('[loaded]\t[{length(cfg$obs_cas)} obs]'))
+
+'Inputs:
+
+{t}Cases\t{status_cases}
+{t}Deaths\t{status_deaths}
+{t}Hospitalizations\t{status_hospitalizations}
+
+' -> msg
+
+  cat(glue(msg))
+}
+
+modelconfig_add.input <- function(rightside, leftside) {
+
+  d    <- rightside
+  cfg  <- leftside
+  keys <- c("obs_cas", "obs_die", "obs_hos")
+
+  # Create a list of any existing data
+  preexisting_inputs_lst <- plyr::compact(cfg[keys])
+  preexisting_inputs     <- length(preexisting_inputs_lst) > 0
+
+  att(length(d) == 1)
+  att(names(d) %in% keys)
+
+  att(!is.null(d[[1]]$observation))
+
+  att(
+    !names(d) %in% names(preexisting_inputs_lst),
+    msg = glue("Input {names(d)} cannot be added twice to covidcast config")
+  )
+
+  att(
+    length(unique(d$date)) == length(d$date),
+    msg = "Only one observation per date may be entered for each input type"
+  )
+  
+  att(
+    length(d[[1]]$date) == cfg$N_days,
+    msg = glue("Number of observations in {names(d)} ({length(d[[1]]$date)}) was not equal to N_days ({cfg$N_days})")
+  )
+
+  if (preexisting_inputs) {
+    # At least one type of input has been added so far. Check that the start
+    # dates are the same
+    att(min(d[[1]]$date) == cfg$first_date)
+  }
+
+  cfg[[names(d)]] <- d[[1]]$observation
+  cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
+
+  cfg
+}
+
 validate.modelconfig <- function(cfg) {
 
   N_days <- cfg$N_days # For brevity
@@ -99,9 +163,10 @@ genData <- function(diagData)
     N_days_delay = 10,
     
     # vectors of event counts; default to 0 if no input
-    obs_cas = rep(0, N_days), # vector of int by date. should have 0s if no event that day
-    obs_hos = rep(0, N_days), # vector of int by date. should have 0s if no event that day
-    obs_die = rep(0, N_days), # vector of int by date. should have 0s if no event that day
+    obs_cas = NULL, # vector of int by date. should have 0s if no event that day
+    obs_hos = NULL, # vector of int by date. should have 0s if no event that day
+    obs_die = NULL, # vector of int by date. should have 0s if no event that day
+    first_date = NA,# first day of data, as determined by looking at input data
 
     ## Priors Parameters of random walk in log space <- new infections per day
     # mean of log daily infections on day 1

@@ -27,6 +27,7 @@ print.priors <- function(ps, .tab = FALSE) {
       cat(glue("{idx_better}\t{ps[[idx]]}\n\n"))
     }
   }
+  cat('\n')
 }
 
 is_nonNegativeReal <- function(x, .element_names = NULL) {

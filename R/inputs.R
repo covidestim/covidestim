@@ -1,9 +1,9 @@
 validate_input <- function(d) {
   att(is.data.frame(d))
   att(nrow(d) >= 1)
-  att(setequal(names(data)), c("date", "observation"))
-  att(is.numeric(data$observation))
-  att(all(data$observation > 0))
+  att(setequal(names(d), c("date", "observation")))
+  att(is.numeric(d$observation))
+  att(all(d$observation >= 0))
 }
 
 reformat_dates <- function(vec) lubridate::ymd(vec)

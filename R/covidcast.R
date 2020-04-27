@@ -91,6 +91,13 @@ covidcast_add.priors <- function(rightside, leftside) {
   leftside
 }
 
+covidcast_add.input <- function(rightside, leftside) {
+  print(class(rightside))
+  newConfig       <- leftside$config + rightside
+  leftside$config <- newConfig
+  leftside
+}
+
 print.covidcast <- function(cc) {
 'Covidcast Configuration:
 
@@ -109,6 +116,7 @@ N_days:\t{cc$config$N_days}
 
   cat(substituted_string)
 
-  # Prepend priors with a tab so that they get indented
+  # Prepend priors/inputs with a tab so that they get indented
   print.priors(cc$config, .tab = TRUE)
+  print.inputs(cc$config, .tab = TRUE)
 }
