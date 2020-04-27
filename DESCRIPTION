@@ -23,6 +23,7 @@ Imports:
     RColorBrewer,
     stats,
     glue,
+    stringr,
     parallel,
     purrr,
     rlang,

@@ -26,13 +26,13 @@ print.priors <- function(ps, .tab = FALSE) {
   cat(msg)
 
   for (idx in names(ps)) {
-    if (str_detect(idx, '^pri')) {
+    if (stringr::str_detect(idx, '^pri')) {
       # Random stuff for extra pretty-printing
-      idx_better <- str_replace(idx, '^pri_', '')
-      idx_better <- str_replace(idx_better, '_a', '\t[alpha]')
-      idx_better <- str_replace(idx_better, '_b', '\t[beta]')
-      idx_better <- str_replace(idx_better, '_shap', '\t[shape]')
-      idx_better <- str_replace(idx_better, '_rate', '\t[rate]')
+      idx_better <- stringr::str_replace(idx, '^pri_', '')
+      idx_better <- stringr::str_replace(idx_better, '_a', '\t[alpha]')
+      idx_better <- stringr::str_replace(idx_better, '_b', '\t[beta]')
+      idx_better <- stringr::str_replace(idx_better, '_shap', '\t[shape]')
+      idx_better <- stringr::str_replace(idx_better, '_rate', '\t[rate]')
 
       if (.tab)
         cat('\t')

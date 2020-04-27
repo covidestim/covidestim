@@ -79,7 +79,7 @@ modelconfig_add.input <- function(rightside, leftside) {
     att(min(d[[1]]$date) == cfg$first_date)
   }
 
-  cfg[[names(d)]] <- d[[1]]$observation
+  cfg[[names(d)]] <- as.integer(d[[1]]$observation)
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
   cfg

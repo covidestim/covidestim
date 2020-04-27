@@ -12,7 +12,7 @@
 #'   to disk using \code{\link[base]{saveRDS}} to enable model replicability.
 #'
 #' @examples
-#' print.covidcast(covidcast(N_days = 50, seed = 42))
+#' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
 covidcast <- function(chains=3, iter=500, N_days = 56, seed=1234) {
@@ -42,6 +42,7 @@ covidcast <- function(chains=3, iter=500, N_days = 56, seed=1234) {
 }
 
 #' @export
+#' @rdname run.covidcast
 run <- function(...) UseMethod('run')
 
 #' @export

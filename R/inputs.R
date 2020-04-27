@@ -6,6 +6,13 @@ validate_input <- function(d) {
   att(all(d$observation >= 0))
 }
 
+transform_input <- function(d)
+  dplyr::mutate(
+    d,
+    date = reformat_dates(date),
+    observation = as.integer(observation)
+  )
+
 reformat_dates <- function(vec) lubridate::ymd(vec)
 
 #' Input observational data
@@ -30,7 +37,7 @@ reformat_dates <- function(vec) lubridate::ymd(vec)
 #' @export
 input_cases <- function(data) {
   validate_input(data)
-  data <- dplyr::mutate(data, date = reformat_dates(date))
+  data <- transform_input(data)
   structure(list(obs_cas=data), class='input')
 }
 
@@ -38,7 +45,7 @@ input_cases <- function(data) {
 #' @export
 input_deaths <- function(data) {
   validate_input(data)
-  data <- dplyr::mutate(data, date = reformat_dates(date))
+  data <- transform_input(data)
   structure(list(obs_die=data), class='input')
 }
 
@@ -46,6 +53,6 @@ input_deaths <- function(data) {
 #' @export
 input_hospitalizations <- function(data) {
   validate_input(data)
-  data <- dplyr::mutate(data, date = reformat_dates(date))
+  data <- transform_input(data)
   structure(list(obs_hos=data), class='input')
 }
