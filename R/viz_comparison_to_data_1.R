@@ -1,12 +1,14 @@
 #' Comparison to data figure #1
 #'
-#' @param samps The result of \code{\link[rstan]{extract}}
-#' @param datList The data block passed to \code{\link[rstan]{stan}}
-#' @param diagData The fake diagnosis data returned from \code{\link{genFakeData}}
+#' @param cc A covidcast_result. See \code{\link{covidcast_result}}
 #'
 #' @return Side effects of plotting
 #' @export
-viz_comparison_to_data_1 <- function(samps, datList, diagData) {
+viz_comparison_to_data_1 <- function(cc) {
+  samps    <- cc$extract
+  datList  <- cc$config
+  diagData <- cc$HMMMMMMMM # need to fix this...
+
   ########### Comparison to data ###########
   # pdfnam <- "covidcast_comparison_to_data_1.pdf"
   # pdf(file = pdfnam, width = 9, height = 6.5)

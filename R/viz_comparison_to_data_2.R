@@ -4,7 +4,11 @@
 #'
 #' @return Side effects of plotting
 #' @export
-viz_comparison_to_data_2 <- function(samps, datList, diagData) {
+viz_comparison_to_data_2 <- function(cc) {
+  samps    <- cc$extract
+  datList  <- cc$config
+  diagData <- cc$HMMMMMMMM # need to fix this...
+
   ########### Comparison to data 2 ###########
 
   par(mfrow = c(1, 1), mar = c(2.5, 3.5, 2, 0.2), oma = c(0, 0, 0, 0))
