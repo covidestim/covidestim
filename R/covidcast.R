@@ -5,6 +5,8 @@
 #' @param chains The number of chains to use
 #' @param iter The number of iterations to run
 #' @param N_days A number. The number of days of data being modeled.
+#' @param N_days_delay. A number. How many days before the first day of model
+#'   data should be modeled?
 #' @param seed A number. The random number generator seed for use in sampling.
 #'
 #' @return An S3 object of type \code{covidcast}. This can be passed to 
@@ -15,7 +17,7 @@
 #' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(chains=3, iter=500, N_days, seed=1234) {
+covidcast <- function(chains=3, iter=500, N_days, N_days_delay=10, seed=1234) {
 
   att(is.numeric(N_days), N_days >= 1)
 
