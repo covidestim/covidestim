@@ -314,7 +314,7 @@ priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
 
   structure(ps, class="priors")
 }
-
+## needs to be surfaced, remind Marcus
 priors_fixed <- function() {
   list(
     inf_prg_delay_shap_a = 4, 

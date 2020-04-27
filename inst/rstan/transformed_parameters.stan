@@ -45,6 +45,10 @@ transformed parameters {
   vector[N_days_tot]  res_inf; // resolve from state (all back to no disease)
   vector[N_days_tot]  res_sym;
   vector[N_days_tot]  res_hos;
+  
+  vector[N_days_tot]  cur_inf; // currently in state << undiagnosed >>
+  vector[N_days_tot]  cur_sym;
+  vector[N_days_tot]  cur_hos;
 
   vector[N_days_tot]  new_sym_u; // enter new state << undiagnosed >>
   vector[N_days_tot]  new_hos_u;
@@ -146,13 +150,11 @@ die_cum_report_delay = cumulative_sum(die_rep_delay);
   res_hos = rep_vector(0, N_days_tot);
   
   for(i in 1:N_days_tot) {
-    for(j in 1:N_days_tot) {
-      if(i+(j-1) <= N_days_tot){
-        res_inf[i+(j-1)] += new_inf[i] * 
-        (1-p_sym_if_inf) * inf_res_delay[j]; // probability resolved on day j
-      }
+    for(j in 1:(N_days_tot-i+1)) {  
+      res_inf[i+(j-1)] += new_inf[i] * (1-p_sym_if_inf) *  inf_res_delay[j]; 
     }
   }
+  
   for(i in 1:N_days_tot) {
     for(j in 1:N_days_tot) {
       if(i+(j-1) <= N_days_tot){
@@ -187,6 +189,23 @@ die_cum_report_delay = cumulative_sum(die_rep_delay);
         new_die[i+(j-1)] += new_hos[i] * p_die_if_hos * hos_prg_delay[j];
       }
     }
+  }
+  
+  cur_inf = rep_vector(0, N_days_tot);
+  cur_sym = rep_vector(0, N_days_tot);
+  cur_hos = rep_vector(0, N_days_tot);
+  
+  cur_inf[1] = new_inf[1] - new_sym[1] - res_inf[1];
+  for(i in 2:N_days_tot) {
+    cur_inf[i] = cur_inf[i-1] + new_inf[i] - new_sym[i] - res_inf[i];
+  }
+  cur_sym[1] = new_sym[1] - new_hos[1] - res_sym[1];
+  for(i in 2:N_days_tot) {
+    cur_sym[i] = cur_sym[i-1] + new_sym[i] - new_hos[i] - res_sym[i]; 
+  }
+  cur_hos[1] = new_hos[1] - new_die[1] - res_hos[1];  
+  for(i in 2:N_days_tot) {
+    cur_hos[i] = cur_hos[i-1] + new_hos[i] - new_die[i] - res_hos[i];
   }
 
 // CASCADE OF INCIDENT OUTCOMES << UNDIAGNOSED >> ///////////
@@ -276,10 +295,8 @@ die_cum_report_delay = cumulative_sum(die_rep_delay);
   }
   diag_all = diag_inf + diag_sym + diag_hos;
 
-// REPORTING EXPERIMENT   //~~
- // check way reporting delay is counted -- number reported on day i  
- // reporting triangle more flexible, can be done either way
- 
+// REPORTING //~~
+
   occur_cas = rep_vector(0, N_days_tot);
   occur_hos = rep_vector(0, N_days_tot);
   occur_die = rep_vector(0, N_days_tot);
@@ -287,13 +304,7 @@ die_cum_report_delay = cumulative_sum(die_rep_delay);
 // for data by diagnosis date
 for(i in 1:N_days_tot)  {
   occur_cas[i] += diag_all[i] * cas_cum_report_delay[N_days_tot - i + 1];
-}
-  
-for(i in 1:N_days_tot)  {
-  occur_hos[i] += diag_hos[i] * hos_cum_report_delay[N_days_tot - i + 1];
-}
-
-for(i in 1:N_days_tot)  {
+  occur_hos[i] += (new_hos[i] - new_hos_u[i] + diag_hos[i]) * hos_cum_report_delay[N_days_tot - i + 1];
   occur_die[i] += (new_die[i] - new_die_u[i]) * die_cum_report_delay[N_days_tot - i + 1];
 }
 
@@ -302,16 +313,22 @@ for(i in 1:N_days_tot)  {
   repor_die = rep_vector(0, N_days_tot);
 
 // for data by reporting date  
- for(i in 1:N_days_tot){
-    repor_cas[i] += diag_all[i] * cas_rep_delay[i];
- }
- 
+for(i in 1:N_days_tot){
+   for(j in 1:(N_days_tot - i +1)){
+    repor_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
+  }
+}
   for(i in 1:N_days_tot){
-    repor_hos[i] += diag_hos[i] * hos_rep_delay[i];
- }
+    for(j in 1:(N_days_tot - i +1)){
+    repor_hos[i+(j-1)] += (cur_sym[i] - cur_sym_u[i] + diag_hos[i]) * 
+      hos_rep_delay[j];
+  }
+}
 
  for(i in 1:N_days_tot){
-    repor_die[i] += (new_die[i] - new_die_u[i]) *  die_rep_delay[i];
- }
+   for(j in 1:(N_days_tot - i +1)){
+    repor_die[i+(j-1)] += (new_die[i] - new_die_u[i]) *  die_rep_delay[j];
+  }
+}  
 
 }

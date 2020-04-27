@@ -166,8 +166,6 @@ genData <- function(diagData)
     # hyper prior on random walk
     # sd of daily change in log infections
     # pri_log_new_inf_drift_sd = 1,
-    # mean of daily change in log infections
-    pri_sigma_deriv1_log_new_inf_sd = 1,
 
     # priors on the second derivative; penalizes sharp changes in random walk;
     # gives rw momentum
@@ -178,7 +176,7 @@ genData <- function(diagData)
     #n_spl_par = n_spl_par,
 
     # poisson or negative binomial
-    nb_yes = 0,
+    nb_yes = 1,
     obs_cas_rep = 0, 
     obs_hos_rep = 0, 
     obs_die_rep = 0,
