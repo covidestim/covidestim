@@ -1,7 +1,8 @@
-plot.covidcast_result <- function(obj) viz_melanie(obj)
+plot.covidcast_result <- function(obj, cases)
+  viz_melanie(obj, cases)
 
 ## COVID viz 
-viz_melanie <- function(obj) {
+viz_melanie <- function(obj, cases) {
   result <- obj$result
   fit    <- obj$extracted
 
@@ -41,7 +42,6 @@ viz_melanie <- function(obj) {
     mutate(day = seq(1, n(), 1), outcome = "obs_die") %>% 
     rename(estim = DEATH_COUNT) %>%
     select(day, estim, outcome) 
-
 
   new <- rbind(new_inf, new_sym, new_hos, new_die) %>%
     group_by(day, outcome) %>%
