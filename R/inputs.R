@@ -1,26 +1,26 @@
 validate_input <- function(d) {
   att(
-    is.data.frame(d)
+    is.data.frame(d),
     msg="Input must be a data.frame"
   )
   att(
-    nrow(d) >= 1
+    nrow(d) >= 1,
     msg="The input data.frame had 0 rows"
   )
   att(
-    setequal(names(d), c("date", "observation"))
+    setequal(names(d), c("date", "observation")),
     msg="The only variables in the data.frame should be 'date' and 'observation'"
   )
   att(
-    "POSIXct" %in% class(d$date)
+    "POSIXct" %in% class(d$date),
     msg="The 'date' variable must be of class 'POSIXct'. Use as.Date()?"
   )
   att(
-    is.numeric(d$observation)
+    is.numeric(d$observation),
     msg="The observation variable must be a numeric vector"
   )
   att(
-    all(d$observation >= 0)
+    all(d$observation >= 0),
     msg="At least one observation was < 0"
   )
 }
