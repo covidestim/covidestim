@@ -16,8 +16,38 @@ modelconfig_add <- function(rightside, leftside) UseMethod('modelconfig_add')
 #' object.
 #'
 #' @export
-modelconfig_add.priors <- function(rightside, leftside)
-  rlang::dots_list(!!!leftside, !!!rightside, .homonyms='last')
+modelconfig_add.priors <- function(rightside, leftside) {
+  cfg <- rlang::dots_list(!!!leftside, !!!rightside, .homonyms='last')
+
+  validate.modelconfig(cfg)
+
+  cfg
+}
+
+validate.modelconfig <- function(cfg) {
+
+  N_days <- cfg$N_days # For brevity
+
+  att_w(cfg$pri_inf_prg_delay_shap/cfg$pri_inf_prg_delay_rate < N_days/2,
+   "Warning: mean delay from infection to symptom onset (relative to total days of data) is longer than expected.")
+  att_w(cfg$pri_sym_prg_delay_shap/cfg$pri_sym_prg_delay_rate < N_days/2,
+   "Warning: mean delay from symptom onset to hospitalization (relative to total days) of data is longer than expected.")
+  att_w(cfg$pri_hos_prg_delay_shap/cfg$pri_hos_prg_delay_rate < N_days/1.5,
+   "Warning: mean delay from hospitalization to death (relative to total days of data) is longer than expected.")
+  att_w(cfg$pri_inf_res_delay_shap/cfg$pri_inf_res_delay_rate < N_days/2,
+   "Warning: mean delay from asymptomatic infection to recovery (relative to total days of data) is longer than expected.")
+  att_w(cfg$pri_sym_res_delay_shap/cfg$pri_sym_res_delay_rate < N_days/2,
+   "Warning: mean delay from symptom onset to recovery (relative to total days of data) is longer than expected.")
+  att_w(cfg$pri_hos_res_delay_shap/cfg$pri_hos_res_delay_rate < N_days/1.5,
+   "Warning: mean delay from hospitalization to recovery (relative to total days of data) is longer than expected.")
+  att_w(cfg$pri_cas_rep_delay_shap/cfg$pri_cas_rep_delay_rate < N_days/3,
+   "Warning: mean reporting delay for cases (relative to total days of data) is longer than expected.")
+  att_w(cfg$pri_hos_rep_delay_shap/cfg$pri_hos_rep_delay_rate < N_days/3,
+   "Warning: mean reporting delay for hospitalizations (relative to total days of data) is longer than expected.")
+  att_w(cfg$pri_die_rep_delay_shap/cfg$pri_die_rep_delay_rate < N_days/3,
+   "Warning: mean reporting delay for deaths (relative to total days of data) is longer than expected.")
+
+}
           
 #' An overloaded addition operator, dispatched on the type of the lhs argument.
 #'
@@ -95,15 +125,21 @@ genData <- function(diagData)
     obs_hos_rep = 0, 
     obs_die_rep = 0,
 
-    !!! priors_transitions(),
-    !!! priors_progression(),
-    !!! priors_recovery(),
-    !!! priors_reporting_delay(),
-    !!! priors_diagnosis(),
-    !!! priors_fixed()
   )
 
-  structure(config, class='modelconfig')
+  structure(config, class='modelconfig') +
+    structure(
+      rlang::dots_list(
+        !!! priors_transitions(),
+        !!! priors_progression(),
+        !!! priors_recovery(),
+        !!! priors_reporting_delay(),
+        !!! priors_diagnosis(),
+        !!! priors_fixed()
+      ),
+      class = 'priors'
+    )
+
 }
 
 #' High level description of the function

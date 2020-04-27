@@ -14,7 +14,10 @@
 #' print(mtcars)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(config = defaultConfig(), chains=3, iter=500) {
+covidcast <- function(config = defaultConfig(), chains=3, iter=500, N_days = 56) {
+
+  config <- splice_class(config, list(N_days=N_days), 'modelconfig')
+  validate.modelconfig(config)
 
   list(
     config  = config,
@@ -83,7 +86,7 @@ covidcast_add.priors <- function(rightside, leftside) {
 }
 
 print.covidcast <- function(cc) {
-'Covidcast configuration
+'Covidcast Configuration:
 
 Seed:\t{cc$seed}
 Chains:\t{cc$chains}
@@ -91,6 +94,7 @@ Iterations:\t{cc$iter}
 Warmup runs:\t{cc$warmup}
 Priors: Valid
 Stan file:\t{cc$file}
+N_days:\t{cc$config$N_days}
 
 
 ' -> model_summary
@@ -99,5 +103,5 @@ Stan file:\t{cc$file}
 
   cat(substituted_string)
 
-  print.priors(cc$config)
+  print.priors(cc$config, .tab = TRUE)
 }

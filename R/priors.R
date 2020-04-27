@@ -6,7 +6,7 @@ beta_  <- function(mv) (mv[2]^2)/mv[1]
 # A list with arbitrary values, of class 'priors'
 priors <- function(...) structure(list(...), class='priors')
 
-print.priors <- function(ps) {
+print.priors <- function(ps, .tab = FALSE) {
 'Priors:
 
 ' -> msg
@@ -20,6 +20,10 @@ print.priors <- function(ps) {
       idx_better <- str_replace(idx_better, '_b', '\t[beta]')
       idx_better <- str_replace(idx_better, '_shap', '\t[shape]')
       idx_better <- str_replace(idx_better, '_rate', '\t[rate]')
+
+      if (.tab)
+        cat('\t')
+
       cat(glue("{idx_better}\t{ps[[idx]]}\n\n"))
     }
   }
