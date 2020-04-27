@@ -29,24 +29,32 @@ validate.modelconfig <- function(cfg) {
   N_days <- cfg$N_days # For brevity
 
   att_w(cfg$pri_inf_prg_delay_shap/cfg$pri_inf_prg_delay_rate < N_days/2,
-   "Warning: mean delay from infection to symptom onset (relative to total days of data) is longer than expected.")
+   "Mean delay from infection to symptom onset (relative to total days of data) is longer than expected.")
   att_w(cfg$pri_sym_prg_delay_shap/cfg$pri_sym_prg_delay_rate < N_days/2,
-   "Warning: mean delay from symptom onset to hospitalization (relative to total days) of data is longer than expected.")
+   "Mean delay from symptom onset to hospitalization (relative to total days) of data is longer than expected.")
   att_w(cfg$pri_hos_prg_delay_shap/cfg$pri_hos_prg_delay_rate < N_days/1.5,
-   "Warning: mean delay from hospitalization to death (relative to total days of data) is longer than expected.")
+   "Mean delay from hospitalization to death (relative to total days of data) is longer than expected.")
   att_w(cfg$pri_inf_res_delay_shap/cfg$pri_inf_res_delay_rate < N_days/2,
-   "Warning: mean delay from asymptomatic infection to recovery (relative to total days of data) is longer than expected.")
+   "Mean delay from asymptomatic infection to recovery (relative to total days of data) is longer than expected.")
   att_w(cfg$pri_sym_res_delay_shap/cfg$pri_sym_res_delay_rate < N_days/2,
-   "Warning: mean delay from symptom onset to recovery (relative to total days of data) is longer than expected.")
+   "Mean delay from symptom onset to recovery (relative to total days of data) is longer than expected.")
   att_w(cfg$pri_hos_res_delay_shap/cfg$pri_hos_res_delay_rate < N_days/1.5,
-   "Warning: mean delay from hospitalization to recovery (relative to total days of data) is longer than expected.")
+   "Mean delay from hospitalization to recovery (relative to total days of data) is longer than expected.")
   att_w(cfg$pri_cas_rep_delay_shap/cfg$pri_cas_rep_delay_rate < N_days/3,
-   "Warning: mean reporting delay for cases (relative to total days of data) is longer than expected.")
+   "Mean reporting delay for cases (relative to total days of data) is longer than expected.")
   att_w(cfg$pri_hos_rep_delay_shap/cfg$pri_hos_rep_delay_rate < N_days/3,
-   "Warning: mean reporting delay for hospitalizations (relative to total days of data) is longer than expected.")
+   "Mean reporting delay for hospitalizations (relative to total days of data) is longer than expected.")
   att_w(cfg$pri_die_rep_delay_shap/cfg$pri_die_rep_delay_rate < N_days/3,
-   "Warning: mean reporting delay for deaths (relative to total days of data) is longer than expected.")
+   "Mean reporting delay for deaths (relative to total days of data) is longer than expected.")
 
+  mean_sym_if_inf  <- cfg$pri_p_sym_if_inf_a  / (cfg$pri_p_sym_if_inf_a  + cfg$pri_p_sym_if_inf_b)
+  mean_diag_if_sym <- cfg$pri_p_diag_if_sym_a / (cfg$pri_p_diag_if_sym_a + cfg$pri_p_diag_if_sym_b)
+  mean_diag_if_hos <- cfg$pri_p_diag_if_hos_a / (cfg$pri_p_diag_if_hos_a + cfg$pri_p_diag_if_hos_b)
+
+  att_w(mean_sym_if_inf <= mean_diag_if_sym,
+        "Mean probability of diagnosis is higher for asymptomatic individuals than for symptomatic individuals.")
+  att_w(mean_diag_if_sym <= mean_diag_if_hos,
+        "Mean probability of diagnosis is higher for non-hospitalized individuals than for hospitalized individuals.")
 }
           
 #' An overloaded addition operator, dispatched on the type of the lhs argument.

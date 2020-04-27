@@ -86,6 +86,9 @@ priors_transitions <- function(p_sym_if_inf = c(50, 50),   # a/b
                                p_hos_if_sym = c(30, 70),   # a/b
                                p_die_if_hos = c(2.5, 97.5)) { # a/b
 
+  att(length(p_sym_if_inf) == 2)
+  att(length(p_hos_if_sym) == 2)
+  att(length(p_die_if_hos) == 2)
   att(is_nonNegativeReal(p_sym_if_inf))
   att(is_nonNegativeReal(p_hos_if_sym))
   att(is_nonNegativeReal(p_die_if_hos))
@@ -96,7 +99,7 @@ priors_transitions <- function(p_sym_if_inf = c(50, 50),   # a/b
     p_die_if_hos,
     .postfix=c("_a", "_b")
   ) -> ps
-  
+
   structure(ps, class='priors')
 }
 
@@ -128,6 +131,9 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
                                hos_prg_delay = c(9.164, 1.041)) {# shap/rate
 
+  att(length(inf_prg_delay) == 2)
+  att(length(sym_prg_delay) == 2)
+  att(length(hos_prg_delay) == 2)
   att(is_nonNegativeReal(inf_prg_delay))
   att(is_nonNegativeReal(sym_prg_delay))
   att(is_nonNegativeReal(hos_prg_delay))
@@ -173,6 +179,9 @@ priors_recovery <- function(inf_res_delay = c(23.83, 2.383), # shap/rate
                             sym_res_delay = c(10.50, 2.099), # shap/rate
                             hos_res_delay = c(60.86, 3.567)) {# shap/rate
 
+  att(length(inf_res_delay) == 2)
+  att(length(sym_res_delay) == 2)
+  att(length(hos_res_delay) == 2)
   att(is_nonNegativeReal(inf_res_delay))
   att(is_nonNegativeReal(sym_res_delay))
   att(is_nonNegativeReal(hos_res_delay))
@@ -213,6 +222,9 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
                                    hos_rep_delay = c(1.73, 0.78), # shap/rate 
                                    die_rep_delay = c(1.73, 0.78)) { # shap/rate
 
+  att(length(cas_rep_delay) == 2)
+  att(length(hos_rep_delay) == 2)
+  att(length(die_rep_delay) == 2)
   att(is_nonNegativeReal(cas_rep_delay))
   att(is_nonNegativeReal(hos_rep_delay))
   att(is_nonNegativeReal(die_rep_delay))
@@ -250,6 +262,9 @@ priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
                              p_diag_if_sym = c(8.0, 2.0), # a/b
                              p_diag_if_hos = c(9.5, 0.5)) {# a/b
 
+  att(length(p_diag_if_inf) == 2)
+  att(length(p_diag_if_sym) == 2)
+  att(length(p_diag_if_hos) == 2)
   att(is_nonNegativeReal(p_diag_if_inf))
   att(is_nonNegativeReal(p_diag_if_sym))
   att(is_nonNegativeReal(p_diag_if_hos))

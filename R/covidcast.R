@@ -16,8 +16,14 @@
 #' @export
 covidcast <- function(config = defaultConfig(), chains=3, iter=500, N_days = 56) {
 
+  att(is.numeric(N_days), N_days >= 1)
+
   config <- splice_class(config, list(N_days=N_days), 'modelconfig')
-  validate.modelconfig(config)
+
+  # All user-specified config-related things must be specified above this line
+  # to avoid double-validation/no-validation
+  if (!missing(N_days))
+    validate.modelconfig(config)
 
   list(
     config  = config,
@@ -103,5 +109,6 @@ N_days:\t{cc$config$N_days}
 
   cat(substituted_string)
 
+  # Prepend priors with a tab so that they get indented
   print.priors(cc$config, .tab = TRUE)
 }
