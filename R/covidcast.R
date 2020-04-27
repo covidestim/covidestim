@@ -22,7 +22,7 @@ covidcast <- function(chains=3, iter=500, N_days, N_days_delay=10, seed=1234) {
   att(is.numeric(N_days), N_days >= 1)
 
 
-  config <- defaultConfig()
+  config <- defaultConfig(N_days=N_days, N_days_delay=N_days_delay)
   config <- splice_class(config, list(N_days=N_days), 'modelconfig')
 
   # All user-specified config-related things must be specified above this line
@@ -74,7 +74,7 @@ run.covidcast <- function(cc) {
 
   rstan::stan(
     file    = system.file(paste0("rstan/", cc$file),
-                          package=pkgload::pkg_name(),
+                          package='covidcast',
                           mustWork=TRUE),
     control = cc$control,
     data    = cc$config,

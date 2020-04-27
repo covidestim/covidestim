@@ -12,8 +12,8 @@ validate_input <- function(d) {
     msg="The only variables in the data.frame should be 'date' and 'observation'"
   )
   att(
-    "POSIXct" %in% class(d$date),
-    msg="The 'date' variable must be of class 'POSIXct'. Use as.Date()?"
+    "POSIXct" %in% class(d$date) | "Date" %in% class(d$date),
+    msg="The 'date' variable must be of class 'POSIXct' or 'Date'. Use as.Date()?"
   )
   att(
     is.numeric(d$observation),

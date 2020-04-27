@@ -142,7 +142,7 @@ genData <- function(N_days, N_days_delay = 10)
     N_days = as.integer(N_days),
 
     #n day to model before start of data
-    N_days_delay = as.integer(N_days_delay)
+    N_days_delay = as.integer(N_days_delay),
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
