@@ -46,7 +46,7 @@ model {
 //// LIKELIHOOD
 //SWITCH TO NEG BIN
   if (nb_yes == 1) {
-      if(obs_cas_rep == 1){
+      if(obs_cas_rep == 0){
          for(i in 1:N_days) {
             obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_delay], phi_cas);
           }
@@ -56,7 +56,7 @@ model {
           }
        }
       
-      if(obs_hos_rep == 1){
+      if(obs_hos_rep == 0){
          for(i in 1:N_days) {
             obs_hos[i] ~ neg_binomial_2(occur_hos[i + N_days_delay], phi_hos);
               }
@@ -66,7 +66,7 @@ model {
            }
         }
      
-     if(obs_die_rep == 1){
+     if(obs_die_rep == 0){
        for(i in 1:N_days) {
           obs_die[i] ~ neg_binomial_2(occur_die[i + N_days_delay], phi_die);
          }
@@ -77,7 +77,7 @@ model {
      }
      
   } else { 
-       if(obs_cas_rep == 1){
+       if(obs_cas_rep == 0){
          for(i in 1:N_days) {
             obs_cas[i] ~ poisson(occur_cas[i + N_days_delay]);
           }
@@ -86,7 +86,7 @@ model {
             obs_cas[i] ~ poisson(repor_cas[i + N_days_delay]);
           }
       }
-      if(obs_hos_rep == 1){
+      if(obs_hos_rep == 0){
          for(i in 1:N_days) {
             obs_hos[i] ~ poisson(occur_hos[i + N_days_delay]);
             }
@@ -95,7 +95,7 @@ model {
             obs_hos[i] ~ poisson(repor_hos[i + N_days_delay]);
           }
       }
-     if(obs_die_rep == 1){
+     if(obs_die_rep == 0){
        for(i in 1:N_days) {
           obs_die[i] ~ poisson(occur_die[i + N_days_delay]);
           }
