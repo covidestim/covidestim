@@ -1,7 +1,19 @@
 # Equations for converting a mean and variance to the alpha/beta parameters
 # of a gamma distribution. Sourced from Reza's class slides.
-alpha_ <- function(mv) (mv[1]^2)/mv[2]
-beta_  <- function(mv) (mv[2]^2)/mv[1]
+
+#' Convert mean/variance stats to alpha/beta parameters of gamma distribution
+#'
+#' Using a method of moments approach, converts a sample with a specified
+#' mean and variance to a parameterization of a gamma distribution
+#'
+#' @param mv A two-element numeric vector, where \code{[1]} represents mean
+#'   and \code{[2]} represents variance.
+#'
+#' @return A number representing the alpha or beta parameter
+pri_alpha <- function(mv) (mv[1]^2)/mv[2]
+
+#' @rdname pri_alpha
+pri_beta  <- function(mv) (mv[2]^2)/mv[1]
 
 # A list with arbitrary values, of class 'priors'
 priors <- function(...) structure(list(...), class='priors')
@@ -15,6 +27,7 @@ print.priors <- function(ps, .tab = FALSE) {
 
   for (idx in names(ps)) {
     if (str_detect(idx, '^pri')) {
+      # Random stuff for extra pretty-printing
       idx_better <- str_replace(idx, '^pri_', '')
       idx_better <- str_replace(idx_better, '_a', '\t[alpha]')
       idx_better <- str_replace(idx_better, '_b', '\t[beta]')
@@ -30,6 +43,7 @@ print.priors <- function(ps, .tab = FALSE) {
   cat('\n')
 }
 
+# Custom test. May experiment with 'on_failure(f) <- ' later on.
 is_nonNegativeReal <- function(x, .element_names = NULL) {
   att(is.numeric(x))
   
@@ -46,6 +60,13 @@ is_nonNegativeReal <- function(x, .element_names = NULL) {
 #   names(env)
 # }
 
+#' Helper function for manipulation of prior-related list-structures
+#'
+#' Assumes each argument is a two-element vector. Captures the name of each
+#' argument. Creates two list-elements for each argument, using the 
+#' naming convention given by '.postfix'. Prefixes these list-element keys
+#' with the string 'pri_'. Returns the new list.
+#'
 #' @importFrom magrittr %>%
 build_priors <- function(..., .postfix = c("_a", "_b")) {
 
@@ -70,21 +91,28 @@ build_priors <- function(..., .postfix = c("_a", "_b")) {
 #'
 #' This function returns a keyed list of priors related to progression to
 #' various health states. Called with no arguments, the default values are
-#' returned. 
+#' returned. All parameters must be non-negative real numbers. Additionally,
+#' the mean of the distribution described by \code{p_sym_if_inf} should be
+#' \code{<=} than the mean of the
+#' \code{\link[=priors_diagnosis]{p_diag_if_sym}}. Otherwise, a warning will be
+#' triggered.
 #'
-#' @param p_sym_if_inf A two-element numeric vector containing mean, and
-#'   variance of the probability of being symtomatic if infectious
-#' @param p_hos_if_sym A two-element numeric vector containing mean, and
-#'   variance of the probability of hospitalization if symptomatic
-#' @param p_die_if_hos A two-element numeric vector containing mean, and
-#'   variance of the probability of dying if hospitalized
+#' @param p_sym_if_inf A two-element numeric vector containing \code{c(alpha,
+#'   beta)} parameters of a Beta distribution modeling the probability of being
+#'   symptomatic if infectious
+#' @param p_hos_if_sym A two-element numeric vector containing \code{c(alpha,
+#'   beta)} parameters of a Beta distribution modeling the probability of
+#'   hospitalization if infectious
+#' @param p_die_if_hos A two-element numeric vector containing \code{c(alpha,
+#'   beta)} parameters of a Beta distribution modeling the probability of dying
+#'   if hospitalized
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
-#' setup <- covidcast() + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
+#' cfg <- covidcast() + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
-priors_transitions <- function(p_sym_if_inf = c(50, 50),   # a/b
-                               p_hos_if_sym = c(30, 70),   # a/b
+priors_transitions <- function(p_sym_if_inf = c(50, 50),      # a/b
+                               p_hos_if_sym = c(30, 70),      # a/b
                                p_die_if_hos = c(2.5, 97.5)) { # a/b
 
   att(length(p_sym_if_inf) == 2)
@@ -113,21 +141,22 @@ priors_transitions <- function(p_sym_if_inf = c(50, 50),   # a/b
 #' the infectious state. Called with no arguments, the default values are
 #' returned. The following arguments can be passed to create different priors:
 #'
-#' \code{inf_prg_delay_shap}
-#' \code{inf_prg_delay_rate}
-#' \code{sym_prg_delay_shap}
-#' \code{sym_prg_delay_rate}
-#' \code{hos_prg_delay_shap}
-#' \code{hos_prg_delay_rate}
-#' 
-#' Default values of these priors 
+#' @param inf_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' parameters of a Gamma distribution modeling [...]
 #'
+#' @param sym_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' parameters of a Gamma distribution modeling [...] 
+#'
+#' @param hos_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' parameters of a Gamma distribution modeling [...] 
+#' 
 #' @param ... A set of key-value pairs from those listed above. If no
 #'   arguments are passed, default values will be used
 #'
-#' @return An S3 object of class 'modelconfig'
+#' @return An S3 object of class \code{priors}
 #' @examples
-#' setup <- covidcast() + priors_progression(inf_prg_delay_shap = 3.5)
+#' cfg <- covidcast() + priors_progression(inf_prg_delay = c(4, 1))
+#' @export
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
                                hos_prg_delay = c(9.164, 1.041)) {# shap/rate
@@ -161,21 +190,19 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #' the infectious state. Called with no arguments, the default values are
 #' returned. The following arguments can be passed to create different priors:
 #'
-#' \code{inf_res_delay_shap}
-#' \code{inf_res_delay_rate}
-#' \code{sym_res_delay_shap}
-#' \code{sym_res_delay_rate}
-#' \code{hos_res_delay_shap}
-#' \code{hos_res_delay_rate}
+#' @param inf_res_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' parameters of a Gamma distribution modeling [...]
+#'
+#' @param sym_res_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' parameters of a Gamma distribution modeling [...] 
+#'
+#' @param hos_res_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' parameters of a Gamma distribution modeling [...] 
 #' 
-#' Default values of these priors 
-#'
-#' @param ... A set of key-value pairs from those listed above. If no
-#'   arguments are passed, default values will be used
-#'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' setup <- covidcast() + priors_recovery(inf_res_delay_shap = 20.12)
+#' cfg <- covidcast() + priors_recovery(inf_res_delay = c(20.12, 2.1))
+#' @export
 priors_recovery <- function(inf_res_delay = c(23.83, 2.383), # shap/rate
                             sym_res_delay = c(10.50, 2.099), # shap/rate
                             hos_res_delay = c(60.86, 3.567)) {# shap/rate
@@ -203,22 +230,23 @@ priors_recovery <- function(inf_res_delay = c(23.83, 2.383), # shap/rate
 #' Called with no arguments, the default values are returned. The following
 #' arguments can be passed to create different priors:
 #'
-#' \code{pri_cas_rep_delay_shap}
-#' \code{pri_cas_rep_delay_rate}
-#' \code{pri_hos_rep_delay_shap}
-#' \code{pri_hos_rep_delay_rate}
-#' \code{pri_die_rep_delay_shap}
-#' \code{pri_die_rep_delay_rate}
+#' @param case_rep_delay A two-element numeric vector containing \code{c(shape,
+#'   scale)} parameters of a Gamma distribution modeling [...]
 #'
-#' Default values should be explained here, as well as constraints on custom
-#' values. (Default values are assumed?)
+#' @param hos_rel_delay A two-element numeric vector containing \code{c(shape,
+#'   scale)} parameters of a Gamma distribution modeling [...] 
 #'
-#' @param ... A set of key-value pairs from those listed above. If no
-#'   arguments are passed, default values will be used
+#' @param die_rep_delay A two-element numeric vector containing \code{c(shape,
+#'   scale)} parameters of a Gamma distribution modeling [...] 
+#'
+#' All parameters should a \code{shape/rate < N_days}, where \code{N_days} is
+#' the number of days of data being modeled, as passed to
+#' \code{\link{covidcast()}}.
 #'
 #' @return An S3 object of class 'modelconfig'
 #' @examples
-#' setup <- covidcast() + priors_reporting_delay(pri_report_delay_shap = 6)
+#' cfg <- covidcast() + priors_reporting_delay(pri_report_delay_shap = 6)
+#' @export
 priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate 
                                    hos_rep_delay = c(1.73, 0.78), # shap/rate 
                                    die_rep_delay = c(1.73, 0.78)) { # shap/rate
@@ -248,16 +276,23 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
 #' Default values should be explained here, as well as constraints on custom
 #' values. (Default values are assumed?)
 #'
-#' @param p_diag_if_inf A two-element numeric vector containing mean, and
-#'   variance of the probability of being diagnosed if infectious
-#' @param p_diag_if_sym A two-element numeric vector containing mean, and
-#'   variance of the probability of being diagnosed if symptomatic
-#' @param p_diag_if_hos A two-element numeric vector containing mean, and
-#'   variance of the probability of being diagnosed if hospitalized
+#' @param p_diag_if_inf A two-element numeric vector containing \code{c(alpha,
+#'   beta)} parameters of a Beta distribution modeling the probability of being
+#'   diagnosed if infectious
+#'
+#' @param p_diag_if_sym A two-element numeric vector containing \code{c(alpha,
+#'   beta)} parameters of a Beta distribution modeling the probability of
+#'   diagnosed if symptomatic. The mean of this distribution should be less
+#'   the mean of the distribution parameterized by \code{p_diag_if_hos}.
+#'   Otherwise, a warning will be displayed.
+#'
+#' @param p_diag_if_hos A two-element numeric vector containing \code{c(alpha,
+#'   beta)} parameters of a Beta distribution modeling the probability of
+#'   being diagnosed if hospitalized
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' setup <- covidcast() + priors_diagnosis(p_diag_if_inf = c(0.5, 0.1))
+#' cfg <- covidcast() + priors_diagnosis(p_diag_if_inf = c(0.5, 0.1))
 #' @export
 priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
                              p_diag_if_sym = c(8.0, 2.0), # a/b

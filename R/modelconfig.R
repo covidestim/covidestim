@@ -1,6 +1,5 @@
 #' Model configuration object. It can be modified through overloading
 #' the addition operator
-#' @export
 modelconfig <- function(...) {
   config <- list(...)
 
@@ -14,8 +13,6 @@ modelconfig_add <- function(rightside, leftside) UseMethod('modelconfig_add')
 #'
 #' Splices in all the keys from a 'priors' obj into a 'modelconfig' (leftside)
 #' object.
-#'
-#' @export
 modelconfig_add.priors <- function(rightside, leftside) {
   cfg <- rlang::dots_list(!!!leftside, !!!rightside, .homonyms='last')
 
@@ -132,21 +129,6 @@ validate.modelconfig <- function(cfg) {
   modelconfig_add(b, a)
 }
 
-#' High level description of the function
-#'
-#' More extended description of the function
-#'
-#' @param param1 Description
-#'
-#' @param param2 Description
-#'
-#' @param param3 Description
-#'
-#' @return The return value
-#'
-#' @examples
-#' print(mtcars)
-#' @export
 genData <- function(diagData)
 {
   N_days <- max(diagData$diagnosis_day) + diagData$N_days_before
@@ -166,7 +148,10 @@ genData <- function(diagData)
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
     obs_hos = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day
-    first_date = NA,# first day of data, as determined by looking at input data
+
+    # first day of data, as determined by looking at input data. This allows 
+    # matching the above^ case data to specific dates.
+    first_date = NA,
 
     ## Priors Parameters of random walk in log space <- new infections per day
     # mean of log daily infections on day 1
@@ -197,9 +182,10 @@ genData <- function(diagData)
     obs_cas_rep = 0, 
     obs_hos_rep = 0, 
     obs_die_rep = 0,
-
   )
 
+  # Adding the priors in separately is neccessary in order to make checks
+  # on the priors that depend on the value of 'config$N_days' run
   structure(config, class='modelconfig') +
     structure(
       rlang::dots_list(
@@ -212,7 +198,6 @@ genData <- function(diagData)
       ),
       class = 'priors'
     )
-
 }
 
 #' High level description of the function
@@ -229,5 +214,4 @@ genData <- function(diagData)
 #'
 #' @examples
 #' print(mtcars)
-#' @export
 defaultConfig <- function() genData(genFakeData())

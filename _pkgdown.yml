@@ -2,23 +2,22 @@ destination: docs
 reference:
 - title: Model execution
 - contents:
-  - covidcast
+  - run
 
 - title: Model configuration
 - contents:
-  - defaultConfig
-  - modelconfig
-  - genData
+  - covidcast
 
 - subtitle: Data
+  desc: Covidcast expects three data sources to be present - case data, death data, and hospitalization data. These functions allow adding these data sources to the model configuration.
 - contents:
-  - genFakeData
   - starts_with("input")
 
 - subtitle: Priors
-  desc: These functions allow customization of model priors
+  desc: These functions allow customization of model priors. By default, Covidcast comes with a complete set of priors. However, these functions make it possible to override the default parameterizations of the prior distributions, within certain constraints.
 - contents:
   - starts_with("priors")
+  - starts_with("pri_")
 
 - title: Visualization
 - contents:

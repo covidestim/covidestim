@@ -8,46 +8,44 @@ validate_input <- function(d) {
 
 reformat_dates <- function(vec) lubridate::ymd(vec)
 
-#' Input case data
+#' Input observational data
 #'
-#' Takes daily diagnosis data as \code{data}.
+#' There are three types of observational data that can be used with Covidcast.
 #'
-#' @param data A \code{\link[base]{data.frame}} containing case data
+#' \itemize{
+#'   \item Case reporting data, detailing the number of new cases each day
+#'   \item Hospitalization data, detailing the number of hospitalizations each day
+#'   \item Death data, detailing the number of confirmed Covid-19 deaths each day
+#' }
+#'
+#' All input data to Covidcast is expected to be a
+#' \code{\link[base]{data.frame}}, of two variables One variable \code{date}
+#' will be of the form \code{YYYY-MM-DD}.  The second column,
+#' \code{observations} will be a non-negative numeric vector.
+#'
+#' Missing values should be represented as 0. The date range of the three sets
+#' of data must be equivalent, with one observation each day, and no gaps in
+#' the data. Several checks will attempt to enforce this specification.
 #'
 #' @export
 input_cases <- function(data) {
   validate_input(data)
-
   data <- dplyr::mutate(data, date = reformat_dates(date))
-
   structure(list(obs_cas=data), class='input')
 }
 
-#' Input deaths data
-#'
-#' Takes daily deaths data as \code{data}.
-#'
-#' @param data A \code{\link[base]{data.frame}} containing deaths data
-#'
+#' @rdname input_cases
 #' @export
 input_deaths <- function(data) {
   validate_input(data)
-  
   data <- dplyr::mutate(data, date = reformat_dates(date))
-
   structure(list(obs_die=data), class='input')
 }
 
-#' Takes hospitalizations data as \code{data}.
-#'
-#' @param data A \code{\link[base]{data.frame}} containing hospitalizations
-#'   data
-#'
+#' @rdname input_cases
 #' @export
 input_hospitalizations <- function(data) {
   validate_input(data)
-  
   data <- dplyr::mutate(data, date = reformat_dates(date))
-
   structure(list(obs_hos=data), class='input')
 }
