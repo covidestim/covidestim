@@ -3,8 +3,10 @@ plot.covidcast_result <- function(obj, cases)
 
 ## COVID viz 
 viz_melanie <- function(obj, cases) {
-  result <- obj$result
-  fit    <- obj$extracted
+  library(tidyverse)
+  result  <- obj$result
+  fit     <- obj$extracted
+  datList <- obj$config
 
   summary_fit <- rstan::summary(result)
 
@@ -239,6 +241,7 @@ viz_melanie <- function(obj, cases) {
 
   library("EpiEstim")
   library("lubridate")
+
   data1 <- group_by(new_inf, day) %>% summarise(cases = median(estim)) %>% 
     mutate(day = substr(day, start = 2, stop =4)) %>%
     arrange(as.numeric(day)) %>%
