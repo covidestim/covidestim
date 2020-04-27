@@ -15,7 +15,7 @@
 #' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(chains=3, iter=500, N_days = 56, seed=1234) {
+covidcast <- function(chains=3, iter=500, N_days, seed=1234) {
 
   att(is.numeric(N_days), N_days >= 1)
 

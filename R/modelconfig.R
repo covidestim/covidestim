@@ -79,7 +79,10 @@ modelconfig_add.input <- function(rightside, leftside) {
     att(min(d[[1]]$date) == cfg$first_date)
   }
 
+  # Need as.integer to make things play nicely with 'rstan'
   cfg[[names(d)]] <- as.integer(d[[1]]$observation)
+
+  # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
   cfg
