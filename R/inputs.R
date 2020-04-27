@@ -1,27 +1,26 @@
-#att <- assertthat::assert_that
-
-validate_input <- function(data) {
-  att(is.data.frame(data))
-  att(nrow(data) > 1)
+validate_input <- function(d) {
+  att(is.data.frame(d))
+  att(nrow(d) >= 1)
+  att(setequal(names(data)), c("date", "observation"))
+  att(is.numeric(data$observation))
+  att(all(data$observation > 0))
 }
+
+reformat_dates <- function(vec) lubridate::ymd(vec)
 
 #' Input case data
 #'
 #' Takes daily diagnosis data as \code{data}.
 #'
 #' @param data A \code{\link[base]{data.frame}} containing case data
-#' @param ddate A string. The variable name containing date data. Date data
-#'   should be specified as YYYY-MM-DD, and should be of type \code{character}.
-#' @param count A string. The variable name containing the counts of diagnosed
-#'   patients. Must be of type \code{numeric}.
 #'
 #' @export
-input_cases <- function(data, ddate='date', count='count') {
+input_cases <- function(data) {
   validate_input(data)
-  
-  data <- dplyr::select(data, ddate=ddate, count=count)
 
-  structure(list(data=data), class='input')
+  data <- dplyr::mutate(data, date = reformat_dates(date))
+
+  structure(list(obs_cas=data), class='input')
 }
 
 #' Input deaths data
@@ -29,54 +28,26 @@ input_cases <- function(data, ddate='date', count='count') {
 #' Takes daily deaths data as \code{data}.
 #'
 #' @param data A \code{\link[base]{data.frame}} containing deaths data
-#' @param ddate A string. The variable name containing date data. Date data
-#'   should be specified as YYYY-MM-DD, and should be of type \code{character}.
-#' @param count A string. The variable name containing the counts of deaths.
-#'   Must be of type \code{numeric}.
 #'
 #' @export
-input_deaths <- function(data, ddate='date', count='count') {
+input_deaths <- function(data) {
   validate_input(data)
   
-  data <- dplyr::select(data, ddate=ddate, count=count)
+  data <- dplyr::mutate(data, date = reformat_dates(date))
 
-  structure(list(data=data), class='input')
+  structure(list(obs_die=data), class='input')
 }
 
-#'
 #' Takes hospitalizations data as \code{data}.
 #'
 #' @param data A \code{\link[base]{data.frame}} containing hospitalizations
 #'   data
-#' @param ddate A string. The variable name containing date data. Date data
-#'   should be specified as YYYY-MM-DD, and should be of type \code{character}.
-#' @param count A string. The variable name containing the counts of newly
-#'   hospitalized parients. Must be of type \code{numeric}.
 #'
 #' @export
-input_hospitalizations <- function(data, hdate='date', count='count') {
+input_hospitalizations <- function(data) {
   validate_input(data)
   
-  data <- dplyr::select(data, hdate=hdate, count=count)
+  data <- dplyr::mutate(data, date = reformat_dates(date))
 
-  structure(list(data=data), class='input')
+  structure(list(obs_hos=data), class='input')
 }
-
-#'
-#' Takes cumulative case data as \code{data}.
-#'
-#' @param data A \code{\link[base]{data.frame}} containing testing data
-#' @param ddate A string. The variable name containing date data. Date data
-#'   should be specified as YYYY-MM-DD, and should be of type \code{character}.
-#' @param count A string. The variable name containing the number of positive
-#'   tests recorded that day. Should be of type \code{numeric}
-#'
-#' @export
-input_tests <- function(data, tdate='date', count='count') {
-  validate_input(data)
-  
-  data <- dplyr::select(data, tdate=tdate, count=count)
-
-  structure(list(data=data), class='input')
-}
-
