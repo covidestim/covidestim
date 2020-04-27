@@ -1,9 +1,28 @@
 validate_input <- function(d) {
-  att(is.data.frame(d))
-  att(nrow(d) >= 1)
-  att(setequal(names(d), c("date", "observation")))
-  att(is.numeric(d$observation))
-  att(all(d$observation >= 0))
+  att(
+    is.data.frame(d)
+    msg="Input must be a data.frame"
+  )
+  att(
+    nrow(d) >= 1
+    msg="The input data.frame had 0 rows"
+  )
+  att(
+    setequal(names(d), c("date", "observation"))
+    msg="The only variables in the data.frame should be 'date' and 'observation'"
+  )
+  att(
+    "POSIXct" %in% class(d$date)
+    msg="The 'date' variable must be of class 'POSIXct'. Use as.Date()?"
+  )
+  att(
+    is.numeric(d$observation)
+    msg="The observation variable must be a numeric vector"
+  )
+  att(
+    all(d$observation >= 0)
+    msg="At least one observation was < 0"
+  )
 }
 
 transform_input <- function(d)
@@ -13,7 +32,7 @@ transform_input <- function(d)
     observation = as.integer(observation)
   )
 
-reformat_dates <- function(vec) lubridate::ymd(vec)
+reformat_dates <- function(vec) vec
 
 #' Input observational data
 #'
@@ -21,13 +40,15 @@ reformat_dates <- function(vec) lubridate::ymd(vec)
 #'
 #' \itemize{
 #'   \item Case reporting data, detailing the number of new cases each day
-#'   \item Hospitalization data, detailing the number of hospitalizations each day
-#'   \item Death data, detailing the number of confirmed Covid-19 deaths each day
+#'   \item Hospitalization data, detailing the number of hospitalizations each
+#'   day
+#'   \item Death data, detailing the number of confirmed Covid-19 deaths each
+#'   day
 #' }
 #'
 #' All input data to Covidcast is expected to be a
 #' \code{\link[base]{data.frame}}, of two variables One variable \code{date}
-#' will be of the form \code{YYYY-MM-DD}.  The second column,
+#' must be a vector of \code{\link[base]{POSIXct}}. The second column,
 #' \code{observations} will be a non-negative numeric vector.
 #'
 #' Missing values should be represented as 0. The date range of the three sets
