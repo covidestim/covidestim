@@ -79,7 +79,10 @@ modelconfig_add.input <- function(rightside, leftside) {
     att(min(d[[1]]$date) == cfg$first_date)
   }
 
+  # Need as.integer to make things play nicely with 'rstan'
   cfg[[names(d)]] <- as.integer(d[[1]]$observation)
+
+  # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
   cfg
@@ -129,20 +132,17 @@ validate.modelconfig <- function(cfg) {
   modelconfig_add(b, a)
 }
 
-genData <- function(diagData)
+genData <- function(N_days, N_days_delay = 10)
 {
-  N_days <- max(diagData$diagnosis_day) + diagData$N_days_before
-  N_days_extra <- 1
-
   # The first set of components of 'datList'
   config <- rlang::dots_list(
     .homonyms = "error", # Ensure that no keys are entered twice
 
     #n days of data to model 
-    N_days = N_days,
+    N_days = as.integer(N_days),
 
     #n day to model before start of data
-    N_days_delay = 10,
+    N_days_delay = as.integer(N_days_delay),
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
@@ -176,10 +176,10 @@ genData <- function(diagData)
     #n_spl_par = n_spl_par,
 
     # poisson or negative binomial
-    nb_yes = 1,
-    obs_cas_rep = 0, 
-    obs_hos_rep = 0, 
-    obs_die_rep = 0,
+    nb_yes      = as.integer(1),
+    obs_cas_rep = as.integer(0), 
+    obs_hos_rep = as.integer(0), 
+    obs_die_rep = as.integer(0),
   )
 
   # Adding the priors in separately is neccessary in order to make checks
@@ -212,4 +212,4 @@ genData <- function(diagData)
 #'
 #' @examples
 #' print(mtcars)
-defaultConfig <- function() genData(genFakeData())
+defaultConfig <- function(...) genData(...)

@@ -30,6 +30,7 @@ Imports:
     Rcpp (>= 1.0.4.6),
     plyr
 Suggests: 
+  tidyr,
   testthat,
   grDevice
 RoxygenNote: 7.1.0
