@@ -320,7 +320,7 @@ for(i in 1:N_days_tot){
 }
   for(i in 1:N_days_tot){
     for(j in 1:(N_days_tot - i +1)){
-    repor_hos[i+(j-1)] += (cur_sym[i] - cur_sym_u[i] + diag_hos[i]) * 
+    repor_hos[i+(j-1)] += (new_hos[i] - new_hos_u[i] + diag_hos[i]) * 
       hos_rep_delay[j];
   }
 }

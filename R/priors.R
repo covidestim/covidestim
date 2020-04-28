@@ -295,7 +295,7 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
 #' cfg <- covidcast() + priors_diagnosis(p_diag_if_inf = c(0.5, 0.1))
 #' @export
 priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
-                             p_diag_if_sym = c(8.0, 2.0), # a/b
+                             p_diag_if_sym = c(5.0, 5.0), # a/b
                              p_diag_if_hos = c(9.5, 0.5)) {# a/b
 
   att(length(p_diag_if_inf) == 2)
