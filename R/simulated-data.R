@@ -22,7 +22,7 @@ print.simulateddata <- function(d) {
 #' \eqn{y} is drawn from a gamma distribution \eqn{y \sim \Gamma(\alpha = 4.5,
 #' \beta = 0.5)}{gamma (4.5, 0.5)}, for a total of ~1,250 deaths by day 50.
 #' ‘reported’ data is created by simulating gaps and delays in detection and
-#' reporting of true symptomatic cases. 50% of symptomatic cases on a given day
+#' reporting of true symptomatic cases. 50\% of symptomatic cases on a given day
 #' \eqn{i} will be detected. For each detected case on day \eqn{i}, a date of
 #' detection, \eqn{j}, is assigned, and a date of reporting, \eqn{k}, such
 #' that:
@@ -30,21 +30,24 @@ print.simulateddata <- function(d) {
 #' \deqn{\textrm{case}_{\textrm{true},i} = \textrm{case}_{\textrm{reported},
 #' i+j+k}}{case_(true,i) = case_(reported, i+j+k)}
 #' 
-#' Where j and k are drawn from discrete gamma distributions, (4,1) and (2,1)
-#' respectively. We simulate hospitalization in a similar manner; 95% of
-#' hospitalizations attributed to a case will be detected. For each detected
-#' hospitalization, we assign a date of detection, j, and a date of reporting,
-#' k, such that:
+#' Where \eqn{j} and \eqn{k} are drawn from discrete gamma distributions,
+#' \eqn{\Gamma(\alpha=4, \beta=1)}{(4,1)} and \eqn{\Gamma(\alpha=2,
+#' \beta=1)}{(2,1)} respectively. We simulate hospitalization in a similar
+#' manner; 95\% of hospitalizations attributed to a case will be detected. For
+#' each detected hospitalization, we assign a date of detection, \eqn{j}, and a
+#' date of reporting, \eqn{k}, such that:
 #' 
 #' \deqn{\textrm{hospital}_{\textrm{true},i} =
 #' \textrm{hospital}_{\textrm{reported}, i+j+k}}{case_(true,i) =
 #' case_(reported, i+j+k)}
 #' 
-#' Where j and k are drawn from discrete gamma distributions, (2,1) and
-#' (1.7,0.75) respectively.  Finally, we simulated reported deaths assuming
-#' that 95% of deaths attributed to a will be properly attributed with a
-#' reporting delay drawn from a gamma distribution (2,1). We use simulated data
-#' from days 6 – 50 (45 days total) as input into the model.
+#' Where \eqn{j} and \eqn{k} are drawn from discrete gamma distributions,
+#' \eqn{\Gamma(\alpha=2, \beta=1)}{(2,1)} and \eqn{\Gamma(\alpha=1.7,
+#' \beta=0.75)}{(1.7,0.75)} respectively.  Finally, we simulated reported
+#' deaths assuming that 95\% of deaths attributed to a will be properly
+#' attributed with a reporting delay drawn from a gamma distribution
+#' \eqn{\Gamma(\alpha=2, \beta=1)}{(2,1)}. We use simulated data from days 6 –
+#' 50 (45 days total) as input into the model.
 #'
 #' @param p_cases_hospitalized A number in \code{[0,1]}. The fraction of cases
 #'   that are hospitalized.
