@@ -1,0 +1,64 @@
+---
+title: "Running Covidcast with fake data"
+author: "Marcus Russi"
+date: "4/27/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Fake data
+
+```{r cars}
+library(covidcast)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(magrittr)
+```
+
+```{r}
+# Two keys: sim_repor[report_day, cases, hosp, deaths],
+#           sim_true [report_day, cases, hosp, deaths]
+n_days <- 50
+sim <- simulated_data(n_days = n_days)
+
+# Some reporting days have no data. In this case, we fill in these implicitly
+# missing rows with zeroes for cases, hospitalizations, and deaths.
+tidyr::complete(
+  # This tidbit is here because there are duplicate days in the reported data.
+  # This is likely a bug in the code for `simulated_data`
+  sim$report %>% group_by(report_day) %>% summarize_all(sum),
+  report_day = 1:n_days,
+  fill = list(cases=0, hosp=0, deaths=0)
+) -> report
+
+startdate <- now() - days(60)
+
+reformat <- function(df, startdate, var)
+  transmute(
+    df,
+    date        = startdate + days(report_day - 1),
+    observation = !!rlang::sym(var)
+  )
+
+reported_cases  <- reformat(report, startdate, 'cases')
+reported_hosp   <- reformat(report, startdate, 'hosp')
+reported_deaths <- reformat(report, startdate, 'deaths')
+```
+
+This is the part where we load the data inputs into covidcast
+```{r}
+cfg <- covidcast(N_days=n_days) +
+  input_cases(reported_cases) +
+  input_hospitalizations(reported_hosp) +
+  input_deaths(reported_deaths)
+```
+
+```{r}
+results <- run(cfg)
+```
+
+
