@@ -108,13 +108,13 @@ covidcast_add <- function(rightside, leftside) UseMethod('covidcast_add')
 covidcast_add.priors <- function(rightside, leftside) {
   newConfig       <- leftside$config + rightside
   leftside$config <- newConfig
-  leftside
+  structure(leftside, class='covidcast')
 }
 
 covidcast_add.input <- function(rightside, leftside) {
   newConfig       <- leftside$config + rightside
   leftside$config <- newConfig
-  leftside
+  structure(leftside, class='covidcast')
 }
 
 #' @export
