@@ -47,13 +47,14 @@ reformat_dates <- function(vec) vec
 #' }
 #'
 #' All input data to Covidcast is expected to be a
-#' \code{\link[base]{data.frame}}, of two variables One variable \code{date}
-#' must be a vector of \code{\link[base]{POSIXct}}. The second column,
-#' \code{observations} will be a non-negative numeric vector.
+#' \code{\link[base]{data.frame}} of two variables. One variable \code{date}
+#' must be a vector of type \code{\link[base]{POSIXct}} or
+#' \code{\link[base]{Date}}. The second column, \code{observations} will be a
+#' non-negative numeric vector.
 #'
-#' Missing values should be represented as 0. The date range of the three sets
+#' Missing values should be represented as \code{0}. The date range of the three sets
 #' of data must be equivalent, with one observation each day, and no gaps in
-#' the data. Several checks will attempt to enforce this specification.
+#' the data. Assertions attempt to enforce this specification.
 #'
 #' @export
 input_cases <- function(data) {
