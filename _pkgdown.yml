@@ -22,3 +22,8 @@ reference:
 - title: Visualization
 - contents:
   - starts_with("viz")
+
+- title: Simulated data
+  desc: Covidcast includes a utility to generate fake epidemic data, consisting of underlying truthy data, and reporting data that represents a limited and inaccurate picture of this underlying truthy data. This data can be used to assess model fit under a variety of hypothetical scenarios.
+- contents:
+  - starts_with("sim")
