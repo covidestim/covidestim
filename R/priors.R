@@ -111,9 +111,9 @@ build_priors <- function(..., .postfix = c("_a", "_b")) {
 #' @examples
 #' cfg <- covidcast() + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
-priors_transitions <- function(p_sym_if_inf = c(50, 50),      # a/b
-                               p_hos_if_sym = c(30, 70),      # a/b
-                               p_die_if_hos = c(2.5, 97.5)) { # a/b
+priors_transitions <- function(p_sym_if_inf = c(59, 41),      # a/b
+                               p_hos_if_sym = c(31, 69),      # a/b
+                               p_die_if_hos = c(1.25, 48.75)) { # a/b
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_hos_if_sym) == 2)
@@ -159,7 +159,7 @@ priors_transitions <- function(p_sym_if_inf = c(50, 50),      # a/b
 #' @export
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
-                               hos_prg_delay = c(9.164, 1.041)) {# shap/rate
+                               hos_prg_delay = c(2.383, 0.27)) {# shap/rate
 
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)
@@ -294,9 +294,9 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
 #' @examples
 #' cfg <- covidcast() + priors_diagnosis(p_diag_if_inf = c(0.5, 0.1))
 #' @export
-priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
-                             p_diag_if_sym = c(5.0, 5.0), # a/b
-                             p_diag_if_hos = c(9.5, 0.5)) {# a/b
+priors_diagnosis <- function(p_diag_if_inf = c(1, 99), # a/b
+                             p_diag_if_sym = c(3, 7), # a/b
+                             p_diag_if_hos = c(8.5, 1.5)) {# a/b
 
   att(length(p_diag_if_inf) == 2)
   att(length(p_diag_if_sym) == 2)
@@ -317,24 +317,12 @@ priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
 ## needs to be surfaced, remind Marcus
 priors_fixed <- function() {
   list(
-    inf_prg_delay_shap_a = 4, 
-    inf_prg_delay_shap_b = 1, 
-    sym_prg_delay_shap_a = 4, 
-    sym_prg_delay_shap_b = 1, 
-    hos_prg_delay_shap_a = 4,
-    hos_prg_delay_shap_b = 1,
-    inf_res_delay_shap_a = 4,
-    inf_res_delay_shap_b = 1,
-    sym_res_delay_shap_a = 4,
-    sym_res_delay_shap_b = 1,
-    hos_res_delay_shap_a = 4,
-    hos_res_delay_shap_b = 1,
     cas_rep_delay_shp_a  = 3,
-    cas_rep_delay_shp_b  = 1.5, 
+    cas_rep_delay_shp_b  = 1, 
     hos_rep_delay_shp_a  = 3, 
-    hos_rep_delay_shp_b  = 1.5,
+    hos_rep_delay_shp_b  = 1,
     die_rep_delay_shp_a  = 3, 
-    die_rep_delay_shp_b  = 1.5
+    die_rep_delay_shp_b  = 1
   ) -> defaults
 
   structure(defaults, class = 'priors')

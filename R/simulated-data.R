@@ -84,11 +84,11 @@ print.simulateddata <- function(d) {
 #' @importFrom magrittr %>%
 #' @export
 simulated_data <- function(p_cases_hospitalized = 0.35,
-                           p_cases_die = 0.012,
+                           p_cases_die = 0.03,
                            p_cases_diagnosed = 0.5,
                            p_hospitalizations_diagnosed = 0.95,
                            p_deaths_diagnosed = 0.95,
-                           n_days = 50) {
+                           n_days = 60) {
 
   # TRUE symptomatic cases: 
   # number of days of symptomatic cases to simulate
@@ -99,22 +99,22 @@ simulated_data <- function(p_cases_hospitalized = 0.35,
     ccases[1] <- 5
 
     ## simulate growth rates slowing slightly over time
-      for (i in 2:(days-40)){
+      for (i in 2:10){
         growth <- runif(10000, 1.07, 1.09) 
         ccases[i] <- ccases[i-1]^(growth[i])
       }
-      for(i in 11:(days-30)){
+      for(i in 11:20){
         growth <- runif(10000, 1.04, 1.045) 
         ccases[i] <- ccases[i-1]^(growth[i]) 
       }
       for(i in 21:days){
-        growth <- runif(10000, 1.025, 1.03) 
+        growth <- runif(10000, 1.025, 1.0275) 
         ccases[i] <- ccases[i-1]^(growth[i]) 
       }
   # convert from cumulative (ccases) to daily count
   cumulative <- as.data.frame(round(ccases)) %>%
                 dplyr::mutate(daily = `round(ccases)` - 
-                         lag(`round(ccases)`, 1)) %>%
+                         dplyr::lag(`round(ccases)`, 1)) %>%
                 tidyr::replace_na(list(daily = 5))
   # finaly daily case count df, where rowid is day and dialy is count:
   cases_final <- as.data.frame(cumulative$daily) %>% 
@@ -126,13 +126,13 @@ simulated_data <- function(p_cases_hospitalized = 0.35,
 
   # first, generate random # and delay daysd
 
-  fate <- runif(cumulative[50,1], 0, 1)
+  fate <- runif(cumulative[days,1], 0, 1)
   hosp_delay <- rgamma(length(fate), 5, 0.7)
   die_delay <- rgamma(length(fate), 4.5, 0.5)
 
   # create a linelist: 
   # each row is a case
-  # the value of "ll_case" is the data of symptom onset
+  # the value of "ll_case" is the date of symptom onset
   for_ll <- as.data.frame(rep(cases_final$rowid, cases_final$cases)) %>%
             # add random draws
             cbind(fate, hosp_delay, die_delay) %>%
@@ -141,13 +141,13 @@ simulated_data <- function(p_cases_hospitalized = 0.35,
   #35% of cases are hospitalized 
   hosp_ll <- dplyr::filter(for_ll, fate <= p_cases_hospitalized) %>% 
              dplyr::mutate(day = round(ll_case + hosp_delay))
-  #3.5% of hospitalizations / 1.2% cases will die
-  die_ll <- dplyr::filter(hosp_ll, fate <= p_cases_die) %>% 
-            dplyr::mutate(day = round(ll_case + die_delay))
+  #% of hospitalizations / 2% cases will die
+  die_ll <- dplyr::filter(for_ll, fate <= p_cases_die) %>% 
+            dplyr::mutate(day = round(ll_case + hosp_delay + die_delay))
 
   # summarise each _ll back to daily counts: 
-  hospital <- dplyr::group_by(hosp_ll, day) %>% dplyr::summarise(hosp = n())
-  death <- dplyr::group_by(die_ll, day) %>% dplyr::summarise(death = n())
+  hospital <- dplyr::group_by(hosp_ll, day) %>% dplyr::summarise(hosp = dplyr::n())
+  death <- dplyr::group_by(die_ll, day) %>% dplyr::summarise(death = dplyr::n())
 
   # join together in 'true' dataset
   sim_true <- dplyr::left_join(cases_final, hospital, by = c("rowid" = "day")) %>%
@@ -162,27 +162,29 @@ simulated_data <- function(p_cases_hospitalized = 0.35,
   hosp_dd <- round(rgamma(nrow(hosp_ll),2,1))
   hosp_rd <- round(rgamma(nrow(hosp_ll),1.7,0.75))
   die_rd  <- round(rgamma(nrow(die_ll),2,1))
+  
+  
 
   case_by_report <- cbind(for_ll, case_dd, case_rd) %>%
                      dplyr::filter(fate <= p_cases_diagnosed) %>% #50% of cases are diagnosed
                      dplyr::mutate(report_day = ll_case + case_dd + case_rd) %>%
                      dplyr::group_by(report_day) %>%
                      dplyr::summarise(case = n()) %>%
-                     dplyr::filter(report_day <= 50)
+                     dplyr::filter(report_day <= days)
 
   hosp_by_report <- cbind(hosp_ll, hosp_dd, hosp_rd) %>%
                     dplyr::filter(fate <= p_hospitalizations_diagnosed) %>% #95% of hospitalizations are diagnosed
-                    dplyr::mutate(report_day = ll_case + hosp_dd + hosp_rd) %>%
+                    dplyr::mutate(report_day = day + hosp_dd + hosp_rd) %>%
                     dplyr::group_by(report_day) %>%
                     dplyr::summarise(hospital = n()) %>%
-                    dplyr::filter(report_day <= 50)
+                    dplyr::filter(report_day <= days)
 
-  death_by_report <- cbind(hosp_ll, hosp_rd) %>%
+  death_by_report <- cbind(die_ll, die_rd) %>%
                     dplyr::filter(fate <= p_deaths_diagnosed) %>% #95% of deaths are diagnosed
-                    dplyr::mutate(report_day = ll_case +  hosp_rd) %>%
+                    dplyr::mutate(report_day = day + die_rd) %>%
                     dplyr::group_by(report_day) %>%
                     dplyr::summarise(death = n()) %>%
-                    dplyr::filter(report_day <= 50)
+                    dplyr::filter(report_day <= days)
 
   sim_repor <- dplyr::full_join(case_by_report, hosp_by_report, 
                             by = c("report_day" = "report_day")) %>%
@@ -191,7 +193,7 @@ simulated_data <- function(p_cases_hospitalized = 0.35,
                   tidyr::replace_na(list(case = 0, 
                                   hospital = 0, 
                                   death = 0)) %>%
-                  dplyr::filter(report_day >= 6) %>% 
+                  dplyr::filter(report_day >= 11) %>% 
                   ## NOTE sim_repor starts on day 6 of sim_true
                     # e.g. no reported cases until 6 days after
                     # first truly symptomatic case occurs
