@@ -358,7 +358,8 @@ priors_reporting_delays_new <- function(cas_rep_delay = c(3,1),
     cas_rep_delay,
     hos_rep_delay,
     die_rep_delay,
-    .postfix = c("_shp_a", "_shp_b")
+    .postfix = c("_shp_a", "_shp_b"),
+    .prefix = "pri_"
   ) -> ps
 
   structure(ps, class = 'priors')

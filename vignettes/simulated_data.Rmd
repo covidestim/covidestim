@@ -23,18 +23,21 @@ library(magrittr)
 # Two keys: sim_repor[report_day, cases, hosp, deaths],
 #           sim_true [report_day, cases, hosp, deaths]
 n_days <- 50
-sim <- simulated_data(n_days = n_days)
+
+# to account for bug in simulated_data
+sim <- simulated_data(n_days=n_days) 
+
+n_days_before <- min(sim$report$report_day) - 1
 
 # Some reporting days have no data. In this case, we fill in these implicitly
 # missing rows with zeroes for cases, hospitalizations, and deaths.
 tidyr::complete(
-  # This tidbit is here because there are duplicate days in the reported data.
-  # This is likely a bug in the code for `simulated_data`
-  sim$report %>% group_by(report_day) %>% summarize_all(sum),
-  report_day = 1:n_days,
-  fill = list(cases=0, hosp=0, deaths=0)
+  sim$report,
+  report_day = min(sim$report$report_day):n_days,
+  fill       = list(cases=0, hosp=0, deaths=0)
 ) -> report
 
+# Just some arbitrary date
 startdate <- now() - days(60)
 
 reformat <- function(df, startdate, var)
@@ -51,7 +54,7 @@ reported_deaths <- reformat(report, startdate, 'deaths')
 
 This is the part where we load the data inputs into covidcast
 ```{r}
-cfg <- covidcast(N_days=n_days) +
+cfg <- covidcast(N_days=n_days-n_days_before+1, N_days_delay=n_days_before) +
   input_cases(reported_cases) +
   input_hospitalizations(reported_hosp) +
   input_deaths(reported_deaths)

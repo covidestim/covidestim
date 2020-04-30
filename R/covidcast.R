@@ -23,7 +23,6 @@ covidcast <- function(chains=3, iter=500, N_days, N_days_delay=10, seed=1234) {
 
 
   config <- defaultConfig(N_days=N_days, N_days_delay=N_days_delay)
-  config <- splice_class(config, list(N_days=N_days), 'modelconfig')
 
   # All user-specified config-related things must be specified above this line
   # to avoid double-validation/no-validation
@@ -72,6 +71,15 @@ run.covidcast <- function(cc) {
   rstan::rstan_options(auto_write = TRUE) 
   options(mc.cores = parallel::detectCores())
 
+  if (is.null(cc$config$obs_cas))
+    stop("Case data was not entered. See `?input_cases`.")
+
+  if (is.null(cc$config$obs_die))
+    stop("Deaths data was not entered. See `?input_deaths`.")
+
+  if (is.null(cc$config$obs_hos))
+    stop("Hospitalizations data was not entered. See `?input_hospitalizations`.")
+
   rstan::stan(
     file    = system.file(paste0("rstan/", cc$file),
                           package='covidcast',
@@ -97,7 +105,7 @@ run.covidcast <- function(cc) {
 
 #' @export
 "+.covidcast" <- function(a, b) {
-  # 'a' is covidcast, 'b' should be priors or modelconfig
+  # 'a' is covidcast, 'b' should be priors or input
   covidcast_add(b, a)
 }
 
@@ -137,7 +145,5 @@ N_days:\t{cc$config$N_days}
 
   cat(substituted_string)
 
-  # Prepend priors/inputs with a tab so that they get indented
-  print.priors(cc$config, .tab = TRUE)
-  print.inputs(cc$config, .tab = TRUE)
+  print.modelconfig(cc)
 }

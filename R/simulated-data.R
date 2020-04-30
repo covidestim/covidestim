@@ -1,9 +1,9 @@
 #' @export
 print.simulateddata <- function(d) {
   cat("True data:\n")
-  print(head(d$sim_true))
+  print(d$true)
   cat("\nReported data:\n")
-  print(head(d$sim_repor))
+  print(d$reported)
 }
 
 #' Generate simulated epidemic data 

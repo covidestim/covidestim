@@ -7,6 +7,23 @@ modelconfig <- function(...) {
   structure(config, class='modelconfig')
 }
 
+#' @export
+print.modelconfig <- function(cc) {
+  print.priors(cc$config, .tab = TRUE)
+  print.inputs(cc$config, .tab = TRUE)
+}
+
+#' An overloaded addition operator, dispatched on the type of the lhs argument.
+#'
+#' Flips the order of the arguments and calls 'modelconfig_add' to enable type
+#' matching on the rhs operand.
+#'
+#' @export
+"+.modelconfig" <- function(a, b) {
+  # Dispatching on the type of 'b', which should be 'priors' for now.
+  modelconfig_add(b, a)
+}
+
 modelconfig_add <- function(rightside, leftside) UseMethod('modelconfig_add') 
 
 #' Specialization for 'priors' classes.
@@ -19,28 +36,6 @@ modelconfig_add.priors <- function(rightside, leftside) {
   validate.modelconfig(cfg)
 
   cfg
-}
-
-print.inputs <- function(cfg, .tab = FALSE) {
-
-  t <- ifelse(.tab, '\t', '')
-
-  status_cases <-
-    ifelse(is.null(cfg$obs_cas), '[      ]', glue('[loaded]\t[{length(cfg$obs_cas)} obs]'))
-  status_deaths <-
-    ifelse(is.null(cfg$obs_die), '[      ]', glue('[loaded]\t[{length(cfg$obs_cas)} obs]'))
-  status_hospitalizations <-
-    ifelse(is.null(cfg$obs_hos), '[      ]', glue('[loaded]\t[{length(cfg$obs_cas)} obs]'))
-
-'Inputs:
-
-{t}{status_cases} Cases
-{t}{status_deaths} Deaths
-{t}{status_hospitalizations} Hospitalizations
-
-' -> msg
-
-  cat(glue(msg))
 }
 
 modelconfig_add.input <- function(rightside, leftside) {
@@ -88,48 +83,92 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg
 }
 
+print.inputs <- function(cfg, .tab = FALSE) {
+
+  t <- ifelse(.tab, '\t', '')
+
+  status_cases <-
+    ifelse(is.null(cfg$obs_cas), '[ ]', glue('[*]\t[loaded, {length(cfg$obs_cas)} obs]'))
+  status_deaths <-
+    ifelse(is.null(cfg$obs_die), '[ ]', glue('[*]\t[loaded, {length(cfg$obs_cas)} obs]'))
+  status_hospitalizations <-
+    ifelse(is.null(cfg$obs_hos), '[ ]', glue('[*]\t[loaded, {length(cfg$obs_cas)} obs]'))
+
+'Inputs:
+
+{t}{status_cases} Cases
+{t}{status_deaths} Deaths
+{t}{status_hospitalizations} Hospitalizations
+
+' -> msg
+
+  cat(glue(msg))
+}
+
 validate.modelconfig <- function(cfg) {
 
   N_days <- cfg$N_days # For brevity
 
-  att_w(cfg$pri_inf_prg_delay_shap/cfg$pri_inf_prg_delay_rate < N_days/2,
-   "Mean delay from infection to symptom onset (relative to total days of data) is longer than expected.")
-  att_w(cfg$pri_sym_prg_delay_shap/cfg$pri_sym_prg_delay_rate < N_days/2,
-   "Mean delay from symptom onset to hospitalization (relative to total days) of data is longer than expected.")
-  att_w(cfg$pri_hos_prg_delay_shap/cfg$pri_hos_prg_delay_rate < N_days/1.5,
-   "Mean delay from hospitalization to death (relative to total days of data) is longer than expected.")
-  att_w(cfg$pri_inf_res_delay_shap/cfg$pri_inf_res_delay_rate < N_days/2,
-   "Mean delay from asymptomatic infection to recovery (relative to total days of data) is longer than expected.")
-  att_w(cfg$pri_sym_res_delay_shap/cfg$pri_sym_res_delay_rate < N_days/2,
-   "Mean delay from symptom onset to recovery (relative to total days of data) is longer than expected.")
-  att_w(cfg$pri_hos_res_delay_shap/cfg$pri_hos_res_delay_rate < N_days/1.5,
-   "Mean delay from hospitalization to recovery (relative to total days of data) is longer than expected.")
-  att_w(cfg$pri_cas_rep_delay_shap/cfg$pri_cas_rep_delay_rate < N_days/3,
-   "Mean reporting delay for cases (relative to total days of data) is longer than expected.")
-  att_w(cfg$pri_hos_rep_delay_shap/cfg$pri_hos_rep_delay_rate < N_days/3,
-   "Mean reporting delay for hospitalizations (relative to total days of data) is longer than expected.")
-  att_w(cfg$pri_die_rep_delay_shap/cfg$pri_die_rep_delay_rate < N_days/3,
-   "Mean reporting delay for deaths (relative to total days of data) is longer than expected.")
+  case_reporting_mean  <- cfg$pri_cas_rep_delay_shap/cfg$pri_cas_rep_delay_rate
+  hosp_reporting_mean  <- cfg$pri_hos_rep_delay_shap/cfg$pri_hos_rep_delay_rate
+  death_reporting_mean <- cfg$pri_die_rep_delay_shap/cfg$pri_die_rep_delay_rate
 
-  mean_sym_if_inf  <- cfg$pri_p_sym_if_inf_a  / (cfg$pri_p_sym_if_inf_a  + cfg$pri_p_sym_if_inf_b)
+'Mean case reporting delay (relative to total days of data) was longer than
+expected.
+
+Your case reporting delay (`cas_rep_delay`) has a mean of {case_reporting_mean}
+days, whereas the total days of data, N_days, was {N_days}. Consider adjusting
+or removing your custom prior.
+' -> case_reporting_warning
+
+'Mean hospitalization reporting delay (relative to total days of data) was
+longer than expected.
+
+Your hospitalization reporting delay (`hos_rep_delay`) has a mean of
+{hosp_reporting_mean} days, whereas the total days of data, N_days, was
+{N_days}. Consider adjusting or removing your custom prior.
+' -> hosp_reporting_warning
+
+'Mean case reporting delay (relative to total days of data) was longer than
+expected.
+
+Your case reporting delay (`die_rep_delay`) has a mean of {death_reporting_mean}
+days, whereas the total days of data, `N_days`, was {N_days}. Consider adjusting
+or removing your custom prior.
+' -> death_reporting_warning
+
+  att_w(case_reporting_mean < N_days,  glue(case_reporting_warning))
+  att_w(hosp_reporting_mean < N_days,  glue(hosp_reporting_warning))
+  att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
+
+  #############################################################################
+
+'Mean probability of diagnosis was specified as being higher for asymptomatic
+individuals (expressed as the prior `p_diag_if_inf`) than for symptomatic
+individuals (expressed as the prior `p_diag_if_sym`).
+
+mean(`p_diag_if_inf`) = {mean_diag_if_inf}
+mean(`p_diag_if_sym`) = {mean_diag_if_sym}
+
+Consider adjusting or removing your custom priors.
+' -> diagnosis_symptomatic_warning
+
+'Mean probability of diagnosis was specified as being higher for symptomatic,
+non-hospitalized individuals (expressed as the prior `p_diag_if_sym`) than for
+hospitalized individuals (expressed as the prior `p_diag_if_hos`).
+
+mean(`p_diag_if_sym`) = {mean_diag_if_sym}
+mean(`p_diag_if_hos`) = {mean_diag_if_hos}
+
+Consider adjusting or removing your custom priors.
+' -> diagnosis_hospitalized_warning
+
+  mean_diag_if_inf <- cfg$pri_p_diag_if_inf_a  / (cfg$pri_p_diag_if_inf_a  + cfg$pri_p_diag_if_inf_b)
   mean_diag_if_sym <- cfg$pri_p_diag_if_sym_a / (cfg$pri_p_diag_if_sym_a + cfg$pri_p_diag_if_sym_b)
   mean_diag_if_hos <- cfg$pri_p_diag_if_hos_a / (cfg$pri_p_diag_if_hos_a + cfg$pri_p_diag_if_hos_b)
 
-  att_w(mean_sym_if_inf <= mean_diag_if_sym,
-        "Mean probability of diagnosis is higher for asymptomatic individuals than for symptomatic individuals.")
-  att_w(mean_diag_if_sym <= mean_diag_if_hos,
-        "Mean probability of diagnosis is higher for non-hospitalized individuals than for hospitalized individuals.")
-}
-          
-#' An overloaded addition operator, dispatched on the type of the lhs argument.
-#'
-#' Flips the order of the arguments and calls 'modelconfig_add' to enable type
-#' matching on the rhs operand.
-#'
-#' @export
-"+.modelconfig" <- function(a, b) {
-  # Dispatching on the type of 'b', which should be 'priors' for now.
-  modelconfig_add(b, a)
+  att_w(mean_diag_if_inf <= mean_diag_if_sym, glue(diagnosis_symptomatic_warning))
+  att_w(mean_diag_if_sym <= mean_diag_if_hos, glue(diagnosis_hospitalized_warning))
 }
 
 genData <- function(N_days, N_days_delay = 10)
