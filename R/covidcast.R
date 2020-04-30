@@ -88,6 +88,7 @@ run.covidcast <- function(cc) {
 
   structure(
     list(result    = result,
+         summary   = rstan::summary(result)$summary,
          extracted = rstan::extract(result),
          config    = cc$config),
     class='covidcast_result'

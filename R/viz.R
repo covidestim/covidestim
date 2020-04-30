@@ -86,6 +86,9 @@ viz_prep <- function(obj) {
 #     mutate(day = seq(1, n(), 1), outcome = "obs_die") %>% 
 #     rename(estim = DEATH_COUNT) %>%
 #     select(day, estim, outcome) 
+
+  # This is a helper function that does what the above code did before, except
+  # it is nonspecific to format of the NYC data
   reformat_staninputs <- function(vec, outcome) {
     tibble::as_tibble(list(estim = vec)) %>%
       mutate(day = 1:n(), outcome = outcome)
@@ -142,7 +145,7 @@ viz_prep <- function(obj) {
 
   # needs: input_data, fit_to_data
 
-#' @import ggplot
+#' @import ggplot2
 viz_observed_and_fitted <- function(input_data, fit_to_data) {
   ggplot2::ggplot() + 
     geom_point(
@@ -179,7 +182,7 @@ viz_observed_and_fitted <- function(input_data, fit_to_data) {
 
   ## all cases to data 
 
-#' @import ggplot
+#' @import ggplot2
 viz_all_cases_to_data <- function(input_data) {
   ggplot2::ggplot() + 
     geom_point(
@@ -217,7 +220,7 @@ viz_all_cases_to_data <- function(input_data) {
 
 # comparison: fitted, diagnosed, all cases
 
-#' @import ggplot
+#' @import ggplot2
 viz_modeled_cases <- function(fit_to_data, diag, new) {
   ggplot2::ggplot() + 
     geom_line(
@@ -264,7 +267,7 @@ viz_modeled_cases <- function(fit_to_data, diag, new) {
 
 # plotting: all, diagnosed, reported outcomes
 
-#' @import ggplot
+#' @import ggplot2
 viz_incidence <- function(fit_to_data, diag, new) {
   ggplot2::ggplot() +
     geom_line(data = fit_to_data, 
