@@ -26,7 +26,10 @@ print.priors <- function(ps, .tab = FALSE) {
   cat(msg)
 
   for (idx in names(ps)) {
-    if (stringr::str_detect(idx, '^pri')) {
+    if (stringr::str_detect(idx, '^pri') ||
+        # Deal with "priors" that don't begin with "pri_"
+        any(stringr::str_detect(idx, c("_prg_", "_res_")))) {
+
       # Random stuff for extra pretty-printing
       idx_better <- stringr::str_replace(idx, '^pri_', '')
       idx_better <- stringr::str_replace(idx_better, '_a', '\t[alpha]')
@@ -65,10 +68,13 @@ is_nonNegativeReal <- function(x, .element_names = NULL) {
 #' Assumes each argument is a two-element vector. Captures the name of each
 #' argument. Creates two list-elements for each argument, using the 
 #' naming convention given by '.postfix'. Prefixes these list-element keys
-#' with the string 'pri_'. Returns the new list.
+#' with the string '.prefix'. Returns the new list.
 #'
 #' @importFrom magrittr %>%
-build_priors <- function(..., .postfix = c("_a", "_b")) {
+build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
+
+  att(is.character(.postfix))
+  att(assertthat::is.string(.prefix))
 
   arg_names <- purrr::map_chr(rlang::enquos(...), rlang::quo_name)
 
@@ -77,8 +83,8 @@ build_priors <- function(..., .postfix = c("_a", "_b")) {
   purrr::lmap(
     args_rekeyed,
     ~rlang::dots_list(
-      !! glue("pri_{names(.)}{.postfix[1]}") := .[[1]][1],
-      !! glue("pri_{names(.)}{.postfix[2]}") := .[[1]][2],
+      !! glue("{.prefix}{names(.)}{.postfix[1]}") := .[[1]][1],
+      !! glue("{.prefix}{names(.)}{.postfix[2]}") := .[[1]][2],
       .homonyms = 'error'
     )
   )
@@ -111,9 +117,9 @@ build_priors <- function(..., .postfix = c("_a", "_b")) {
 #' @examples
 #' cfg <- covidcast() + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
-priors_transitions <- function(p_sym_if_inf = c(50, 50),      # a/b
-                               p_hos_if_sym = c(30, 70),      # a/b
-                               p_die_if_hos = c(2.5, 97.5)) { # a/b
+priors_transitions <- function(p_sym_if_inf = c(59, 41),      # a/b
+                               p_hos_if_sym = c(31, 69),      # a/b
+                               p_die_if_hos = c(1.25, 48.75)) { # a/b
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_hos_if_sym) == 2)
@@ -126,18 +132,19 @@ priors_transitions <- function(p_sym_if_inf = c(50, 50),      # a/b
     p_sym_if_inf,
     p_hos_if_sym,
     p_die_if_hos,
-    .postfix=c("_a", "_b")
+    .postfix=c("_a", "_b"),
+    .prefix="pri_"
   ) -> ps
 
   structure(ps, class='priors')
 }
 
-#' Priors on delay to progression
+#' Fixed values on delay to progression
 #'
 #' BUG: the following description needs information about what the defaults
 #' were sourced from
 #'
-#' This function returns a keyed list of priors related to progression to
+#' This function returns a keyed list of values related to progression to
 #' the infectious state. Called with no arguments, the default values are
 #' returned. The following arguments can be passed to create different priors:
 #'
@@ -159,7 +166,7 @@ priors_transitions <- function(p_sym_if_inf = c(50, 50),      # a/b
 #' @export
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
-                               hos_prg_delay = c(9.164, 1.041)) {# shap/rate
+                               hos_prg_delay = c(2.383, 0.27)) {# shap/rate
 
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)
@@ -178,7 +185,7 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
   structure(ps, class="priors")
 }
 
-#' Priors on delay to recovered
+#' Fixed values on delay to recovered
 #'
 #' inf to res not well supported in data, guess:
 #' assume mean 10 days, CI 5, 13
@@ -186,7 +193,7 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #' adjust later?
 #' BUG: ^ This needs to be integrated into the documentation!
 #'
-#' This function returns a keyed list of priors related to recovery from
+#' This function returns a keyed list of values related to recovery from
 #' the infectious state. Called with no arguments, the default values are
 #' returned. The following arguments can be passed to create different priors:
 #'
@@ -262,7 +269,8 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
     cas_rep_delay,
     hos_rep_delay,
     die_rep_delay,
-    .postfix=c("_shap", "_rate")
+    .postfix=c("_shap", "_rate"),
+    .prefix = "pri_"
   ) -> ps
 
   structure(ps, class="priors")
@@ -294,9 +302,9 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
 #' @examples
 #' cfg <- covidcast() + priors_diagnosis(p_diag_if_inf = c(0.5, 0.1))
 #' @export
-priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
-                             p_diag_if_sym = c(5.0, 5.0), # a/b
-                             p_diag_if_hos = c(9.5, 0.5)) {# a/b
+priors_diagnosis <- function(p_diag_if_inf = c(1, 99), # a/b
+                             p_diag_if_sym = c(3, 7), # a/b
+                             p_diag_if_hos = c(8.5, 1.5)) {# a/b
 
   att(length(p_diag_if_inf) == 2)
   att(length(p_diag_if_sym) == 2)
@@ -309,33 +317,49 @@ priors_diagnosis <- function(p_diag_if_inf = c(0.1, 9.9), # a/b
     p_diag_if_inf,
     p_diag_if_sym,
     p_diag_if_hos,
-    .postfix=c("_a", "_b")
+    .postfix=c("_a", "_b"),
+    .prefix = "pri_"
   ) -> ps
 
   structure(ps, class="priors")
 }
-## needs to be surfaced, remind Marcus
-priors_fixed <- function() {
-  list(
-    inf_prg_delay_shap_a = 4, 
-    inf_prg_delay_shap_b = 1, 
-    sym_prg_delay_shap_a = 4, 
-    sym_prg_delay_shap_b = 1, 
-    hos_prg_delay_shap_a = 4,
-    hos_prg_delay_shap_b = 1,
-    inf_res_delay_shap_a = 4,
-    inf_res_delay_shap_b = 1,
-    sym_res_delay_shap_a = 4,
-    sym_res_delay_shap_b = 1,
-    hos_res_delay_shap_a = 4,
-    hos_res_delay_shap_b = 1,
-    cas_rep_delay_shp_a  = 3,
-    cas_rep_delay_shp_b  = 1.5, 
-    hos_rep_delay_shp_a  = 3, 
-    hos_rep_delay_shp_b  = 1.5,
-    die_rep_delay_shp_a  = 3, 
-    die_rep_delay_shp_b  = 1.5
-  ) -> defaults
 
-  structure(defaults, class = 'priors')
+#' Priors on reporting delays
+#'
+#' This function returns a keyed list of priors related to delays in reporting
+#' of cases, hospitalizations, and deaths.  Called with no arguments, the
+#' default values are returned. 
+#'
+#' Default values should be explained here, as well as constraints on custom
+#' values. (Default values are assumed?)
+#'
+#' @param cas_rep_delay Documentation about this prior
+#'
+#' @param hos_rep_delay Documentation about this prior
+#'
+#' @param die_rep_delay Documentation about this prior
+#'
+#' @return An S3 object of class 'priors'
+#' @examples
+#' cfg <- covidcast() + priors_reporting_delays_new(p_diag_if_inf = c(0.5, 0.1))
+#' @export
+priors_reporting_delays_new <- function(cas_rep_delay = c(3,1),
+                                        hos_rep_delay = c(3,1),
+                                        die_rep_delay = c(3,1)) {
+  
+  att(length(cas_rep_delay) == 2)
+  att(length(hos_rep_delay) == 2)
+  att(length(die_rep_delay) == 2)
+  att(is_nonNegativeReal(cas_rep_delay))
+  att(is_nonNegativeReal(hos_rep_delay))
+  att(is_nonNegativeReal(die_rep_delay))
+
+  build_priors(
+    cas_rep_delay,
+    hos_rep_delay,
+    die_rep_delay,
+    .postfix = c("_shp_a", "_shp_b")
+  ) -> ps
+
+  structure(ps, class = 'priors')
 }

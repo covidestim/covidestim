@@ -34,9 +34,9 @@ print.inputs <- function(cfg, .tab = FALSE) {
 
 'Inputs:
 
-{t}Cases\t{status_cases}
-{t}Deaths\t{status_deaths}
-{t}Hospitalizations\t{status_hospitalizations}
+{t}{status_cases} Cases
+{t}{status_deaths} Deaths
+{t}{status_hospitalizations} Hospitalizations
 
 ' -> msg
 
@@ -192,7 +192,7 @@ genData <- function(N_days, N_days_delay = 10)
         !!! priors_recovery(),
         !!! priors_reporting_delay(),
         !!! priors_diagnosis(),
-        !!! priors_fixed()
+        !!! priors_reporting_delays_new()
       ),
       class = 'priors'
     )

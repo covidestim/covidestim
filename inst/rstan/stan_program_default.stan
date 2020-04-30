@@ -1,3 +1,4 @@
+stan_code <- "
 data {
   ///~~~~~~~ Define ~~~~~~~
   // INPUT DATA
@@ -8,7 +9,6 @@ data {
   int<lower=0>     obs_die[N_days]; //~~
 
   // PRIORS
-
   // random walk 
   real              pri_log_new_inf_0_mu;
   real<lower=0>     pri_log_new_inf_0_sd;
@@ -29,19 +29,19 @@ data {
   real<lower=0>          pri_p_diag_if_hos_a;
   real<lower=0>          pri_p_diag_if_hos_b;
   // delay to progression
-  real<lower=0>          pri_inf_prg_delay_shap; //~~ new names
-  real<lower=0>          pri_inf_prg_delay_rate;
-  real<lower=0>          pri_sym_prg_delay_shap;
-  real<lower=0>          pri_sym_prg_delay_rate;
-  real<lower=0>          pri_hos_prg_delay_shap;
-  real<lower=0>          pri_hos_prg_delay_rate;
+  real<lower=0>          inf_prg_delay_shap; //~~ new names
+  real<lower=0>          inf_prg_delay_rate;
+  real<lower=0>          sym_prg_delay_shap;
+  real<lower=0>          sym_prg_delay_rate;
+  real<lower=0>          hos_prg_delay_shap;
+  real<lower=0>          hos_prg_delay_rate;
   // delay to recovered  
-  real<lower=0>          pri_inf_res_delay_shap; //~~ new names
-  real<lower=0>          pri_inf_res_delay_rate;
-  real<lower=0>          pri_sym_res_delay_shap;
-  real<lower=0>          pri_sym_res_delay_rate;
-  real<lower=0>          pri_hos_res_delay_shap;
-  real<lower=0>          pri_hos_res_delay_rate;
+  real<lower=0>          inf_res_delay_shap; //~~ new names
+  real<lower=0>          inf_res_delay_rate;
+  real<lower=0>          sym_res_delay_shap;
+  real<lower=0>          sym_res_delay_rate;
+  real<lower=0>          hos_res_delay_shap;
+  real<lower=0>          hos_res_delay_rate;
   // delay to report
   real<lower=0>          pri_cas_rep_delay_shap;
   real<lower=0>          pri_cas_rep_delay_rate;
@@ -49,34 +49,21 @@ data {
   real<lower=0>          pri_hos_rep_delay_rate;
   real<lower=0>          pri_die_rep_delay_shap;
   real<lower=0>          pri_die_rep_delay_rate;
-  // additional delay uncertainties
-  real<lower=0>          inf_prg_delay_shap_a; 
-  real<lower=0>          inf_prg_delay_shap_b;
-  real<lower=0>          sym_prg_delay_shap_a;
-  real<lower=0>          sym_prg_delay_shap_b;
-  real<lower=0>          hos_prg_delay_shap_a;
-  real<lower=0>          hos_prg_delay_shap_b;
+  
+  real<lower=0>          pri_cas_rep_delay_shp_a;
+  real<lower=0>          pri_cas_rep_delay_shp_b;
+  real<lower=0>          pri_hos_rep_delay_shp_a;
+  real<lower=0>          pri_hos_rep_delay_shp_b;
+  real<lower=0>          pri_die_rep_delay_shp_a;
+  real<lower=0>          pri_die_rep_delay_shp_b;
 
-  real<lower=0>          inf_res_delay_shap_a; 
-  real<lower=0>          inf_res_delay_shap_b;
-  real<lower=0>          sym_res_delay_shap_a;
-  real<lower=0>          sym_res_delay_shap_b;
-  real<lower=0>          hos_res_delay_shap_a;
-  real<lower=0>          hos_res_delay_shap_b;
-
-  real<lower=0>          cas_rep_delay_shp_a; 
-  real<lower=0>          cas_rep_delay_shp_b;
-  real<lower=0>          hos_rep_delay_shp_a; 
-  real<lower=0>          hos_rep_delay_shp_b;
-  real<lower=0>          die_rep_delay_shp_a; 
-  real<lower=0>          die_rep_delay_shp_b;
 
   // turn on/off negative binomial
   int<lower = 0, upper = 1> nb_yes; 
   // set whether data are by diagnosis date (vs. reporting date)
-  int<lower=0, upper=1> obs_cas_rep; //~~
-  int<lower=0, upper=1> obs_hos_rep; //~~
-  int<lower=0, upper=1> obs_die_rep; //~~
+  //int<lower=0, upper=1> obs_cas_rep; //~~
+  //int<lower=0, upper=1> obs_hos_rep; //~~
+  //int<lower=0, upper=1> obs_die_rep; //~~
 }
 ///////////////////////////////////////////////////////////
 transformed data {
@@ -112,27 +99,11 @@ parameters {
   real<lower=0, upper=1>  p_sym_if_inf;
   real<lower=0, upper=1>  p_hos_if_sym;
   real<lower=0, upper=1>  p_die_if_hos;
-  
+
 // delay associated with transition to next illness state
-  real<lower=1>           inf_prg_delay_mn;
-  real<lower=1>           sym_prg_delay_mn;
-  real<lower=1>           hos_prg_delay_mn;
-// delay associated with transition to recovered 
-  real<lower=1>           inf_res_delay_mn;
-  real<lower=1>           sym_res_delay_mn;
-  real<lower=1>           hos_res_delay_mn;
-// delay associated with reporting   
   real<lower=1>           cas_rep_delay_mn; //~~         
   real<lower=1>           hos_rep_delay_mn; //~~       
-  real<lower=1>           die_rep_delay_mn; //~~           
-// uncertainty in delays
-  real<lower=1>           inf_prg_delay_shap; //~~
-  real<lower=1>           sym_prg_delay_shap; //~~
-  real<lower=1>           hos_prg_delay_shap; //~~
-  
-  real<lower=1>           inf_res_delay_shap; //~~
-  real<lower=1>           sym_res_delay_shap; //~~
-  real<lower=1>           hos_res_delay_shap; //~~
+  real<lower=1>           die_rep_delay_mn; //~~ 
   
   real<lower=1>           cas_rep_delay_shap; //~~
   real<lower=1>           hos_rep_delay_shap; //~~
@@ -160,14 +131,6 @@ transformed parameters {
   vector[N_days_tot-2]    deriv2_log_new_inf;
   
 // DELAYS probabilitily of reporting w x days delay (PDF of delay distribution)
-  real<lower=0>  inf_prg_delay_rate; //~~
-  real<lower=0>  sym_prg_delay_rate; //~~
-  real<lower=0>  hos_prg_delay_rate; //~~
-  
-  real<lower=0>  inf_res_delay_rate; //~~
-  real<lower=0>  sym_res_delay_rate; //~~
-  real<lower=0>  hos_res_delay_rate; //~~
-  
   real<lower=0>  cas_rep_delay_rate; //~~
   real<lower=0>  hos_rep_delay_rate; //~~
   real<lower=0>  die_rep_delay_rate; //~~
@@ -223,9 +186,9 @@ transformed parameters {
   vector[N_days_tot]  occur_hos; 
   vector[N_days_tot]  occur_die; 
   
-  vector[N_days_tot]  repor_cas; // reported cases by date report
-  vector[N_days_tot]  repor_hos; 
-  vector[N_days_tot]  repor_die; 
+  //vector[N_days_tot]  repor_cas; // reported cases by date report
+  //vector[N_days_tot]  repor_hos; 
+  //vector[N_days_tot]  repor_die; 
   
   real                phi_cas;
   real                phi_hos;
@@ -247,19 +210,11 @@ transformed parameters {
   }
 
 // DLEAYS /////////////////////////
-  inf_prg_delay_rate = inf_prg_delay_shap/inf_prg_delay_mn;
-  sym_prg_delay_rate = sym_prg_delay_shap/sym_prg_delay_mn;
-  hos_prg_delay_rate = hos_prg_delay_shap/hos_prg_delay_mn;
-  
-  inf_res_delay_rate = inf_res_delay_shap/inf_res_delay_mn;
-  sym_res_delay_rate = sym_res_delay_shap/sym_res_delay_mn;
-  hos_res_delay_rate = hos_res_delay_shap/hos_res_delay_mn;
-
   cas_rep_delay_rate = cas_rep_delay_shap/cas_rep_delay_mn;
   hos_rep_delay_rate = hos_rep_delay_shap/hos_rep_delay_mn;
   die_rep_delay_rate = die_rep_delay_shap/die_rep_delay_mn;
-  
-// DELAYS // progression
+
+//  progression
   for(i in 1:N_days_tot) {
     inf_prg_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
       - gamma_cdf(i-1.0, inf_prg_delay_shap, inf_prg_delay_rate);
@@ -269,7 +224,7 @@ transformed parameters {
       - gamma_cdf(i-1.0, hos_prg_delay_shap, hos_prg_delay_rate);
   }
   
-// DELAYS // resolution of case
+// resolution of case
   for(i in 1:N_days_tot) {
     inf_res_delay[i] = gamma_cdf(i+0.0, inf_res_delay_shap, inf_res_delay_rate)
       - gamma_cdf(i-1.0, inf_res_delay_shap, inf_res_delay_rate);
@@ -279,7 +234,7 @@ transformed parameters {
       - gamma_cdf(i-1.0, hos_res_delay_shap, hos_res_delay_rate);
   }
   
-// DELAYS // reporting  //~~
+// reporting  //~~
   for(i in 1:N_days_tot) {
     cas_rep_delay[i] = gamma_cdf(i+0.0, cas_rep_delay_shap, cas_rep_delay_rate)
       - gamma_cdf(i-1.0, cas_rep_delay_shap, cas_rep_delay_rate);
@@ -289,6 +244,7 @@ transformed parameters {
       - gamma_cdf(i-1.0, die_rep_delay_shap, die_rep_delay_rate);
 }
 
+// cumlative delays
 cas_cum_report_delay = cumulative_sum(cas_rep_delay);
 hos_cum_report_delay = cumulative_sum(hos_rep_delay);
 die_cum_report_delay = cumulative_sum(die_rep_delay);
@@ -460,28 +416,28 @@ for(i in 1:N_days_tot)  {
   occur_die[i] += (new_die[i] - new_die_u[i]) * die_cum_report_delay[N_days_tot - i + 1];
 }
 
-  repor_cas = rep_vector(0, N_days_tot);
-  repor_hos = rep_vector(0, N_days_tot);
-  repor_die = rep_vector(0, N_days_tot);
+  //repor_cas = rep_vector(0, N_days_tot);
+  //repor_hos = rep_vector(0, N_days_tot);
+ // repor_die = rep_vector(0, N_days_tot);
 
 // for data by reporting date  
-for(i in 1:N_days_tot){
-   for(j in 1:(N_days_tot - i +1)){
-    repor_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
-  }
-}
-  for(i in 1:N_days_tot){
-    for(j in 1:(N_days_tot - i +1)){
-    repor_hos[i+(j-1)] += (new_hos[i] - new_hos_u[i] + diag_hos[i]) * 
-      hos_rep_delay[j];
-  }
-}
-
- for(i in 1:N_days_tot){
-   for(j in 1:(N_days_tot - i +1)){
-    repor_die[i+(j-1)] += (new_die[i] - new_die_u[i]) *  die_rep_delay[j];
-  }
-}  
+//for(i in 1:N_days_tot){
+//   for(j in 1:(N_days_tot - i +1)){
+ //   repor_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
+//  }
+//}
+//  for(i in 1:N_days_tot){
+//    for(j in 1:(N_days_tot - i +1)){
+//    repor_hos[i+(j-1)] += (new_hos[i] - new_hos_u[i] + diag_hos[i]) * 
+//      hos_rep_delay[j];
+//  }
+//}
+//
+// for(i in 1:N_days_tot){
+//   for(j in 1:(N_days_tot - i +1)){
+//    repor_die[i+(j-1)] += (new_die[i] - new_die_u[i]) *  die_rep_delay[j];
+//  }
+//}  
 
 }
 ///////////////////////////////////////////////////////////  
@@ -496,31 +452,15 @@ model {
     p_sym_if_inf              ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
     p_hos_if_sym              ~ beta(pri_p_hos_if_sym_a, pri_p_hos_if_sym_b);
     p_die_if_hos              ~ beta(pri_p_die_if_hos_a, pri_p_die_if_hos_b);
+ // DELAYS
+    cas_rep_delay_mn          ~ gamma(pri_cas_rep_delay_shap, pri_cas_rep_delay_rate); //~~
+    hos_rep_delay_mn          ~ gamma(pri_hos_rep_delay_shap, pri_hos_rep_delay_rate); //~~
+    die_rep_delay_mn          ~ gamma(pri_die_rep_delay_shap, pri_die_rep_delay_rate); //~~
     
-    inf_prg_delay_shap        ~ normal(inf_prg_delay_shap_a, inf_prg_delay_shap_b); //~~
-    sym_prg_delay_shap        ~ normal(sym_prg_delay_shap_a, sym_prg_delay_shap_b); //~~
-    hos_prg_delay_shap        ~ normal(hos_prg_delay_shap_a, hos_prg_delay_shap_b); //~~
-    inf_res_delay_shap        ~ normal(inf_res_delay_shap_a, inf_res_delay_shap_b); //~~
-    sym_res_delay_shap        ~ normal(sym_res_delay_shap_a, sym_res_delay_shap_b); //~~
-    hos_res_delay_shap        ~ normal(hos_res_delay_shap_a, hos_res_delay_shap_b); //~~
-    
-    cas_rep_delay_shap        ~ normal(cas_rep_delay_shp_a, cas_rep_delay_shp_b); //~~
-    hos_rep_delay_shap        ~ normal(hos_rep_delay_shp_a, hos_rep_delay_shp_b); //~~
-    die_rep_delay_shap        ~ normal(die_rep_delay_shp_a, die_rep_delay_shp_b); //~~
-    
-    // new priors names
-    inf_prg_delay_mn          ~ gamma(pri_inf_prg_delay_shap, pri_inf_prg_delay_rate); 
-    sym_prg_delay_mn          ~ gamma(pri_sym_prg_delay_shap, pri_sym_prg_delay_rate);
-    hos_prg_delay_mn          ~ gamma(pri_hos_prg_delay_shap, pri_hos_prg_delay_rate);
-    inf_res_delay_mn          ~ gamma(pri_inf_res_delay_shap, pri_inf_res_delay_rate);
-    sym_res_delay_mn          ~ gamma(pri_sym_res_delay_shap, pri_sym_res_delay_rate);
-    hos_res_delay_mn          ~ gamma(pri_hos_res_delay_shap, pri_hos_res_delay_rate);
-    
-    // add priors for each delay dist
-    cas_rep_delay_mn          ~gamma(pri_cas_rep_delay_shap, pri_cas_rep_delay_rate); //~~
-    hos_rep_delay_mn          ~gamma(pri_hos_rep_delay_shap, pri_hos_rep_delay_rate); //~~
-    die_rep_delay_mn          ~gamma(pri_die_rep_delay_shap, pri_die_rep_delay_rate); //~~
-  
+    cas_rep_delay_shap        ~ gamma(pri_cas_rep_delay_shp_a, pri_cas_rep_delay_shp_b); //~~
+    hos_rep_delay_shap        ~ gamma(pri_hos_rep_delay_shp_a, pri_hos_rep_delay_shp_b); //~~
+    die_rep_delay_shap        ~ gamma(pri_die_rep_delay_shp_a, pri_die_rep_delay_shp_b); //~~
+// DIAGNOSIS    
     p_diag_if_inf             ~ beta(pri_p_diag_if_inf_a, pri_p_diag_if_inf_b);
     p_diag_if_sym             ~ beta(pri_p_diag_if_sym_a, pri_p_diag_if_sym_b);
     p_diag_if_hos             ~ beta(pri_p_diag_if_hos_a, pri_p_diag_if_hos_b);
@@ -532,67 +472,67 @@ model {
 //// LIKELIHOOD
 //SWITCH TO NEG BIN
   if (nb_yes == 1) {
-      if(obs_cas_rep == 0){
+  //    if(obs_cas_rep == 0){
          for(i in 1:N_days) {
             obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_delay], phi_cas);
           }
-      } else {
-         for(i in 1:N_days) {
-            obs_cas[i] ~ neg_binomial_2(repor_cas[i + N_days_delay], phi_cas);
-          }
-       }
+    //  } else {
+     //    for(i in 1:N_days) {
+    //        obs_cas[i] ~ neg_binomial_2(repor_cas[i + N_days_delay], phi_cas);
+     //     }
+     //  }
       
-      if(obs_hos_rep == 0){
+     // if(obs_hos_rep == 0){
          for(i in 1:N_days) {
             obs_hos[i] ~ neg_binomial_2(occur_hos[i + N_days_delay], phi_hos);
               }
-          } else {
-         for(i in 1:N_days) {
-            obs_hos[i] ~ neg_binomial_2(repor_hos[i + N_days_delay], phi_hos);
-           }
-        }
+     //     } else {
+     //    for(i in 1:N_days) {
+     //       obs_hos[i] ~ neg_binomial_2(repor_hos[i + N_days_delay], phi_hos);
+     //      }
+    //    }
      
-     if(obs_die_rep == 0){
+     //if(obs_die_rep == 0){
        for(i in 1:N_days) {
           obs_die[i] ~ neg_binomial_2(occur_die[i + N_days_delay], phi_die);
          }
-      } else {
-      for(i in 1:N_days) {
-          obs_die[i] ~ neg_binomial_2(repor_die[i + N_days_delay], phi_die);
-        }
-     }
+      //} else {
+     // for(i in 1:N_days) {
+     //     obs_die[i] ~ neg_binomial_2(repor_die[i + N_days_delay], phi_die);
+     //   }
+     //}
      
   } else { 
-       if(obs_cas_rep == 0){
-         for(i in 1:N_days) {
+      // if(obs_cas_rep == 0){
+       for(i in 1:N_days) {
             obs_cas[i] ~ poisson(occur_cas[i + N_days_delay]);
-          }
-      } else {
-         for(i in 1:N_days) {
-            obs_cas[i] ~ poisson(repor_cas[i + N_days_delay]);
-          }
-      }
-      if(obs_hos_rep == 0){
+         }
+      //} else {
+      //   for(i in 1:N_days) {
+      //      obs_cas[i] ~ poisson(repor_cas[i + N_days_delay]);
+      //    }
+     // }
+     // if(obs_hos_rep == 0){
          for(i in 1:N_days) {
             obs_hos[i] ~ poisson(occur_hos[i + N_days_delay]);
             }
-       } else {
-         for(i in 1:N_days) {
-            obs_hos[i] ~ poisson(repor_hos[i + N_days_delay]);
-          }
-      }
-     if(obs_die_rep == 0){
+      // } else {
+      //   for(i in 1:N_days) {
+      //      obs_hos[i] ~ poisson(repor_hos[i + N_days_delay]);
+       //   }
+     // }
+    // if(obs_die_rep == 0){
        for(i in 1:N_days) {
           obs_die[i] ~ poisson(occur_die[i + N_days_delay]);
           }
-      } else {
-      for(i in 1:N_days) {
-          obs_die[i] ~ poisson(repor_die[i + N_days_delay]);
-        }
-     }
+     // } else {
+     // for(i in 1:N_days) {
+     //     obs_die[i] ~ poisson(repor_die[i + N_days_delay]);
+     //   }
+     //}
    }
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
 }
-
+"
