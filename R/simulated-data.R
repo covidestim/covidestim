@@ -197,7 +197,7 @@ simulated_data <- function(p_cases_hospitalized = 0.35,
                   ## NOTE sim_repor starts on day 6 of sim_true
                     # e.g. no reported cases until 6 days after
                     # first truly symptomatic case occurs
-                  rbind(c(12, 0 , 0, 0)) %>%
+                  rbind(c(11, 0 , 0, 0)) %>%
                   dplyr::arrange(report_day) %>%
                   dplyr::rename(cases=case, hosp=hospital, deaths=death)
 
