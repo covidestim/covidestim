@@ -28,7 +28,8 @@ Imports:
     purrr,
     rlang,
     Rcpp (>= 1.0.4.6),
-    plyr
+    plyr,
+    bayesplot
 Suggests: 
   tidyr,
   testthat,
