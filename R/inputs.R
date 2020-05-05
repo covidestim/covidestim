@@ -1,7 +1,10 @@
 validate_input <- function(d) {
+
+  pvec <- purrr::partial(paste, ...=, collapse = ', ')
+
   att(
     is.data.frame(d),
-    msg="Input must be a data.frame"
+    msg=glue("Input must be a `data.frame`. Your input was a {pvec(class(d))}")
   )
   att(
     nrow(d) >= 1,
@@ -9,26 +12,31 @@ validate_input <- function(d) {
   )
   att(
     setequal(names(d), c("date", "observation")),
-    msg="The only variables in the data.frame should be 'date' and 'observation'"
+    msg=glue("The only variables in the data.frame should be 'date' and 'observation'. ",
+             "Yours were: `{vars}`", vars = pvec(names(d)))
   )
   att(
     "POSIXct" %in% class(d$date) | "Date" %in% class(d$date),
-    msg="The 'date' variable must be of class 'POSIXct' or 'Date'. Use as.Date()?"
+    msg=glue("The `date` variable must be of class `POSIXct` or `Date`. ",
+             "Your `date` variable was of class `{pvec(class(d$date))}`. ",
+             "Consider using as.Date()?")
   )
   att(
     is.numeric(d$observation),
-    msg="The observation variable must be a numeric vector"
+    msg=glue("The `observation` variable must be a numeric vector. ",
+             "Your `observation` variable was of type `{pvec(class(d$observation))}`")
   )
   att(
     all(d$observation >= 0),
-    msg="At least one observation was < 0"
+    msg=glue("At least one observation was < 0. ",
+             "This occurred on rows {pvec(which(d$observation < 0))}")
   )
 }
 
 transform_input <- function(d)
   dplyr::mutate(
     d,
-    date = reformat_dates(date),
+    date        = reformat_dates(date),
     observation = as.integer(observation)
   )
 
