@@ -1,4 +1,4 @@
-test_that("NYC data can be run through the model", {
+test_that("NYC data is validated by model", {
 
   library(tidyr)
   library(dplyr)
@@ -34,8 +34,4 @@ test_that("NYC data can be run through the model", {
                        p_diag_if_sym = c(5,5), 
                        p_diag_if_hos = c(9.5, .5))
   )
-
-  result <- run(cfg)
-
-  saveRDS(result, 'test-nycdata-result.rds')
 })
