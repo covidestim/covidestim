@@ -35,7 +35,7 @@ modelconfig_add.priors <- function(rightside, leftside) {
 
   validate.modelconfig(cfg)
 
-  cfg
+  structure(cfg, class = "modelconfig")
 }
 
 modelconfig_add.input <- function(rightside, leftside) {
@@ -80,19 +80,21 @@ modelconfig_add.input <- function(rightside, leftside) {
   # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
-  cfg
+  structure(cfg, class = "modelconfig")
 }
 
 print.inputs <- function(cfg, .tab = FALSE) {
 
   t <- ifelse(.tab, '\t', '')
 
+  frmtr <- function(d) format(length(d), width = 4, justify = 'centre')
+
   status_cases <-
-    ifelse(is.null(cfg$obs_cas), '[ ]', glue('[*]\t[loaded, {length(cfg$obs_cas)} obs]'))
+    ifelse(is.null(cfg$obs_cas), '[ ❌ ]', glue('[{frmtr(cfg$obs_cas)}]'))
   status_deaths <-
-    ifelse(is.null(cfg$obs_die), '[ ]', glue('[*]\t[loaded, {length(cfg$obs_cas)} obs]'))
+    ifelse(is.null(cfg$obs_die), '[ ❌ ]', glue('[{frmtr(cfg$obs_die)}]'))
   status_hospitalizations <-
-    ifelse(is.null(cfg$obs_hos), '[ ]', glue('[*]\t[loaded, {length(cfg$obs_cas)} obs]'))
+    ifelse(is.null(cfg$obs_hos), '[ ❌ ]', glue('[{frmtr(cfg$obs_hos)}]'))
 
 'Inputs:
 
