@@ -90,6 +90,20 @@ simulated_data <- function(p_cases_hospitalized = 0.35,
                            p_deaths_diagnosed = 0.95,
                            n_days = 60) {
 
+  list(
+    p_cases_hospitalized,
+    p_cases_die,
+    p_cases_diagnosed,
+    p_hospitalizations_diagnosed,
+    p_deaths_diagnosed
+  ) -> ps
+
+  # Input validation
+  purrr::walk(
+    ps,
+    ~att(is.numeric(.), . < 1, . > 0)
+  )
+
   # TRUE symptomatic cases: 
   # number of days of symptomatic cases to simulate
   days <- n_days
