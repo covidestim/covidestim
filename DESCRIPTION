@@ -28,10 +28,11 @@ Imports:
     purrr,
     rlang,
     Rcpp (>= 1.0.4.6),
-    plyr,
-    bayesplot
+    plyr
 Suggests: 
   tidyr,
   testthat,
   grDevice
 RoxygenNote: 7.1.0
+Depends: 
+    R (>= 2.10)
