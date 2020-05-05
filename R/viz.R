@@ -1,3 +1,7 @@
+#' @export
+#' @rdname viz.covidcast_result
+viz <- function(...) UseMethod('viz')
+
 #' Visualize results of Covidcast
 #'
 #' Creates several graphs of covidcast results
@@ -6,90 +10,36 @@
 #'   \code{covidcast_result}.
 #'
 #' @param renderPDF A logical scalar. If true, will render a pdf to the working
-#'  directory with name \code{covidcast_figures.pdf}.
-#'
-#' @param fname A filename to save the \code{.pdf} to, if \code{renderPDF ==
-#'   TRUE}.  This string is formatted by \code{link{format.Date}} and so will
-#'   recognize time-related substitutions.
+#'   directory with name \code{covidcast_figures.pdf}.
 #'
 #' @return At this time, returns a \code{\link[ggplot]{ggplot}} object with the
 #'   last plot rendered. This is likely to change.
 #'
 #' @export
-#' @importFrom graphics plot
-plot.covidcast_result <- function(cc, renderPDF = FALSE,
-                                  fname = "covidcast-%Y-%M-%d %H-%M-%S.pdf") {
+viz.covidcast_result <- function(cc, renderPDF = FALSE) {
 
-  pdfname <- format(lubridate::now(), fname)
+  pdfname <- "Figures_covidcast_4.21.pdf"
 
   if (renderPDF)
-    pdf(file = pdfname, width = 8, height = 6) 
+    pdf(file = pdfnam, width = 8, height = 6) 
 
   # Prep all the intermediate representations of the data that are ultimately
   # used to plot everything
-  plot_data <- viz_prep(cc)
+  intermediate_objects <- viz_prep(cc)
 
-  input_data  <- plot_data$input_data
-  fit_to_data <- plot_data$fit_to_data 
-  diag        <- plot_data$diag 
-  new         <- plot_data$new 
+  input_data  <- intermediate_objects$input_data
+  fit_to_data <- intermediate_objects$fit_to_data 
+  diag        <- intermediate_objects$diag 
+  new         <- intermediate_objects$new 
 
   # Plot the first four graphs. The remaining graphs aren't active yet.
-  print(viz_observed_and_fitted(input_data, fit_to_data))
-  print(viz_all_cases_to_data(input_data, new))
-  print(viz_modeled_cases(fit_to_data, diag, new))
-  print(viz_incidence(fit_to_data, diag, new))
+  viz_observed_and_fitted(input_data, fit_to_data)
+  viz_all_cases_to_data(input_data)
+  viz_modeled_cases(fit_to_data, diag, new)
+  viz_incidence(fit_to_data, diag, new)
 
   if (renderPDF)
     dev.off()
-}
-
-#' Plot probability-related posteriors
-#'
-#' Returns a ggplot2 project with a histogram of the posterior distributions
-#' of parameters expressed as probabilities
-#'
-#' @param ccr A \code{\link{covidcast_result}} object, the return value of 
-#'   calling \code{\link{run()}}
-#'
-#' @return A ggplot object with histograms of all probabilistic priors
-#' @export
-plot_p_posteriors <- function(ccr)
-  bayesplot::mcmc_hist(ccr$result, pars = vars(starts_with("p_")))
-
-#' Plot timeseries posteriors
-#'
-#' Returns a ggplot2 object with ridgeplots of posteriors that are indexed
-#' by day. By default, 10 timepoints will be evenly selected from the 
-#' range \code{1:N_days}.
-#'
-#' @param ccr A \code{\link{covidcast_result}} object, the return value of 
-#'   calling \code{\link{run()}}
-#' @param ts_name A string. The name of a posterior in Covidcast which is
-#'   indexed timeseries data.
-#' @param t_points An integer. The number of timepoints to plot.
-#'
-#' @return A ggplot object with ridgeplots of a subset of the timepoints in
-#'   the indexed posterior identified by \code{ts_name}
-#' @examples
-#' \dontrun{
-#'   plot_ts_posterior(result, "diag_sym")
-#' }
-#' \dontrun{
-#'   plot_ts_posterior(result, "new_inf")
-#' }
-#' @export
-plot_ts_posterior <- function(ccr, ts_name, t_points = 10,
-                              transformations = log10) {
-
-  N_total_days = ccr$config$N_days + ccr$config$N_days_delay
-  idxs <- floor(seq(1, N_total_days, length.out = t_points))
-
-  bayesplot::mcmc_areas_ridges(
-    results$result,
-    pars = vars(param_range(ts_name, idxs)),
-    transformations = transformations
-  )
 }
 
 #' COVID viz 
@@ -233,8 +183,7 @@ viz_observed_and_fitted <- function(input_data, fit_to_data) {
   ## all cases to data 
 
 #' @import ggplot2
-viz_all_cases_to_data <- function(input_data, new) {
-  ggplot(mtcars, aes(cyl, hp)) + geom_point()
+viz_all_cases_to_data <- function(input_data) {
   ggplot2::ggplot() + 
     geom_point(
       data = filter(input_data, outcome == "obs_cas"),
