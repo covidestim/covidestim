@@ -85,7 +85,7 @@ run.covidcast <- function(cc) {
                           package='covidcast',
                           mustWork=TRUE),
     control = cc$control,
-    data    = cc$config,
+    data    = structure(cc$config, class="modelconfig"),
     seed    = cc$seed,
     chains  = cc$chains,
     iter    = cc$iter,
@@ -115,13 +115,13 @@ covidcast_add <- function(rightside, leftside) UseMethod('covidcast_add')
 #' created, in order to check these priors
 #' @importFrom glue glue
 covidcast_add.priors <- function(rightside, leftside) {
-  newConfig       <- leftside$config + rightside
+  newConfig       <- structure(leftside$config, class="modelconfig") + rightside
   leftside$config <- newConfig
   structure(leftside, class='covidcast')
 }
 
 covidcast_add.input <- function(rightside, leftside) {
-  newConfig       <- leftside$config + rightside
+  newConfig       <- structure(leftside$config, class="modelconfig") + rightside
   leftside$config <- newConfig
   structure(leftside, class='covidcast')
 }
