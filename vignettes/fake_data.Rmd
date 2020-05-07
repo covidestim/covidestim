@@ -11,43 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Fake data
 
-```{r cars}
+```{r}
 library(covidcast)
 library(lubridate)
 library(ggplot2)
 library(magrittr)
 ```
-
-```{r}
-dates <- seq(now() - days(56), now(), by = '1 day')
-nobs <- length(dates)
-
-cases  <- data.frame(date=dates,
-                     observation=300000+round(1.5*(1:nobs)^2) + 1000 + rnorm(nobs, 0, 40),
-                     stringsAsFactors = FALSE)
-
-hosps  <- data.frame(date=dates,
-                     observation=300000+min(0,round(0.04*(1:nobs)^2) + 100 + rnorm(nobs, 0, 10)),
-                     stringsAsFactors = FALSE)
-
-deaths <- data.frame(date=dates,
-                     observation=300000+round(0.04*(1:nobs )^2) + 20 + rnorm(nobs, 0, 20),
-                     stringsAsFactors = FALSE)
-
-ggplot(cases, aes(as.Date(date), observation)) +
-  geom_line() +
-  geom_line(data=hosps, color='orange') +
-  geom_line(data=deaths, color='purple')
-```
-
-```{r}
-cfg <- covidcast(N_days=56, iter=120) +
-  input_cases(cases) +
-  input_hospitalizations(hosps) +
-  input_deaths(deaths) +
-  priors_diagnosis(p_diag_if_inf = c(50, 50))
-
-# results <- run(cfg)
-```
-
-

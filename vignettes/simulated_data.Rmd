@@ -61,7 +61,7 @@ cfg <- covidcast(N_days=n_days-n_days_before+1, N_days_delay=n_days_before) +
 ```
 
 ```{r}
-results <- run(cfg)
+# results <- run(cfg)
 ```
 
 
