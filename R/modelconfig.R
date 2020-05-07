@@ -42,7 +42,7 @@ modelconfig_add.input <- function(rightside, leftside) {
 
   d    <- rightside
   cfg  <- leftside
-  keys <- c("obs_cas", "obs_die", "obs_hos")
+  keys <- c("obs_cas", "obs_die")
 
   # Create a list of any existing data
   preexisting_inputs_lst <- plyr::compact(cfg[keys])
@@ -93,15 +93,11 @@ print.inputs <- function(cfg, .tab = FALSE) {
     ifelse(is.null(cfg$obs_cas), '[ ❌ ]', glue('[{frmtr(cfg$obs_cas)}]'))
   status_deaths <-
     ifelse(is.null(cfg$obs_die), '[ ❌ ]', glue('[{frmtr(cfg$obs_die)}]'))
-  status_hospitalizations <-
-    ifelse(is.null(cfg$obs_hos), '[ ❌ ]', glue('[{frmtr(cfg$obs_hos)}]'))
 
 'Inputs:
 
 {t}{status_cases} Cases
 {t}{status_deaths} Deaths
-{t}{status_hospitalizations} Hospitalizations
-
 ' -> msg
 
   cat(glue(msg))
@@ -112,7 +108,6 @@ validate.modelconfig <- function(cfg) {
   N_days <- cfg$N_days # For brevity
 
   case_reporting_mean  <- cfg$pri_cas_rep_delay_shap/cfg$pri_cas_rep_delay_rate
-  hosp_reporting_mean  <- cfg$pri_hos_rep_delay_shap/cfg$pri_hos_rep_delay_rate
   death_reporting_mean <- cfg$pri_die_rep_delay_shap/cfg$pri_die_rep_delay_rate
 
 'Mean case reporting delay (relative to total days of data) was longer than
@@ -123,14 +118,6 @@ days, whereas the total days of data, N_days, was {N_days}. Consider adjusting
 or removing your custom prior.
 ' -> case_reporting_warning
 
-'Mean hospitalization reporting delay (relative to total days of data) was
-longer than expected.
-
-Your hospitalization reporting delay (`hos_rep_delay`) has a mean of
-{hosp_reporting_mean} days, whereas the total days of data, N_days, was
-{N_days}. Consider adjusting or removing your custom prior.
-' -> hosp_reporting_warning
-
 'Mean case reporting delay (relative to total days of data) was longer than
 expected.
 
@@ -140,40 +127,13 @@ or removing your custom prior.
 ' -> death_reporting_warning
 
   att_w(case_reporting_mean < N_days,  glue(case_reporting_warning))
-  att_w(hosp_reporting_mean < N_days,  glue(hosp_reporting_warning))
   att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
-
-  #############################################################################
-
-'Mean probability of diagnosis was specified as being higher for asymptomatic
-individuals (expressed as the prior `p_diag_if_inf`) than for symptomatic
-individuals (expressed as the prior `p_diag_if_sym`).
-
-mean(`p_diag_if_inf`) = {mean_diag_if_inf}
-mean(`p_diag_if_sym`) = {mean_diag_if_sym}
-
-Consider adjusting or removing your custom priors.
-' -> diagnosis_symptomatic_warning
-
-'Mean probability of diagnosis was specified as being higher for symptomatic,
-non-hospitalized individuals (expressed as the prior `p_diag_if_sym`) than for
-hospitalized individuals (expressed as the prior `p_diag_if_hos`).
-
-mean(`p_diag_if_sym`) = {mean_diag_if_sym}
-mean(`p_diag_if_hos`) = {mean_diag_if_hos}
-
-Consider adjusting or removing your custom priors.
-' -> diagnosis_hospitalized_warning
-
-  mean_diag_if_inf <- cfg$pri_p_diag_if_inf_a  / (cfg$pri_p_diag_if_inf_a  + cfg$pri_p_diag_if_inf_b)
-  mean_diag_if_sym <- cfg$pri_p_diag_if_sym_a / (cfg$pri_p_diag_if_sym_a + cfg$pri_p_diag_if_sym_b)
-  mean_diag_if_hos <- cfg$pri_p_diag_if_hos_a / (cfg$pri_p_diag_if_hos_a + cfg$pri_p_diag_if_hos_b)
-
-  att_w(mean_diag_if_inf <= mean_diag_if_sym, glue(diagnosis_symptomatic_warning))
-  att_w(mean_diag_if_sym <= mean_diag_if_hos, glue(diagnosis_hospitalized_warning))
 }
 
-genData <- function(N_days, N_days_delay = 10)
+  #############################################################################
+## warning that was here is now obsolete. 
+  
+genData <- function(N_days, N_days_delay = 21) #new default value
 {
   # The first set of components of 'datList'
   config <- rlang::dots_list(
@@ -187,7 +147,6 @@ genData <- function(N_days, N_days_delay = 10)
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
-    obs_hos = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day
 
     # first day of data, as determined by looking at input data. This allows 
@@ -219,7 +178,6 @@ genData <- function(N_days, N_days_delay = 10)
     # poisson or negative binomial
     nb_yes      = as.integer(1),
     obs_cas_rep = as.integer(0), 
-    obs_hos_rep = as.integer(0), 
     obs_die_rep = as.integer(0),
   )
 
@@ -230,10 +188,9 @@ genData <- function(N_days, N_days_delay = 10)
       rlang::dots_list(
         !!! priors_transitions(),
         !!! priors_progression(),
-        !!! priors_recovery(),
-        !!! priors_reporting_delay(),
+        !!! priors_reporting_delays(),
         !!! priors_diagnosis(),
-        !!! priors_reporting_delays_new()
+        !!! priors_diagnosis_delays_scale()
       ),
       class = 'priors'
     )

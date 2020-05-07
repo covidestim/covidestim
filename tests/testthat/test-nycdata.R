@@ -15,11 +15,6 @@ test_that("NYC data is validated by model", {
     observation = NEW_COVID_CASE_COUNT) %>%
     mutate(date = lubridate::mdy(date)) 
 
-  hosp <- select(cases, REPORT_DATE, HOSPITALIZED_CASE_COUNT) %>% 
-          rename(date = REPORT_DATE,
-          observation = HOSPITALIZED_CASE_COUNT)%>%
-          mutate(date = lubridate::mdy(date)) 
-                            
   mort <- select(cases, REPORT_DATE, DEATH_COUNT) %>% 
     rename(date = REPORT_DATE,
     observation = DEATH_COUNT)%>%
@@ -28,10 +23,8 @@ test_that("NYC data is validated by model", {
   expect_silent(
     cfg <- covidcast(N_days=45, chains=3) +
       input_cases(case) +
-      input_hospitalizations(hosp) +
       input_deaths(mort) +
-      priors_diagnosis(p_diag_if_inf = c(.1, 9.9), 
-                       p_diag_if_sym = c(5,5), 
-                       p_diag_if_hos = c(9.5, .5))
+      priors_diagnosis(p_diag_if_sym = c(1.5,1.5), 
+                       p_diag_if_sev = c(1.1, 1.1))
   )
 })

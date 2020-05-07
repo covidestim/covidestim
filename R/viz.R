@@ -60,16 +60,14 @@ viz_prep <- function(obj) {
 
   new_inf   <- outcomeGen("new_inf")
   new_sym   <- outcomeGen("new_sym")
-  new_hos   <- outcomeGen("new_hos")
+  new_sev   <- outcomeGen("new_sev")
   new_die   <- outcomeGen("new_die")
 
-  diag_inf  <- outcomeGen("diag_inf")
-  diag_sym  <- outcomeGen("diag_sym")
-  diag_hos  <- outcomeGen("diag_hos")
+  diag_sym  <- outcomeGen("new_sym_dx")
+  diag_sev  <- outcomeGen("new_sev_dx")
   diag_all  <- outcomeGen("diag_all")
 
   occur_cas <- outcomeGen("occur_cas")
-  occur_hos <- outcomeGen("occur_hos")
   occur_die <- outcomeGen("occur_die")
 
 #   obs_cas <- select(cases, NEW_COVID_CASE_COUNT) %>%
@@ -77,11 +75,6 @@ viz_prep <- function(obj) {
 #     rename(estim = NEW_COVID_CASE_COUNT) %>%
 #     select(day, estim, outcome) 
 #   
-#   obs_hos <- select(cases, HOSPITALIZED_CASE_COUNT) %>%
-#     mutate(day = seq(1, n(), 1), outcome = "obs_hos") %>% 
-#     rename(estim = HOSPITALIZED_CASE_COUNT) %>%
-#     select(day, estim, outcome) 
-# 
 #   obs_die <- select(cases, DEATH_COUNT) %>%
 #     mutate(day = seq(1, n(), 1), outcome = "obs_die") %>% 
 #     rename(estim = DEATH_COUNT) %>%
@@ -95,39 +88,38 @@ viz_prep <- function(obj) {
   }
 
   obs_cas <- reformat_staninputs(obj$config$obs_cas, "obs_cas")
-  obs_hos <- reformat_staninputs(obj$config$obs_hos, "obs_hos")
   obs_die <- reformat_staninputs(obj$config$obs_die, "obs_die")
 
-  new <- rbind(new_inf, new_sym, new_hos, new_die) %>%
+  new <- rbind(new_inf, new_sym, new_sev, new_die) %>%
     group_by(day, outcome) %>%
       summarise(median = median(estim), 
       lo = quantile(estim, 0.025), 
       hi = quantile(estim, 0.975)) %>%
     ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 10) %>%
+    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 21) %>%
     arrange(day)
 
-  diag <- rbind(diag_inf, diag_sym, diag_hos, diag_all) %>%
+  diag <- rbind(new_sym_dx, new_sev_dx, diag_all, new_die_dx) %>%
     group_by(day, outcome) %>%
     summarise(median = median(estim), 
               lo = quantile(estim, 0.025), 
               hi = quantile(estim, 0.975)) %>%
     ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 10) %>%
+    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 21) %>%
     arrange(day)
 
 
-  fit_to_data <- rbind(occur_cas, occur_hos, occur_die) %>%
+  fit_to_data <- rbind(occur_cas, occur_die) %>%
     group_by(day, outcome) %>%
     summarise(median = median(estim), 
               lo = quantile(estim, 0.025), 
               hi = quantile(estim, 0.975)) %>%
     ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 10) %>%
+    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 21) %>%
     arrange(day)
 
 
-  input_data <- rbind(obs_cas, obs_hos, obs_die) %>%
+  input_data <- rbind(obs_cas, obs_die) %>%
                 group_by(day, outcome) %>% summarise(median = median(estim), 
                                          lo = quantile(estim, 0.025), 
                                          hi = quantile(estim, 0.975)) %>%
@@ -167,16 +159,15 @@ viz_observed_and_fitted <- function(input_data, fit_to_data) {
       alpha=0.3
     ) +
     scale_color_manual(
-      values = c('#a6cee3','#b2df8a','#fb9a99','#1f78b4','#33a02c','#e31a1c'),
+      values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
       labels = c("Reported Cases", "Reported Deaths",
-                 "Reported Hospitalizations", "Fitted Reported Cases",
-                 "Fitted Reported Deaths", "Fitted Reported Hospitalizations"),
+                "Fitted Reported Cases","Fitted Reported Deaths"),
       guide = guide_legend(override.aes = list(linetype = c(rep("solid", 3), rep("dashed", 3))))
     ) +
     labs(x = "Days Since March 1, 2020",
          y = "Count",
-         title = "Observed and Fitted COVID-19 Cases, Hosptialization, Deaths in NYC: March 2 - April 15",
-         caption = "Data accessed April 16, 2020",
+         title = "Observed and Fitted COVID-19 Cases, Deaths in NYC: March 2 - April 27",
+         caption = "Data accessed April 28, 2020",
          color = "")
 }
 
@@ -211,9 +202,9 @@ viz_all_cases_to_data <- function(input_data) {
     labs(
       x = "Days Since Start",
       y = "Count",
-      title = "Observed and Fitted COVID-19 Cases, Hosptialization, Deaths: NYC March 2 - April 15",
+      title = "Observed and Fitted COVID-19 Cases, Hosptialization, Deaths: NYC March 2 - April 27",
       subtitle = "with 95% uncertainty intervals",
-      caption = "Data accessed April 16, 2020",
+      caption = "Data accessed April 28, 2020",
       color = ""
     )
 }
@@ -254,14 +245,14 @@ viz_modeled_cases <- function(fit_to_data, diag, new) {
     scale_color_manual(
       values = c('#fc8d62','#66c2a5','#8da0cb'), 
       breaks = c("new_inf", "diag_all", "occur_cas"),
-      labels = c("new_inf" = "Modeled All Cases",
-                 "diag_all" = "Modeled All Diagnosed", 
+      labels = c("new_inf" = "Modeled New Infections",
+                 "diag_all" = "Modeled Diagnosed Cases", 
                  "occur_cas" = "Fitted Reported Cases")) +
     labs(x = "Days Since March 1, 2020",
          y = "Count",
-         title = "Modele dTotal, Diagnosed, and Reported COVID-19 Cases: NYC March 2 - April 15",
+         title = "Modeled Infections, Diagnosed, and Reported COVID-19 Cases: NYC March 2 - April 27",
          subtitle = "with 95% uncertainty intervals",
-         caption = "Data accessed April 16, 2020",
+         caption = "Data accessed April 28, 2020",
          color = "")
 }
 
@@ -272,27 +263,26 @@ viz_incidence <- function(fit_to_data, diag, new) {
   ggplot2::ggplot() +
     geom_line(data = fit_to_data, 
               aes(x = day, y = median, color = outcome)) + 
-    geom_line(data = filter(diag, outcome != "diag_inf"), 
+    geom_line(data = diag, 
               aes(x = day, y = median, color = outcome)) +
     geom_line(data = new, 
               aes(x = day, y = median, color = outcome)) + 
-    scale_color_manual(values = c('#08519c','#3182bd', '#6baed6','#bdd7e7',
+    scale_color_manual(values = c('#08519c','#3182bd', '#bdd7e7',
                                   '#238b45', '#74c476','#bae4b3',
-                                  '#6a51a3','#9e9ac8','#cbc9e2'), 
-                       breaks = c("new_inf", "new_sym", "new_hos", "new_die", 
-                                  "diag_all", "diag_sym", "diag_hos", 
-                                  "occur_cas", "occur_hos", "occur_die"),
-                       labels = c("Modeled All Cases", "Modeled Symptomatic", 
-                                  "Modeled Hospitalizable", "Modeled Deaths", 
-                                  "Modeled All Diagnosed", "Modeled Diagnosed at Symptomatic", 
-                                  "Modeled Diagnosed at Hospitalizable", 
-                                  "Fitted Cases", "Fitted Hospitalizations", 
-                                  "Fitted Deaths")) +
+                                  '#6a51a3', '#cbc9e2'), 
+                       breaks = c("new_inf", "new_sym", "new_die", 
+                                  "diag_all", "new_sym_dx", "new_hos_dx", 
+                                  "occur_cas", "occur_die"),
+                       labels = c("Modeled New Infections", "Modeled Symptomatic Cases", 
+                                  "Modeled Deaths", "Modeled All Diagnosed", 
+                                  "Modeled Diagnosed at Symptomatic", 
+                                  "Modeled Diagnosed at Severe", 
+                                  "Fitted Cases", "Fitted Deaths")) +
     labs(x = "Days Since March 1, 2020",
          y = "Count",
-         title = "Incidence Outcomes Compared to Data: NYC March 2 - April 15",
+         title = "Incidence Outcomes Compared to Data: NYC March 2 - April 27",
          subtitle = "with 95% uncertainty intervals",
-         caption = "Data accessed April 16, 2020",
+         caption = "Data accessed April 28, 2020",
          color = "")
 }
 

@@ -41,13 +41,11 @@ test_that("example data validates", {
 
   d_cases  <- example_nyc_data("cases")
   d_deaths <- example_nyc_data("deaths")
-  d_hosps  <- example_nyc_data("hosps")
 
   N_days <- nrow(d_cases)
 
   expect_silent(icas <- input_cases(d_cases))
   expect_silent(idth <- input_deaths(d_deaths))
-  expect_silent(ihos <-input_hospitalizations(d_hosps))
 
   expect_silent(
     covidcast(N_days = N_days, N_days_delay = 10) +

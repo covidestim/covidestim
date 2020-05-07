@@ -106,27 +106,27 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @param p_sym_if_inf A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of being
 #'   symptomatic if infectious
-#' @param p_hos_if_sym A two-element numeric vector containing \code{c(alpha,
+#' @param p_sev_if_sym A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
-#'   hospitalization if infectious
-#' @param p_die_if_hos A two-element numeric vector containing \code{c(alpha,
+#'   severe if symptomatic
+#' @param p_die_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
-#'   if hospitalized
+#'   if severely ill
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
 #' cfg <- covidcast() + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
 priors_transitions <- function(p_sym_if_inf = c(59, 41),      # a/b
-                               p_hos_if_sym = c(31, 69),      # a/b
-                               p_die_if_hos = c(1.25, 48.75)) { # a/b
+                               p_sev_if_sym = c(31, 69),      # a/b
+                               p_die_if_sev = c(03, 97)) {    # a/b
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_hos_if_sym) == 2)
-  att(length(p_die_if_hos) == 2)
+  att(length(p_die_if_sev) == 2)
   att(is_nonNegativeReal(p_sym_if_inf))
-  att(is_nonNegativeReal(p_hos_if_sym))
-  att(is_nonNegativeReal(p_die_if_hos))
+  att(is_nonNegativeReal(p_sev_if_sym))
+  att(is_nonNegativeReal(p_die_if_sev))
 
   build_priors(
     p_sym_if_inf,
@@ -154,7 +154,7 @@ priors_transitions <- function(p_sym_if_inf = c(59, 41),      # a/b
 #' @param sym_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
 #' parameters of a Gamma distribution modeling [...] 
 #'
-#' @param hos_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' @param sev_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
 #' parameters of a Gamma distribution modeling [...] 
 #' 
 #' @param ... A set of key-value pairs from those listed above. If no
@@ -166,111 +166,20 @@ priors_transitions <- function(p_sym_if_inf = c(59, 41),      # a/b
 #' @export
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
-                               hos_prg_delay = c(2.383, 0.27)) {# shap/rate
+                               sev_prg_delay = c(2.383, 0.27)) {# shap/rate
 
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)
-  att(length(hos_prg_delay) == 2)
+  att(length(sev_prg_delay) == 2)
   att(is_nonNegativeReal(inf_prg_delay))
   att(is_nonNegativeReal(sym_prg_delay))
-  att(is_nonNegativeReal(hos_prg_delay))
+  att(is_nonNegativeReal(sev_prg_delay))
 
   build_priors(
     inf_prg_delay,
     sym_prg_delay,
-    hos_prg_delay,
+    sev_prg_delay,
     .postfix=c("_shap", "_rate")
-  ) -> ps
-
-  structure(ps, class="priors")
-}
-
-#' Fixed values on delay to recovered
-#'
-#' inf to res not well supported in data, guess:
-#' assume mean 10 days, CI 5, 13
-#' based on 5 days inf -> sym, 5 days sym -> res (CI 2,8)
-#' adjust later?
-#' BUG: ^ This needs to be integrated into the documentation!
-#'
-#' This function returns a keyed list of values related to recovery from
-#' the infectious state. Called with no arguments, the default values are
-#' returned. The following arguments can be passed to create different priors:
-#'
-#' @param inf_res_delay A two-element numeric vector containing \code{c(shape, scale)}
-#' parameters of a Gamma distribution modeling [...]
-#'
-#' @param sym_res_delay A two-element numeric vector containing \code{c(shape, scale)}
-#' parameters of a Gamma distribution modeling [...] 
-#'
-#' @param hos_res_delay A two-element numeric vector containing \code{c(shape, scale)}
-#' parameters of a Gamma distribution modeling [...] 
-#' 
-#' @return An S3 object of class 'modelconfig'
-#' @examples
-#' cfg <- covidcast() + priors_recovery(inf_res_delay = c(20.12, 2.1))
-#' @export
-priors_recovery <- function(inf_res_delay = c(23.83, 2.383), # shap/rate
-                            sym_res_delay = c(10.50, 2.099), # shap/rate
-                            hos_res_delay = c(60.86, 3.567)) {# shap/rate
-
-  att(length(inf_res_delay) == 2)
-  att(length(sym_res_delay) == 2)
-  att(length(hos_res_delay) == 2)
-  att(is_nonNegativeReal(inf_res_delay))
-  att(is_nonNegativeReal(sym_res_delay))
-  att(is_nonNegativeReal(hos_res_delay))
-
-  build_priors(
-    inf_res_delay,
-    sym_res_delay,
-    hos_res_delay,
-    .postfix=c("_shap", "_rate")
-  ) -> ps
-
-  structure(ps, class="priors")
-}
-
-#' Priors on reporting delay
-#'
-#' This function returns a keyed list of priors related to reporting delay.
-#' Called with no arguments, the default values are returned. The following
-#' arguments can be passed to create different priors:
-#'
-#' @param case_rep_delay A two-element numeric vector containing \code{c(shape,
-#'   scale)} parameters of a Gamma distribution modeling [...]
-#'
-#' @param hos_rel_delay A two-element numeric vector containing \code{c(shape,
-#'   scale)} parameters of a Gamma distribution modeling [...] 
-#'
-#' @param die_rep_delay A two-element numeric vector containing \code{c(shape,
-#'   scale)} parameters of a Gamma distribution modeling [...] 
-#'
-#' All parameters should a \code{shape/rate < N_days}, where \code{N_days} is
-#' the number of days of data being modeled, as passed to
-#' \code{\link{covidcast()}}.
-#'
-#' @return An S3 object of class 'modelconfig'
-#' @examples
-#' cfg <- covidcast() + priors_reporting_delay(pri_report_delay_shap = 6)
-#' @export
-priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate 
-                                   hos_rep_delay = c(1.73, 0.78), # shap/rate 
-                                   die_rep_delay = c(1.73, 0.78)) { # shap/rate
-
-  att(length(cas_rep_delay) == 2)
-  att(length(hos_rep_delay) == 2)
-  att(length(die_rep_delay) == 2)
-  att(is_nonNegativeReal(cas_rep_delay))
-  att(is_nonNegativeReal(hos_rep_delay))
-  att(is_nonNegativeReal(die_rep_delay))
-
-  build_priors(
-    cas_rep_delay,
-    hos_rep_delay,
-    die_rep_delay,
-    .postfix=c("_shap", "_rate"),
-    .prefix = "pri_"
   ) -> ps
 
   structure(ps, class="priors")
@@ -284,17 +193,13 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
 #' Default values should be explained here, as well as constraints on custom
 #' values. (Default values are assumed?)
 #'
-#' @param p_diag_if_inf A two-element numeric vector containing \code{c(alpha,
-#'   beta)} parameters of a Beta distribution modeling the probability of being
-#'   diagnosed if infectious
-#'
 #' @param p_diag_if_sym A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
 #'   diagnosed if symptomatic. The mean of this distribution should be less
 #'   the mean of the distribution parameterized by \code{p_diag_if_hos}.
 #'   Otherwise, a warning will be displayed.
 #'
-#' @param p_diag_if_hos A two-element numeric vector containing \code{c(alpha,
+#' @param p_diag_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
 #'   being diagnosed if hospitalized
 #'
@@ -302,26 +207,63 @@ priors_reporting_delay <- function(cas_rep_delay = c(1.73, 0.78), # shap/rate
 #' @examples
 #' cfg <- covidcast() + priors_diagnosis(p_diag_if_inf = c(0.5, 0.1))
 #' @export
-priors_diagnosis <- function(p_diag_if_inf = c(1, 99), # a/b
-                             p_diag_if_sym = c(3, 7), # a/b
-                             p_diag_if_hos = c(8.5, 1.5)) {# a/b
+priors_diagnosis <- function(p_diag_if_sym = c(1.1, 1.1), # a/b
+                             p_diag_if_sev = c(1.1, 1.1)) {# a/b
 
-  att(length(p_diag_if_inf) == 2)
   att(length(p_diag_if_sym) == 2)
-  att(length(p_diag_if_hos) == 2)
-  att(is_nonNegativeReal(p_diag_if_inf))
+  att(length(p_diag_if_sev) == 2)
   att(is_nonNegativeReal(p_diag_if_sym))
-  att(is_nonNegativeReal(p_diag_if_hos))
+  att(is_nonNegativeReal(p_diag_if_sev))
 
   build_priors(
-    p_diag_if_inf,
     p_diag_if_sym,
-    p_diag_if_hos,
+    p_diag_if_sev,
     .postfix=c("_a", "_b"),
     .prefix = "pri_"
   ) -> ps
 
   structure(ps, class="priors")
+}
+
+#' Priors on reporting delays
+#'
+#' This function returns a keyed list of mean values for the gamma distribution 
+#' of delays related reporting of cases and deaths.  Called with no arguments, 
+#' the default values are returned. 
+#'
+#' Default values should be explained here, as well as constraints on custom
+#' values. (Default values are assumed?)
+#'
+#' @param cas_rep_delay A two-element numeric vector containing the mean shape
+#' and rate for a gamma distribution describing delay in case reporting. Shape
+#' and rate are parameterized with a lognormal prior where the log of the input 
+#' value is the median and the variance is 0.5. 
+#'
+#' @param die_rep_delay A two-element numeric vector containing the mean shape
+#' and rate for a gamma distribution describing delay in death reporting. Shape
+#' and rate are parameterized with a lognormal prior where the log of the input 
+#' value is the median and the variance is 0.5. 
+#'
+#' @return An S3 object of class 'priors'
+#' @examples
+#' cfg <- covidcast() + priors_reporting_delays_new(p_diag_if_inf = c(0.5, 0.1))
+#' @export
+priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
+                                    die_rep_delay = c(2.2,1)) {
+  
+  att(length(cas_rep_delay) == 2)
+  att(length(die_rep_delay) == 2)
+  att(is_nonNegativeReal(cas_rep_delay))
+  att(is_nonNegativeReal(die_rep_delay))
+
+  build_priors(
+    cas_rep_delay,
+    die_rep_delay,
+    .postfix = c("_shp_a", "_shp_b"),
+    .prefix = "pri_"
+  ) -> ps
+
+  structure(ps, class = 'priors')
 }
 
 #' Priors on reporting delays
@@ -333,34 +275,28 @@ priors_diagnosis <- function(p_diag_if_inf = c(1, 99), # a/b
 #' Default values should be explained here, as well as constraints on custom
 #' values. (Default values are assumed?)
 #'
-#' @param cas_rep_delay Documentation about this prior
+#' @param dx_delay_sym Documentation about this prior
 #'
-#' @param hos_rep_delay Documentation about this prior
-#'
-#' @param die_rep_delay Documentation about this prior
+#' @param dx_delay_sev Documentation about this prior
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
 #' cfg <- covidcast() + priors_reporting_delays_new(p_diag_if_inf = c(0.5, 0.1))
 #' @export
-priors_reporting_delays_new <- function(cas_rep_delay = c(3,1),
-                                        hos_rep_delay = c(3,1),
-                                        die_rep_delay = c(3,1)) {
+priors_diagnosis_delays_scale <- function(dx_delay_sym = c(1.1,1.1),
+                                        dx_delay_sev = c(1.1,1.1)) {
   
   att(length(cas_rep_delay) == 2)
-  att(length(hos_rep_delay) == 2)
   att(length(die_rep_delay) == 2)
   att(is_nonNegativeReal(cas_rep_delay))
-  att(is_nonNegativeReal(hos_rep_delay))
   att(is_nonNegativeReal(die_rep_delay))
-
+  
   build_priors(
     cas_rep_delay,
-    hos_rep_delay,
     die_rep_delay,
-    .postfix = c("_shp_a", "_shp_b"),
-    .prefix = "pri_"
+    .postfix = c("_a", "_b"),
+    .prefix = "scale_"
   ) -> ps
-
+  
   structure(ps, class = 'priors')
 }
