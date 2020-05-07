@@ -19,6 +19,8 @@ data {
   real<lower=0>          pri_p_sev_if_sym_b;
   real<lower=0>          pri_p_die_if_sev_a;
   real<lower=0>          pri_p_die_if_sev_b;
+  real<lower=0>          pri_p_die_if_sym_a;
+  real<lower=0>          pri_p_die_if_sym_b;
   // p(diag)  
   real<lower=0>          pri_p_diag_if_sym_a;
   real<lower=0>          pri_p_diag_if_sym_b;
@@ -69,6 +71,7 @@ parameters {
   real<lower=0, upper=1>  p_sym_if_inf;
   real<lower=0, upper=1>  p_sev_if_sym;
   real<lower=0, upper=1>  p_die_if_sev;
+  real<lower=0, upper=1>  p_die_if_sym;
 
   real<lower=0, upper =1>     scale_dx_delay_sym; 
   real<lower=0, upper =1>     scale_dx_delay_sev; 
@@ -121,6 +124,9 @@ transformed parameters {
   vector[N_days_tot]  new_sym; // new in state per day
   vector[N_days_tot]  new_sev;
   vector[N_days_tot]  new_die;
+  
+  vector[N_days_tot]  cumul_sym;
+  vector[N_days_tot]  cumul_die; 
 
   vector[N_days_tot]  new_sym_dx; // enter new state << undiagnosed >>
     vector[N_days_tot]  dx_sym_sev; 
@@ -207,6 +213,10 @@ sev_cum_prg_delay = cumulative_sum(sev_prg_delay);
         new_die[i+(j-1)] += new_sev[i] * p_die_if_sev * sev_prg_delay[j];
       }
     }
+cumul_sym = cumulative_sum(new_sym); 
+cumul_die = cumulative_sum(new_die); 
+
+cumul_die[N_days_tot] = cumul_sym[N_days_tot] * p_die_if_sym; 
 
 // CASCADE OF INCIDENT OUTCOMES << DIAGNOSED >> ///////////
 
@@ -292,6 +302,7 @@ model {
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
+  p_die_if_sym         ~ beta(pri_p_die_if_sym_a, pri_p_die_if_sym_b);
 
   scale_dx_delay_sym   ~ beta(scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
