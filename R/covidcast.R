@@ -17,16 +17,18 @@
 #' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(chains=3, iter=500, N_days, N_days_delay=10, seed=1234) {
+covidcast <- function(chains=3, iter=500,
+                      N_days, N_days_before=10,
+                      seed=1234) {
 
   att(is.numeric(N_days), N_days >= 1)
 
 
-  config <- defaultConfig(N_days=N_days, N_days_delay=N_days_delay)
+  config <- defaultConfig(N_days=N_days, N_days_before=N_days_before)
 
   # All user-specified config-related things must be specified above this line
   # to avoid double-validation/no-validation
-  if (!missing(N_days))
+  if (!missing(N_days) || !missing(N_days_before))
     validate.modelconfig(config)
 
   list(
@@ -76,9 +78,6 @@ run.covidcast <- function(cc) {
 
   if (is.null(cc$config$obs_die))
     stop("Deaths data was not entered. See `?input_deaths`.")
-
-  if (is.null(cc$config$obs_hos))
-    stop("Hospitalizations data was not entered. See `?input_hospitalizations`.")
 
   rstan::stan(
     file    = system.file(paste0("rstan/", cc$file),

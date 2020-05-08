@@ -80,9 +80,8 @@ input_deaths <- function(data) {
 }
 
 #' @rdname input_cases
-#' @export
-input_hospitalizations <- function(data) {
-  validate_input(data)
-  data <- transform_input(data)
-  structure(list(obs_hos=data), class='input')
-}
+# input_hospitalizations <- function(data) {
+#   validate_input(data)
+#   data <- transform_input(data)
+#   structure(list(obs_hos=data), class='input')
+# }

@@ -18,10 +18,10 @@ viz <- function(...) UseMethod('viz')
 #' @export
 viz.covidcast_result <- function(cc, renderPDF = FALSE) {
 
-  pdfname <- "Figures_covidcast_4.21.pdf"
+  pdfname <- glue("covidcast-output.pdf")
 
   if (renderPDF)
-    pdf(file = pdfnam, width = 8, height = 6) 
+    pdf(file = pdfname, width = 8, height = 6) 
 
   # Prep all the intermediate representations of the data that are ultimately
   # used to plot everything
@@ -30,16 +30,20 @@ viz.covidcast_result <- function(cc, renderPDF = FALSE) {
   input_data  <- intermediate_objects$input_data
   fit_to_data <- intermediate_objects$fit_to_data 
   diag        <- intermediate_objects$diag 
-  new         <- intermediate_objects$new 
+  deltas      <- intermediate_objects$deltas 
+
+  N_days_before <- cc$config$N_days_before
 
   # Plot the first four graphs. The remaining graphs aren't active yet.
-  viz_observed_and_fitted(input_data, fit_to_data)
-  viz_all_cases_to_data(input_data)
-  viz_modeled_cases(fit_to_data, diag, new)
-  viz_incidence(fit_to_data, diag, new)
+  print(viz_observed_and_fitted(input_data, fit_to_data, N_days_before))
+  print(viz_all_cases_to_data(input_data, deltas))
+  print(viz_modeled_cases(fit_to_data, diag, deltas))
+  print(viz_incidence(fit_to_data, diag, deltas))
 
-  if (renderPDF)
+  if (renderPDF) {
     dev.off()
+    message(glue("PDF successfully rendered to ./{pdfname}"))
+  }
 }
 
 #' COVID viz 
@@ -52,6 +56,8 @@ viz_prep <- function(obj) {
 
   summary_fit <- rstan::summary(result)
 
+  N_days_before <- obj$config$N_days_before
+
   outcomeGen <- function(idx) {
     as.data.frame(fit[[idx]]) %>% 
     tidyr::gather(key = day, value = estim) %>%
@@ -63,40 +69,28 @@ viz_prep <- function(obj) {
   new_sev   <- outcomeGen("new_sev")
   new_die   <- outcomeGen("new_die")
 
-  diag_sym  <- outcomeGen("new_sym_dx")
-  diag_sev  <- outcomeGen("new_sev_dx")
-  diag_all  <- outcomeGen("diag_all")
+  new_sym_dx  <- outcomeGen("new_sym_dx")
+  new_sev_dx  <- outcomeGen("new_sev_dx")
+  new_die_dx  <- outcomeGen("new_die_dx")
+  diag_all    <- outcomeGen("diag_all")
 
   occur_cas <- outcomeGen("occur_cas")
   occur_die <- outcomeGen("occur_die")
 
-#   obs_cas <- select(cases, NEW_COVID_CASE_COUNT) %>%
-#     mutate(day = seq(1, n(), 1), outcome = "obs_cas") %>% 
-#     rename(estim = NEW_COVID_CASE_COUNT) %>%
-#     select(day, estim, outcome) 
-#   
-#   obs_die <- select(cases, DEATH_COUNT) %>%
-#     mutate(day = seq(1, n(), 1), outcome = "obs_die") %>% 
-#     rename(estim = DEATH_COUNT) %>%
-#     select(day, estim, outcome) 
-
-  # This is a helper function that does what the above code did before, except
-  # it is nonspecific to format of the NYC data
-  reformat_staninputs <- function(vec, outcome) {
+  reformat_staninputs <- function(vec, outcome)
     tibble::as_tibble(list(estim = vec)) %>%
       mutate(day = 1:n(), outcome = outcome)
-  }
 
   obs_cas <- reformat_staninputs(obj$config$obs_cas, "obs_cas")
   obs_die <- reformat_staninputs(obj$config$obs_die, "obs_die")
 
-  new <- rbind(new_inf, new_sym, new_sev, new_die) %>%
+  deltas <- rbind(new_inf, new_sym, new_sev, new_die) %>%
     group_by(day, outcome) %>%
       summarise(median = median(estim), 
       lo = quantile(estim, 0.025), 
       hi = quantile(estim, 0.975)) %>%
     ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 21) %>%
+    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - N_days_before) %>%
     arrange(day)
 
   diag <- rbind(new_sym_dx, new_sev_dx, diag_all, new_die_dx) %>%
@@ -105,7 +99,7 @@ viz_prep <- function(obj) {
               lo = quantile(estim, 0.025), 
               hi = quantile(estim, 0.975)) %>%
     ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 21) %>%
+    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - N_days_before) %>%
     arrange(day)
 
 
@@ -115,7 +109,7 @@ viz_prep <- function(obj) {
               lo = quantile(estim, 0.025), 
               hi = quantile(estim, 0.975)) %>%
     ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - 21) %>%
+    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - N_days_before) %>%
     arrange(day)
 
 
@@ -125,7 +119,7 @@ viz_prep <- function(obj) {
                                          hi = quantile(estim, 0.975)) %>%
                 ungroup() %>% arrange(day)
 
-  list(new=new, diag=diag, fit_to_data=fit_to_data, input_data=input_data)
+  list(deltas=deltas, diag=diag, fit_to_data=fit_to_data, input_data=input_data)
 }
 
 
@@ -138,7 +132,8 @@ viz_prep <- function(obj) {
   # needs: input_data, fit_to_data
 
 #' @import ggplot2
-viz_observed_and_fitted <- function(input_data, fit_to_data) {
+viz_observed_and_fitted <- function(input_data, fit_to_data,
+                                    N_days_before) {
   ggplot2::ggplot() + 
     geom_point(
       data = input_data,
@@ -162,7 +157,7 @@ viz_observed_and_fitted <- function(input_data, fit_to_data) {
       values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
       labels = c("Reported Cases", "Reported Deaths",
                 "Fitted Reported Cases","Fitted Reported Deaths"),
-      guide = guide_legend(override.aes = list(linetype = c(rep("solid", 3), rep("dashed", 3))))
+      guide = guide_legend(override.aes = list(linetype = c(rep("solid", 2), rep("dashed", 2))))
     ) +
     labs(x = "Days Since March 1, 2020",
          y = "Count",
@@ -174,7 +169,7 @@ viz_observed_and_fitted <- function(input_data, fit_to_data) {
   ## all cases to data 
 
 #' @import ggplot2
-viz_all_cases_to_data <- function(input_data) {
+viz_all_cases_to_data <- function(input_data, deltas) {
   ggplot2::ggplot() + 
     geom_point(
       data = filter(input_data, outcome == "obs_cas"),
@@ -186,11 +181,11 @@ viz_all_cases_to_data <- function(input_data) {
       linetype = 2
     ) + 
     geom_line(
-      data = filter(new, outcome == "new_inf", day >=0),
+      data = filter(deltas, outcome == "new_inf", day >=0),
       aes(x = day, y = median, color = outcome)
     ) + 
     geom_ribbon(
-      data = filter(new, outcome == "new_inf", day >= 0),
+      data = filter(deltas, outcome == "new_inf", day >= 0),
       aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome),
       alpha=0.3
     ) +
@@ -199,6 +194,7 @@ viz_all_cases_to_data <- function(input_data) {
       labels = c("Modeled Cases", "Observed Cases"),
       guide = guide_legend(override.aes = list(linetype = c("dashed","solid")))
     ) +
+    scale_y_log10() +
     labs(
       x = "Days Since Start",
       y = "Count",
@@ -212,7 +208,7 @@ viz_all_cases_to_data <- function(input_data) {
 # comparison: fitted, diagnosed, all cases
 
 #' @import ggplot2
-viz_modeled_cases <- function(fit_to_data, diag, new) {
+viz_modeled_cases <- function(fit_to_data, diag, deltas) {
   ggplot2::ggplot() + 
     geom_line(
       data = filter(fit_to_data, outcome == "occur_cas"),
@@ -234,14 +230,15 @@ viz_modeled_cases <- function(fit_to_data, diag, new) {
       alpha=0.2
     ) +
     geom_line(
-      data = filter(new, outcome == "new_inf"),
+      data = filter(deltas, outcome == "new_inf"),
       aes(x = day, y = median, color = outcome)) +
     geom_ribbon(
-      data = filter(new, outcome == "new_inf"),
+      data = filter(deltas, outcome == "new_inf"),
       aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome),
       linetype = 2,
       alpha=0.2
     ) +
+    scale_y_log10() +
     scale_color_manual(
       values = c('#fc8d62','#66c2a5','#8da0cb'), 
       breaks = c("new_inf", "diag_all", "occur_cas"),
@@ -259,25 +256,43 @@ viz_modeled_cases <- function(fit_to_data, diag, new) {
 # plotting: all, diagnosed, reported outcomes
 
 #' @import ggplot2
-viz_incidence <- function(fit_to_data, diag, new) {
+viz_incidence <- function(fit_to_data, diag, deltas) {
   ggplot2::ggplot() +
     geom_line(data = fit_to_data, 
               aes(x = day, y = median, color = outcome)) + 
     geom_line(data = diag, 
               aes(x = day, y = median, color = outcome)) +
-    geom_line(data = new, 
+    geom_line(data = deltas, 
               aes(x = day, y = median, color = outcome)) + 
-    scale_color_manual(values = c('#08519c','#3182bd', '#bdd7e7',
-                                  '#238b45', '#74c476','#bae4b3',
-                                  '#6a51a3', '#cbc9e2'), 
-                       breaks = c("new_inf", "new_sym", "new_die", 
-                                  "diag_all", "new_sym_dx", "new_hos_dx", 
-                                  "occur_cas", "occur_die"),
-                       labels = c("Modeled New Infections", "Modeled Symptomatic Cases", 
-                                  "Modeled Deaths", "Modeled All Diagnosed", 
-                                  "Modeled Diagnosed at Symptomatic", 
-                                  "Modeled Diagnosed at Severe", 
-                                  "Fitted Cases", "Fitted Deaths")) +
+    scale_y_log10() +
+    scale_color_manual(
+      values = c('#08519c','#3182bd', '#bdd7e7', '#238b45',
+                 '#74c476','#bae4b3', '#6a51a3', '#cbc9e2',
+                 'green', 'purple', 'orange', 'blue'), 
+      breaks = c("new_inf",
+                 "new_sym",
+                 "new_sev",
+                 "new_die",
+                 "diag_all",
+                 "new_sym_dx",
+                 "new_sev_dx",
+                 "new_die_dx",
+                 "occur_cas",
+                 "occur_die",
+                 "obs_cas",
+                 "obs_die"),
+      labels = c("Modeled New Infections",
+                 "Modeled Symptomatic Cases", 
+                 "Modeled New Severe Cases",
+                 "Modeled Deaths",
+                 "Modeled All Diagnosed", 
+                 "Modeled Diagnosed at Symptomatic", 
+                 "Modeled Diagnosed at Severe", 
+                 "Modeled Diagnosed at Death", 
+                 "Fitted Cases",
+                 "Fitted Deaths",
+                 "Observed Cases",
+                 "Observed Deaths")) +
     labs(x = "Days Since March 1, 2020",
          y = "Count",
          title = "Incidence Outcomes Compared to Data: NYC March 2 - April 27",

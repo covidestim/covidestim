@@ -126,14 +126,14 @@ days, whereas the total days of data, `N_days`, was {N_days}. Consider adjusting
 or removing your custom prior.
 ' -> death_reporting_warning
 
-  att_w(case_reporting_mean < N_days,  glue(case_reporting_warning))
-  att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
+  # att_w(case_reporting_mean < N_days,  glue(case_reporting_warning))
+  # att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
 }
 
   #############################################################################
 ## warning that was here is now obsolete. 
   
-genData <- function(N_days, N_days_delay = 21) #new default value
+genData <- function(N_days, N_days_before = 10) #new default value
 {
   # The first set of components of 'datList'
   config <- rlang::dots_list(
@@ -143,7 +143,7 @@ genData <- function(N_days, N_days_delay = 21) #new default value
     N_days = as.integer(N_days),
 
     #n day to model before start of data
-    N_days_delay = as.integer(N_days_delay),
+    N_days_before = as.integer(N_days_before),
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day

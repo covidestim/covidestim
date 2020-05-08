@@ -49,6 +49,6 @@ test_that("example data validates", {
 
   expect_silent(
     covidcast(N_days = N_days, N_days_delay = 10) +
-      icas + idth + ihos
+      icas + idth
   )
 })

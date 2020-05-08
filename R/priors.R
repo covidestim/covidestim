@@ -123,7 +123,7 @@ priors_transitions <- function(p_sym_if_inf = c(5.9, 4.1),      # a/b
                                p_die_if_sym = c(0.5, 49.5)) {    # a/b
 
   att(length(p_sym_if_inf) == 2)
-  att(length(p_hos_if_sym) == 2)
+  att(length(p_sev_if_sym) == 2)
   att(length(p_die_if_sev) == 2)
   att(length(p_die_if_sym) == 2)
   att(is_nonNegativeReal(p_sym_if_inf))
@@ -133,7 +133,7 @@ priors_transitions <- function(p_sym_if_inf = c(5.9, 4.1),      # a/b
 
   build_priors(
     p_sym_if_inf,
-    p_hos_if_sym,
+    p_sev_if_sym,
     p_die_if_sev,
     p_die_if_sym,
     .postfix=c("_a", "_b"),
@@ -288,7 +288,7 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #' cfg <- covidcast() + priors_reporting_delays_new(p_diag_if_inf = c(0.5, 0.1))
 #' @export
 priors_diagnosis_delays_scale <- function(dx_delay_sym = c(1.1,1.1),
-                                        dx_delay_sev = c(1.1,1.1)) {
+                                          dx_delay_sev = c(1.1,1.1)) {
   
   att(length(dx_delay_sym) == 2)
   att(length(dx_delay_sev) == 2)
@@ -296,8 +296,8 @@ priors_diagnosis_delays_scale <- function(dx_delay_sym = c(1.1,1.1),
   att(is_nonNegativeReal(dx_delay_sev))
   
   build_priors(
-    cas_rep_delay,
-    die_rep_delay,
+    dx_delay_sym,
+    dx_delay_sev,
     .postfix = c("_a", "_b"),
     .prefix = "scale_"
   ) -> ps
