@@ -284,9 +284,28 @@ phi_die = pow(inv_sqrt_phi_d,-2);
 occur_cas = rep_vector(0, N_days_tot);
 occur_die = rep_vector(0, N_days_tot);
 
-for(i in 1:N_days_tot)  {
+if(obs_cas_rep == 1) {
+  for(i in 1:N_days_tot){
+    for(j in 1:(N_days_tot - i +1)){
+      occur_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
+    }
+  }
+} else {
+  for(i in 1:N_days_tot)  {
   occur_cas[i] += diag_all[i] * cas_cum_report_delay[N_days_tot - i + 1];
+}
+}
+
+if(obs_cas_rep == 1) {
+  for(i in 1:N_days_tot){
+    for(j in 1:(N_days_tot - i +1)){
+      occur_die[i+(j-1)] += new_die_dx[i] * cas_rep_delay[j];
+    }
+  }
+} else {
+for(i in 1:N_days_tot)  {
   occur_die[i] += new_die_dx[i] * die_cum_report_delay[N_days_tot - i + 1];
+ }
 }
 
 }
@@ -323,7 +342,7 @@ model {
 //SWITCH TO NEG BIN
   if (nb_yes == 1) {
          for(i in 1:N_days) {
-            obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_before], phi_cas);
+          obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_before], phi_cas);
           }
        for(i in 1:N_days) {
           obs_die[i] ~ neg_binomial_2(occur_die[i + N_days_before], phi_die);
@@ -331,7 +350,7 @@ model {
 // eventually you'll want cumulative cases
   } else { 
        for(i in 1:N_days) {
-            obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
+          obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
          }
  
        for(i in 1:N_days) {
