@@ -19,6 +19,8 @@ data {
   real<lower=0>          pri_p_sev_if_sym_b;
   real<lower=0>          pri_p_die_if_sev_a;
   real<lower=0>          pri_p_die_if_sev_b;
+  real<lower=0>          pri_p_die_if_sym_a;
+  real<lower=0>          pri_p_die_if_sym_b;
   // p(diag)  
   real<lower=0>          pri_p_diag_if_sym_a;
   real<lower=0>          pri_p_diag_if_sym_b;
@@ -69,6 +71,7 @@ parameters {
   real<lower=0, upper=1>  p_sym_if_inf;
   real<lower=0, upper=1>  p_sev_if_sym;
   real<lower=0, upper=1>  p_die_if_sev;
+  real<lower=0, upper=1>  p_die_if_sym;
 
   real<lower=0, upper =1>     scale_dx_delay_sym; 
   real<lower=0, upper =1>     scale_dx_delay_sev; 
@@ -121,6 +124,9 @@ transformed parameters {
   vector[N_days_tot]  new_sym; // new in state per day
   vector[N_days_tot]  new_sev;
   vector[N_days_tot]  new_die;
+  
+  vector[N_days_tot]  cumul_sym;
+  vector[N_days_tot]  cumul_die; 
 
   vector[N_days_tot]  new_sym_dx; // enter new state << undiagnosed >>
     vector[N_days_tot]  dx_sym_sev; 
@@ -207,6 +213,10 @@ sev_cum_prg_delay = cumulative_sum(sev_prg_delay);
         new_die[i+(j-1)] += new_sev[i] * p_die_if_sev * sev_prg_delay[j];
       }
     }
+cumul_sym = cumulative_sum(new_sym); 
+cumul_die = cumulative_sum(new_die); 
+
+cumul_die[N_days_tot] = cumul_sym[N_days_tot] * p_die_if_sym; 
 
 // CASCADE OF INCIDENT OUTCOMES << DIAGNOSED >> ///////////
 
@@ -274,9 +284,28 @@ phi_die = pow(inv_sqrt_phi_d,-2);
 occur_cas = rep_vector(0, N_days_tot);
 occur_die = rep_vector(0, N_days_tot);
 
-for(i in 1:N_days_tot)  {
+if(obs_cas_rep == 1) {
+  for(i in 1:N_days_tot){
+    for(j in 1:(N_days_tot - i +1)){
+      occur_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
+    }
+  }
+} else {
+  for(i in 1:N_days_tot)  {
   occur_cas[i] += diag_all[i] * cas_cum_report_delay[N_days_tot - i + 1];
+}
+}
+
+if(obs_cas_rep == 1) {
+  for(i in 1:N_days_tot){
+    for(j in 1:(N_days_tot - i +1)){
+      occur_die[i+(j-1)] += new_die_dx[i] * cas_rep_delay[j];
+    }
+  }
+} else {
+for(i in 1:N_days_tot)  {
   occur_die[i] += new_die_dx[i] * die_cum_report_delay[N_days_tot - i + 1];
+ }
 }
 
 }
@@ -292,6 +321,7 @@ model {
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
+  p_die_if_sym         ~ beta(pri_p_die_if_sym_a, pri_p_die_if_sym_b);
 
   scale_dx_delay_sym   ~ beta(scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
@@ -312,7 +342,7 @@ model {
 //SWITCH TO NEG BIN
   if (nb_yes == 1) {
          for(i in 1:N_days) {
-            obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_before], phi_cas);
+          obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_before], phi_cas);
           }
        for(i in 1:N_days) {
           obs_die[i] ~ neg_binomial_2(occur_die[i + N_days_before], phi_die);
@@ -320,7 +350,7 @@ model {
 // eventually you'll want cumulative cases
   } else { 
        for(i in 1:N_days) {
-            obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
+          obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
          }
  
        for(i in 1:N_days) {
