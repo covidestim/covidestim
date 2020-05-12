@@ -156,13 +156,16 @@ viz_observed_and_fitted <- function(input_data, fit_to_data,
     scale_color_manual(
       values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
       labels = c("Reported Cases", "Reported Deaths",
-                "Fitted Reported Cases","Fitted Reported Deaths"),
+                 "Fitted Reported Cases","Fitted Reported Deaths"),
       guide = guide_legend(override.aes = list(linetype = c(rep("solid", 2), rep("dashed", 2))))
     ) +
-    labs(x = "Days Since March 1, 2020",
-         y = "Count",
-         title = "Observed and Fitted COVID-19 Cases, Deaths in NYC: March 2 - April 27",
-         caption = "Data accessed April 28, 2020",
+    scale_y_continuous(
+      trans = "log10"
+    ) +
+    labs(x = "Days Since Start",
+         y = "Count (log scale)",
+         title = "Observed and Fitted COVID-19 Cases and Deaths (log scale)"
+         subtitle = "with 95% uncertainty intervals",
          color = "")
 }
 
@@ -191,16 +194,15 @@ viz_all_cases_to_data <- function(input_data, deltas) {
     ) +
     scale_color_manual(
       values = c('#a6cee3','#fc8d62'),
-      labels = c("Modeled Cases", "Observed Cases"),
+      labels = c("Modeled New Infections", "Observed Cases"),
       guide = guide_legend(override.aes = list(linetype = c("dashed","solid")))
     ) +
-    scale_y_log10() +
+    scale_y_continuous(trans = "log10") +
     labs(
       x = "Days Since Start",
       y = "Count",
-      title = "Observed and Fitted COVID-19 Cases, Hosptialization, Deaths: NYC March 2 - April 27",
+      title = "Observed and Fitted COVID-19 Cases and Deaths",
       subtitle = "with 95% uncertainty intervals",
-      caption = "Data accessed April 28, 2020",
       color = ""
     )
 }
@@ -245,11 +247,10 @@ viz_modeled_cases <- function(fit_to_data, diag, deltas) {
       labels = c("new_inf" = "Modeled New Infections",
                  "diag_all" = "Modeled Diagnosed Cases", 
                  "occur_cas" = "Fitted Reported Cases")) +
-    labs(x = "Days Since March 1, 2020",
+    labs(x = "Days Since Start",
          y = "Count",
-         title = "Modeled Infections, Diagnosed, and Reported COVID-19 Cases: NYC March 2 - April 27",
+         title = "Modeled New Infections, Diagnosed Cases, and Reported COVID-19 Cases",
          subtitle = "with 95% uncertainty intervals",
-         caption = "Data accessed April 28, 2020",
          color = "")
 }
 
@@ -268,36 +269,36 @@ viz_incidence <- function(fit_to_data, diag, deltas) {
     scale_color_manual(
       values = c('#08519c','#3182bd', '#bdd7e7', '#238b45',
                  '#74c476','#bae4b3', '#6a51a3', '#cbc9e2',
-                 'green', 'purple', 'orange', 'blue'), 
+                 #'green', 'purple', 'orange', 'blue'
+                 ), 
       breaks = c("new_inf",
                  "new_sym",
-                 "new_sev",
+                 #"new_sev",
                  "new_die",
                  "diag_all",
                  "new_sym_dx",
-                 "new_sev_dx",
+                 #"new_sev_dx",
                  "new_die_dx",
                  "occur_cas",
-                 "occur_die",
-                 "obs_cas",
-                 "obs_die"),
+                 "occur_die", 
+                 #"obs_cas", 
+                 #"obs_die"
+                 ),
       labels = c("Modeled New Infections",
                  "Modeled Symptomatic Cases", 
-                 "Modeled New Severe Cases",
+                 #"Modeled New Severe Cases",
                  "Modeled Deaths",
                  "Modeled All Diagnosed", 
-                 "Modeled Diagnosed at Symptomatic", 
+                 #"Modeled Diagnosed at Symptomatic", 
                  "Modeled Diagnosed at Severe", 
                  "Modeled Diagnosed at Death", 
                  "Fitted Cases",
                  "Fitted Deaths",
-                 "Observed Cases",
-                 "Observed Deaths")) +
-    labs(x = "Days Since March 1, 2020",
+                 #"Observed Cases",
+                 #"Observed Deaths")) +
+    labs(x = "Days Since Start",
          y = "Count",
-         title = "Incidence Outcomes Compared to Data: NYC March 2 - April 27",
-         subtitle = "with 95% uncertainty intervals",
-         caption = "Data accessed April 28, 2020",
+         title = "Median Modeled Outcomes Compared to Data",
          color = "")
 }
 
