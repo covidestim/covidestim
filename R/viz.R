@@ -164,7 +164,7 @@ viz_observed_and_fitted <- function(input_data, fit_to_data,
     ) +
     labs(x = "Days Since Start",
          y = "Count (log scale)",
-         title = "Observed and Fitted COVID-19 Cases and Deaths (log scale)"
+         title = "Observed and Fitted COVID-19 Cases and Deaths (log scale)",
          subtitle = "with 95% uncertainty intervals",
          color = "")
 }
@@ -265,7 +265,7 @@ viz_incidence <- function(fit_to_data, diag, deltas) {
               aes(x = day, y = median, color = outcome)) +
     geom_line(data = deltas, 
               aes(x = day, y = median, color = outcome)) + 
-    scale_y_log10() +
+    scale_y_continuous(trans = "log10") +
     scale_color_manual(
       values = c('#08519c','#3182bd', '#bdd7e7', '#238b45',
                  '#74c476','#bae4b3', '#6a51a3', '#cbc9e2',
@@ -295,7 +295,8 @@ viz_incidence <- function(fit_to_data, diag, deltas) {
                  "Fitted Cases",
                  "Fitted Deaths",
                  #"Observed Cases",
-                 #"Observed Deaths")) +
+                 #"Observed Deaths"
+                 )) +
     labs(x = "Days Since Start",
          y = "Count",
          title = "Median Modeled Outcomes Compared to Data",
