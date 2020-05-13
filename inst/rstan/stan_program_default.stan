@@ -296,7 +296,7 @@ if(obs_cas_rep == 1) {
 }
 }
 
-if(obs_cas_rep == 1) {
+if(obs_die_rep == 1) {
   for(i in 1:N_days_tot){
     for(j in 1:(N_days_tot - i +1)){
       occur_die[i+(j-1)] += new_die_dx[i] * cas_rep_delay[j];
