@@ -62,16 +62,17 @@ run.default <- function(...) stop("Must pass an object of type `covidcast`")
 #' machine, through calling \code{\link[parallel]{detectCores}}.
 #'
 #' @param cc A valid \code{\link{covidcast}} configuration
+#' @param cores A number. How many cores to use to execute runs.
 #'
 #' @return A S3 object of class \code{covidcast_result} containing the
 #'   configuration used to run the model, the raw results, and the extracted
 #'   result as produced by \code{\link[rstan]{extract}}.
 #'
 #' @export
-run.covidcast <- function(cc) {
+run.covidcast <- function(cc, cores = parallel::detectCores()) {
+
   # save the compiled executable to '.'
   rstan::rstan_options(auto_write = TRUE) 
-  options(mc.cores = parallel::detectCores())
 
   if (is.null(cc$config$obs_cas))
     stop("Case data was not entered. See `?input_cases`.")
@@ -88,7 +89,8 @@ run.covidcast <- function(cc) {
     seed    = cc$seed,
     chains  = cc$chains,
     iter    = cc$iter,
-    warmup  = cc$warmup
+    warmup  = cc$warmup,
+    cores   = cores
   ) -> result
 
   fitted <- rstan::extract(result)
