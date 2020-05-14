@@ -1,4 +1,4 @@
-validate_input <- function(d) {
+validate_input <- function(d, type) {
 
   pvec <- purrr::partial(paste, ...=, collapse = ', ')
 
@@ -23,13 +23,25 @@ validate_input <- function(d) {
   )
   att(
     is.numeric(d$observation),
-    msg=glue("The `observation` variable must be a numeric vector. ",
-             "Your `observation` variable was of type `{pvec(class(d$observation))}`")
+    msg=glue(
+      "The `observation` variable must be a numeric vector. ",
+      "Your `observation` variable was of type ",
+      "`{pvec(class(d$observation))}`"
+    )
   )
   att(
     all(d$observation >= 0),
     msg=glue("At least one observation was < 0. ",
              "This occurred on rows {pvec(which(d$observation < 0))}")
+  )
+  att(
+    assertthat::is.string(type),
+    msg = "Type of input data must be passed as a string."
+  )
+  att(
+    type %in% c("reported", "occurred"),
+    msg = glue("`type` of input data must be one of 'reported', 'occurred'. ",
+               "You passed {type}.")
   )
 }
 
@@ -65,18 +77,18 @@ reformat_dates <- function(vec) vec
 #' the data. Assertions attempt to enforce this specification.
 #'
 #' @export
-input_cases <- function(data) {
-  validate_input(data)
+input_cases <- function(data, type = "reported") {
+  validate_input(data, type)
   data <- transform_input(data)
-  structure(list(obs_cas=data), class='input')
+  structure(list(obs_cas=data), class='input', date_type = type)
 }
 
 #' @rdname input_cases
 #' @export
-input_deaths <- function(data) {
-  validate_input(data)
+input_deaths <- function(data, type = "reported") {
+  validate_input(data, type)
   data <- transform_input(data)
-  structure(list(obs_die=data), class='input')
+  structure(list(obs_die=data), class='input', date_type = type)
 }
 
 #' @rdname input_cases

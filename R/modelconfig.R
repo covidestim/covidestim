@@ -74,11 +74,22 @@ modelconfig_add.input <- function(rightside, leftside) {
     att(min(d[[1]]$date) == cfg$first_date)
   }
 
-  # Need as.integer to make things play nicely with 'rstan'
-  cfg[[names(d)]] <- as.integer(d[[1]]$observation)
-
   # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
+
+  # Need as.integer to make things play nicely with 'rstan'
+
+  data_key <- names(d)
+  data_type_key <- glue("{data_key}_rep")
+
+  att(data_type_key %in% c("obs_cas_rep", "obs_die_rep"))
+
+  cfg[[data_key]] <- as.integer(d[[1]]$observation)
+
+  cfg[[data_type_key]] <-
+    switch(attr(d, "date_type"), "reported" = 1, "occurred" = 0)
+
+  cfg
 
   structure(cfg, class = "modelconfig")
 }
@@ -177,8 +188,8 @@ genData <- function(N_days, N_days_before = 10) #new default value
 
     # poisson or negative binomial
     nb_yes      = as.integer(1),
-    obs_cas_rep = as.integer(0), 
-    obs_die_rep = as.integer(0),
+    obs_cas_rep = as.integer(0),  # This ~means FALSE in stan
+    obs_die_rep = as.integer(0),  # This ~means FALSE in stan
   )
 
   # Adding the priors in separately is neccessary in order to make checks
