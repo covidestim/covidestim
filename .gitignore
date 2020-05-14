@@ -6,3 +6,9 @@ inst/rstan/*.rds
 .Rhistory
 notes
 .Rproj.user
+src/stan_files/*.o
+src/stan_files/*.cc
+src/stan_files/*.hpp
+src/rstanarm.so
+src/rstanarm.dll
+src/init.o

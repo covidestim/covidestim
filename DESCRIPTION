@@ -17,22 +17,32 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     Hmisc,
-    splines,
-    rstan (>= 2.19.3),
-    lubridate,
     RColorBrewer,
-    stats,
+    Rcpp (>= 1.0.4.6),
     glue,
-    stringr,
+    lubridate,
+    methods,
     parallel,
+    plyr
     purrr,
     rlang,
-    Rcpp (>= 1.0.4.6),
-    plyr
+    rstan (>= 2.19.3),
+    rstantools (>= 2.0.0),
+    splines,
+    stats,
+    stringr,
 Suggests: 
   tidyr,
   testthat,
   grDevice
 RoxygenNote: 7.1.0
 Depends: 
-    R (>= 2.10)
+    R (>= 3.4.0)
+LinkingTo:
+    BH (>= 1.66.0),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    rstan (>= 2.18.1),
+    StanHeaders (>= 2.18.0)
+SystemRequirements: GNU make
+

@@ -1,3 +1,21 @@
+#' The 'covidcast' package.
+#'
+#' @description A DESCRIPTION OF THE PACKAGE
+#'
+#' @docType package
+#' @name covidcast-package
+#' @aliases covidcast
+#' @useDynLib covidcast, .registration = TRUE
+#' @import methods
+#' @import Rcpp
+#' @importFrom rstan sampling
+#'
+#' @references
+#' Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org
+#'
+NULL
+
+
 #' Configure a Covidcast run on a set of data and priors
 #'
 #' This function sets up the model on a set of data and priors
@@ -71,19 +89,14 @@ run.default <- function(...) stop("Must pass an object of type `covidcast`")
 #' @export
 run.covidcast <- function(cc, cores = parallel::detectCores()) {
 
-  # save the compiled executable to '.'
-  rstan::rstan_options(auto_write = TRUE) 
-
   if (is.null(cc$config$obs_cas))
     stop("Case data was not entered. See `?input_cases`.")
 
   if (is.null(cc$config$obs_die))
     stop("Deaths data was not entered. See `?input_deaths`.")
 
-  rstan::stan(
-    file    = system.file(paste0("rstan/", cc$file),
-                          package='covidcast',
-                          mustWork=TRUE),
+  rstan::sampling(
+    file    = stanmodel$stan_program_default,
     control = cc$control,
     data    = structure(cc$config, class="modelconfig"),
     seed    = cc$seed,
