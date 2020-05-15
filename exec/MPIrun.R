@@ -10,10 +10,12 @@ library(purrr, warn.conflicts = FALSE)
 library(glue,  warn.conflicts = FALSE)
 library(covidcast)
 
+options(warn = 1)
+
 glue('covidcast MPI runner
 
 Usage:
-  {name} [--mpi] [--cpus-per-task=<cores>] --output=<path> <path>
+  {name} [--mpi] [--cpus-per-task=<cores>] --output=<path> --diag=<path> <path>
   {name} (-h | --help)
   {name} --version
 
@@ -23,10 +25,10 @@ Options:
   --mpi                     Attempt to run in parallel using MPI
   --cpus-per-task=<cores>   How many cores should each task (process) use?
   --output=<path>           Where to save the resulting RDS file
+  --diag=<path>             A folder to save model diagnostics
 ', name = "MPIrun.R") -> doc
 
 arguments <- docopt(doc, version = 'covidcast MPI runner 0.2')
-print(arguments)
 
 if (arguments$mpi) {
   # Start an MPI cluster, allowing the routine to discover as many nodes
@@ -35,6 +37,8 @@ if (arguments$mpi) {
   cl <- startMPIcluster()
   registerDoMPI(cl) # Register the MPI backend with `foreach`'s `%dopar%
 }
+
+print(arguments)
 
 # Read the states data in, make sure you capture the date properly, and
 # be sure that there isn't any missingness in the data
@@ -75,6 +79,8 @@ gen_covidcast_run <- function(d, type = "reported", N_days_before = 10) {
 # Take the data, and split it into smaller tibbles for each state
 d %>% group_by(state) %>% nest() -> states_nested
 
+cat("Beginning model executions\n")
+
 mutate(
   states_nested,
 
@@ -83,21 +89,47 @@ mutate(
 
   # Execute each object by calling `run` on it, through MPI
   result = foreach(
-    cfg_item = config, current_state = state
+    cfg_item = config[1:n()],
+    current_state = state[1:n()]
   ) %dopar% {
-    # core <- mpi.get.processor.name(short = FALSE)
-    run(
+
+    core <-
+      if (!is.null(arguments$mpi))
+        mpi.get.processor.name(short = FALSE)
+      else
+        "some core"
+
+    diagnostic_file <-
+      if (is.null(arguments$diag))
+        NULL
+      else
+        glue("{arguments$diag}/stan_{current_state}.txt")
+
+    print(glue("Running {current_state} on {core}"))
+
+    safe_run <- quietly(run)
+
+    safe_run(
       cfg_item$result,
-      cores = as.numeric(arguments[['cpus-per-task']])
-    )
+      cores = as.numeric(arguments[['cpus-per-task']]),
+      diagnostic_file = diagnostic_file
+    ) -> result
+
+    print(glue("Finished running {current_state} on {core}"))
+
+    result
   }
 ) -> result
+
+cat("Finished model executions\n")
 
 # Pretty print the `result` tibble
 print(result)
 
 # Serialize to RDS
 saveRDS(result, arguments$output)
+
+cat(glue("Saved result to {arguments$output}\n"))
 
 if (arguments$mpi) {
   # Cleanup the cluster and shut off MPI's communication stuff
