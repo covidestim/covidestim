@@ -22,6 +22,7 @@ echo mpirun --output-filename logs/mpi \
 
 mpirun --output-filename logs/mpi \
        --timestamp-output \
+       -n ${SLURM_NTASKS:-2} \
   "`dirname $0`/MPIrun.R" \
     --mpi \
     --cpus-per-task=${SLURM_CPUS_PER_TASK:-3} \
