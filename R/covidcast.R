@@ -3,8 +3,7 @@
 #' @description A DESCRIPTION OF THE PACKAGE
 #'
 #' @docType package
-#' @name covidcast-package
-#' @aliases covidcast
+#' @name covidcast
 #' @useDynLib covidcast, .registration = TRUE
 #' @import methods
 #' @import Rcpp
@@ -14,7 +13,6 @@
 #' Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org
 #'
 NULL
-
 
 #' Configure a Covidcast run on a set of data and priors
 #'
@@ -96,14 +94,14 @@ run.covidcast <- function(cc, cores = parallel::detectCores()) {
     stop("Deaths data was not entered. See `?input_deaths`.")
 
   rstan::sampling(
-    file    = stanmodel$stan_program_default,
-    control = cc$control,
+    object  = stanmodels$stan_program_default,
     data    = structure(cc$config, class="modelconfig"),
+    cores   = cores,
+    control = cc$control,
     seed    = cc$seed,
     chains  = cc$chains,
     iter    = cc$iter,
-    warmup  = cc$warmup,
-    cores   = cores
+    warmup  = cc$warmup
   ) -> result
 
   fitted <- rstan::extract(result)

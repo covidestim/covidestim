@@ -23,7 +23,7 @@ Imports:
     lubridate,
     methods,
     parallel,
-    plyr
+    plyr,
     purrr,
     rlang,
     rstan (>= 2.19.3),

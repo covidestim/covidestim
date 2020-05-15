@@ -5,10 +5,10 @@ library(docopt)
 library(readr)
 library(dplyr, warn.conflicts = FALSE)
 library(tidyr)
-library(covidcast)
 library(assertthat)
 library(purrr, warn.conflicts = FALSE)
 library(glue,  warn.conflicts = FALSE)
+library(covidcast)
 
 glue('covidcast MPI runner
 
@@ -76,8 +76,7 @@ gen_covidcast_run <- function(d, type = "reported", N_days_before = 10) {
 d %>% group_by(state) %>% nest() -> states_nested
 
 mutate(
-  # Right now, running on just 3 states becasue we're not on the cluster
-  states_nested[1:3,],
+  states_nested,
 
   # Create the `covidconfig` object for each state
   config = map(data, quietly(gen_covidcast_run)),
@@ -87,7 +86,10 @@ mutate(
     cfg_item = config, current_state = state
   ) %dopar% {
     # core <- mpi.get.processor.name(short = FALSE)
-    run(cfg_item$result, cores = arguments[['cpus-per-tas']])
+    run(
+      cfg_item$result,
+      cores = as.numeric(arguments[['cpus-per-task']])
+    )
   }
 ) -> result
 

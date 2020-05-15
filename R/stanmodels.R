@@ -23,4 +23,3 @@ stanmodels <- sapply(stanmodels, function(model_name) {
                model_cpp = stanfit$model_cpp,
                mk_cppmodule = function(x) get(paste0("model_", model_name)))
 })
-

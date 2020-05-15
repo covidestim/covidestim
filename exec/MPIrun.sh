@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-#SBATCH -n 4 -N 4 -t 1:00
+#SBATCH --cpus-per-task=3
 #SBATCH --mail-type=none
 
 module purge
