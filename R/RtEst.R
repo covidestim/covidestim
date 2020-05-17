@@ -21,8 +21,8 @@ RtEst <- function(...) UseMethod('RtEst')
 #' @param std.si The standard deviation of the serial interval; defaults to 
 #' 2.9 days.  
 #'
-#' @param renderPDF A logical scalar. If true, will render a pdf to the working
-#'   directory with name \code{covidcast_Rt.pdf}.
+#' @param pdf.name This will render a pdf to the workingvdirectory with name
+#'  \code{covidcast_Rt.pdf}.
 #'
 #' @return an df with estimates
 #'
@@ -32,7 +32,7 @@ Rt.estimate <- function(cc,
                         window = 7, 
                         mean.si = 4.7,
                         std.si = 2.9,
-                        pdf.name = covidcast_Rt.pdf)
+                        pdf.name = "covidcast_Rt.pdf") {
   
 fit         = cc$extracted 
 tot_iter    = cc$iter
@@ -63,7 +63,6 @@ mn <- matrix(nrow = windows, ncol = n_sample)
 lo <- matrix(nrow = windows, ncol = n_sample)
 hi <- matrix(nrow = windows, ncol = n_sample)
 
-
 #' @import EpiEstim
 # now we generate estimates of the mean, upper, and lower bounds of Rt from 
 # each sampled iteration of case data. 
@@ -93,7 +92,7 @@ make_est_df <- function(x){
     rowid_to_column() %>% 
     gather(key = "iter", 
            value = "est", 
-           2:points) %>%
+           2:(windows+1)) %>%
     group_by(rowid) %>%
     summarise(mn = mean(est), 
               lo = quantile(est, 0.025), 
@@ -105,7 +104,6 @@ Rt    <- make_est_df(mn)
 lower <- make_est_df(lo) 
 upper <- make_est_df(hi) 
 
-# combine: 
 Rt_df <- as.data.frame(cbind(Rt$mn, 
                              lower$lo, 
                              upper$hi)) %>% 
@@ -128,4 +126,4 @@ print(plota)
 dev.off()
 
 return(Rt_df)
-
+}
