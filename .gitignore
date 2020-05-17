@@ -12,3 +12,7 @@ src/stan_files/*.hpp
 src/rstanarm.so
 src/rstanarm.dll
 src/init.o
+src/*.o
+src/*.so
+docs
+man
