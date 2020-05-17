@@ -1,6 +1,5 @@
-#!/usr/bin/env Rscript
-library(Rmpi)
 suppressPackageStartupMessages(library(doMPI))
+library(Rmpi)
 library(docopt)
 library(readr)
 library(dplyr, warn.conflicts = FALSE)
@@ -15,14 +14,13 @@ options(warn = 1)
 glue('covidcast MPI runner
 
 Usage:
-  {name} [--mpi] [--cpus-per-task=<cores>] --output=<path> --diag=<path> <path>
+  {name} [--cpus-per-task=<cores>] --output=<path> --diag=<path> <path>
   {name} (-h | --help)
   {name} --version
 
 Options:
   -h --help                 Show this screen.
   --version                 Show version.
-  --mpi                     Attempt to run in parallel using MPI
   --cpus-per-task=<cores>   How many cores should each task (process) use?
   --output=<path>           Where to save the resulting RDS file
   --diag=<path>             A folder to save model diagnostics
@@ -30,13 +28,19 @@ Options:
 
 arguments <- docopt(doc, version = 'covidcast MPI runner 0.2')
 
-if (arguments$mpi) {
-  # Start an MPI cluster, allowing the routine to discover as many nodes
-  # as are available. This makes it easy to adapt to situations where
-  # different numbers of nodes are available to use.
-  cl <- startMPIcluster()
-  registerDoMPI(cl) # Register the MPI backend with `foreach`'s `%dopar%
-}
+# Start an MPI cluster, allowing the routine to discover as many nodes
+# as are available. This makes it easy to adapt to situations where
+# different numbers of nodes are available to use.
+startMPIcluster(
+  maxcores = as.numeric(arguments[['cpus-per-task']]),
+  verbose = TRUE,
+  bcast = FALSE
+) -> cl
+
+registerDoMPI(cl) # Register the MPI backend with `foreach`'s `%dopar%
+# sinkWorkerOutput(glue("logs/{pname}.txt"), pname = mpi.get.processor.name(short = FALSE))
+
+cat(glue("Cluster size is: {size}\n", size = clusterSize(cl)))
 
 print(arguments)
 
@@ -77,49 +81,32 @@ gen_covidcast_run <- function(d, type = "reported", N_days_before = 10) {
 }
 
 # Take the data, and split it into smaller tibbles for each state
-d %>% group_by(state) %>% nest() -> states_nested
+states_nested <- d %>% group_by(state) %>% nest() %>%
+  mutate(config = map(data, quietly(gen_covidcast_run)))
 
 cat("Beginning model executions\n")
 
-mutate(
-  states_nested,
+foreach(i = seq_along(states_nested$state),
+        .inorder = FALSE,
+        .combine = 'bind_rows') %dopar% {
 
-  # Create the `covidconfig` object for each state
-  config = map(data, quietly(gen_covidcast_run)),
+  cfg <- states_nested$config[[i]]$result
+  current_state <- states_nested$state[i]
 
-  # Execute each object by calling `run` on it, through MPI
-  result = foreach(
-    cfg_item = config[1:n()],
-    current_state = state[1:n()]
-  ) %dopar% {
+  core <- Rmpi::mpi.get.processor.name(short = FALSE)
+  diagnostic_file <- glue::glue("logs/stan_{current_state}.txt")
 
-    core <-
-      if (!is.null(arguments$mpi))
-        mpi.get.processor.name(short = FALSE)
-      else
-        "some core"
+  print(glue::glue("Running {current_state} on {core}"))
 
-    diagnostic_file <-
-      if (is.null(arguments$diag))
-        NULL
-      else
-        glue("{arguments$diag}/stan_{current_state}.txt")
+  safe_run <- purrr::quietly(covidcast::run)
 
-    print(glue("Running {current_state} on {core}"))
+  result <- safe_run(cfg, cores = 3, diagnostic_file = diagnostic_file)
 
-    safe_run <- quietly(run)
+  print(glue::glue("Finished running {current_state} on {core}"))
 
-    safe_run(
-      cfg_item$result,
-      cores = as.numeric(arguments[['cpus-per-task']]),
-      diagnostic_file = diagnostic_file
-    ) -> result
-
-    print(glue("Finished running {current_state} on {core}"))
-
-    result
-  }
-) -> result
+  # result
+  tibble::tibble(state = current_state, result = list(result))
+} -> result
 
 cat("Finished model executions\n")
 
@@ -128,11 +115,10 @@ print(result)
 
 # Serialize to RDS
 saveRDS(result, arguments$output)
+saveRDS(states_nested, paste0("config_", arguments$output))
 
 cat(glue("Saved result to {arguments$output}\n"))
 
-if (arguments$mpi) {
-  # Cleanup the cluster and shut off MPI's communication stuff
-  closeCluster(cl)
-  mpi.quit()
-}
+# Cleanup the cluster and shut off MPI's communication stuff
+closeCluster(cl)
+mpi.quit()

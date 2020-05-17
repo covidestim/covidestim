@@ -1,4 +1,4 @@
-name: /gpfs/ysm/project/yaesoubi/mwr8/conda_envs/parallel_r
+name: /gpfs/ysm/project/yaesoubi/mwr8/conda_envs/covidcast
 channels:
   - conda-forge
   - defaults
@@ -9,7 +9,7 @@ dependencies:
   - attrs=19.3.0=py_0
   - backcall=0.1.0=py_0
   - binutils_impl_linux-64=2.34=h53a641e_0
-  - binutils_linux-64=2.34=hc952b39_18
+  - binutils_linux-64=2.34=hc952b39_19
   - bleach=3.1.5=pyh9f0ad1d_0
   - bwidget=1.9.14=0
   - bzip2=1.0.8=h516909a_2
@@ -21,18 +21,18 @@ dependencies:
   - defusedxml=0.6.0=py_0
   - entrypoints=0.3=py38h32f6830_1001
   - fontconfig=2.13.1=h86ecdb6_1001
-  - freetype=2.10.1=he06d7ca_0
+  - freetype=2.10.2=he06d7ca_0
   - fribidi=1.0.9=h516909a_0
-  - gcc_impl_linux-64=7.3.0=hd420e75_5
-  - gcc_linux-64=7.3.0=h553295d_18
+  - gcc_impl_linux-64=7.5.0=hd420e75_6
+  - gcc_linux-64=7.5.0=h09487f9_19
   - gettext=0.19.8.1=hc5be6a0_1002
-  - gfortran_impl_linux-64=7.3.0=hdf63c60_5
-  - gfortran_linux-64=7.3.0=h553295d_18
+  - gfortran_impl_linux-64=7.5.0=hdf63c60_6
+  - gfortran_linux-64=7.5.0=h09487f9_19
   - glib=2.64.2=h6f030ca_0
   - graphite2=1.3.13=he1b5a44_1001
   - gsl=2.6=h294904e_0
-  - gxx_impl_linux-64=7.3.0=hdf63c60_5
-  - gxx_linux-64=7.3.0=h553295d_18
+  - gxx_impl_linux-64=7.5.0=hdf63c60_6
+  - gxx_linux-64=7.5.0=h09487f9_19
   - harfbuzz=2.4.0=h9f30f68_3
   - icu=64.2=he1b5a44_1
   - importlib-metadata=1.6.0=py38h32f6830_0
@@ -54,7 +54,7 @@ dependencies:
   - libedit=3.1.20170329=hf8c457e_1001
   - libffi=3.2.1=he1b5a44_1007
   - libgcc-ng=9.2.0=h24d8f2e_2
-  - libgfortran-ng=7.3.0=hdf63c60_5
+  - libgfortran-ng=7.5.0=hdf63c60_6
   - libgomp=9.2.0=h24d8f2e_2
   - libiconv=1.15=h516909a_1006
   - liblapack=3.8.0=16_openblas
@@ -104,14 +104,16 @@ dependencies:
   - pyzmq=19.0.1=py38ha71036d_0
   - r-askpass=1.1=r40hcdcec82_2
   - r-assertthat=0.2.1=r40h6115d3f_2
-  - r-backports=1.1.6=r40hcdcec82_2
+  - r-backports=1.1.7=r40hcdcec82_0
   - r-base=4.0.0=hdca8982_3
   - r-base64enc=0.1_3=r40hcdcec82_1004
+  - r-bh=1.72.0_3=r40h6115d3f_1
   - r-boot=1.3_25=r40h6115d3f_1
   - r-broom=0.5.6=r40h6115d3f_1
   - r-callr=3.4.3=r40h6115d3f_1
   - r-caret=6.0_86=r40hcdcec82_2
   - r-cellranger=1.1.0=r40h6115d3f_1003
+  - r-checkmate=2.0.0=r40hcdcec82_1
   - r-class=7.3_17=r40hcdcec82_1
   - r-cli=2.0.2=r40h6115d3f_1
   - r-clipr=0.7.0=r40h6115d3f_1
@@ -141,9 +143,10 @@ dependencies:
   - r-generics=0.0.2=r40h6115d3f_1003
   - r-ggplot2=3.3.0=r40h6115d3f_1
   - r-gistr=0.5.0=r40h6115d3f_1
-  - r-glmnet=3.0_2=r40h9bbef5b_1
-  - r-glue=1.4.0=r40hcdcec82_1
+  - r-glmnet=4.0=r40h9bbef5b_0
+  - r-glue=1.4.1=r40hcdcec82_0
   - r-gower=0.2.1=r40hcdcec82_2
+  - r-gridextra=2.3=r40h6115d3f_1003
   - r-gtable=0.3.0=r40h6115d3f_3
   - r-haven=2.2.0=r40hde08347_1
   - r-hexbin=1.28.1=r40h9bbef5b_1
@@ -153,6 +156,7 @@ dependencies:
   - r-htmlwidgets=1.5.1=r40h6115d3f_1
   - r-httpuv=1.5.2=r40h0357c0b_2
   - r-httr=1.4.1=r40h6115d3f_2
+  - r-inline=0.3.15=r40h6115d3f_1002
   - r-ipred=0.9_9=r40hcdcec82_2
   - r-irdisplay=0.7=r40_1002
   - r-irkernel=1.1=r40h6115d3f_1
@@ -167,12 +171,14 @@ dependencies:
   - r-lava=1.6.7=r40h6115d3f_1
   - r-lazyeval=0.2.2=r40hcdcec82_2
   - r-lifecycle=0.2.0=r40h6115d3f_1
+  - r-loo=2.2.0=r40h6115d3f_1
   - r-lubridate=1.7.8=r40h0357c0b_1
   - r-magrittr=1.5=r40h6115d3f_1003
   - r-maps=3.3.0=r40hcdcec82_1004
   - r-markdown=1.1=r40hcdcec82_1
   - r-mass=7.3_51.6=r40hcdcec82_2
   - r-matrix=1.2_18=r40h7fa42b6_3
+  - r-matrixstats=0.56.0=r40hcdcec82_1
   - r-mgcv=1.8_31=r40h7fa42b6_1
   - r-mime=0.9=r40hcdcec82_1
   - r-modelmetrics=1.2.2.2=r40h0357c0b_1
@@ -205,6 +211,7 @@ dependencies:
   - r-rbokeh=0.5.0=r40h6115d3f_1003
   - r-rcolorbrewer=1.1_2=r40h6115d3f_1003
   - r-rcpp=1.0.4.6=r40h0357c0b_1
+  - r-rcppeigen=0.3.3.7.0=r40h51c796c_2
   - r-readr=1.3.1=r40h0357c0b_1004
   - r-readxl=1.3.1=r40hde08347_4
   - r-recipes=0.1.12=r40h6115d3f_1
@@ -218,15 +225,18 @@ dependencies:
   - r-rmpi=0.6_9=r40hb6d74f4_1002
   - r-rpart=4.1_15=r40hcdcec82_2
   - r-rprojroot=1.3_2=r40h6115d3f_1003
+  - r-rstan=2.19.3=r40h0357c0b_1
+  - r-rstantools=2.0.0=r40h0357c0b_2
   - r-rstudioapi=0.11=r40h6115d3f_1
   - r-rvest=0.3.5=r40h6115d3f_1
-  - r-scales=1.1.0=r40h6115d3f_1
+  - r-scales=1.1.1=r40h6115d3f_0
   - r-selectr=0.4_2=r40h6115d3f_1
   - r-shape=1.4.4=r40_1003
   - r-shiny=1.4.0.2=r40h6115d3f_1
   - r-sourcetools=0.1.7=r40he1b5a44_1002
   - r-spatial=7.3_12=r40hcdcec82_1
   - r-squarem=2020.2=r40h6115d3f_1
+  - r-stanheaders=2.21.0_1=r40h6786f55_1
   - r-stringi=1.4.6=r40h0e574ca_2
   - r-stringr=1.4.0=r40h6115d3f_2
   - r-survival=3.1_12=r40hcdcec82_1
@@ -234,14 +244,14 @@ dependencies:
   - r-testthat=2.3.2=r40h0357c0b_1
   - r-tibble=3.0.1=r40hcdcec82_1
   - r-tidyr=1.0.3=r40h0357c0b_0
-  - r-tidyselect=1.0.0=r40h6115d3f_1
+  - r-tidyselect=1.1.0=r40h6115d3f_0
   - r-tidyverse=1.3.0=r40h6115d3f_2
   - r-timedate=3043.102=r40h6115d3f_1002
   - r-tinytex=0.22=r40h6115d3f_1
   - r-ttr=0.23_6=r40hcdcec82_1
   - r-utf8=1.1.4=r40hcdcec82_1003
   - r-uuid=0.1_4=r40hcdcec82_1
-  - r-vctrs=0.2.4=r40hcdcec82_1
+  - r-vctrs=0.3.0=r40hcdcec82_0
   - r-viridislite=0.3.0=r40h6115d3f_1003
   - r-whisker=0.4=r40h6115d3f_1
   - r-withr=2.2.0=r40h6115d3f_1
@@ -255,7 +265,7 @@ dependencies:
   - readline=8.0=hf8c457e_0
   - sed=4.7=h1bed415_1000
   - send2trash=1.5.0=py_0
-  - setuptools=46.1.3=py38h32f6830_0
+  - setuptools=46.3.0=py38h32f6830_0
   - six=1.14.0=py_1
   - sqlite=3.30.1=hcee41ef_0
   - terminado=0.8.3=py38h32f6830_1
@@ -283,5 +293,5 @@ dependencies:
   - zipp=3.1.0=py_0
   - zlib=1.2.11=h516909a_1006
   - zstd=1.4.4=h6597ccf_3
-prefix: /gpfs/ysm/project/yaesoubi/mwr8/conda_envs/parallel_r
+prefix: /gpfs/ysm/project/yaesoubi/mwr8/conda_envs/covidcast
 
