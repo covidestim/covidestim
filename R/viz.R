@@ -41,10 +41,10 @@ viz.covidcast_result <- function(cc, renderPDF = FALSE) {
 
   # Plot the first four graphs. The remaining graphs aren't active yet.
   list(
-    p1 = viz_observed_and_fitted(cc, input_data, fit_to_data, N_days_before)
-#     p2 = viz_all_cases_to_data(input_data, deltas)
-#     p3 = viz_modeled_cases(fit_to_data, diag, deltas)
-#     p4 = viz_incidence(fit_to_data, diag, deltas)
+    p1 = viz_observed_and_fitted(cc, input_data, fit_to_data, N_days_before),
+    p2 = viz_all_cases_to_data(cc, input_data, deltas),
+    p3 = viz_modeled_cases(cc, fit_to_data, diag, deltas)
+#     p4 = viz_incidence(cc, fit_to_data, diag, deltas)
   ) 
 }
 
@@ -130,7 +130,19 @@ viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
 
   first_date <- as.Date(cvc_result$config$first_date, origin = '1970-01-01')
 
-  ggplot2::ggplot(aes(x = first_date + lubridate::days(day - 1),
+  over1k <- scale_y_continuous(
+    trans = scales::pseudo_log_trans(base = 10),
+    labels = scales::label_number_si(),
+    breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
+    minor_breaks = NULL
+  )
+  
+  under1k <- scale_y_continuous()
+
+  dynamicScale <- if (max(input_data$median) > 1e3) over1k else under1k
+
+  ggplot2::ggplot(input_data,
+                  aes(x = first_date + lubridate::days(day - 1),
                       y = median,
                       color = outcome)) + 
     geom_point(data = input_data) + 
@@ -142,137 +154,173 @@ viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
       alpha = 0.3,
       linetype = 'dashed'
     ) +
+    dynamicScale +
     scale_color_manual(
       values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
-      labels = c("Reported Cases",
-                 "Reported Deaths",
-                 "Fitted Reported Cases",
-                 "Fitted Reported Deaths"),
+      labels = c("Observed Cases",
+                 "Observed Deaths",
+                 "Fitted Cases",
+                 "Fitted Deaths"),
       guide = guide_legend(
         override.aes = list(
           linetype = c(rep("solid", 2), rep("dashed", 2))
         )
       )
     ) +
-    scale_y_continuous(
-      trans = scales::pseudo_log_trans(base = 10),
-      labels = scales::label_number_si(),
-      breaks = scales::breaks_log(n = 8),
-      minor_breaks = NULL
-    ) +
     scale_x_date(date_breaks = '1 week',
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
-    annotation_logticks() +
     labs(x = "Date",
          y = "Count (log scale)",
          title = "Observed and Fitted COVID-19 Cases and Deaths (log scale)",
          subtitle = "with 95% uncertainty intervals",
          color = "") +
-    theme_linedraw()
+    theme_linedraw() +
+    theme(
+      axis.text.x = element_text(
+        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
+      )
+    )
 }
 
   ## all cases to data 
 
 #' @import ggplot2
-viz_all_cases_to_data <- function(input_data, deltas) {
-  ggplot2::ggplot() + 
-    geom_point(
-      data = filter(input_data, outcome == "obs_cas"),
-      aes(x = day, y = median, color = outcome)
-    ) + 
+viz_all_cases_to_data <- function(cc, input_data, deltas) {
+
+  first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
+
+  ggplot2::ggplot(mapping = aes(x = first_date + lubridate::days(day - 1),
+                                y = median,
+                                color = outcome)) + 
+    geom_point(data = filter(input_data, outcome == "obs_cas")) + 
     geom_line(
       data = filter(input_data, outcome == "obs_cas"),
-      aes(x = day, y = median, color = outcome),
       linetype = 2
     ) + 
-    geom_line(
-      data = filter(deltas, outcome == "new_inf", day >=0),
-      aes(x = day, y = median, color = outcome)
-    ) + 
+    geom_line(data = filter(deltas, outcome == "new_inf", day >= 1)) + 
     geom_ribbon(
-      data = filter(deltas, outcome == "new_inf", day >= 0),
-      aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome),
+      data = filter(deltas, outcome == "new_inf", day >= 1),
+      aes(ymin=lo, ymax=hi),
       alpha=0.3
     ) +
     scale_color_manual(
       values = c('#a6cee3','#fc8d62'),
       labels = c("Modeled New Infections", "Observed Cases"),
-      guide = guide_legend(override.aes = list(linetype = c("dashed","solid")))
+      guide = guide_legend(
+        override.aes = list(linetype = c("dashed","solid"))
+      )
     ) +
-    scale_y_continuous(trans = "log10") +
+    scale_y_continuous(
+      trans = scales::pseudo_log_trans(base = 10),
+      labels = scales::label_number_si(),
+      # breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
+      breaks = 10^(1:6),
+      minor_breaks = NULL,
+      limits = c(0, NA)
+    ) +
+    scale_x_date(date_breaks = '1 week',
+                 date_labels = "%b %d",
+                 minor_breaks = NULL) +
     labs(
       x = "Days Since Start",
       y = "Count",
       title = "Observed and Fitted COVID-19 Cases and Deaths",
       subtitle = "with 95% uncertainty intervals",
       color = ""
+    ) +
+    theme_linedraw() +
+    theme(
+      axis.text.x = element_text(
+        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
+      )
     )
 }
 
 # comparison: fitted, diagnosed, all cases
 
 #' @import ggplot2
-viz_modeled_cases <- function(fit_to_data, diag, deltas) {
-  ggplot2::ggplot() + 
-    geom_line(
-      data = filter(fit_to_data, outcome == "occur_cas"),
-      aes(x = day, y = median, color = outcome)) + 
+viz_modeled_cases <- function(cc, fit_to_data, diag, deltas) {
+
+  first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
+
+  ggplot2::ggplot(
+    mapping = aes(x     = first_date + lubridate::days(day - 1),
+                  y     = median,
+                  color = outcome)
+  ) + 
+    geom_line(data = filter(fit_to_data, outcome == "occur_cas")) + 
     geom_ribbon(
       data = filter(fit_to_data, outcome == "occur_cas"),
-      aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome),
+      aes(ymin=lo, ymax=hi),
       linetype = 2,
       alpha=0.2
     ) +
-    geom_line(
-      data = filter(diag, outcome == "diag_all"),
-      aes(x = day, y = median, color = outcome)
-    ) +
+    geom_line(data = filter(diag, outcome == "diag_all")) +
     geom_ribbon(
       data = filter(diag, outcome == "diag_all"),
-      aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome),
+      aes(ymin=lo, ymax=hi),
       linetype = 2,
       alpha=0.2
     ) +
-    geom_line(
-      data = filter(deltas, outcome == "new_inf"),
-      aes(x = day, y = median, color = outcome)) +
-    geom_ribbon(
-      data = filter(deltas, outcome == "new_inf"),
-      aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome),
-      linetype = 2,
-      alpha=0.2
+    # geom_line(data = filter(deltas, outcome == "new_inf")) + 
+    # geom_ribbon(
+    #   data = filter(deltas, outcome == "new_inf"),
+    #   aes(ymin=lo, ymax=hi),
+    #   linetype = 2,
+    #   alpha=0.2
+    # ) +
+    scale_y_continuous(
+      trans = scales::pseudo_log_trans(base = 10),
+      labels = scales::label_number_si(),
+      # breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
+      breaks = 10^(1:6),
+      minor_breaks = NULL,
+      limits = c(0, NA)
     ) +
-    scale_y_log10() +
+    scale_x_date(date_breaks = '1 week',
+                 date_labels = "%b %d",
+                 minor_breaks = NULL) +
     scale_color_manual(
       values = c('#fc8d62','#66c2a5','#8da0cb'), 
-      breaks = c("new_inf", "diag_all", "occur_cas"),
-      labels = c("new_inf" = "Modeled New Infections",
-                 "diag_all" = "Modeled Diagnosed Cases", 
+      breaks = c("diag_all", "occur_cas"),
+      labels = c("diag_all" = "Modeled Diagnosed Cases", 
                  "occur_cas" = "Fitted Reported Cases")) +
-    labs(x = "Days Since Start",
+    # scale_color_manual(
+    #   values = c('#fc8d62','#66c2a5','#8da0cb'), 
+    #   breaks = c("new_inf", "diag_all", "occur_cas"),
+    #   labels = c("new_inf" = "Modeled New Infections",
+    #              "diag_all" = "Modeled Diagnosed Cases", 
+    #              "occur_cas" = "Fitted Reported Cases")) +
+    labs(x = "Date",
          y = "Count",
-         title = "Modeled New Infections, Diagnosed Cases, and Reported COVID-19 Cases",
+         # title = "Modeled New Infections, Diagnosed Cases, and Reported COVID-19 Cases",
+         title = "Diagnosed Cases, and Reported COVID-19 Cases",
          subtitle = "with 95% uncertainty intervals",
-         color = "")
+         color = "") +
+    theme_linedraw() +
+    theme(
+      axis.text.x = element_text(
+        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
+      )
+    )
 }
 
 # plotting: all, diagnosed, reported outcomes
 
 #' @import ggplot2
-viz_incidence <- function(fit_to_data, diag, deltas) {
-  ggplot2::ggplot() +
-    geom_line(data = fit_to_data, 
-              aes(x = day, y = median, color = outcome)) + 
-    geom_line(data = diag, 
-              aes(x = day, y = median, color = outcome)) +
-    geom_line(data = deltas, 
-              aes(x = day, y = median, color = outcome)) + 
+viz_incidence <- function(cc, fit_to_data, diag, deltas) {
+  ggplot2::ggplot(
+    mapping = aes(x = day, y = median, color = outcome)
+  ) +
+    geom_line(data = fit_to_data) +
+    geom_line(data = diag) +
+    geom_line(data = deltas) +
     scale_y_continuous(trans = "log10") +
     scale_color_manual(
       values = c('#08519c','#3182bd', '#bdd7e7', '#238b45',
-                 '#74c476','#bae4b3', '#6a51a3', '#cbc9e2',
-                 #'green', 'purple', 'orange', 'blue'
+                 '#74c476','#bae4b3', '#6a51a3', '#cbc9e2'
+                 # 'green', 'purple', 'orange', 'blue'
                  ), 
       breaks = c("new_inf",
                  "new_sym",
@@ -283,7 +331,7 @@ viz_incidence <- function(fit_to_data, diag, deltas) {
                  #"new_sev_dx",
                  "new_die_dx",
                  "occur_cas",
-                 "occur_die", 
+                 "occur_die",
                  #"obs_cas", 
                  #"obs_die"
                  ),
@@ -296,173 +344,30 @@ viz_incidence <- function(fit_to_data, diag, deltas) {
                  "Modeled Diagnosed at Severe", 
                  "Modeled Diagnosed at Death", 
                  "Fitted Cases",
-                 "Fitted Deaths",
+                 "Fitted Deaths"
                  #"Observed Cases",
                  #"Observed Deaths"
-                 )) +
+                 )
+    ) +
+    scale_y_continuous(
+      trans = scales::pseudo_log_trans(base = 10),
+      labels = scales::label_number_si(),
+      # breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
+      breaks = 10^(1:6),
+      minor_breaks = NULL,
+      limits = c(0, NA)
+    ) +
+    scale_x_date(date_breaks = '1 week',
+                 date_labels = "%b %d",
+                 minor_breaks = NULL) +
     labs(x = "Days Since Start",
          y = "Count",
          title = "Median Modeled Outcomes Compared to Data",
          color = "")
+    theme_linedraw() +
+    theme(
+      axis.text.x = element_text(
+        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
+      )
+    )
 }
-
-
-#  new.par <- par(mfrow=c(2,3))
-#  mod <- fit[["p_sym_if_inf"]]
-#  mn <- as.numeric(datList[["pri_p_sym_if_inf_a"]])
-#  ss <- as.numeric(datList[["pri_p_sym_if_inf_b"]])
-#  hist(mod, main = "P(Progression to Symptomatic)", xlab = "", ylab = "")
-#  zz <- range(c(mod,0,1))
-#  x_pts <- seq(zz[1],zz[2],length.out=101)
-#  y_pts <- dbeta(x_pts,mn,ss)
-#  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-#  
-#  mod <- fit[["p_hos_if_sym"]]
-#  mn <- as.numeric(datList[["pri_p_hos_if_sym_a"]])
-#  ss <- as.numeric(datList[["pri_p_hos_if_sym_b"]])
-#  hist(mod, main = "P(Progression to Hospitalizable)", xlab = "", ylab = "")
-#  zz <- range(c(mod,0,1))
-#  x_pts <- seq(zz[1],zz[2],length.out=101)
-#  y_pts <- dbeta(x_pts,mn,ss)
-#  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-#  
-#  mod <- fit[["p_die_if_hos"]]
-#  mn <- as.numeric(datList[["pri_p_die_if_hos_a"]])
-#  ss <- as.numeric(datList[["pri_p_die_if_hos_b"]])
-#  hist(mod, main = "P(Progression to Death)", xlab = "", ylab = "")
-#  zz <- range(c(mod,0,1))
-#  x_pts <- seq(zz[1],zz[2],length.out=101)
-#  y_pts <- dbeta(x_pts,mn,ss)
-#  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-#  
-#  mod <- fit[["p_diag_if_inf"]]
-#  mn <- as.numeric(datList[["pri_p_diag_if_inf_a"]])
-#  ss <- as.numeric(datList[["pri_p_diag_if_inf_b"]])
-#  hist(mod, main = "P(Diagnosis at Infectious)", xlab = "", ylab = "")
-#  zz <- range(c(mod,0,1))
-#  x_pts <- seq(zz[1],zz[2],length.out=101)
-#  y_pts <- dbeta(x_pts,mn,ss)
-#  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-#  
-#  mod <- fit[["p_diag_if_sym"]]
-#  mn <- as.numeric(datList[["pri_p_diag_if_sym_a"]])
-#  ss <- as.numeric(datList[["pri_p_diag_if_sym_b"]])
-#  hist(mod, main = "P(Diagnosis at Symptomatic)", xlab = "", ylab = "")
-#  zz <- range(c(mod,0,1))
-#  x_pts <- seq(zz[1],zz[2],length.out=101)
-#  y_pts <- dbeta(x_pts,mn,ss)
-#  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-#  
-#  mod <- fit[["p_diag_if_hos"]]
-#  mn <- as.numeric(datList[["pri_p_diag_if_hos_a"]])
-#  ss <- as.numeric(datList[["pri_p_diag_if_hos_b"]])
-#  hist(mod, main = "P(Diagnosis at Hospitalizable)", xlab = "", ylab = "")
-#  zz <- range(c(mod,0,1))
-#  x_pts <- seq(zz[1],zz[2],length.out=101)
-#  y_pts <- dbeta(x_pts,mn,ss)
-#  lines(x_pts,y_pts,col=mTrsp(4,200),lwd=2)
-#
-#  dev.off();
-
-#
-#  library("EpiEstim")
-#  library("lubridate")
-#
-#  data1 <- group_by(new_inf, day) %>% summarise(cases = median(estim)) %>% 
-#    mutate(day = substr(day, start = 2, stop =4)) %>%
-#    arrange(as.numeric(day)) %>%
-#    mutate(I = round(cases), 
-#           dates = seq(as.Date("2020/02/21"), as.Date("2020/04/20"), by =1))
-#
-#  # assuming a mean SI of 4.1 days with a sd of 2.1 days
-#  lognorm <- c(rlnorm(n = 100000, meanlog = 1.41, sdlog = 0.75))
-#  lognorm2 <- table(round(lognorm))
-#  lognorm_dist <- c(0, prop.table(lognorm2))
-#
-#  config <- make_config(list(t_start = seq(8, nrow(data1)-4), 
-#                             t_end = seq(11, nrow(data1)-1),
-#                             si_distr = lognorm_dist))
-#
-#  R_est  <- estimate_R(data1,
-#                       method = "non_parametric_si",
-#                       config = config)
-#
-#  print(estimate_R_plots(R_est, what = "R") + 
-#    labs(title = "Preliminary R Effective Estimate, NYC", 
-#         subtitle = "Assuming mean SI of 4.1 days (sd 2.1 days)") )
-#
-#  dev.off()
-#  ############
-#
-#
-#  ## comparison: diagnosed to fitted 
-#  ggplot2::ggplot() + 
-#    geom_line(data = diag, aes(x = day, y = median, color = outcome)) + 
-#    geom_line(data = filter(fit_to_data, outcome != "occur_die"), 
-#              aes(x = day, y = median, color = outcome), linetype = 2) + 
-#    scale_color_manual(values = c('#a6cee3','#fb9a99', '#cab2d6', '#fdbf6f', '#1f78b4','#e31a1c'), 
-#                       labels = c("Modeled All Diagnosed", "Modeled Diagnosed at Hospitalization", 
-#                                  "Modeled Diagnoed at Infectious", "Modeled Diagnosed at Symptomatic",
-#                                  "Fitted Cases", "Fitted Hospitalizations"), 
-#                       guide = guide_legend(override.aes = list(
-#                         linetype = c(rep("solid", 4), rep("dashed", 2))))) +
-#    labs(x = "Days Since March 2, 2020",
-#         y = "Count",
-#         title = "Modeled (Diagnosed) and Fitted COVID-19 Cases in NYC, March 2 - April 15",
-#         color = "")
-#
-#  ## comparison: modeled (all) to fitted input 
-#  ggplot2::ggplot() + 
-#    geom_line(data = filter(new, outcome != "new_sym"), aes(x = day, y = median, color = outcome)) + 
-#    geom_line(data = fit_to_data, aes(x = day, y = median, color = outcome), linetype = 2) + 
-#    scale_color_manual(values = c('#a6cee3','#b2df8a','#fb9a99','#1f78b4','#33a02c','#e31a1c'), 
-#                       labels = c("Modeled All Deaths", "Modeled All Hospitalizations", "Modeled All Infections", 
-#                                  "Fitted Cases", "Fitted Deaths", "Fitted Hospitalizations"), 
-#                       guide = guide_legend(override.aes = list(
-#                         linetype = c(rep("solid", 3), rep("dashed", 3))))) +
-#    labs(x = "Days Since March 2, 2020",
-#         y = "Count",
-#         title = "Modeled (All) and Fitted COVID-19 Cases in NYC, March 2 - April 15",
-#         color = "")
-#
-#  ###
-#  ## SAME but with uncertainty 
-#
-#  ## comparison: diagnosed to fitted 
-#  ggplot2::ggplot() + 
-#    geom_line(data = diag, aes(x = day, y = median, color = outcome)) + 
-#      geom_ribbon(data = diag,
-#                aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome), 
-#                linetype = 2, alpha=0.3) +
-#    geom_line(data = filter(fit_to_data, outcome != "occur_die"), 
-#              aes(x = day, y = median, color = outcome), linetype = 2) + 
-#      geom_ribbon(data = filter(fit_to_data, outcome != "occur_die"), 
-#                aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome), linetype = 2, alpha=0.3) +
-#    scale_color_manual(values = c('#a6cee3','#fb9a99', '#cab2d6', '#fdbf6f', '#1f78b4','#e31a1c'), 
-#                       labels = c("Modeled All Diagnosed", "Modeled Diagnosed at Hospitalization", 
-#                                  "Modeled Diagnoed at Infectious", "Modeled Diagnosed at Symptomatic",
-#                                  "Fitted Cases", "Fitted Hospitalizations"), 
-#                       guide = guide_legend(override.aes = list(
-#                         linetype = c(rep("solid", 4), rep("dashed", 2))))) +
-#    labs(x = "Days Since March 2, 2020",
-#         y = "Count",
-#         title = "Modeled (Diagnosed) and Fitted COVID-19 Cases in NYC, March 2 - April 15",
-#         color = "")
-#
-#  ## comparison: modeled (all) to fitted input 
-#  ggplot2::ggplot() + 
-#    geom_line(data = filter(new, outcome != "new_sym"), aes(x = day, y = median, color = outcome)) + 
-#        geom_ribbon(data = filter(new, outcome != "new_sym"),
-#                aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome), linetype = 2, alpha=0.3) +
-#    geom_line(data = fit_to_data, aes(x = day, y = median, color = outcome)) + 
-#        geom_ribbon(data = fit_to_data, 
-#                aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome), linetype = 2, alpha=0.3) +
-#    scale_color_manual(values = c('#a6cee3','#b2df8a','#fb9a99','#1f78b4','#33a02c','#e31a1c'), 
-#                       labels = c("Modeled All Deaths", "Modeled All Hospitalizations", "Modeled All Infections", 
-#                                  "Fitted Cases", "Fitted Deaths", "Fitted Hospitalizations"), 
-#                       guide = guide_legend(override.aes = list(
-#                         linetype = c(rep("solid", 6))))) +
-#    labs(x = "Days Since March 2, 2020",
-#         y = "Count",
-#         title = "Modeled (All) and Fitted COVID-19 Cases in NYC, March 2 - April 15",
-#         color = "")
