@@ -13,7 +13,7 @@ mkdir -p logs
                     
 echo "Invoking mpirun"
 
-mpirun -v --output-filename logs/mpi --timestamp-output \
+mpirun -v --timestamp-output \
   Rscript MPIrun.R \
     --cpus-per-task=${SLURM_CPUS_PER_TASK:-3} \
     --output "${SLURM_JOB_NAME:-output}.rds" \
