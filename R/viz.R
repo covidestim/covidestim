@@ -20,8 +20,8 @@ viz.covidcast_result <- function(cc, renderPDF = FALSE) {
 
   pdfname <- glue("covidcast-output.pdf")
 
-  if (renderPDF)
-    pdf(file = pdfname, width = 8, height = 6) 
+  # if (renderPDF)
+  #   pdf(file = pdfname, width = 8, height = 6) 
 
   # Prep all the intermediate representations of the data that are ultimately
   # used to plot everything
@@ -34,16 +34,18 @@ viz.covidcast_result <- function(cc, renderPDF = FALSE) {
 
   N_days_before <- cc$config$N_days_before
 
-  # Plot the first four graphs. The remaining graphs aren't active yet.
-  print(viz_observed_and_fitted(input_data, fit_to_data, N_days_before))
-  print(viz_all_cases_to_data(input_data, deltas))
-  print(viz_modeled_cases(fit_to_data, diag, deltas))
-  print(viz_incidence(fit_to_data, diag, deltas))
+  # if (renderPDF) {
+  #   dev.off()
+  #   message(glue("PDF successfully rendered to ./{pdfname}"))
+  # }
 
-  if (renderPDF) {
-    dev.off()
-    message(glue("PDF successfully rendered to ./{pdfname}"))
-  }
+  # Plot the first four graphs. The remaining graphs aren't active yet.
+  list(
+    p1 = viz_observed_and_fitted(cc, input_data, fit_to_data, N_days_before)
+#     p2 = viz_all_cases_to_data(input_data, deltas)
+#     p3 = viz_modeled_cases(fit_to_data, diag, deltas)
+#     p4 = viz_incidence(fit_to_data, diag, deltas)
+  ) 
 }
 
 #' COVID viz 
@@ -122,51 +124,52 @@ viz_prep <- function(obj) {
   list(deltas=deltas, diag=diag, fit_to_data=fit_to_data, input_data=input_data)
 }
 
-
-  ## PLOTS
-  ## fitted to data 
-  # pdfnam <- "Figures_covidcast_4.21.pdf"
-  # pdf(file=pdfnam,width=8, height=6) 
-
-
-  # needs: input_data, fit_to_data
-
 #' @import ggplot2
-viz_observed_and_fitted <- function(input_data, fit_to_data,
+viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
                                     N_days_before) {
-  ggplot2::ggplot() + 
-    geom_point(
-      data = input_data,
-      aes(x = day, y = median, color = outcome)
-    ) + 
-    geom_line(
-      data = input_data,
-      aes(x = day, y = median, color = outcome),
-      linetype = 2
-    ) + 
-    geom_line(
-      data = filter(fit_to_data, day >=0),
-      aes(x = day, y = median, color = outcome)
-    ) + 
+
+  first_date <- as.Date(cvc_result$config$first_date, origin = '1970-01-01')
+
+  ggplot2::ggplot(aes(x = first_date + lubridate::days(day - 1),
+                      y = median,
+                      color = outcome)) + 
+    geom_point(data = input_data) + 
+    geom_line(data  = input_data) + 
+    geom_line(data  = filter(fit_to_data, day > 0)) + 
     geom_ribbon(
-      data = filter(fit_to_data, day >= 0), 
-      aes(x = day, y = median, ymin=lo, ymax=hi, color = outcome),
-      alpha=0.3
+      data = filter(fit_to_data, day > 0),
+      aes(ymin = lo, ymax = hi),
+      alpha = 0.3,
+      linetype = 'dashed'
     ) +
     scale_color_manual(
       values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
-      labels = c("Reported Cases", "Reported Deaths",
-                 "Fitted Reported Cases","Fitted Reported Deaths"),
-      guide = guide_legend(override.aes = list(linetype = c(rep("solid", 2), rep("dashed", 2))))
+      labels = c("Reported Cases",
+                 "Reported Deaths",
+                 "Fitted Reported Cases",
+                 "Fitted Reported Deaths"),
+      guide = guide_legend(
+        override.aes = list(
+          linetype = c(rep("solid", 2), rep("dashed", 2))
+        )
+      )
     ) +
     scale_y_continuous(
-      trans = "log10"
+      trans = scales::pseudo_log_trans(base = 10),
+      labels = scales::label_number_si(),
+      breaks = scales::breaks_log(n = 8),
+      minor_breaks = NULL
     ) +
-    labs(x = "Days Since Start",
+    scale_x_date(date_breaks = '1 week',
+                 date_labels = "%b %d",
+                 minor_breaks = NULL) +
+    annotation_logticks() +
+    labs(x = "Date",
          y = "Count (log scale)",
          title = "Observed and Fitted COVID-19 Cases and Deaths (log scale)",
          subtitle = "with 95% uncertainty intervals",
-         color = "")
+         color = "") +
+    theme_linedraw()
 }
 
   ## all cases to data 
