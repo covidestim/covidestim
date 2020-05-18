@@ -5,13 +5,6 @@ test_that("bad parameters get thrown out", {
   purrr::walk(
     outlandish_values,
     ~expect_error(
-      simulated_data(p_cases_hospitalized = .)
-    )
-  )
-
-  purrr::walk(
-    outlandish_values,
-    ~expect_error(
       simulated_data(p_cases_die = .)
     )
   )
@@ -20,13 +13,6 @@ test_that("bad parameters get thrown out", {
     outlandish_values,
     ~expect_error(
       simulated_data(p_cases_diagnosed = .)
-    )
-  )
-
-  purrr::walk(
-    outlandish_values,
-    ~expect_error(
-      simulated_data(p_hospitalizations_diagnosed = .)
     )
   )
 
@@ -49,7 +35,7 @@ test_that("reporting data and truth data don't conflict", {
   d_original   <- simulated_data()
   d_cumulative <- d_original
 
-  vs <- c("cases", "hosp", "deaths")
+  vs <- c("cases", "deaths")
 
   # Get cumsums for the days, but first, sort by reporting day
   d_cumulative$true     <- arrange(d_original$true,     report_day)
@@ -69,20 +55,16 @@ test_that("reporting data and truth data don't conflict", {
     joined,
     list(
       cases.true      = 0,
-      hosp.true       = 0,
       deaths.true     = 0,
       cases.reported  = 0,
-      hosp.reported   = 0,
       deaths.reported = 0
     )
   ) -> joined
 
-  # The cumulative number of reported deaths should always be l.t.e. the 
-  # number of true deaths, by that point. The same is true for cases, and 
-  # hospitalizations.
+  # The cumulative number of reported deaths should always be l.t.e. the
+  # number of true deaths, by that point. The same is true for cases
   expect_true(all(joined$deaths.reported <= joined$deaths.true))
   expect_true(all(joined$cases.reported  <= joined$cases.true))
-  expect_true(all(joined$hosp.reported   <= joined$hosp.true))
 })
 
 test_that("reporting and truth data is returned already sorted", {

@@ -34,7 +34,7 @@ NULL
 #' @importFrom magrittr %>%
 #' @export
 covidcast <- function(chains=3, iter=500,
-                      N_days, N_days_before=10,
+                      N_days, N_days_before=21,
                       seed=1234) {
 
   att(is.numeric(N_days), N_days >= 1)
