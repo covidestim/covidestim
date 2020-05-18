@@ -291,22 +291,22 @@ diag_all = new_sym_dx + new_sev_dx;
 new_die_dx = dx_sym_die + dx_sev_die;
 
 // phi
-phi_cas = pow(inv_sqrt_phi_c,-2);
-phi_die = pow(inv_sqrt_phi_d,-2);
+phi_cas = pow(inv_sqrt_phi_c, -2);
+phi_die = pow(inv_sqrt_phi_d, -2);
   
 // REPORTING //~~
 
 occur_cas = rep_vector(0, N_days_tot);
-//occur_die = rep_vector(0, N_days_tot);
+occur_die = rep_vector(0, N_days_tot);
 
 if(obs_cas_rep == 1) {
-  for(i in 1:N_days_tot){
-    for(j in 1:Max_delay){
-      if(i+(j-1) <= N_days_tot){
-      occur_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
+  for(i in 1:N_days_tot) {
+    for(j in 1:Max_delay) {
+      if(i+(j-1) <= N_days_tot) {
+        occur_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
+      }
     }
-  }
-}  
+  }  
 } else {
   for(i in 1:N_days_tot)  {
   occur_cas[i] += diag_all[i] * cas_cum_report_delay[N_days_tot - i + 1];

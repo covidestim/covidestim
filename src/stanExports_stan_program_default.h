@@ -1187,6 +1187,8 @@ public:
             stan::math::assign(phi_die, pow(inv_sqrt_phi_d, -(2)));
             current_statement_begin__ = 299;
             stan::math::assign(occur_cas, rep_vector(0, N_days_tot));
+            current_statement_begin__ = 300;
+            stan::math::assign(occur_die, rep_vector(0, N_days_tot));
             current_statement_begin__ = 302;
             if (as_bool(logical_eq(obs_cas_rep, 1))) {
                 current_statement_begin__ = 303;
@@ -2211,6 +2213,8 @@ public:
             stan::math::assign(phi_die, pow(inv_sqrt_phi_d, -(2)));
             current_statement_begin__ = 299;
             stan::math::assign(occur_cas, rep_vector(0, N_days_tot));
+            current_statement_begin__ = 300;
+            stan::math::assign(occur_die, rep_vector(0, N_days_tot));
             current_statement_begin__ = 302;
             if (as_bool(logical_eq(obs_cas_rep, 1))) {
                 current_statement_begin__ = 303;

@@ -1,6 +1,6 @@
 Package: covidcast
 Title: Real-time Bayesian forcasting of R_t
-Version: 0.1.0.0000
+Version: 0.1.1.0000
 Authors@R: 
     c(person(given = "Melanie", family = "Chitwood",
              role = c("aut", "cre"),
@@ -46,4 +46,4 @@ LinkingTo:
     rstan (>= 2.18.1),
     StanHeaders (>= 2.18.0)
 SystemRequirements: GNU make
-
+Biarch: true
