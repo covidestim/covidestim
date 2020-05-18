@@ -144,7 +144,7 @@ or removing your custom prior.
   #############################################################################
 ## warning that was here is now obsolete. 
   
-genData <- function(N_days, N_days_before = 10) #new default value
+genData <- function(N_days, N_days_before = 21) #new default value
 {
   # The first set of components of 'datList'
   config <- rlang::dots_list(
@@ -155,6 +155,9 @@ genData <- function(N_days, N_days_before = 10) #new default value
 
     #n day to model before start of data
     N_days_before = as.integer(N_days_before),
+    
+    #max delay to allow the model to consider. 50 is recommended. 
+    Max_delay = 50, 
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
