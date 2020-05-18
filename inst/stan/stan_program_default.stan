@@ -3,6 +3,7 @@ data {
   // INPUT DATA
   int<lower=0>           N_days;
   int<lower=0>           N_days_before; //~~ // days before data to initialized epi model
+  int<lower=0>           Max_delay; // ~~ // maximum days delay 
   
   int<lower=0>           obs_cas[N_days]; //~~
   int<lower=0>           obs_die[N_days]; //~~
@@ -102,23 +103,22 @@ transformed parameters {
   
 // delay probabilitily of reporting w x days delay (PDF of delay distribution)
 
-  vector[N_days_tot]  inf_prg_delay;
-  vector[N_days_tot]  sym_prg_delay;
-  vector[N_days_tot]  sev_prg_delay;
+  vector[Max_delay]  inf_prg_delay;
+  vector[Max_delay]  sym_prg_delay;
+  vector[Max_delay]  sev_prg_delay;
   
-  vector[N_days_tot]  sym_diag_delay;
-  vector[N_days_tot]  sev_diag_delay;
+  vector[Max_delay]  sym_diag_delay;
+  vector[Max_delay]  sev_diag_delay;
   
-  vector[N_days_tot]  cas_rep_delay;
-  vector[N_days_tot]  die_rep_delay;
+  vector[Max_delay]  cas_rep_delay;
+  vector[Max_delay]  die_rep_delay;
   
-  // cumulative report delays
-  vector[N_days_tot]  cas_cum_report_delay; 
-  vector[N_days_tot]  die_cum_report_delay; 
+  vector[Max_delay]  cas_cum_report_delay; 
+  vector[Max_delay]  die_cum_report_delay; 
   
-  vector[N_days_tot]  inf_cum_prg_delay;
-  vector[N_days_tot]  sym_cum_prg_delay; 
-  vector[N_days_tot]  sev_cum_prg_delay; 
+  vector[Max_delay]  inf_cum_prg_delay;
+  vector[Max_delay]  sym_cum_prg_delay; 
+  vector[Max_delay]  sev_cum_prg_delay; 
   
 // OUTCOMES
   vector[N_days_tot]  new_sym; // new in state per day
@@ -147,7 +147,7 @@ transformed parameters {
 // DLEAYS /////////////////////////
 
 //  progression
-  for(i in 1:N_days_tot) {
+  for(i in 1:Max_delay) {
     inf_prg_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
       - gamma_cdf(i-1.0, inf_prg_delay_shap, inf_prg_delay_rate);
     sym_prg_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate)
@@ -156,7 +156,7 @@ transformed parameters {
       - gamma_cdf(i-1.0, sev_prg_delay_shap, sev_prg_delay_rate);
   }
   
-for(i in 1:N_days_tot){
+for(i in 1:Max_delay){
     sym_diag_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym)
       - gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
     sev_diag_delay[i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev)
@@ -164,7 +164,7 @@ for(i in 1:N_days_tot){
 }
   
 // reporting delays//~~
-  for(i in 1:N_days_tot) {
+  for(i in 1:Max_delay) {
     cas_rep_delay[i] = gamma_cdf(i+0.0, cas_rep_delay_shap,cas_rep_delay_rate)
       - gamma_cdf(i-1.0, cas_rep_delay_shap, cas_rep_delay_rate);
     die_rep_delay[i] = gamma_cdf(i+0.0, die_rep_delay_shap, die_rep_delay_rate)
@@ -197,22 +197,29 @@ sev_cum_prg_delay = cumulative_sum(sev_prg_delay);
   new_inf = exp(log_new_inf);
   
   for(i in 1:N_days_tot) {
-    for(j in 1:(N_days_tot-i+1)) {
+    for(j in 1:Max_delay) {
+      if(i+(j-1) <= N_days_tot){
         new_sym[i+(j-1)] += new_inf[i] * p_sym_if_inf * inf_prg_delay[j];
       }
     }
-
+  }
+  
   for(i in 1:N_days_tot) {
-    for(j in 1:(N_days_tot-i+1)) {
+    for(j in 1:Max_delay) {
+      if(i+(j-1) <= N_days_tot){
         new_sev[i+(j-1)] += new_sym[i] * p_sev_if_sym * sym_prg_delay[j];
       }
     }
-
+  }
+  
   for(i in 1:N_days_tot) {
-    for(j in 1:(N_days_tot-i+1)) {
+    for(j in 1:Max_delay) {
+      if(i+(j-1) <= N_days_tot){
         new_die[i+(j-1)] += new_sev[i] * p_die_if_sev * sev_prg_delay[j];
       }
     }
+  }  
+  
 cumul_sym = cumulative_sum(new_sym); 
 cumul_die = cumulative_sum(new_die); 
 
@@ -232,44 +239,52 @@ cumul_die[N_days_tot] = cumul_sym[N_days_tot] * p_die_if_sym;
   
 // diagnosed at symptomatic
   for(i in 1:N_days_tot){
-    for(j in 1:(N_days_tot-i+1)){
+    for(j in 1:Max_delay){
+      if(i+(j-1) <= N_days_tot){
       new_sym_dx[i+(j-1)] += new_sym[i]  * 
-                             p_sev_if_sym * (1 - sym_cum_prg_delay[j]) *
+                             (1 - (p_sev_if_sym * sym_cum_prg_delay[j])) *
                              p_diag_if_sym * 
                              sym_diag_delay[j];
     }
   }
-  
+}  
     // cascade from diagnosis 
           for(i in 1:N_days_tot){
-            for(j in 1:(N_days_tot-i+1)){
+            for(j in 1:Max_delay){
+              if(i+(j-1) <= N_days_tot){
               dx_sym_sev[i+(j-1)] += new_sym_dx[i] * p_sev_if_sym *
               sym_prg_delay[j];
             }
           }
-                  for(i in 1:N_days_tot){
-            for(j in 1:(N_days_tot-i+1)){
+      }
+      
+      for(i in 1:N_days_tot){
+            for(j in 1:Max_delay){
+              if(i+(j-1) <= N_days_tot){
               dx_sym_die[i+(j-1)] += dx_sym_sev[i] * p_die_if_sev *
                 sev_prg_delay[j];
             }
           }    
-    
+        }
+        
   // diagnosed at severe 
   for(i in 1:N_days_tot){
-    for(j in 1:(N_days_tot-i+1)){
+    for(j in 1:Max_delay){
+      if(i+(j-1) <= N_days_tot){
       new_sev_dx[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-                             p_die_if_sev * (1 - sev_cum_prg_delay[j]) * 
+                             (1 - (p_die_if_sev * sev_cum_prg_delay[j])) * 
                              p_diag_if_sev * 
                              sev_diag_delay[j]; 
     }
   }
-  
+} 
   for(i in 1:N_days_tot){
-    for(j in 1:(N_days_tot-i+1)){
+    for(j in 1:Max_delay){
+      if(i+(j-1) <= N_days_tot){
       dx_sev_die[i+(j-1)] += new_sev_dx[i] * p_die_if_sev * sev_prg_delay[j];
     }
   }
-  
+}  
 
  //DIAGNOSIS //
 diag_all = new_sym_dx + new_sev_dx;
@@ -282,26 +297,30 @@ phi_die = pow(inv_sqrt_phi_d,-2);
 // REPORTING //~~
 
 occur_cas = rep_vector(0, N_days_tot);
-occur_die = rep_vector(0, N_days_tot);
+//occur_die = rep_vector(0, N_days_tot);
 
 if(obs_cas_rep == 1) {
   for(i in 1:N_days_tot){
-    for(j in 1:(N_days_tot - i +1)){
+    for(j in 1:Max_delay){
+      if(i+(j-1) <= N_days_tot){
       occur_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
     }
   }
+}  
 } else {
   for(i in 1:N_days_tot)  {
   occur_cas[i] += diag_all[i] * cas_cum_report_delay[N_days_tot - i + 1];
 }
 }
 
-if(obs_cas_rep == 1) {
+if(obs_die_rep == 1) {
   for(i in 1:N_days_tot){
-    for(j in 1:(N_days_tot - i +1)){
-      occur_die[i+(j-1)] += new_die_dx[i] * cas_rep_delay[j];
+    for(j in 1:Max_delay){
+      if(i+(j-1) <= N_days_tot){
+      occur_die[i+(j-1)] += new_die_dx[i] * die_rep_delay[j];
     }
   }
+}  
 } else {
 for(i in 1:N_days_tot)  {
   occur_die[i] += new_die_dx[i] * die_cum_report_delay[N_days_tot - i + 1];
@@ -353,13 +372,12 @@ model {
           obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
          }
  
-       for(i in 1:N_days) {
-          obs_die[i] ~ poisson(occur_die[i + N_days_before]);
-          }
+      for(i in 1:N_days) {
+        obs_die[i] ~ poisson(occur_die[i + N_days_before]);
+        }
 
    }
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
 }
-
