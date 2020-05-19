@@ -39,7 +39,7 @@ tot_iter    = cc$iter
 warm        = cc$warmup
 iter        = (tot_iter - warm) * cc$chains
 n_sample    = sample_fraction * iter
-day_start   = 2
+day_start   = 8
 day_end     = window + day_start - 1
 ndb         = cc$config$N_days_before
 
