@@ -131,13 +131,14 @@ viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
   first_date <- as.Date(cvc_result$config$first_date, origin = '1970-01-01')
 
   over1k <- scale_y_continuous(
+    name = "Count (log scale)",
     trans = scales::pseudo_log_trans(base = 10),
     labels = scales::label_number_si(),
-    breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
+    breaks = function(lims) sort(c(0, scales::breaks_log(n = 5)(0.01, lims[2]))),
     minor_breaks = NULL
   )
   
-  under1k <- scale_y_continuous()
+  under1k <- scale_y_continuous(name = "Count")
 
   dynamicScale <- if (max(input_data$median) > 1e3) over1k else under1k
 
@@ -145,7 +146,7 @@ viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
                   aes(x = first_date + lubridate::days(day - 1),
                       y = median,
                       color = outcome)) + 
-    geom_point(data = input_data) + 
+    geom_point(data = input_data, size = rel(0.6)) + 
     geom_line(data  = input_data) + 
     geom_line(data  = filter(fit_to_data, day > 0)) + 
     geom_ribbon(
@@ -164,22 +165,23 @@ viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
       guide = guide_legend(
         override.aes = list(
           linetype = c(rep("solid", 2), rep("dashed", 2))
-        )
+        ),
+        nrow = 2
       )
     ) +
     scale_x_date(date_breaks = '1 week',
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
-    labs(x = "Date",
-         y = "Count (log scale)",
-         title = "Observed and Fitted COVID-19 Cases and Deaths (log scale)",
-         subtitle = "with 95% uncertainty intervals",
+    labs(x = NULL,
+         title = "Observed and Fitted Cases and Deaths",
          color = "") +
     theme_linedraw() +
     theme(
       axis.text.x = element_text(
         size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-      )
+      ),
+      legend.position = "bottom",
+      legend.text = element_text(size=rel(0.75))
     )
 }
 
@@ -193,23 +195,21 @@ viz_all_cases_to_data <- function(cc, input_data, deltas) {
   ggplot2::ggplot(mapping = aes(x = first_date + lubridate::days(day - 1),
                                 y = median,
                                 color = outcome)) + 
-    geom_point(data = filter(input_data, outcome == "obs_cas")) + 
+    geom_point(data = filter(input_data, outcome == "obs_cas"),
+               size = rel(0.6)) +
     geom_line(
-      data = filter(input_data, outcome == "obs_cas"),
-      linetype = 2
+      data = filter(input_data, outcome == "obs_cas")
     ) + 
     geom_line(data = filter(deltas, outcome == "new_inf", day >= 1)) + 
     geom_ribbon(
       data = filter(deltas, outcome == "new_inf", day >= 1),
       aes(ymin=lo, ymax=hi),
-      alpha=0.3
+      alpha=0.3,
+      linetype = 2
     ) +
     scale_color_manual(
       values = c('#a6cee3','#fc8d62'),
-      labels = c("Modeled New Infections", "Observed Cases"),
-      guide = guide_legend(
-        override.aes = list(linetype = c("dashed","solid"))
-      )
+      labels = c("New Infections", "Observed Cases")
     ) +
     scale_y_continuous(
       trans = scales::pseudo_log_trans(base = 10),
@@ -223,17 +223,18 @@ viz_all_cases_to_data <- function(cc, input_data, deltas) {
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
     labs(
-      x = "Days Since Start",
+      x = NULL,
       y = "Count",
-      title = "Observed and Fitted COVID-19 Cases and Deaths",
-      subtitle = "with 95% uncertainty intervals",
-      color = ""
+      title = "Modeled New Infections",
+      color = NULL
     ) +
     theme_linedraw() +
     theme(
       axis.text.x = element_text(
         size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-      )
+      ),
+      legend.position = "bottom",
+      legend.text = element_text(size=rel(0.75))
     )
 }
 
@@ -292,17 +293,18 @@ viz_modeled_cases <- function(cc, fit_to_data, diag, deltas) {
     #   labels = c("new_inf" = "Modeled New Infections",
     #              "diag_all" = "Modeled Diagnosed Cases", 
     #              "occur_cas" = "Fitted Reported Cases")) +
-    labs(x = "Date",
+    labs(x = NULL,
          y = "Count",
          # title = "Modeled New Infections, Diagnosed Cases, and Reported COVID-19 Cases",
-         title = "Diagnosed Cases, and Reported COVID-19 Cases",
-         subtitle = "with 95% uncertainty intervals",
-         color = "") +
+         title = "Modeled Diagnoses and Case Reports",
+         color = NULL) +
     theme_linedraw() +
     theme(
       axis.text.x = element_text(
         size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-      )
+      ),
+      legend.position = "bottom",
+      legend.text = element_text(size=rel(0.75))
     )
 }
 
@@ -360,7 +362,7 @@ viz_incidence <- function(cc, fit_to_data, diag, deltas) {
     scale_x_date(date_breaks = '1 week',
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
-    labs(x = "Days Since Start",
+    labs(x = NULL,
          y = "Count",
          title = "Median Modeled Outcomes Compared to Data",
          color = "")
@@ -368,6 +370,8 @@ viz_incidence <- function(cc, fit_to_data, diag, deltas) {
     theme(
       axis.text.x = element_text(
         size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-      )
+      ),
+      legend.position = "bottom",
+      legend.text = element_text(size = rel(0.75))
     )
 }
