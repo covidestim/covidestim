@@ -63,7 +63,7 @@ reformat_dates <- function(vec) vec
 #'   \item Death data, detailing the number of confirmed Covid-19 deaths each
 #'   day
 #'   \item Testing data, detailing the fraction of positive tests for each day
-#'   of data
+#'   of data. 
 #' }
 #'
 #' All input data to Covidcast is expected to be a

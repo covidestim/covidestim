@@ -123,7 +123,7 @@ RtEst.covidcast_result <- function(cc,
   upper <- make_est_df(hi) 
 
   Rt_df <- as.data.frame(cbind(Rt$mn, lower$lo, upper$hi)) %>% 
-    mutate(day = seq((window+1)/2, (nrow(Rt)+(window+1)/2),1)) 
+    mutate(day = seq((day_start+day_end)/2, (nrow(Rt)+(day_start+day_end)/2))) 
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
 
