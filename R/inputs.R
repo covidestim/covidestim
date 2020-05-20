@@ -60,10 +60,10 @@ reformat_dates <- function(vec) vec
 #'
 #' \itemize{
 #'   \item Case reporting data, detailing the number of new cases each day
-#'   \item Hospitalization data, detailing the number of hospitalizations each
-#'   day
 #'   \item Death data, detailing the number of confirmed Covid-19 deaths each
 #'   day
+#'   \item Testing data, detailing the fraction of positive tests for each day
+#'   of data
 #' }
 #'
 #' All input data to Covidcast is expected to be a
