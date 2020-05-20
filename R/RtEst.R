@@ -13,7 +13,7 @@ RtEst <- function(...) UseMethod('RtEst')
 #' calualation; defaults to 2/3 samples after warm-up.  
 #' 
 #' @param window The size of the moving window over which Rt should be 
-#' estimated; defaults to 7 days. 
+#' estimated; defaults to 5 days. This number must be odd. 
 #' 
 #' @param mean.si The mean serial interval to use in the Rt estimate; defaults
 #' to 4.7 days. 
@@ -27,17 +27,30 @@ RtEst <- function(...) UseMethod('RtEst')
 #' @return an df with estimates
 #'
 #' @export
+validate_Rt_input <- function(d,e) {
+  pvec <- purrr::partial(paste, ...=, collapse = ', ')
+  att(
+    d%%2 == 0,
+    msg="'window' must be an odd number"
+  )
+  att(
+    0 < e <= 1
+    msg="'sample_fraction' must be greater than 0 and less than or eqaul to 1"
+  )
+}
 RtEst.covidcast_result <- function(cc, 
                                    sample_fraction = (2/3), 
-                                   window = 7, 
+                                   window = 5, 
                                    mean.si = 4.7,
                                    std.si = 2.9,
                                    pdf.name = "covidcast_Rt.pdf") {
+
+  validat_Rt_input(window, sample_fraction)
   
   fit       <- cc$extracted 
   tot_iter  <- 500 # cc$iter
   warm      <- 400 # cc$warmup
-  iter      <- (tot_iter - warm) * 3 # cc$chains
+  iter      <- (tot_iter - warm) * 3 
   n_sample  <- round(sample_fraction * iter)
   day_start <- 2
   day_end   <- window + day_start - 1
@@ -110,7 +123,7 @@ RtEst.covidcast_result <- function(cc,
   upper <- make_est_df(hi) 
 
   Rt_df <- as.data.frame(cbind(Rt$mn, lower$lo, upper$hi)) %>% 
-    mutate(day = seq(1,nrow(Rt),1)) 
+    mutate(day = seq((window+1)/2, (nrow(Rt)+(window+1)/2),1)) 
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
 
