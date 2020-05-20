@@ -230,6 +230,7 @@ priors_diagnosis <- function(p_diag_if_sym = c(2, 2), # a/b
   build_priors(
     p_diag_if_sym,
     p_diag_if_sev,
+    weekend_eff,
     .postfix=c("_a", "_b"),
     .prefix = "pri_"
   ) -> ps
