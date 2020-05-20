@@ -7,6 +7,9 @@ data {
   
   int<lower=0>           obs_cas[N_days]; //~~
   int<lower=0>           obs_die[N_days]; //~~
+  real<lower=0,upper=1>  frac_pos[N_days+N_days_before]; //~~
+  real<lower=0,upper=1>  rho; 
+  int<lower=0,upper=1>   is_weekend[N_days+N_days_before]; //~
   // PRIORS
   // random walk 
   real                   pri_log_new_inf_0_mu;
@@ -27,6 +30,8 @@ data {
   real<lower=0>          pri_p_diag_if_sym_b;
   real<lower=0>          pri_p_diag_if_sev_a;
   real<lower=0>          pri_p_diag_if_sev_b;
+  real<lower=0>          pri_weekend_eff_a; //~~    
+  real<lower=0>          pri_weekend_eff_b; //~~
   // delay to progression
   real<lower=0>          inf_prg_delay_shap; //~~ new names
   real<lower=0>          inf_prg_delay_rate;
@@ -59,7 +64,6 @@ transformed data {
   int<lower=1>  N_days_tot;
   
   N_days_tot = N_days + N_days_before; 
-
 }
 ///////////////////////////////////////////////////////////
 parameters {
@@ -73,7 +77,7 @@ parameters {
   real<lower=0, upper=1>  p_sev_if_sym;
   real<lower=0, upper=1>  p_die_if_sev;
   real<lower=0, upper=1>  p_die_if_sym;
-
+  
   real<lower=0, upper =1>     scale_dx_delay_sym; 
   real<lower=0, upper =1>     scale_dx_delay_sev; 
   
@@ -85,6 +89,7 @@ parameters {
 // DIAGNOSIS // probability of diagnosis at each illness state
   real<lower=0, upper=1>  p_diag_if_sym;
   real<lower=0, upper=1>  p_diag_if_sev;
+  real<lower=0, upper=1>  weekend_eff;
 
 // LIKELIHOOD
   real<lower=0>           inv_sqrt_phi_c;
@@ -243,7 +248,8 @@ cumul_die[N_days_tot] = cumul_sym[N_days_tot] * p_die_if_sym;
       if(i+(j-1) <= N_days_tot){
       new_sym_dx[i+(j-1)] += new_sym[i]  * 
                              (1 - (p_sev_if_sym * sym_cum_prg_delay[j])) *
-                             p_diag_if_sym * 
+                             p_diag_if_sym * pow(1-frac_pos[i], rho) * 
+                             (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sym_diag_delay[j];
     }
   }
@@ -273,18 +279,19 @@ cumul_die[N_days_tot] = cumul_sym[N_days_tot] * p_die_if_sym;
       if(i+(j-1) <= N_days_tot){
       new_sev_dx[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
                              (1 - (p_die_if_sev * sev_cum_prg_delay[j])) * 
-                             p_diag_if_sev * 
+                             p_diag_if_sev * pow(1-frac_pos[i], rho) * 
+                             (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sev_diag_delay[j]; 
     }
   }
 } 
-  for(i in 1:N_days_tot){
-    for(j in 1:Max_delay){
-      if(i+(j-1) <= N_days_tot){
-      dx_sev_die[i+(j-1)] += new_sev_dx[i] * p_die_if_sev * sev_prg_delay[j];
-    }
-  }
-}  
+          for(i in 1:N_days_tot){
+            for(j in 1:Max_delay){
+              if(i+(j-1) <= N_days_tot){
+              dx_sev_die[i+(j-1)] += new_sev_dx[i] * p_die_if_sev * sev_prg_delay[j];
+            }
+          }
+        }  
 
  //DIAGNOSIS //
 diag_all = new_sym_dx + new_sev_dx;
@@ -353,6 +360,7 @@ model {
 // DIAGNOSIS    
   p_diag_if_sym        ~ beta(pri_p_diag_if_sym_a, pri_p_diag_if_sym_b);
   p_diag_if_sev        ~ beta(pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
+  weekend_eff          ~ beta(pri_weekend_eff_a, pri_weekend_eff_b);
   
   inv_sqrt_phi_c       ~ normal(0, 1); //~~
   inv_sqrt_phi_d       ~ normal(0, 1); //~~
@@ -366,7 +374,6 @@ model {
        for(i in 1:N_days) {
           obs_die[i] ~ neg_binomial_2(occur_die[i + N_days_before], phi_die);
          }
-// eventually you'll want cumulative cases
   } else { 
        for(i in 1:N_days) {
           obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
