@@ -377,4 +377,8 @@ model {
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
+  vector[N_days_tot]  cumulative_incidence;  
+  cumulative_incidence = cumulative_sum(new_inf); 
 }
+
+
