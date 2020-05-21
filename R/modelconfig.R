@@ -83,8 +83,10 @@ modelconfig_add.input <- function(rightside, leftside) {
   local({
     first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
     seq(
-      first_date_Date - days(cfg$N_days_before), # First day in N_days_before
-      first_date_Date + days(cfg$N_days - 1), # Last day in N_days
+      # First day in N_days_before
+      first_date_Date - lubridate::days(cfg$N_days_before), 
+      # Last day in N_days
+      first_date_Date + lubridate::days(cfg$N_days - 1), 
       by = '1 day'
     ) -> entire_period
 
