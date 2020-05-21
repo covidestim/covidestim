@@ -34,7 +34,7 @@ validate_Rt_input <- function(d,e) {
     msg="'window' must be an odd number"
   )
   att(
-    0 < e <= 1
+    0 < e && e <= 1,
     msg="'sample_fraction' must be greater than 0 and less than or eqaul to 1"
   )
 }
