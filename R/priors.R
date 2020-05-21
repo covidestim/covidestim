@@ -119,23 +119,19 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @export
 priors_transitions <- function(p_sym_if_inf = c(5.9, 4.1),      # a/b
                                p_sev_if_sym = c(3.1, 6.9),      # a/b
-                               p_die_if_sev = c(0.3, 9.7), 
-                               p_die_if_sym = c(0.5, 49.5)) {    # a/b
+                               p_die_if_sev = c(0.3, 9.7)) {    # a/b
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_sev_if_sym) == 2)
   att(length(p_die_if_sev) == 2)
-  att(length(p_die_if_sym) == 2)
   att(is_nonNegativeReal(p_sym_if_inf))
   att(is_nonNegativeReal(p_sev_if_sym))
   att(is_nonNegativeReal(p_die_if_sev))
-  att(is_nonNegativeReal(p_die_if_sym))
-
+  
   build_priors(
     p_sym_if_inf,
     p_sev_if_sym,
     p_die_if_sev,
-    p_die_if_sym,
     .postfix=c("_a", "_b"),
     .prefix="pri_"
   ) -> ps
