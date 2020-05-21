@@ -121,10 +121,6 @@ transformed parameters {
   vector[Max_delay]  cas_cum_report_delay; 
   vector[Max_delay]  die_cum_report_delay; 
   
-  vector[Max_delay]  inf_cum_prg_delay;
-  vector[Max_delay]  sym_cum_prg_delay; 
-  vector[Max_delay]  sev_cum_prg_delay; 
-  
 // OUTCOMES
   vector[N_days_tot]  new_sym; // new in state per day
   vector[N_days_tot]  new_sev;
@@ -179,10 +175,6 @@ for(i in 1:Max_delay){
 // cumlative delays
 cas_cum_report_delay = cumulative_sum(cas_rep_delay);
 die_cum_report_delay = cumulative_sum(die_rep_delay);
-
-inf_cum_prg_delay = cumulative_sum(inf_prg_delay);
-sym_cum_prg_delay = cumulative_sum(sym_prg_delay);
-sev_cum_prg_delay = cumulative_sum(sev_prg_delay);
 
 // CASCADE OF INCIDENT OUTCOMES (TOTAL) ///////////////////////////////////
   new_sym = rep_vector(0, N_days_tot);
@@ -247,7 +239,6 @@ cumul_die[N_days_tot] = cumul_sym[N_days_tot] * p_die_if_sym;
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
       new_sym_dx[i+(j-1)] += new_sym[i]  * 
-                             (1 - (p_sev_if_sym * sym_cum_prg_delay[j])) *
                              p_diag_if_sym * pow(1-frac_pos[i], rho) * 
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sym_diag_delay[j];
@@ -278,7 +269,6 @@ cumul_die[N_days_tot] = cumul_sym[N_days_tot] * p_die_if_sym;
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
       new_sev_dx[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-                             (1 - (p_die_if_sev * sev_cum_prg_delay[j])) * 
                              p_diag_if_sev * pow(1-frac_pos[i], rho) * 
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sev_diag_delay[j]; 
