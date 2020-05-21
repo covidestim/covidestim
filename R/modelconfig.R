@@ -40,12 +40,14 @@ modelconfig_add.priors <- function(rightside, leftside) {
 
 modelconfig_add.input <- function(rightside, leftside) {
 
-  d    <- rightside
   cfg  <- leftside
-  keys <- c("obs_cas", "obs_die")
+  d    <- rightside
+
+  integer_keys <- c("obs_cas", "obs_die")
+  keys         <- c(integer_keys, "frac_pos")
 
   # Create a list of any existing data
-  preexisting_inputs_lst <- plyr::compact(cfg[keys])
+  preexisting_inputs_lst <- plyr::compact(cfg[integer_keys])
   preexisting_inputs     <- length(preexisting_inputs_lst) > 0
 
   att(length(d) == 1)
@@ -77,17 +79,39 @@ modelconfig_add.input <- function(rightside, leftside) {
   # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
-  # Need as.integer to make things play nicely with 'rstan'
+  # Update the is_weekend vector
+  local({
+    first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
+    seq(
+      first_date_Date - days(cfg$N_days_before), # First day in N_days_before
+      first_date_Date + days(cfg$N_days - 1), # Last day in N_days
+      by = '1 day'
+    ) -> entire_period
+
+    days_of_week <- purrr::map_dbl(entire_period, lubridate::wday)
+
+    # In lubridate, by default, 6 and 7 are Saturday and Sunday,
+    # respectively
+    ifelse(days_of_week %in% c(6,7), 1, 0)
+  }) -> cfg$is_weekend
 
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
 
-  att(data_type_key %in% c("obs_cas_rep", "obs_die_rep"))
+  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep")) {
+    cfg[[data_key]] <- as.integer(d[[1]]$observation)
 
-  cfg[[data_key]] <- as.integer(d[[1]]$observation)
-
-  cfg[[data_type_key]] <-
-    switch(attr(d, "date_type"), "reported" = 1, "occurred" = 0)
+    cfg[[data_type_key]] <-
+      switch(attr(d, "date_type"), "reported" = 1, "occurred" = 0)
+  } else if (data_key == "frac_pos") {
+    # frac_pos is handled differently because we store two copies: the "user"
+    # copy which has length `N_days`, and the copy that will be passed to the
+    # model, which has length `N_days_before + N_days`.
+    cfg$frac_pos_user <- d[[1]]$observation
+    cfg$frac_pos      <- c(rep(0, cfg$N_days_before), d[[1]]$observation)
+  } else {
+    stop(glue("{data_key} is not a valid input to a covidcast configuration"))
+  }
 
   cfg
 
@@ -104,11 +128,14 @@ print.inputs <- function(cfg, .tab = FALSE) {
     ifelse(is.null(cfg$obs_cas), '[ ❌ ]', glue('[{frmtr(cfg$obs_cas)}]'))
   status_deaths <-
     ifelse(is.null(cfg$obs_die), '[ ❌ ]', glue('[{frmtr(cfg$obs_die)}]'))
+  status_fracpos <-
+    ifelse(is.null(cfg$frac_pos_user), '[ ❌ ]', glue('[{frmtr(cfg$frac_pos_user)}]'))
 
 'Inputs:
 
-{t}{status_cases} Cases
-{t}{status_deaths} Deaths
+{t}{status_cases}\tCases
+{t}{status_deaths}\tDeaths
+{t}{status_fracpos}\tFraction positive
 ' -> msg
 
   cat(glue(msg))
@@ -144,8 +171,10 @@ or removing your custom prior.
   #############################################################################
 ## warning that was here is now obsolete. 
   
-genData <- function(N_days, N_days_before = 21) #new default value
+genData <- function(N_days, N_days_before = 21, rho = 1) #new default value
 {
+  att(rho > 0 && rho <= 1)
+
   # The first set of components of 'datList'
   config <- rlang::dots_list(
     .homonyms = "error", # Ensure that no keys are entered twice
@@ -158,10 +187,16 @@ genData <- function(N_days, N_days_before = 21) #new default value
     
     #max delay to allow the model to consider. 50 is recommended. 
     Max_delay = 50, 
+
+    rho = rho,
+
+    is_weekend = rep(0, N_days_before + N_days),
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day
+    frac_pos = rep(0, N_days_before + N_days), # vector of int by date. default is 0
+    frac_pos_user = NULL,
 
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
