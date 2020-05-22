@@ -8,6 +8,7 @@ library(assertthat)
 library(purrr, warn.conflicts = FALSE)
 library(glue,  warn.conflicts = FALSE)
 library(covidcast)
+library(cli)
 
 options(warn = 1)
 
@@ -27,79 +28,118 @@ Options:
 
 arguments <- docopt(doc, version = 'covidcast MPI runner 0.3')
 
-# Start an MPI cluster, allowing the routine to discover as many nodes
+# Start an MPI cluster, allowing the routine to discover as many tasks
 # as are available. This makes it easy to adapt to situations where
-# different numbers of nodes are available to use.
+# different numbers of tasks are available to use.
 startMPIcluster(
   maxcores = as.numeric(arguments[['cpus-per-task']]),
-  verbose  = TRUE,
-  bcast    = FALSE # Should eventually reconsider using this
+  verbose  = TRUE
+  # bcast    = FALSE # Should eventually reconsider using this
 ) -> cl
 
 pname <- mpi.get.processor.name(short = FALSE)
+csize <- clusterSize(cl)
 registerDoMPI(cl) # Register the MPI backend with `foreach`'s `%dopar%
-sinkWorkerOutput(glue("logs/{pname}.txt")) # Log worker output
 
-cat(glue("Cluster size is: {size}\n", size = clusterSize(cl)))
+cli_alert_success("Initialized MPI cluster")
+cli_alert_info("Cluster size is: {.val {csize}}")
 
-# Read the states data in, make sure you capture the date properly, and
-# be sure that there isn't any missingness in the data
+# Read input data, make sure you capture the date properly, and be sure that
+# there aren't any missing values in the cases/deaths data
 read_csv(
   arguments$path,
   col_types = cols(date = col_date(format = "%Y-%m-%d"))
 ) -> d
 
-assert_that(!any(is.na(d$incident_cases)))
-assert_that(!any(is.na(d$incident_deaths)))
+assert_that(!any(is.na(d$cases)))
+assert_that(!any(is.na(d$deaths)))
+assert_that(!any(is.na(d$fracpos)))
 
-# EXCLUDING ALABAMA, COLORADO, GEORGIA! Each one of these states has
-# situations where cumulative deaths or cases go down for at least one day.
-d <- filter(d, !state %in% c("Alabama", "Colorado", "Georgia"))
+cli_alert_success("Read {.file {arguments$path}}, all assertions passed")
 
-# This function takes some data for one geographic tract, and produces a
-# `covidcast` object which, if created without warnings or errors, should
-# represent a valid model configuration that is ready to be run.
-gen_covidcast_run <- function(d, type = "reported", N_days_before = 10) {
+# ONLY RUNNING KANSAS! Test run...
+d <- local({
+  excluded_states <- c("Puerto Rico")
+  # included_states <- c("Nevada")
 
-  d_cases  <- transmute(d, date, observation = incident_cases)
-  d_deaths <- transmute(d, date, observation = incident_deaths)
+  cli_alert_warning("Filtering out the following states:")
+  # cli_alert_warning("Restricting to the following states:")
+  cli_ul(items = excluded_states)
 
-  covidcast(N_days = nrow(d_cases),
-            N_days_before = N_days_before) +
-    input_cases(d_cases,   type = type) +
-    input_deaths(d_deaths, type = type)
+  filter(d, ! state %in% excluded_states)
+})
+
+# This function takes some data for a geographic tract (likely a state), and
+# produces a `covidcast` object which, if created without warnings or errors,
+# represents a valid model configuration that is ready to be run.
+#
+# `type_cases`, `type_deaths` should be either "reported" or "occurred"
+gen_covidcast_run <- function(d, type_cases = "reported", type_deaths = "reported",
+                              N_days_before = 28) {
+
+  d_cases   <- transmute(d, date, observation = cases)
+  d_deaths  <- transmute(d, date, observation = deaths)
+  d_fracpos <- transmute(d, date, observation = fracpos)
+  N_days   <- nrow(d_cases)
+
+  covidcast::covidcast(N_days = N_days,
+                       N_days_before = N_days_before) +
+    covidcast::input_cases(d_cases,   type = type_cases) +
+    covidcast::input_deaths(d_deaths, type = type_deaths) +
+    covidcast::input_fracpos(d_fracpos)
 }
 
 # Take the data, and split it into smaller tibbles for each state
-states_nested <- d %>% group_by(state) %>% nest() %>%
-  mutate(config = map(data, quietly(gen_covidcast_run)))
+states_nested <- group_by(d, state) %>% nest() %>%
+  mutate(config = map(data, gen_covidcast_run))
 
-cat("Beginning model executions\n")
+cli_alert_success("Configuration finished successfully. Summary:")
+cli_ul()
+pwalk(states_nested, function(state, data, config) {
+  cli_li(state)
+  ulid <- cli_ul()
+  cli_li("Death data: {nrow(data)} obs")
+  cli_li("Cases data: {nrow(data)} obs")
+  cli_li("Fracpos data: {nrow(data)} obs")
+  cli_end(ulid)
+})
+cli_end()
 
-foreach(i = seq_along(states_nested$state),
-        .inorder = FALSE,
-        .combine = 'bind_rows') %dopar% {
+cli_alert_info("Beginning model executions\n")
 
-  cfg             <- states_nested$config[[i]]$result
-  current_state   <- states_nested$state[i]
-  safe_run        <- purrr::quietly(covidcast::run)
+foreach(i = seq_along(states_nested$state), # By row
+        .inorder = FALSE, # Weird docs suggest this has perf. advantage?
+        .combine = 'bind_rows') %dopar% { # Every run returns a 1-row tibble
+
+  cfg             <- states_nested$config[[i]] # config for this run
+  current_state   <- states_nested$state[i] # name of state
+  safe_run        <- purrr::quietly(covidcast::run) # capture warning msgs
   core            <- Rmpi::mpi.get.processor.name(short = FALSE)
-  diagnostic_file <- glue::glue("logs/stan_{current_state}")
+  diagnostic_file <- glue::glue("logs/stan_{current_state}") # Stan diag file
+  startTime       <- Sys.time()
 
-  print(glue::glue("[start] {current_state} on {core}"))
-  result <- safe_run(cfg, cores = 3, diagnostic_file = diagnostic_file)
-  print(glue::glue("[finish] {current_state} on {core}"))
+  cli_alert_info("Started {current_state} on {core} at {startTime}")
+
+  safe_run(
+    cfg,
+    cores = arguments[["cpus-per-task"]],
+    diagnostic_file = diagnostic_file
+  ) -> result
+  endTime <- Sys.time()
+
+  cli_alert_info("Finished {current_state} on {core} at {endTime}")
+  cli_alert_info("Runtime was {prettyunits::pretty_dt(endTime - startTime)}")
 
   tibble::tibble(state = current_state, result = list(result))
 } -> result
 
-cat("Finished model executions\n")
+cli_alert_success("Finished model executions\n")
 
 # Serialize to RDS
 saveRDS(result, arguments$output)
 saveRDS(states_nested, paste0("config_", arguments$output))
 
-cat(glue("Saved result to {arguments$output}\n"))
+cli_alert_success("Saved result to {arguments$output}\n")
 
 # Cleanup the cluster and shut off MPI's communication stuff
 closeCluster(cl)
