@@ -112,6 +112,9 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @param p_die_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
 #'   if severely ill
+#' @param p_die_if_sym A two-element numeric vector containing \code{c(alpha,
+#' beta)} parameters of a Beta distribution modeling the probability of dying
+#' if symptomatic 
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
@@ -119,8 +122,8 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @export
 priors_transitions <- function(p_sym_if_inf = c(5.9, 4.1),      # a/b
                                p_sev_if_sym = c(3.1, 6.9),      # a/b
-                               p_die_if_sev = c(0.3, 9.7), 
-                               p_die_if_sym = c(0.5, 49.5)) {    # a/b
+                               p_die_if_sev = c(0.3, 9.7),      # a/b
+                               p_die_if_sym = c(11.2, 851)) {   # a/b
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_sev_if_sym) == 2)
@@ -130,7 +133,7 @@ priors_transitions <- function(p_sym_if_inf = c(5.9, 4.1),      # a/b
   att(is_nonNegativeReal(p_sev_if_sym))
   att(is_nonNegativeReal(p_die_if_sev))
   att(is_nonNegativeReal(p_die_if_sym))
-
+  
   build_priors(
     p_sym_if_inf,
     p_sev_if_sym,
@@ -205,23 +208,32 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #'
 #' @param p_diag_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
-#'   being diagnosed if hospitalized
+#'   being diagnosed if severely ill. 
+#'   
+#' @param weekend_eff A two-element numeric vector containing \code{c(alpha,
+#'   beta)} parameters of a Beta distribution modeling the effect of weekends on
+#'   probability of diagnosis. Weekend effect is assumed to impact probability of 
+#'   diagnosis at symptomatic and severe disease states equally.    
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidcast() + priors_diagnosis(p_diag_if_inf = c(0.5, 0.1))
+#' cfg <- covidcast() + priors_diagnosis(p_diag_if_sym = c(2, 2))
 #' @export
-priors_diagnosis <- function(p_diag_if_sym = c(1.1, 1.1), # a/b
-                             p_diag_if_sev = c(1.1, 1.1)) {# a/b
+priors_diagnosis <- function(p_diag_if_sym = c(2, 2), # a/b
+                             p_diag_if_sev = c(1.5, 1), 
+                             weekend_eff = c(1.5, 1.5)) {# a/b
 
   att(length(p_diag_if_sym) == 2)
   att(length(p_diag_if_sev) == 2)
+  att(length(weekend_eff) == 2)
   att(is_nonNegativeReal(p_diag_if_sym))
   att(is_nonNegativeReal(p_diag_if_sev))
+  att(is_nonNegativeReal(weekend_eff))
 
   build_priors(
     p_diag_if_sym,
     p_diag_if_sev,
+    weekend_eff,
     .postfix=c("_a", "_b"),
     .prefix = "pri_"
   ) -> ps
