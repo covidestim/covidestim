@@ -1,5 +1,5 @@
 #' @export
-#' @rdname Rt.estimate
+#' @rdname RtEst.covidcast_result
 RtEst <- function(...) UseMethod('RtEst')
 
 #' Calculate the Effective Reprouction Number from CovidCast output
@@ -30,7 +30,7 @@ RtEst <- function(...) UseMethod('RtEst')
 validate_Rt_input <- function(d,e) {
   pvec <- purrr::partial(paste, ...=, collapse = ', ')
   att(
-    d%%2 == 0,
+    d %% 2 == 1,
     msg="'window' must be an odd number"
   )
   att(
@@ -38,6 +38,8 @@ validate_Rt_input <- function(d,e) {
     msg="'sample_fraction' must be greater than 0 and less than or eqaul to 1"
   )
 }
+
+#' @export
 RtEst.covidcast_result <- function(cc, 
                                    sample_fraction = (2/3), 
                                    window = 5, 
@@ -45,7 +47,7 @@ RtEst.covidcast_result <- function(cc,
                                    std.si = 2.9,
                                    pdf.name = "covidcast_Rt.pdf") {
 
-  validat_Rt_input(window, sample_fraction)
+  validate_Rt_input(window, sample_fraction)
   
   fit       <- cc$extracted 
   tot_iter  <- 500 # cc$iter
@@ -123,7 +125,8 @@ RtEst.covidcast_result <- function(cc,
   upper <- make_est_df(hi) 
 
   Rt_df <- as.data.frame(cbind(Rt$mn, lower$lo, upper$hi)) %>% 
-    mutate(day = seq((day_start+day_end)/2, (nrow(Rt)+(day_start+day_end)/2))) 
+    mutate(day = seq((day_start+day_end)/2, 
+                     (nrow(Rt)-1+(day_start+day_end)/2))) 
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
 
