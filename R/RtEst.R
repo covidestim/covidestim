@@ -44,8 +44,7 @@ RtEst.covidcast_result <- function(cc,
                                    sample_fraction = (2/3), 
                                    window = 5, 
                                    mean.si = 4.7,
-                                   std.si = 2.9,
-                                   pdf.name = "covidcast_Rt.pdf") {
+                                   std.si = 2.9) {
 
   validate_Rt_input(window, sample_fraction)
   
@@ -130,7 +129,6 @@ RtEst.covidcast_result <- function(cc,
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
 
-  #' @import ggplot2
   ggplot2::ggplot(
     Rt_df, aes(x = first_date + lubridate::days(day - 1))
   ) +
@@ -146,8 +144,10 @@ RtEst.covidcast_result <- function(cc,
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
     scale_y_continuous(
-      breaks = function(lims) c(1, scales::extended_breaks(n = 4)(lims)),
-      minor_breaks = NULL
+      limits = c(0, 8),
+      breaks = c(0, 1, 2, 4, 8),
+      minor_breaks = NULL,
+      expand = c(0,0)
     ) +
     labs(
       x = NULL,
@@ -162,3 +162,73 @@ RtEst.covidcast_result <- function(cc,
     )
   # return(Rt_df)
 }
+
+#' @export
+RtNaiveEstim <- function(cc,
+                         window = 5, 
+                         mean.si = 4.7,
+                         std.si = 2.9) {
+
+  day_start <- 2
+  day_end   <- day_start + window - 1
+  n_days    <- cc$config$N_days
+  ndb       <- cc$config$N_days_before
+
+  first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
+  cases <- cc$config$obs_cas
+
+  EpiEstim::make_config(
+    list(
+      t_start = seq(day_start, n_days - window + 1), 
+      t_end   = seq(day_end,   n_days),
+      mean_si = mean.si, 
+      std_si  = std.si
+    )
+  ) -> config
+
+  EpiEstim::estimate_R(
+    cases,
+    method = "parametric_si",
+    config = config
+  ) -> Rt_Est
+
+  result <- as_tibble(Rt_Est[["R"]])
+  result <- transmute(result, day = t_start, y = `Median(R)`,
+                      ymin = `Quantile.0.025(R)`, ymax=`Quantile.0.975(R)`)
+
+  p <- ggplot2::ggplot(
+    result, aes(x = as.Date(first_date) + lubridate::days(day - 1))
+  ) +
+    geom_hline(
+      yintercept = 1,
+      color = "red",
+      size = 0.5,
+      show.legend = FALSE
+    ) +
+    geom_line(aes(y = y)) + 
+    geom_ribbon(aes(y = y, ymin=ymin, ymax=ymax), alpha=0.3) +
+    scale_x_date(date_breaks = '1 week',
+                 date_labels = "%b %d",
+                 minor_breaks = NULL,
+                 limits = c(first_date, NA)) +
+    coord_cartesian(ylim = c(0, 8)) +
+    scale_y_continuous(
+      breaks = c(0, 1, 2, 4, 8),
+      minor_breaks = NULL,
+      expand = c(0,0)
+    ) +
+    labs(
+      x = NULL,
+      y = "Rt", 
+      title = "Naive Effective Reproduction Number Estimate"
+    ) +
+    theme_linedraw() +
+    theme(
+      axis.text.x = element_text(
+        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
+      )
+    )
+
+  p
+}
+

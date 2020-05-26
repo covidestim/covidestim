@@ -48,6 +48,7 @@ viz.covidcast_result <- function(cc, renderPDF = FALSE) {
   ) 
 }
 
+
 #' COVID viz 
 #' @importFrom dplyr mutate group_by summarise ungroup arrange
 #' @importFrom magrittr %>%
@@ -124,23 +125,32 @@ viz_prep <- function(obj) {
   list(deltas=deltas, diag=diag, fit_to_data=fit_to_data, input_data=input_data)
 }
 
+
 #' @import ggplot2
 viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
                                     N_days_before) {
 
   first_date <- as.Date(cvc_result$config$first_date, origin = '1970-01-01')
 
-  over1k <- scale_y_continuous(
-    name = "Count (log scale)",
+  over1k_old <- scale_y_continuous(
+    name = "Count (log1p scale)",
     trans = scales::pseudo_log_trans(base = 10),
     labels = scales::label_number_si(),
     breaks = function(lims) sort(c(0, scales::breaks_log(n = 5)(0.01, lims[2]))),
     minor_breaks = NULL
   )
+
+  over1k <- scale_y_continuous(
+    name = "Count (log scale)",
+    trans = "log1p",
+    labels = scales::label_number_si(),
+    breaks = function(l) c(0, scales::breaks_log(n=5)(c(1, l[2]))),
+    minor_breaks = NULL
+  )
   
   under1k <- scale_y_continuous(name = "Count")
 
-  dynamicScale <- if (max(input_data$median) > 1e3) over1k else under1k
+  # dynamicScale <- if (max(input_data$median) > 1e3) over1k else under1k
 
   ggplot2::ggplot(input_data,
                   aes(x = first_date + lubridate::days(day - 1),
@@ -155,7 +165,8 @@ viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
       alpha = 0.3,
       linetype = 'dashed'
     ) +
-    dynamicScale +
+    # dynamicScale +
+    over1k +
     scale_color_manual(
       values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
       labels = c("Observed Cases",
@@ -215,7 +226,7 @@ viz_all_cases_to_data <- function(cc, input_data, deltas) {
       trans = scales::pseudo_log_trans(base = 10),
       labels = scales::label_number_si(),
       # breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
-      breaks = 10^(1:6),
+      breaks = c(0, 10^(1:6)),
       minor_breaks = NULL,
       limits = c(0, NA)
     ) +
