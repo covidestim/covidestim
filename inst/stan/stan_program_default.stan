@@ -263,7 +263,7 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
       new_sev_dx[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-                             p_diag_if_sev * pow(1-frac_pos[i], rho) * 
+                             p_diag_if_sev *
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sev_diag_delay[j]; 
     }
