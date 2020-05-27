@@ -1182,7 +1182,7 @@ public:
                         current_statement_begin__ = 265;
                         stan::model::assign(new_sev_dx, 
                                     stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), 
-                                    (stan::model::rvalue(new_sev_dx, stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), "new_sev_dx") + (((((get_base1(new_sev, i, "new_sev", 1) - get_base1(dx_sym_sev, i, "dx_sym_sev", 1)) * p_diag_if_sev) * pow((1 - get_base1(frac_pos, i, "frac_pos", 1)), rho)) * (1 - (get_base1(is_weekend, (i + (j - 1)), "is_weekend", 1) * weekend_eff))) * get_base1(sev_diag_delay, j, "sev_diag_delay", 1))), 
+                                    (stan::model::rvalue(new_sev_dx, stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), "new_sev_dx") + ((((get_base1(new_sev, i, "new_sev", 1) - get_base1(dx_sym_sev, i, "dx_sym_sev", 1)) * p_diag_if_sev) * (1 - (get_base1(is_weekend, (i + (j - 1)), "is_weekend", 1) * weekend_eff))) * get_base1(sev_diag_delay, j, "sev_diag_delay", 1))), 
                                     "assigning variable new_sev_dx");
                     }
                 }
@@ -2127,7 +2127,7 @@ public:
                         current_statement_begin__ = 265;
                         stan::model::assign(new_sev_dx, 
                                     stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), 
-                                    (stan::model::rvalue(new_sev_dx, stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), "new_sev_dx") + (((((get_base1(new_sev, i, "new_sev", 1) - get_base1(dx_sym_sev, i, "dx_sym_sev", 1)) * p_diag_if_sev) * pow((1 - get_base1(frac_pos, i, "frac_pos", 1)), rho)) * (1 - (get_base1(is_weekend, (i + (j - 1)), "is_weekend", 1) * weekend_eff))) * get_base1(sev_diag_delay, j, "sev_diag_delay", 1))), 
+                                    (stan::model::rvalue(new_sev_dx, stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), "new_sev_dx") + ((((get_base1(new_sev, i, "new_sev", 1) - get_base1(dx_sym_sev, i, "dx_sym_sev", 1)) * p_diag_if_sev) * (1 - (get_base1(is_weekend, (i + (j - 1)), "is_weekend", 1) * weekend_eff))) * get_base1(sev_diag_delay, j, "sev_diag_delay", 1))), 
                                     "assigning variable new_sev_dx");
                     }
                 }
