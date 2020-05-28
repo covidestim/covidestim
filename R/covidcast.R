@@ -56,7 +56,7 @@ covidcast <- function(chains=3, iter=1000, thin = 2,
     config  = config,
     chains  = chains,
     iter    = iter,
-    thin    = thin
+    thin    = thin,
     warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
     seed    = seed,
     control = list(adapt_delta = 0.92, max_treedepth = 12)
