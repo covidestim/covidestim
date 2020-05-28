@@ -2,6 +2,7 @@
 
 S3method("+",covidcast)
 S3method("+",modelconfig)
+S3method(RtEst,covidcast_result)
 S3method(print,covidcast)
 S3method(print,modelconfig)
 S3method(print,simulateddata)
