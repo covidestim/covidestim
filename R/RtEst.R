@@ -30,7 +30,7 @@ RtEst <- function(...) UseMethod('RtEst')
 validate_Rt_input <- function(d,e) {
   pvec <- purrr::partial(paste, ...=, collapse = ', ')
   att(
-    d%%2 == 1,
+    d%%2 == 0,
     msg="'window' must be an odd number"
   )
   att(
@@ -38,17 +38,14 @@ validate_Rt_input <- function(d,e) {
     msg="'sample_fraction' must be greater than 0 and less than or eqaul to 1"
   )
 }
-
-#' @export
-
 RtEst.covidcast_result <- function(cc, 
                                    sample_fraction = (2/3), 
                                    window = 5, 
                                    mean.si = 4.7,
-                                   std.si = 2.9) {
+                                   std.si = 2.9,
+                                   pdf.name = "covidcast_Rt.pdf") {
 
-  validate_Rt_input(window, sample_fraction)
-
+  validat_Rt_input(window, sample_fraction)
   
   fit       <- cc$extracted 
   tot_iter  <- 500 # cc$iter
@@ -126,9 +123,7 @@ RtEst.covidcast_result <- function(cc,
   upper <- make_est_df(hi) 
 
   Rt_df <- as.data.frame(cbind(Rt$mn, lower$lo, upper$hi)) %>% 
-    mutate(day = seq((day_start+day_end)/2, 
-                     (nrow(Rt)-1+(day_start+day_end)/2))) 
-
+    mutate(day = seq((day_start+day_end)/2, (nrow(Rt)+(day_start+day_end)/2))) 
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
 
@@ -147,9 +142,8 @@ RtEst.covidcast_result <- function(cc,
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
     scale_y_continuous(
-      trans = "log10",
       limits = c(0, 8),
-      breaks = c(0.5, 1, 2, 4, 8),
+      breaks = c(0, 1, 2, 4, 8),
       minor_breaks = NULL,
       expand = c(0,0)
     ) +
@@ -209,9 +203,11 @@ RtNaiveEstim <- function(ccr) {
                  limits = c(first_date, NA)) +
     coord_cartesian(ylim = c(0, 8)) +
     scale_y_continuous(
-      trans = "log10",
+<<<<<<< HEAD
       limits = c(0, 8),
-      breaks = c(0.5, 1, 2, 4, 8),
+=======
+>>>>>>> roll back to natural scale Rt plot
+      breaks = c(0, 1, 2, 4, 8),
       minor_breaks = NULL,
       expand = c(0,0)
     ) +

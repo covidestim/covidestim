@@ -20,9 +20,8 @@ NULL
 #'
 #' @param chains The number of chains to use
 #' @param iter The number of iterations to run
-#' @param thin A positive interger specifying period for saving samples. 
 #' @param N_days A number. The number of days of data being modeled.
-#' @param N_days_before. A number. How many days before the first day of model
+#' @param N_days_delay. A number. How many days before the first day of model
 #'   data should be modeled?
 #' @param rho A number in \code{(0, 1]}. Needs documentation.
 #' @param seed A number. The random number generator seed for use in sampling.
@@ -35,8 +34,8 @@ NULL
 #' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(chains=3, iter=1000, thin = 2,
-                      N_days, N_days_before=28, rho = 1,
+covidcast <- function(chains=3, iter=500,
+                      N_days, N_days_before=21, rho = 1,
                       seed=1234) {
 
   att(is.numeric(N_days), N_days >= 1)
@@ -56,7 +55,6 @@ covidcast <- function(chains=3, iter=1000, thin = 2,
     config  = config,
     chains  = chains,
     iter    = iter,
-    thin    = thin,
     warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
     seed    = seed,
     control = list(adapt_delta = 0.92, max_treedepth = 12)
@@ -107,7 +105,6 @@ run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {
     seed    = cc$seed,
     chains  = cc$chains,
     iter    = cc$iter,
-    thin    = cc$thin,
     warmup  = cc$warmup,
     ...
   ) -> result
