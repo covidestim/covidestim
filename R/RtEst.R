@@ -30,7 +30,7 @@ RtEst <- function(...) UseMethod('RtEst')
 validate_Rt_input <- function(d,e) {
   pvec <- purrr::partial(paste, ...=, collapse = ', ')
   att(
-    d %% 2 == 1,
+    d%%2 == 1,
     msg="'window' must be an odd number"
   )
   att(
@@ -40,14 +40,15 @@ validate_Rt_input <- function(d,e) {
 }
 
 #' @export
+
 RtEst.covidcast_result <- function(cc, 
                                    sample_fraction = (2/3), 
                                    window = 5, 
                                    mean.si = 4.7,
-                                   std.si = 2.9,
-                                   pdf.name = "covidcast_Rt.pdf") {
+                                   std.si = 2.9) {
 
   validate_Rt_input(window, sample_fraction)
+
   
   fit       <- cc$extracted 
   tot_iter  <- 500 # cc$iter
@@ -127,6 +128,7 @@ RtEst.covidcast_result <- function(cc,
   Rt_df <- as.data.frame(cbind(Rt$mn, lower$lo, upper$hi)) %>% 
     mutate(day = seq((day_start+day_end)/2, 
                      (nrow(Rt)-1+(day_start+day_end)/2))) 
+
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
 
