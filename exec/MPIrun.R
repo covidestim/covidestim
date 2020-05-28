@@ -1,3 +1,5 @@
+library(covidcast)
+
 suppressPackageStartupMessages(library(doMPI))
 library(Rmpi)
 library(docopt)
@@ -7,7 +9,6 @@ library(tidyr)
 library(assertthat)
 library(purrr, warn.conflicts = FALSE)
 library(glue,  warn.conflicts = FALSE)
-library(covidcast)
 library(cli)
 library(stringr)
 
@@ -25,10 +26,10 @@ Options:
   --version                 Show version.
   --cpus-per-task=<cores>   How many cores should each task (process) use?
   --output=<path>           Where to save the resulting RDS file
-  --id-vars=<vars>          Grouping vars. [default: state]
+  --id-vars=<vars>          Grouping vars in <path>. [default: state]
 ', name = "MPIrun.R") -> doc
 
-arguments <- docopt(doc, version = 'covidcast MPI runner 0.3')
+arguments <- docopt(doc, version = 'covidcast MPI runner 0.4')
 
 input_file_path  <- arguments$path
 id_vars          <- str_split(arguments[["id-vars"]], ',')[[1]]
@@ -40,7 +41,10 @@ cpus_per_task    <- as.numeric(arguments[['cpus-per-task']])
 # different numbers of tasks are available to use.
 startMPIcluster(
   maxcores = cpus_per_task,
-  verbose  = TRUE
+  verbose  = TRUE,
+  includemaster = TRUE # master is counted as a load, this avoids hamstringing
+                       # the master node b/c of doMPI behavior when worker is 
+                       # running on master node
 ) -> cl
 csize <- clusterSize(cl)
 registerDoMPI(cl) # Register the MPI backend with `foreach`'s `%dopar%
@@ -60,18 +64,18 @@ assert_that(!any(is.na(d$fracpos)))
 
 cli_alert_success("Read {.file {input_file_path}}, all assertions passed")
 
-d <- local({
-  # excluded_states <- c("Puerto Rico")
-  included_states <- "Washington"
-
-  # cli_alert_warning("Filtering out the following states:")
-  cli_alert_warning("Restricting to the following states:")
-  cli_ul(items = included_states)
-  # cli_ul(items = excluded_states)
-
-  filter(d, state %in% included_states)
-  # filter(d, ! state %in% excluded_states)
-})
+# d <- local({
+#   # excluded_states <- c("Puerto Rico")
+#   included_states <- "Washington"
+# 
+#   # cli_alert_warning("Filtering out the following states:")
+#   cli_alert_warning("Restricting to the following states:")
+#   cli_ul(items = included_states)
+#   # cli_ul(items = excluded_states)
+# 
+#   filter(d, state %in% included_states)
+#   # filter(d, ! state %in% excluded_states)
+# })
 
 # This function takes some data for a geographic tract (likely a state), and
 # produces a `covidcast` object which, if created without warnings or errors,
@@ -126,7 +130,7 @@ foreach(i = seq_along(states_nested$state), # By row
   diagnostic_file    <- glue::glue("logs/stan-{current_group_name}") # Stan logs
   startTime          <- Sys.time()
 
-  cli_alert_info("Started {current_group_name} on {core} at {startTime}")
+  cli::cli_alert_info("Started {current_group_name} on {core} at {startTime}")
 
   safe_run(
     cfg,
@@ -135,8 +139,8 @@ foreach(i = seq_along(states_nested$state), # By row
   ) -> result
   endTime <- Sys.time()
 
-  cli_alert_info("Finished {current_group_name} on {core} at {endTime}")
-  cli_alert_info("Runtime was {prettyunits::pretty_dt(endTime - startTime)}")
+  cli::cli_alert_info("Finished {current_group_name} on {core} at {endTime}")
+  cli::cli_alert_info("Runtime was {prettyunits::pretty_dt(endTime - startTime)}")
 
   tibble::tibble(!!! current_group, result = list(result))
 } -> result
