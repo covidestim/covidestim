@@ -35,7 +35,7 @@ NULL
 #' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(chains=3, iter=500, thin = 2,
+covidcast <- function(chains=3, iter=1000, thin = 2,
                       N_days, N_days_before=28, rho = 1,
                       seed=1234) {
 
