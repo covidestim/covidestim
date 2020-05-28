@@ -142,8 +142,9 @@ RtEst.covidcast_result <- function(cc,
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
     scale_y_continuous(
+      trans = "log10",
       limits = c(0, 8),
-      breaks = c(0, 1, 2, 4, 8),
+      breaks = c(0.5, 1, 2, 4, 8),
       minor_breaks = NULL,
       expand = c(0,0)
     ) +
@@ -203,11 +204,9 @@ RtNaiveEstim <- function(ccr) {
                  limits = c(first_date, NA)) +
     coord_cartesian(ylim = c(0, 8)) +
     scale_y_continuous(
-<<<<<<< HEAD
+      trans = "log10",
       limits = c(0, 8),
-=======
->>>>>>> roll back to natural scale Rt plot
-      breaks = c(0, 1, 2, 4, 8),
+      breaks = c(0.5, 1, 2, 4, 8),
       minor_breaks = NULL,
       expand = c(0,0)
     ) +
