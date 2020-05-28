@@ -20,6 +20,7 @@ NULL
 #'
 #' @param chains The number of chains to use
 #' @param iter The number of iterations to run
+#' @param thin A positive interger specifying period for saving samples. 
 #' @param N_days A number. The number of days of data being modeled.
 #' @param N_days_before. A number. How many days before the first day of model
 #'   data should be modeled?
@@ -34,7 +35,7 @@ NULL
 #' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(chains=3, iter=500,
+covidcast <- function(chains=3, iter=1000, thin = 2,
                       N_days, N_days_before=21, rho = 1,
                       seed=1234) {
 
@@ -55,6 +56,7 @@ covidcast <- function(chains=3, iter=500,
     config  = config,
     chains  = chains,
     iter    = iter,
+    thin    = thin
     warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
     seed    = seed,
     control = list(adapt_delta = 0.92, max_treedepth = 12)
