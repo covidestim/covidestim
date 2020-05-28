@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_stan_program_default");
-    reader.add_event(379, 377, "end", "model_stan_program_default");
+    reader.add_event(385, 383, "end", "model_stan_program_default");
     return reader;
 }
 #include <stan_meta_header.hpp>
@@ -1182,7 +1182,7 @@ public:
                         current_statement_begin__ = 265;
                         stan::model::assign(new_sev_dx, 
                                     stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), 
-                                    (stan::model::rvalue(new_sev_dx, stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), "new_sev_dx") + (((((get_base1(new_sev, i, "new_sev", 1) - get_base1(dx_sym_sev, i, "dx_sym_sev", 1)) * p_diag_if_sev) * pow((1 - get_base1(frac_pos, i, "frac_pos", 1)), rho)) * (1 - (get_base1(is_weekend, (i + (j - 1)), "is_weekend", 1) * weekend_eff))) * get_base1(sev_diag_delay, j, "sev_diag_delay", 1))), 
+                                    (stan::model::rvalue(new_sev_dx, stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), "new_sev_dx") + ((((get_base1(new_sev, i, "new_sev", 1) - get_base1(dx_sym_sev, i, "dx_sym_sev", 1)) * p_diag_if_sev) * (1 - (get_base1(is_weekend, (i + (j - 1)), "is_weekend", 1) * weekend_eff))) * get_base1(sev_diag_delay, j, "sev_diag_delay", 1))), 
                                     "assigning variable new_sev_dx");
                     }
                 }
@@ -1546,23 +1546,35 @@ public:
                 current_statement_begin__ = 355;
                 for (int i = 1; i <= N_days; ++i) {
                     current_statement_begin__ = 356;
-                    lp_accum__.add(neg_binomial_2_log<propto__>(get_base1(obs_cas, i, "obs_cas", 1), get_base1(occur_cas, (i + N_days_before), "occur_cas", 1), phi_cas));
+                    if (as_bool(logical_gt(get_base1(obs_cas, i, "obs_cas", 1), 0))) {
+                        current_statement_begin__ = 357;
+                        lp_accum__.add(neg_binomial_2_log<propto__>(get_base1(obs_cas, i, "obs_cas", 1), get_base1(occur_cas, (i + N_days_before), "occur_cas", 1), phi_cas));
+                    }
                 }
-                current_statement_begin__ = 358;
+                current_statement_begin__ = 360;
                 for (int i = 1; i <= N_days; ++i) {
-                    current_statement_begin__ = 359;
-                    lp_accum__.add(neg_binomial_2_log<propto__>(get_base1(obs_die, i, "obs_die", 1), get_base1(occur_die, (i + N_days_before), "occur_die", 1), phi_die));
+                    current_statement_begin__ = 361;
+                    if (as_bool(logical_gt(get_base1(obs_die, i, "obs_die", 1), 0))) {
+                        current_statement_begin__ = 362;
+                        lp_accum__.add(neg_binomial_2_log<propto__>(get_base1(obs_die, i, "obs_die", 1), get_base1(occur_die, (i + N_days_before), "occur_die", 1), phi_die));
+                    }
                 }
             } else {
-                current_statement_begin__ = 362;
-                for (int i = 1; i <= N_days; ++i) {
-                    current_statement_begin__ = 363;
-                    lp_accum__.add(poisson_log<propto__>(get_base1(obs_cas, i, "obs_cas", 1), get_base1(occur_cas, (i + N_days_before), "occur_cas", 1)));
-                }
                 current_statement_begin__ = 366;
                 for (int i = 1; i <= N_days; ++i) {
                     current_statement_begin__ = 367;
-                    lp_accum__.add(poisson_log<propto__>(get_base1(obs_die, i, "obs_die", 1), get_base1(occur_die, (i + N_days_before), "occur_die", 1)));
+                    if (as_bool(logical_gt(get_base1(obs_cas, i, "obs_cas", 1), 0))) {
+                        current_statement_begin__ = 368;
+                        lp_accum__.add(poisson_log<propto__>(get_base1(obs_cas, i, "obs_cas", 1), get_base1(occur_cas, (i + N_days_before), "occur_cas", 1)));
+                    }
+                }
+                current_statement_begin__ = 371;
+                for (int i = 1; i <= N_days; ++i) {
+                    current_statement_begin__ = 372;
+                    if (as_bool(logical_gt(get_base1(obs_die, i, "obs_die", 1), 0))) {
+                        current_statement_begin__ = 373;
+                        lp_accum__.add(poisson_log<propto__>(get_base1(obs_die, i, "obs_die", 1), get_base1(occur_die, (i + N_days_before), "occur_die", 1)));
+                    }
                 }
             }
         } catch (const std::exception& e) {
@@ -2127,7 +2139,7 @@ public:
                         current_statement_begin__ = 265;
                         stan::model::assign(new_sev_dx, 
                                     stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), 
-                                    (stan::model::rvalue(new_sev_dx, stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), "new_sev_dx") + (((((get_base1(new_sev, i, "new_sev", 1) - get_base1(dx_sym_sev, i, "dx_sym_sev", 1)) * p_diag_if_sev) * pow((1 - get_base1(frac_pos, i, "frac_pos", 1)), rho)) * (1 - (get_base1(is_weekend, (i + (j - 1)), "is_weekend", 1) * weekend_eff))) * get_base1(sev_diag_delay, j, "sev_diag_delay", 1))), 
+                                    (stan::model::rvalue(new_sev_dx, stan::model::cons_list(stan::model::index_uni((i + (j - 1))), stan::model::nil_index_list()), "new_sev_dx") + ((((get_base1(new_sev, i, "new_sev", 1) - get_base1(dx_sym_sev, i, "dx_sym_sev", 1)) * p_diag_if_sev) * (1 - (get_base1(is_weekend, (i + (j - 1)), "is_weekend", 1) * weekend_eff))) * get_base1(sev_diag_delay, j, "sev_diag_delay", 1))), 
                                     "assigning variable new_sev_dx");
                     }
                 }
@@ -2321,16 +2333,16 @@ public:
             }
             if (!include_gqs__) return;
             // declare and define generated quantities
-            current_statement_begin__ = 374;
+            current_statement_begin__ = 380;
             validate_non_negative_index("cumulative_incidence", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> cumulative_incidence(N_days_tot);
             stan::math::initialize(cumulative_incidence, DUMMY_VAR__);
             stan::math::fill(cumulative_incidence, DUMMY_VAR__);
             // generated quantities statements
-            current_statement_begin__ = 375;
+            current_statement_begin__ = 381;
             stan::math::assign(cumulative_incidence, cumulative_sum(new_inf));
             // validate, write generated quantities
-            current_statement_begin__ = 374;
+            current_statement_begin__ = 380;
             size_t cumulative_incidence_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < cumulative_incidence_j_1_max__; ++j_1__) {
                 vars__.push_back(cumulative_incidence(j_1__));
