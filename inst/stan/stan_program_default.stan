@@ -353,20 +353,26 @@ model {
 //SWITCH TO NEG BIN
   if (nb_yes == 1) {
          for(i in 1:N_days) {
+           if(obs_cas[i] > 0) {
           obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_before], phi_cas);
           }
+        }  
        for(i in 1:N_days) {
+          if(obs_die[i] > 0) {
           obs_die[i] ~ neg_binomial_2(occur_die[i + N_days_before], phi_die);
          }
+       } 
   } else { 
        for(i in 1:N_days) {
+         if(obs_cas[i] > 0) {
           obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
          }
- 
+       }
       for(i in 1:N_days) {
+        if(obs_die[i] > 0) {
         obs_die[i] ~ poisson(occur_die[i + N_days_before]);
         }
-
+      }
    }
 }
 ///////////////////////////////////////////////////////////

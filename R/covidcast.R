@@ -21,7 +21,7 @@ NULL
 #' @param chains The number of chains to use
 #' @param iter The number of iterations to run
 #' @param N_days A number. The number of days of data being modeled.
-#' @param N_days_delay. A number. How many days before the first day of model
+#' @param N_days_before. A number. How many days before the first day of model
 #'   data should be modeled?
 #' @param rho A number in \code{(0, 1]}. Needs documentation.
 #' @param seed A number. The random number generator seed for use in sampling.
