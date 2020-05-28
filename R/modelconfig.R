@@ -80,22 +80,22 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
   # Update the is_weekend vector
-  local({
-    first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
-    seq(
-      # First day in N_days_before
-      first_date_Date - lubridate::days(cfg$N_days_before), 
-      # Last day in N_days
-      first_date_Date + lubridate::days(cfg$N_days - 1), 
-      by = '1 day'
-    ) -> entire_period
+  # local({
+  #   first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
+  #   seq(
+  #     # First day in N_days_before
+  #     first_date_Date - lubridate::days(cfg$N_days_before), 
+  #     # Last day in N_days
+  #     first_date_Date + lubridate::days(cfg$N_days - 1), 
+  #     by = '1 day'
+  #   ) -> entire_period
 
-    days_of_week <- purrr::map_dbl(entire_period, lubridate::wday)
+  #   days_of_week <- purrr::map_dbl(entire_period, lubridate::wday)
 
-    # In lubridate, by default, 6 and 7 are Saturday and Sunday,
-    # respectively
-    ifelse(days_of_week %in% c(6,7), 1, 0)
-  }) -> cfg$is_weekend
+  #   # In lubridate, by default, 6 and 7 are Saturday and Sunday,
+  #   # respectively
+  #   ifelse(days_of_week %in% c(6,7), 1, 0)
+  # }) -> cfg$is_weekend
 
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")

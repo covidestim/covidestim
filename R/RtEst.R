@@ -30,7 +30,7 @@ RtEst <- function(...) UseMethod('RtEst')
 validate_Rt_input <- function(d,e) {
   pvec <- purrr::partial(paste, ...=, collapse = ', ')
   att(
-    d%%2 == 0,
+    d %% 2 == 1,
     msg="'window' must be an odd number"
   )
   att(
@@ -38,14 +38,15 @@ validate_Rt_input <- function(d,e) {
     msg="'sample_fraction' must be greater than 0 and less than or eqaul to 1"
   )
 }
+
+#' @export
 RtEst.covidcast_result <- function(cc, 
                                    sample_fraction = (2/3), 
                                    window = 5, 
                                    mean.si = 4.7,
-                                   std.si = 2.9,
-                                   pdf.name = "covidcast_Rt.pdf") {
+                                   std.si = 2.9) {
 
-  validat_Rt_input(window, sample_fraction)
+  validate_Rt_input(window, sample_fraction)
   
   fit       <- cc$extracted 
   tot_iter  <- 500 # cc$iter
@@ -123,7 +124,8 @@ RtEst.covidcast_result <- function(cc,
   upper <- make_est_df(hi) 
 
   Rt_df <- as.data.frame(cbind(Rt$mn, lower$lo, upper$hi)) %>% 
-    mutate(day = seq((day_start+day_end)/2, (nrow(Rt)+(day_start+day_end)/2))) 
+    mutate(day = seq((day_start+day_end)/2, 
+                     (nrow(Rt)-1+(day_start+day_end)/2))) 
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
 
@@ -163,24 +165,32 @@ RtEst.covidcast_result <- function(cc,
 }
 
 #' @export
-RtNaiveEstim <- function(ccr) {
+RtNaiveEstim <- function(cc,
+                         window = 5, 
+                         mean.si = 4.7,
+                         std.si = 2.9) {
 
-  first_date <- as.Date(ccr$config$first_date, origin = '1970-01-01')
-  cases <- ccr$config$obs_cas
+  day_start <- 2
+  day_end   <- day_start + window - 1
+  n_days    <- cc$config$N_days
+  ndb       <- cc$config$N_days_before
+
+  first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
+  cases <- cc$config$obs_cas
 
   EpiEstim::make_config(
     list(
-      t_start = seq(8, length(cases) - 6),
-      t_end   = seq(14, length(cases)),
-      mean_si = 4.7,
-      std_si  = 2.9
+      t_start = seq(day_start, n_days - window + 1), 
+      t_end   = seq(day_end,   n_days),
+      mean_si = mean.si, 
+      std_si  = std.si
     )
-  ) -> cfg
+  ) -> config
 
   EpiEstim::estimate_R(
     cases,
     method = "parametric_si",
-    config = cfg
+    config = config
   ) -> Rt_Est
 
   result <- as_tibble(Rt_Est[["R"]])
