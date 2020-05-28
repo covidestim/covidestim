@@ -263,7 +263,7 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
       new_sev_dx[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-                             p_diag_if_sev * pow(1-frac_pos[i], rho) * 
+                             p_diag_if_sev * 
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sev_diag_delay[j]; 
     }
@@ -353,20 +353,26 @@ model {
 //SWITCH TO NEG BIN
   if (nb_yes == 1) {
          for(i in 1:N_days) {
+           if(obs_cas[i] > 0){
           obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_before], phi_cas);
           }
+         }  
        for(i in 1:N_days) {
+         if(obs_die[i] > 0){
           obs_die[i] ~ neg_binomial_2(occur_die[i + N_days_before], phi_die);
          }
+       }
   } else { 
        for(i in 1:N_days) {
+          if(obs_cas[i] > 0){
           obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
          }
- 
+       }
       for(i in 1:N_days) {
+        if(obs_die[i] > 0){
         obs_die[i] ~ poisson(occur_die[i + N_days_before]);
         }
-
+      }
    }
 }
 ///////////////////////////////////////////////////////////
