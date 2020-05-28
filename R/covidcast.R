@@ -107,6 +107,7 @@ run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {
     seed    = cc$seed,
     chains  = cc$chains,
     iter    = cc$iter,
+    thin    = cc$thin,
     warmup  = cc$warmup,
     ...
   ) -> result
