@@ -44,14 +44,15 @@ RtEst.covidcast_result <- function(cc,
                                    sample_fraction = (2/3), 
                                    window = 5, 
                                    mean.si = 4.7,
-                                   std.si = 2.9) {
+                                   std.si = 2.9,
+                                   graph = TRUE,
+                                   iter = 1000) {
 
   validate_Rt_input(window, sample_fraction)
   
   fit       <- cc$extracted 
-  tot_iter  <- 500 # cc$iter
-  warm      <- 400 # cc$warmup
-  iter      <- (tot_iter - warm) * 3 
+  warm      <- 0.8*iter # cc$warmup
+  iter      <- (iter - warm) * 3 
   n_sample  <- round(sample_fraction * iter)
   day_start <- 2
   day_end   <- window + day_start - 1
@@ -61,12 +62,12 @@ RtEst.covidcast_result <- function(cc,
   sample_iter <- sample(iter, n_sample)
 
   inf <- as.data.frame(fit[["new_inf"]]) %>% 
-    gather(key = day, value = I) %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4))) %>%
-    filter(day > ndb) %>%
-    group_by(day) %>% 
-    mutate(iter = 1:iter) %>% 
-    ungroup() 
+    tidyr::gather(key = day, value = I) %>%
+    dplyr::mutate(day = as.numeric(substr(day, start = 2, stop = 4))) %>%
+    dplyr::filter(day > ndb) %>%
+    dplyr::group_by(day) %>% 
+    dplyr::mutate(iter = 1:iter) %>% 
+    dplyr::ungroup() 
 
   # number of moving windows in which Rt will be estimated     
   # total day - window works if 1st day is day 2 of data
@@ -82,7 +83,7 @@ RtEst.covidcast_result <- function(cc,
   # now we generate estimates of the mean, upper, and lower bounds of Rt from 
   # each sampled iteration of case data. 
   for(i in seq_along(sample_iter)) {
-    inf2 <- filter(inf, iter == sample_iter[i]) 
+    inf2 <- dplyr::filter(inf, iter == sample_iter[i]) 
     
     EpiEstim::make_config(
       list(
@@ -109,14 +110,14 @@ RtEst.covidcast_result <- function(cc,
   # convert matriaces into df, calculate bounds on each estimate
   make_est_df <- function(x){
     as.data.frame(x) %>% 
-    rowid_to_column() %>% 
-    gather(key = "iter", 
-           value = "est", 
-           2:(windows+1)) %>%
-    group_by(rowid) %>%
-    summarise(mn = mean(est), 
-              lo = quantile(est, 0.025), 
-              hi = quantile(est, 0.975))
+    tibble::rowid_to_column() %>% 
+    tidyr::gather(key = "iter", 
+                  value = "est", 
+                  2:(windows+1)) %>%
+    dplyr::group_by(rowid) %>%
+    dplyr::summarise(mn = mean(est), 
+                     lo = quantile(est, 0.025), 
+                     hi = quantile(est, 0.975))
   }
 
   Rt    <- make_est_df(mn)
@@ -124,10 +125,21 @@ RtEst.covidcast_result <- function(cc,
   upper <- make_est_df(hi) 
 
   Rt_df <- as.data.frame(cbind(Rt$mn, lower$lo, upper$hi)) %>% 
-    mutate(day = seq((day_start+day_end)/2, 
-                     (nrow(Rt)-1+(day_start+day_end)/2))) 
+    dplyr::mutate(day = seq((day_start+day_end)/2, 
+                         (nrow(Rt)-1+(day_start+day_end)/2))) 
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
+
+  if (graph == FALSE) 
+    return(
+      dplyr::transmute(
+        Rt_df,
+        date = first_date + lubridate::days(day - 1),
+        Rt = V1,
+        Rt.lo = V2,
+        Rt.hi = V3
+      )
+    )
 
   ggplot2::ggplot(
     Rt_df, aes(x = first_date + lubridate::days(day - 1))
@@ -167,7 +179,8 @@ RtEst.covidcast_result <- function(cc,
 RtNaiveEstim <- function(cc,
                          window = 5, 
                          mean.si = 4.7,
-                         std.si = 2.9) {
+                         std.si = 2.9,
+                         graph = TRUE) {
 
   day_start <- 2
   day_end   <- day_start + window - 1
@@ -192,9 +205,18 @@ RtNaiveEstim <- function(cc,
     config = config
   ) -> Rt_Est
 
-  result <- as_tibble(Rt_Est[["R"]])
-  result <- transmute(result, day = t_start, y = `Median(R)`,
+  result <- tibble::as_tibble(Rt_Est[["R"]])
+  result <- dplyr::transmute(result, day = t_start, y = `Median(R)`,
                       ymin = `Quantile.0.025(R)`, ymax=`Quantile.0.975(R)`)
+
+  if (graph == FALSE)
+    return(
+      dplyr::transmute(
+        result,
+        date = as.Date(first_date, origin = '1970-01-01') + lubridate::days(day - 1),
+        NaiveRt = y, NaiveRt.lo = ymin, NaiveRt.hi = ymax
+      )
+    )
 
   p <- ggplot2::ggplot(
     result, aes(x = as.Date(first_date) + lubridate::days(day - 1))

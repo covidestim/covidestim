@@ -1,19 +1,100 @@
 #' @export
-summary.covidcast_result <- function(ccr, include.before = FALSE, 
-                                     include.RtEstim = TRUE) {
+#' @importFrom magrittr %>%
+summary.covidcast_result <- function(ccr, include.before = TRUE, 
+                                     include.RtEstim = TRUE, iter = 500) {
 
-  att(identical(include.before, FALSE))
-  att(identical(include.RtEstim, TRUE))
+  # Used for dealing with indices and dates
+  ndays        <- ccr$config$N_days
+  ndays_before <- ccr$config$N_days_before
+  ndays_total  <- ndays_before + ndays
+  start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
 
+  # Mappings between names in Stan and variable names in the output `df`
   c(
-    "incidence.est" = "new_inf",
-    "cases.fitted"  = "occur_cas",
-    "deaths.fitted" = "occur_die"
+    "new_inf" = "infections.est",
+    "occur_cas" = "cases.fitted",
+    "occur_die" = "deaths.fitted"
   ) -> params
+
+  # Used for renaming quantiles output by Stan
+  quantile_names <- c("2.5%" = ".lo", "50%" = "", "97.5%" = ".hi")
+
+  # This creates the list of `pars` that gets passed to `rstan::summary`
+  # by enumerating all combs of varnames and indices
+  purrr::cross2(names(params), as.character(1:ndays_total)) %>% 
+  purrr::map_chr(
+    function(item)
+      glue("{par}[{idx}]", par = item[[1]], idx = item[[2]])
+  ) -> pars
 
   rstan::summary(
     ccr$result,
-    pars = "new_inf[1]",
+    pars = pars,
     probs = c(0.025, 0.5, 0.975)
-  )
+  )$summary %>% # Get rid of the per-chain summaries by indexing into `$summary`
+    as.data.frame %>%
+    tibble::as_tibble(rownames = "parname") -> melted
+
+  # These are the variables that are going to be selected from the melted
+  # representation created above
+  vars_of_interest <- c("variable", "date", names(quantile_names))
+
+  # Dates an index and converts it to a date
+  toDate <- function(idx) start_date + lubridate::days(idx - 1 - ndays_before)
+
+  # Join the melted representation to the array indices that have been split
+  # into their name:idx components
+  stan_extracts <- dplyr::left_join(
+    melted,
+    split_array_indexing(melted$parname),
+    by = "parname"
+  ) %>%
+    # Reformat the dates, and rename some of the variable names
+    dplyr::mutate(date = toDate(index), variable = params[variable]) %>%
+    # Eliminate things like R-hat that we don't care about right now
+    dplyr::select_at(vars_of_interest) %>%
+    # Melt things more to get down to three columns
+    tidyr::gather(names(quantile_names), key = "quantile", value = "value") %>%
+    # Create the finalized names for the quantiles, and delete the now-unneeded
+    # quantile variable
+    dplyr::mutate(
+      variable = paste0(variable, quantile_names[quantile]),
+      quantile = NULL,
+      
+    ) %>%
+    # Cast everything back out
+    tidyr::spread(key = "variable", value = "value") %>%
+    dplyr::mutate(data.available = date >= start_date)
+
+  d <- stan_extracts
+
+  # Join in Rt estimates if requested
+  if (include.RtEstim) {
+    Rt   <- RtEst(ccr, iter = iter, graph = FALSE)
+    Rt_n <- RtNaiveEstim(ccr, graph = FALSE)
+    d <- dplyr::left_join(d, Rt, by = "date")
+    d <- dplyr::left_join(d, Rt_n, by = "date")
+  }
+
+  # Get rid of 'before period' data if not requested
+  if (include.before == FALSE)
+    d <- dplyr::filter(d, date >= start_date)
+
+  d
+}
+
+split_array_indexing <- function(elnames) {
+
+  # Matches a valid indexed variable in Stan, capturing it into two groups
+  regex <- '^([A-Za-z_][A-Za-z_0-9]+)\\[([0-9]+)\\]$'
+
+  # Match everything into a data.frame
+  captured <- stringr::str_match(elnames, regex)
+  captured <- as.data.frame(captured, stringsAsFactors = FALSE)
+
+  # Rename cols, coerce the index to a number
+  colnames(captured) <- c("parname", "variable", "index")
+  captured$index <- as.numeric(captured$index)
+
+  captured
 }
