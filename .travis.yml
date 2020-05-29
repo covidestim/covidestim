@@ -1,4 +1,6 @@
 language: r
+r:
+  - "3.6.0"
 install:
   Rscript -e 'install.packages("pkgdown")'
 deploy:
