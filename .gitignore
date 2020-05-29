@@ -16,3 +16,4 @@ src/*.o
 src/*.so
 docs
 man
+docs/
