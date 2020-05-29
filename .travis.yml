@@ -1,7 +1,6 @@
 language: r
-r:
-  - "3.6.0"
-before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
+install:
+  Rscript -e 'remotes::install_cran("pkgdown")'
 deploy:
   provider: script
   script: Rscript -e 'pkgdown::deploy_site_github()'
