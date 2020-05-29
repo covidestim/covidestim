@@ -1,6 +1,6 @@
 language: r
 install:
-  Rscript -e 'remotes::install_cran("pkgdown")'
+  Rscript -e 'install.packages("pkgdown")'
 deploy:
   provider: script
   script: Rscript -e 'pkgdown::deploy_site_github()'
