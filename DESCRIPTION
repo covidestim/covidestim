@@ -35,7 +35,7 @@ Imports:
 Suggests: 
   tidyr,
   testthat,
-  grDevice
+  grDevices
 RoxygenNote: 7.1.0
 Depends: 
     R (>= 3.4.0)
