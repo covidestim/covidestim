@@ -1,4 +1,8 @@
 #' @export
+summary <- function(ccr, include.before = TRUE, 
+                    include.RtEstim = TRUE, iter = 500) UseMethod('summary')
+
+#' @export
 #' @importFrom magrittr %>%
 summary.covidcast_result <- function(ccr, include.before = TRUE, 
                                      include.RtEstim = TRUE, iter = 500) {
@@ -13,7 +17,8 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
   c(
     "new_inf" = "infections.est",
     "occur_cas" = "cases.fitted",
-    "occur_die" = "deaths.fitted"
+    "occur_die" = "deaths.fitted",
+    "cumulative_incidence" = "cum.incidence.est"
   ) -> params
 
   # Used for renaming quantiles output by Stan
@@ -80,6 +85,11 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
   if (include.before == FALSE)
     d <- dplyr::filter(d, date >= start_date)
 
+  # Column-bind high-density interval CI's for cumulative incidence
+  # First, remove the traditionally-calculated lo and hi estimates
+  d <- dplyr::select(d, -cum.incidence.est.lo, -cum.incidence.est.hi)
+  d <- dplyr::bind_cols(d, cum_inc_hdi(ccr))
+
   d
 }
 
@@ -97,4 +107,38 @@ split_array_indexing <- function(elnames) {
   captured$index <- as.numeric(captured$index)
 
   captured
+}
+
+hdi <- function(x) {
+  # order samples
+  x <- x[order(x)]
+
+  # calc samples in XX% interval. lets say XX = 95
+  N <- length(x)
+  n <- N*0.95
+
+  # find index for min
+  xx <- NULL
+  for(i in 1:(N-n)) xx[i] <- diff(x[c(0,n)+i])
+
+  xx_min <- which(xx==min(xx))
+
+  # calc intervals
+  hd_interval <- x[c(0,n)+xx_min]             
+
+  list(lo = hd_interval[1], hi = hd_interval[2])
+}
+
+cum_inc_hdi <- function(ccr) {
+  samples <- ccr$extracted$cumulative_incidence
+
+  ndays        <- ccr$config$N_days
+  ndays_before <- ccr$config$N_days_before
+  ndays_total  <- ndays_before + ndays
+
+  start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
+
+  purrr::map_dfr(1:ndays_total, ~hdi(samples[, .])) %>%
+    dplyr::rename(cum.incidence.est.lo = lo,
+                  cum.incidence.est.hi = hi)
 }
