@@ -6,13 +6,13 @@ RtEst <- function(...) UseMethod('RtEst')
 #'
 #' Creates a figure with Rt estimates over time and 95% CI and undelrying df. 
 #'
-#' @param cc The result of calling \code{\link{run}}. An object of class
+#' @param ccr The result of calling \code{\link{run}}. An object of class
 #'   \code{covidcast_result}.
 #'   
 #' @param sample_fraction The fraction of iterations to sample for the Rt
 #' calualation; defaults to 2/3 samples after warm-up.  
 #' 
-#' @param window The size of the moving window over which Rt should be 
+#' @param window.length The size of the moving window over which Rt should be 
 #' estimated; defaults to 5 days. This number must be odd. 
 #' 
 #' @param mean.si The mean serial interval to use in the Rt estimate; defaults
@@ -31,7 +31,7 @@ validate_Rt_input <- function(d,e) {
   pvec <- purrr::partial(paste, ...=, collapse = ', ')
   att(
     d %% 2 == 1,
-    msg="'window' must be an odd number"
+    msg="'window.length' must be an odd number"
   )
   att(
     0 < e && e <= 1,
@@ -40,118 +40,87 @@ validate_Rt_input <- function(d,e) {
 }
 
 #' @export
-RtEst.covidcast_result <- function(cc, 
-                                   sample_fraction = (2/3), 
-                                   window = 5, 
-                                   mean.si = 4.7,
-                                   std.si = 2.9,
-                                   graph = TRUE,
-                                   iter = 1000) {
+RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
+                                   std.si = 2.9, graph = TRUE) {
 
-  validate_Rt_input(window, sample_fraction)
-  
-  fit       <- cc$extracted 
-  warm      <- 0.8*iter # cc$warmup
-  iter      <- (iter - warm) * 3 
-  n_sample  <- round(sample_fraction * iter)
-  day_start <- 2
-  day_end   <- window + day_start - 1
-  n_days    <- cc$config$N_days
-  ndb       <- cc$config$N_days_before
+  # Calculating Rt for the entire period, not just the portion of the period
+  # for which we have data
+  n_days        <- ccr$config$N_days
+  n_days_before <- ccr$config$N_days_before
+  n_days_tot    <- n_days_before + n_days
 
-  sample_iter <- sample(iter, n_sample)
+  # Grab the estimated number of infections/day for the whole period and
+  # round it to an integer value
+  new_inf    <- ccr$extracted$new_inf %>% round
 
-  inf <- as.data.frame(fit[["new_inf"]]) %>% 
-    tidyr::gather(key = day, value = I) %>%
-    dplyr::mutate(day = as.numeric(substr(day, start = 2, stop = 4))) %>%
-    dplyr::filter(day > ndb) %>%
-    dplyr::group_by(day) %>% 
-    dplyr::mutate(iter = 1:iter) %>% 
-    dplyr::ungroup() 
+  # 'first_data_date' is the first date of the 'N_days' period
+  # 'first_date' is the first day of the 'N_days_before' period
+  first_data_date <- ccr$config$first_date %>% as.Date(origin = '1970-01-01')
+  first_date      <- first_data_date - lubridate::days(n_days_before)
 
-  # number of moving windows in which Rt will be estimated     
-  # total day - window works if 1st day is day 2 of data
-  windows <- length(unique(inf$day)) - window 
+  EpiEstim::make_config(
+    list(
+      # EpiEstim requires that the first day considered is not the first day
+      # of data, hence the '2'
+      t_start = 2:(n_days_tot - window.length + 1),
+      t_end   = (2 + window.length - 1):n_days_tot,
+      mean_si = mean.si, 
+      std_si  = std.si
+    )
+  ) -> RtEstimConfig
 
-  # create matrices to store output of epi estim call 
-  # where each row is value for a window, each column is estimates from an iter
-  mn <- matrix(nrow = windows, ncol = n_sample)
-  lo <- matrix(nrow = windows, ncol = n_sample)
-  hi <- matrix(nrow = windows, ncol = n_sample)
+  # This calculates an Rt+bounds for a single time series of incidence data
+  runEpiEstim <- function(new_inf, iteration) {
 
-  #' @import EpiEstim
-  # now we generate estimates of the mean, upper, and lower bounds of Rt from 
-  # each sampled iteration of case data. 
-  for(i in seq_along(sample_iter)) {
-    inf2 <- dplyr::filter(inf, iter == sample_iter[i]) 
-    
-    EpiEstim::make_config(
-      list(
-        t_start = seq(day_start, nrow(inf2) - (day_end - day_start)), 
-        t_end   = seq(day_end,   nrow(inf2)),
-        mean_si = mean.si, 
-        std_si  = std.si
-      )
-    ) -> config
+    # message(glue::glue("Iteration {iteration} beginning"))
 
     EpiEstim::estimate_R(
-      inf2$I,
+      new_inf,
       method = "parametric_si",
-      config = config
-    ) -> out
+      config = RtEstimConfig
+    )$R -> R_est
 
-    R_est <- out[["R"]]
-    
-    mn[,i] <- R_est$`Mean(R)`
-    lo[,i] <- R_est$`Quantile.0.025(R)`
-    hi[,i] <- R_est$`Quantile.0.975(R)`
+    # '+1': The first day of our first day is the second day
+    # '+2': The middle day of that first 5-day window is two days away from the
+    #       first day of that first 5-day window
+    first_day_centered <- first_date + lubridate::days(1 + 2)
+    last_day_centered  <- first_day_centered + lubridate::days(nrow(R_est) - 1)
+
+    list(
+      date = seq(first_day_centered, last_day_centered, by = '1 day'),
+      mean = R_est$`Mean(R)`,
+      lo   = R_est$`Quantile.0.025(R)`,
+      hi   = R_est$`Quantile.0.975(R)`
+    )
   }
 
-  # convert matriaces into df, calculate bounds on each estimate
-  make_est_df <- function(x){
-    as.data.frame(x) %>% 
-    tibble::rowid_to_column() %>% 
-    tidyr::gather(key = "iter", 
-                  value = "est", 
-                  2:(windows+1)) %>%
-    dplyr::group_by(rowid) %>%
-    dplyr::summarise(mn = mean(est), 
-                     lo = quantile(est, 0.025), 
-                     hi = quantile(est, 0.975))
-  }
+  # Run 'runEpiEstim' for each row of the 'new_inf' matrix, where a row
+  # represents one iteration.
+  EpiEstim.result <-
+    purrr::imap_dfr(1:nrow(new_inf), ~runEpiEstim(new_inf[.x, ], .y))
 
-  Rt    <- make_est_df(mn)
-  lower <- make_est_df(lo) 
-  upper <- make_est_df(hi) 
-
-  Rt_df <- as.data.frame(cbind(Rt$mn, lower$lo, upper$hi)) %>% 
-    dplyr::mutate(day = seq((day_start+day_end)/2, 
-                         (nrow(Rt)-1+(day_start+day_end)/2))) 
-
-  first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
+  # Summarize all of these iterations by taking the mean of 'Rt', the 2.5%
+  # quantile of all the 2.5% quantiles, and the 97.5% quantile of all the 
+  # 97.5% quantiles.
+  dplyr::summarize(
+    dplyr::group_by(EpiEstim.result, date),
+    Rt    = mean(I(mean)), # The 'I()' call preserves meaning of 'mean'
+    Rt.lo = quantile(lo, 0.025),
+    Rt.hi = quantile(hi, 0.975)
+  ) -> final_values
 
   if (graph == FALSE) 
-    return(
-      dplyr::transmute(
-        Rt_df,
-        date = first_date + lubridate::days(day - 1),
-        Rt = V1,
-        Rt.lo = V2,
-        Rt.hi = V3
-      )
-    )
+    return(final_values)
 
-  ggplot2::ggplot(
-    Rt_df, aes(x = first_date + lubridate::days(day - 1))
-  ) +
+  ggplot2::ggplot(final_values, aes(x = date)) +
     geom_hline(
       yintercept = 1,
       color = "red",
       size = 0.5,
       show.legend = FALSE
     ) +
-    geom_line(aes(y = V1)) + 
-    geom_ribbon(aes(y = V1, ymin=V2, ymax=V3), alpha=0.3) +
+    geom_line(aes(y = Rt)) + 
+    geom_ribbon(aes(y = Rt, ymin=Rt.lo, ymax=Rt.hi), alpha=0.3) +
     scale_x_date(date_breaks = '1 week',
                  date_labels = "%b %d",
                  minor_breaks = NULL) +

@@ -77,7 +77,7 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
 
   # Join in Rt estimates if requested
   if (include.RtEstim) {
-    Rt   <- RtEst(ccr, iter = iter, graph = FALSE)
+    Rt   <- RtEst(ccr, graph = FALSE)
     Rt_n <- RtNaiveEstim(ccr, graph = FALSE)
     d <- dplyr::left_join(d, Rt, by = "date")
     d <- dplyr::left_join(d, Rt_n, by = "date")
