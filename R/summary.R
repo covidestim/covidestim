@@ -1,11 +1,13 @@
 #' @export
 summary <- function(ccr, include.before = TRUE, 
-                    include.RtEstim = TRUE, iter = 500) UseMethod('summary')
+                    include.RtEstim = TRUE, iter = 500,
+                    index = FALSE) UseMethod('summary')
 
 #' @export
 #' @importFrom magrittr %>%
 summary.covidcast_result <- function(ccr, include.before = TRUE, 
-                                     include.RtEstim = TRUE, iter = 500) {
+                                     include.RtEstim = TRUE, iter = 500,
+                                     index = FALSE) {
 
   # Used for dealing with indices and dates
   ndays        <- ccr$config$N_days
@@ -89,6 +91,9 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
   # First, remove the traditionally-calculated lo and hi estimates
   d <- dplyr::select(d, -cum.incidence.est.lo, -cum.incidence.est.hi)
   d <- dplyr::bind_cols(d, cum_inc_hdi(ccr))
+
+  if (index == TRUE)
+    d <- dplyr::bind_cols(d, list(index = 1:ndays_total))
 
   d
 }
