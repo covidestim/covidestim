@@ -35,7 +35,7 @@ NULL
 #' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(chains=3, iter=1000, thin = 2,
+covidcast <- function(chains=3, iter=2000, thin = 2,
                       N_days, N_days_before=28, rho = 1,
                       seed=1234) {
 
@@ -59,7 +59,7 @@ covidcast <- function(chains=3, iter=1000, thin = 2,
     thin    = thin,
     warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
     seed    = seed,
-    control = list(adapt_delta = 0.92, max_treedepth = 12)
+    control = list(adapt_delta = 0.92, max_treedepth = 15)
   ) -> properties
 
   structure(properties, class='covidcast')
