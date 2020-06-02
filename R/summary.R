@@ -17,10 +17,13 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
 
   # Mappings between names in Stan and variable names in the output `df`
   c(
-    "new_inf" = "infections.est",
-    "occur_cas" = "cases.fitted",
-    "occur_die" = "deaths.fitted",
-    "cumulative_incidence" = "cum.incidence.est"
+    "new_inf"              = "infections",
+    "occur_cas"            = "cases.fitted",
+    "occur_die"            = "deaths.fitted",
+    "cumulative_incidence" = "cum.incidence",
+    "new_sym"              = "symptomatic",
+    "new_sev"              = "severe",
+    "new_die"              = "deaths"
   ) -> params
 
   # Used for renaming quantiles output by Stan
@@ -89,7 +92,7 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
 
   # Column-bind high-density interval CI's for cumulative incidence
   # First, remove the traditionally-calculated lo and hi estimates
-  d <- dplyr::select(d, -cum.incidence.est.lo, -cum.incidence.est.hi)
+  d <- dplyr::select(d, -cum.incidence.lo, -cum.incidence.hi)
   d <- dplyr::bind_cols(d, cum_inc_hdi(ccr))
 
   if (index == TRUE)
@@ -144,6 +147,6 @@ cum_inc_hdi <- function(ccr) {
   start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
 
   purrr::map_dfr(1:ndays_total, ~hdi(samples[, .])) %>%
-    dplyr::rename(cum.incidence.est.lo = lo,
-                  cum.incidence.est.hi = hi)
+    dplyr::rename(cum.incidence.lo = lo,
+                  cum.incidence.hi = hi)
 }
