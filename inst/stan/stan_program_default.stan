@@ -54,16 +54,19 @@ data {
 
 
   // turn on/off negative binomial
-  int<lower = 0, upper = 1> nb_yes; 
+  int<lower = 0, upper = 1> cas_yes; 
+  int<lower = 0, upper = 1> die_yes; 
   int<lower = 0, upper = 1> obs_cas_rep;
   int<lower = 0, upper = 1> obs_die_rep;
+  int<lower = 1, upper = 10> n_day_av; 
 }
 ///////////////////////////////////////////////////////////
 transformed data {
-
-  int<lower=1>  N_days_tot;
+ int  N_days_tot;
+ int  nda0;
   
   N_days_tot = N_days + N_days_before; 
+  nda0 = n_day_av - 1;
 }
 ///////////////////////////////////////////////////////////
 parameters {
@@ -321,6 +324,10 @@ for(i in 1:N_days_tot)  {
 }
 ///////////////////////////////////////////////////////////  
 model {
+  int  tmp_obs_cas;
+  real tmp_occur_cas;
+  int  tmp_obs_die;
+  real tmp_occur_die;
 //// PRIORS
   // INCIDENCE
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd); // 
@@ -350,30 +357,36 @@ model {
   inv_sqrt_phi_d       ~ normal(0, 1); //~~
     
 //// LIKELIHOOD
-//SWITCH TO NEG BIN
-  if (nb_yes == 1) {
-         for(i in 1:N_days) {
-           if(obs_cas[i] > 0){
-          obs_cas[i] ~ neg_binomial_2(occur_cas[i + N_days_before], phi_cas);
-          }
-         }  
-       for(i in 1:N_days) {
-         if(obs_die[i] > 0){
-          obs_die[i] ~ neg_binomial_2(occur_die[i + N_days_before], phi_die);
-         }
-       }
-  } else { 
-       for(i in 1:N_days) {
-          if(obs_cas[i] > 0){
-          obs_cas[i] ~ poisson(occur_cas[i + N_days_before]);
-         }
-       }
-      for(i in 1:N_days) {
-        if(obs_die[i] > 0){
-        obs_die[i] ~ poisson(occur_die[i + N_days_before]);
-        }
+  if(cas_yes==1){
+    tmp_obs_cas = obs_cas[1];
+    tmp_occur_cas = occur_cas[1 + N_days_before];
+    for(i in 1:(N_days + nda0)) {
+      target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/n_day_av;
+      if(i>nda0){
+        tmp_obs_cas   -= obs_cas[i - nda0];
+        tmp_occur_cas -= occur_cas[i + N_days_before - nda0];
       }
-   }
+      if(i<N_days){
+        tmp_obs_cas   += obs_cas[i + 1];
+        tmp_occur_cas += occur_cas[i + N_days_before + 1];
+      }
+    }
+  }
+  if(die_yes==1){
+    tmp_obs_die = obs_die[1];
+    tmp_occur_die = occur_die[1 + N_days_before];
+    for(i in 1:(N_days + nda0)) {
+      target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/n_day_av;
+      if(i>nda0){  
+        tmp_obs_die   -= obs_die[i - nda0];
+        tmp_occur_die -= occur_die[i + N_days_before - nda0];
+      }
+      if(i<N_days){
+        tmp_obs_die   += obs_die[i + 1];
+        tmp_occur_die += occur_die[i + N_days_before + 1];
+      }
+    }
+  }
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
