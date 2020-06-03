@@ -59,7 +59,7 @@ covidcast <- function(chains=3, iter=1500, thin = 2,
     thin    = thin,
     warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
     seed    = seed,
-    control = list(adapt_delta = 0.92, max_treedepth = 13)
+    control = list(adapt_delta = 0.92, max_treedepth = 12)
   ) -> properties
 
   structure(properties, class='covidcast')
