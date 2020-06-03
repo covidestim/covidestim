@@ -187,8 +187,10 @@ genData <- function(N_days, N_days_before = 21, rho = 1) #new default value
     #n day to model before start of data
     N_days_before = as.integer(N_days_before),
     
-    #max delay to allow the model to consider. 50 is recommended. 
-    Max_delay = 50, 
+    #max delay to allow the model to consider. 60 is recommended. 
+    Max_delay = 60, 
+    # moving average for likelihood function 
+    N_days_av = 5, 
 
     rho = rho,
 
@@ -223,11 +225,10 @@ genData <- function(N_days, N_days_before = 21, rho = 1) #new default value
     pri_deriv1_log_new_inf_sd = 0.5,
     pri_deriv2_log_new_inf_sd = 0.05,
 
-    #spl_basis = spl_basis,
-    #n_spl_par = n_spl_par,
-
-    # poisson or negative binomial
-    nb_yes      = as.integer(1),
+    # indicates whether case or death data are being used 
+    cas_yes = as.integer(1), 
+    die_yes = as.integer(1), 
+    
     obs_cas_rep = as.integer(0),  # This ~means FALSE in stan
     obs_die_rep = as.integer(0),  # This ~means FALSE in stan
   )
