@@ -58,7 +58,7 @@ data {
   int<lower = 0, upper = 1> die_yes; 
   int<lower = 0, upper = 1> obs_cas_rep;
   int<lower = 0, upper = 1> obs_die_rep;
-  int<lower = 1, upper = 10> n_day_av; 
+  int<lower = 1, upper = 10> N_days_av; 
 }
 ///////////////////////////////////////////////////////////
 transformed data {
@@ -66,7 +66,7 @@ transformed data {
  int  nda0;
   
   N_days_tot = N_days + N_days_before; 
-  nda0 = n_day_av - 1;
+  nda0 = N_days_av - 1;
 }
 ///////////////////////////////////////////////////////////
 parameters {
@@ -361,7 +361,7 @@ model {
     tmp_obs_cas = obs_cas[1];
     tmp_occur_cas = occur_cas[1 + N_days_before];
     for(i in 1:(N_days + nda0)) {
-      target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/n_day_av;
+      target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/N_days_av;
       if(i>nda0){
         tmp_obs_cas   -= obs_cas[i - nda0];
         tmp_occur_cas -= occur_cas[i + N_days_before - nda0];
@@ -376,7 +376,7 @@ model {
     tmp_obs_die = obs_die[1];
     tmp_occur_die = occur_die[1 + N_days_before];
     for(i in 1:(N_days + nda0)) {
-      target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/n_day_av;
+      target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/N_days_av;
       if(i>nda0){  
         tmp_obs_die   -= obs_die[i - nda0];
         tmp_occur_die -= occur_die[i + N_days_before - nda0];

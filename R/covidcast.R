@@ -22,7 +22,7 @@ NULL
 #' @param iter The number of iterations to run
 #' @param thin A positive integer to specify period for saving samples. 
 #' @param N_days A number. The number of days of data being modeled.
-#' @param N_days_delay. A number. How many days before the first day of model
+#' @param N_days_delay A number. How many days before the first day of model
 #'   data should be modeled?
 #' @param rho A number in \code{(0, 1]}. Needs documentation.
 #' @param seed A number. The random number generator seed for use in sampling.
@@ -36,8 +36,8 @@ NULL
 #' @importFrom magrittr %>%
 #' @export
 covidcast <- function(chains=3, iter=1500, thin = 2,
-                      N_days, N_days_before=28, rho = 1,
-                      seed=1234) {
+                      N_days, N_days_before=28, 
+                      rho = 1, seed=1234) {
 
   att(is.numeric(N_days), N_days >= 1)
 
@@ -98,6 +98,12 @@ run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {
 
   if (is.null(cc$config$obs_die))
     stop("Deaths data was not entered. See `?input_deaths`.")
+  
+  if(cc$config$N_days_av > 10)
+    stop("N_days_av must not be > 10")
+  
+  if(cc$config$N_days_av < 1)
+    stop("N_days_av must be > 1")
 
   rstan::sampling(
     object  = stanmodels$stan_program_default,
