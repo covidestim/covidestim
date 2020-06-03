@@ -99,12 +99,6 @@ run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {
   if (is.null(cc$config$obs_die))
     stop("Deaths data was not entered. See `?input_deaths`.")
   
-  if(cc$config$N_days_av > 10)
-    stop("N_days_av must not be > 10")
-  
-  if(cc$config$N_days_av < 1)
-    stop("N_days_av must be > 1")
-
   rstan::sampling(
     object  = stanmodels$stan_program_default,
     data    = structure(cc$config, class="modelconfig"),
