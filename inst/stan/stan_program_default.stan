@@ -78,7 +78,7 @@ parameters {
 // SYMPTOMS AND CARE 
   real<lower=0, upper=1>    p_sym_if_inf;
   real<lower=0, upper=1>    p_sev_if_sym;
-  real<lower=0, upper=0.4>  p_die_if_sev;
+  real<lower=0, upper=0.3>  p_die_if_sev;
 
   real<lower=0, upper=1>     scale_dx_delay_sym; 
   real<lower=0, upper=1>     scale_dx_delay_sev; 
