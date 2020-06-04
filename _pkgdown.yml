@@ -19,12 +19,12 @@ reference:
   - starts_with("priors")
   - starts_with("pri_")
 
-- title: Visualization
+- title: Results
 - contents:
+  - summary.covidcast_result
   - starts_with("viz")
 
 - title: Example data
   desc: Covidcast includes a utility to generate fake epidemic data, consisting of underlying truthy data, and reporting data that represents a limited and inaccurate picture of this underlying truthy data. These data can be used to assess model fit under a variety of hypothetical scenarios. We also provide an example NYC dataset to run the model with.
 - contents:
-  - starts_with("sim")
   - example_nyc_data

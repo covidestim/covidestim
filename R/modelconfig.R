@@ -170,10 +170,7 @@ or removing your custom prior.
   # att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
 }
 
-  #############################################################################
-## warning that was here is now obsolete. 
-  
-genData <- function(N_days, N_days_before = 21, rho = 1) #new default value
+genData <- function(N_days, N_days_before = 28, rho = 1) #new default value
 {
   att(rho > 0 && rho <= 1)
 
@@ -189,6 +186,7 @@ genData <- function(N_days, N_days_before = 21, rho = 1) #new default value
     
     #max delay to allow the model to consider. 60 is recommended. 
     Max_delay = 60, 
+
     # moving average for likelihood function 
     N_days_av = 5, 
 

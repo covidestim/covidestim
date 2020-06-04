@@ -106,9 +106,7 @@ reformat_dates <- function(vec) vec
 
 #' Input observational data
 #'
-#' A family of functions used for inputting data into Covidcast.
-#'
-#' There are three types of observational data that can be used with Covidcast:
+#' There are three types of observational data that can be used with Covidcast.
 #'
 #' \itemize{
 #'   \item Case reporting data, detailing the number of new cases each day
@@ -130,35 +128,34 @@ reformat_dates <- function(vec) vec
 #' results received that day. Note that the model tends to perform poorly on
 #' fraction positive data that contains dramatic jumps. With jumpy data, it 
 #' is recommended to smooth the fraction positive data with a moving average,
-#' for example by using the function \code{\link[smooth]{sma}}. Reasons for
-#' these jumps, as they have manifested in publicly available datasets, have
-#' included:
+#' for examplg by using the function \code{link[smooth]{sma}}. Reasons for
+#' these jumps, as seen in publicly available datasets, have included:
 #'
 #' \itemize{
-#'   \item \strong{Dumping of test results}: Some states have a tendency to dump batches
+#'   \item Dumping of test results: Some states have a tendency to dump batches
 #'     of results on particular days. Sometimes, these batches are composed of
 #'     only positive results, or only negative results, but other times it is
 #'     a mix.
 #'
-#'   \item \strong{Accumulation of test results reported over the weekend}: Many states
+#'   \item Accumulation of test results reported over the weekend: Many states
 #'     have lower reporting volume over the weekend, creating an unstable
 #'     fraction positive quantity as the sample size increases and decreases
 #'     dramatically.
 #'
-#'   \item \strong{Reclassification of results}: Some states have retroactively changed
+#'   \item Reclassification of results: Some states have retroactively changed
 #'     test results, or removed test results entirely, and these changes may 
 #'     manifest all on a single day, rather than being applied to all previous
 #'     days affected by the change.
 #'
-#'   \item \strong{Antibody tests}: Some states have been pooling antibody tests with
+#'   \item Antibody tests: Some states have been pooling antibody tests with
 #'     viral tests, as reported in \href{https://www.theatlantic.com/health/archive/2020/05/cdc-and-states-are-misreporting-covid-19-test-data-pennsylvania-georgia-texas/611935/}{The Atlantic}, and are now
 #'     removing that pooling from their data.
 #' }
 #'
 #' Missing values in cases and deaths data should be represented as \code{0}.
-#' The date range of all sets of data passed to \code{\link{covidcast}} must be
-#' equivalent, with one observation each day, and no gaps in the data.
-#' Assertions attempt to enforce this specification.
+#' The date range of all sets of data passed must be equivalent, with one
+#' observation each day, and no gaps in the data. Assertions attempt to enforce
+#' this specification.
 #'
 #' @param data A \code{\link[base]{data.frame}} as described below.
 #' @param type A string, either \code{"reported"} or \code{"occurred"}.

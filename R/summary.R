@@ -1,13 +1,64 @@
-#' @export
-summary <- function(ccr, include.before = TRUE, 
-                    include.RtEstim = TRUE, iter = 500,
-                    index = FALSE) UseMethod('summary')
-
+#' Summarize a Covidcast run
+#'
+#' @param ccr A \code{covidcast_result} object
+#'
+#' @param include.before A logical scalar. Include estimations that fall in the
+#'   period before the first day of input data? (This period is of length
+#'   \code{N_days_before} as passed to \code{covidcast}). If  \code{TRUE}, any
+#'   elements of variables which do not have values for this "before" period
+#'   will be represented as \code{NA}.
+#'
+#' @param include.RtEstim A logical scalar. Include Rt estimates in output?
+#'   Will add ~1 minute to runtime.
+#'
+#' @param index A logical scalar. If \code{TRUE}, will include a variable
+#'   \code{index} in the output, with range \code{1:(N_days_before + N_days)}.
+#'
+#' @return A \code{data.frame} with the following variables:
+#'
+#'   \itemize{
+#'     \item \code{date}
+#'     \item \code{cases.fitted}, \code{cases.fitted.lo},
+#'       \code{cases.fitted.hi}: Median and 95\% interval around fitted case
+#'       data.
+#'
+#'     \item \code{cum.incidence}, \code{cum.incidence.lo},
+#'       \code{cum.incidence.hi}: Median and 95\% interval around cumulative 
+#'       incidence data.
+#'
+#'     \item \code{deaths.fitted}, \code{deaths.fitted.lo},
+#'       \code{deaths.fitted.hi}: Median and 95\% interval around fitted deaths
+#'       data.
+#'
+#'     \item \code{deaths}, \code{deaths.lo}, \code{deaths.hi}: Median and 95\%
+#'       interval around estimated deaths/day.
+#'
+#'     \item \code{infections}, \code{infections.lo}, \code{infections.hi}:
+#'       Median and 95\% interval around estimated infections/day.
+#'
+#'     \item \code{severe}, \code{severe.lo}, \code{severe.hi}: Median and 95\%
+#'        interval around "severe" estimate.
+#'
+#'     \item \code{symptomatic}, \code{symptomatic.lo}, \code{symptomatic.hi}:
+#'        Median and 95\% interval around estimate of quantity of individuals
+#'        symtomatic on a particular day.
+#'
+#'     \item \code{data.available}: \code{TRUE/FALSE} for whether input data
+#'       was available on that particular day.
+#'
+#'     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of Rt, with 95\%
+#'       CIs. See \code{\link{RtEst}}.
+#'
+#'     \item \code{NaiveRt}, \code{NaiveRt.lo}, \code{NaiveRt.hi}: Naive
+#'       estimate of Rt, with 95\% CIs. See \code{\link{RtNaiveEstim}}.
+#'
+#'     \item \code{index}
+#'   }
+#'
 #' @export
 #' @importFrom magrittr %>%
 summary.covidcast_result <- function(ccr, include.before = TRUE, 
-                                     include.RtEstim = TRUE, iter = 500,
-                                     index = FALSE) {
+                                     include.RtEstim = TRUE, index = FALSE) {
 
   # Used for dealing with indices and dates
   ndays        <- ccr$config$N_days

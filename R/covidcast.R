@@ -16,28 +16,36 @@ NULL
 
 #' Configure a Covidcast run on a set of data and priors
 #'
-#' This function sets up the model on a set of data and priors
+#' \code{covidcast} returns a base configuration of the model with the default
+#' set of priors, and no input data. This configuration, after adding input
+#' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, and
+#' \code{\link{input_fracpos}}, represents a valid model configuration that can
+#' be passed to \code{\link{run}}.
 #'
-#' @param chains The number of chains to use
-#' @param iter The number of iterations to run
-#' @param thin A positive integer to specify period for saving samples. 
-#' @param N_days A number. The number of days of data being modeled.
-#' @param N_days_delay A number. How many days before the first day of model
-#'   data should be modeled?
+#' @param chains The number of chains to use during MCMC, as passed to
+#'   \code{\link[rstan]{sampling}}.
+#' @param iter The number of iterations to run during MCMC, as passed to
+#'   \code{\link[rstan]{sampling}}.
+#' @param thin A positive integer to specify period for saving samples, as
+#'   passed to \code{\link[rstan]{sampling}}. 
+#' @param N_days A positive integer. The number of days of input data being
+#'   modeled. This should always be set to the number of days in your input data.
+#' @param N_days_before A positive integer. How many days before the first day
+#'   of model data should be modeled?
 #' @param rho A number in \code{(0, 1]}. Needs documentation.
 #' @param seed A number. The random number generator seed for use in sampling.
 #'
 #' @return An S3 object of type \code{covidcast}. This can be passed to 
 #'   \code{\link{run}} to execute the model. This object can also be saved
-#'   to disk using \code{\link[base]{saveRDS}} to enable model replicability.
+#'   to disk using \code{\link[base]{saveRDS}} to enable reproducibility across
+#'  platforms or sessions.
 #'
 #' @examples
 #' covidcast(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(chains=3, iter=1500, thin = 2,
-                      N_days, N_days_before=28, 
-                      rho = 1, seed=1234) {
+covidcast <- function(N_days, N_days_before=28,
+                      chains=3, iter=1500, thin = 2, rho = 1, seed=42) {
 
   att(is.numeric(N_days), N_days >= 1)
 
@@ -75,20 +83,25 @@ run.default <- function(...) stop("Must pass an object of type `covidcast`")
 #' Run the Covidcast model
 #'
 #' Calling \code{run()} with a \code{\link{covidcast}} object executes the
-#' model and returns a result. The first time the model is run, the C++
-#' executable will need to be compiled, and model sampling will not begin
-#' until compilation is done (typically 1-5 minutes). Afterwards, a cached
-#' copy of the executable can be used, speeding execution. \code{run.covidcast}
-#' will attempt to run on as many cores as appear to be available on the host
-#' machine, through calling \code{\link[parallel]{detectCores}}.
+#' model and returns a result. \code{run} will attempt to run on as
+#' many cores as appear to be available on the host machine, through calling
+#' \code{\link[parallel]{detectCores}}. Model runtimes will range anywhere from
+#' 5-120 minutes.
+#'
+#' When running in an interactive/TTY environment (like Rstudio, Radian, or the
+#' R terminal), progress messages from \code{rstan} will be displayed,
+#' indicatng how many iterations each chain has completed. When running in
+#' other environments, for instance on a cluster, \code{rstan} will produce 
+#' no output until the end of sampling.
 #'
 #' @param cc A valid \code{\link{covidcast}} configuration
 #' @param cores A number. How many cores to use to execute runs.
 #' @param ... Extra arguments to be passed to \code{\link[rstan]{sampling}}
 #'
 #' @return A S3 object of class \code{covidcast_result} containing the
-#'   configuration used to run the model, the raw results, and the extracted
-#'   result as produced by \code{\link[rstan]{extract}}.
+#'   configuration used to run the model, the raw results, the extracted
+#'   result as produced by \code{\link[rstan]{extract}}, and the summarized
+#'   results as produced by \code{\link[rstan]{extract}}.
 #'
 #' @export
 run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {

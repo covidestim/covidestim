@@ -2,16 +2,13 @@
 #' @rdname RtEst.covidcast_result
 RtEst <- function(...) UseMethod('RtEst')
 
-#' Calculate the Effective Reprouction Number from CovidCast output
+#' Calculate the Effective Reprouction Number from Covidestim output
 #'
 #' Creates a figure with Rt estimates over time and 95% CI and undelrying df. 
 #'
 #' @param ccr The result of calling \code{\link{run}}. An object of class
 #'   \code{covidcast_result}.
 #'   
-#' @param sample_fraction The fraction of iterations to sample for the Rt
-#' calualation; defaults to 2/3 samples after warm-up.  
-#' 
 #' @param window.length The size of the moving window over which Rt should be 
 #' estimated; defaults to 5 days. This number must be odd. 
 #' 
@@ -21,27 +18,19 @@ RtEst <- function(...) UseMethod('RtEst')
 #' @param std.si The standard deviation of the serial interval; defaults to 
 #' 2.9 days.  
 #'
-#' @param pdf.name This will render a pdf to the workingvdirectory with name
-#'  \code{covidcast_Rt.pdf}.
+#' @param graph A logical scalar. Whether or not to return a `ggplot` object,
+#'   or a `data.frame` with the Rt estimates and its 95\% confidence intervals.
 #'
-#' @return an df with estimates
+#' @return If \code{graphs == FALSE}, a `data.frame` with columns `date`, `Rt`,
+#'   `Rt.lo`, `Rt.hi`, where `date` is a vector of \code{\link[base]{Date}}
+#'   objects.
 #'
-#' @export
-validate_Rt_input <- function(d,e) {
-  pvec <- purrr::partial(paste, ...=, collapse = ', ')
-  att(
-    d %% 2 == 1,
-    msg="'window.length' must be an odd number"
-  )
-  att(
-    0 < e && e <= 1,
-    msg="'sample_fraction' must be greater than 0 and less than or eqaul to 1"
-  )
-}
-
 #' @export
 RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
                                    std.si = 2.9, graph = TRUE) {
+
+
+  att(window.length %% 2 == 1)
 
   # Calculating Rt for the entire period, not just the portion of the period
   # for which we have data
@@ -145,6 +134,32 @@ RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
   # return(Rt_df)
 }
 
+#' Calculate the naive Effective Reprouction Number from Covidestim input data
+#'
+#' Creates a figure with Rt estimates over time and 95% CI and underlying df.
+#' These estimates are based entirely on input case data. This function is
+#' essentially a wrapper around \code{link[EpiEstim]{estimate_R}}.
+#'
+#' @param ccr The result of calling \code{\link{run}}. An object of class
+#'   \code{covidcast_result}.
+#'   
+#' @param window.length The size of the moving window over which Rt should be 
+#' estimated; defaults to 5 days. This number must be odd. 
+#' 
+#' @param mean.si The mean serial interval to use in the Rt estimate; defaults
+#' to 4.7 days. 
+#' 
+#' @param std.si The standard deviation of the serial interval; defaults to 
+#' 2.9 days.  
+#'
+#' @param graph A logical scalar. Whether or not to return a `ggplot` object,
+#'   or a `data.frame` with the Rt estimates and its' 95\% confidence
+#'   intervals.
+#'
+#' @return If \code{graphs == FALSE}, a `data.frame` with columns `date`,
+#'   `NaiveRt`, `NaiveRt.lo`, `NaiveRt.hi`, where `date` is a vector of
+#'   \code{\link[base]{Date}} objects.
+#'
 #' @export
 RtNaiveEstim <- function(cc,
                          window = 5, 
