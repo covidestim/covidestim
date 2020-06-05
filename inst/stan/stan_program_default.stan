@@ -76,16 +76,16 @@ parameters {
  vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of the random walk 
 
 // SYMPTOMS AND CARE 
-  real<lower=0, upper=1>  p_sym_if_inf;
-  real<lower=0, upper=1>  p_sev_if_sym;
-  real<lower=0, upper=1>  p_die_if_sev;
+  real<lower=0, upper=1>    p_sym_if_inf;
+  real<lower=0, upper=1>    p_sev_if_sym;
+  real<lower=0, upper=0.3>  p_die_if_sev;
 
-  real<lower=0, upper =1>     scale_dx_delay_sym; 
-  real<lower=0, upper =1>     scale_dx_delay_sev; 
+  real<lower=0, upper=1>     scale_dx_delay_sym; 
+  real<lower=0, upper=1>     scale_dx_delay_sev; 
   
-  real<lower=0>     cas_rep_delay_shap;
+  real<lower=0.5>     cas_rep_delay_shap;
   real<lower=0>     cas_rep_delay_rate;
-  real<lower=0>     die_rep_delay_shap;
+  real<lower=0.5>     die_rep_delay_shap;
   real<lower=0>     die_rep_delay_rate;
 
 // DIAGNOSIS // probability of diagnosis at each illness state
@@ -124,7 +124,7 @@ transformed parameters {
   vector[Max_delay]  die_cum_report_delay; 
   
 // OUTCOMES
-  real<lower=0, upper=1>  p_die_if_sym;
+  real<lower=0, upper=0.1>  p_die_if_sym;
   
   vector[N_days_tot]  new_sym; // new in state per day
   vector[N_days_tot]  new_sev;
