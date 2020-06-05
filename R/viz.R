@@ -31,6 +31,9 @@ viz <- function(...) UseMethod('viz')
 #'     \strong{purely} from input data
 #' }
 #'
+#' @seealso \code{\link{summary.covidcast_result}} for more details on the
+#'   quantities being plotted
+#'
 #' @export
 viz.covidcast_result <- function(ccr, include.RtEstim = FALSE, renderPDF = FALSE) {
 

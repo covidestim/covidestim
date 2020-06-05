@@ -597,7 +597,7 @@ public:
         double p_die_if_sev(0);
         p_die_if_sev = vals_r__[pos__++];
         try {
-            writer__.scalar_lub_unconstrain(0, 1, p_die_if_sev);
+            writer__.scalar_lub_unconstrain(0, 0.3, p_die_if_sev);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable p_die_if_sev: ") + e.what()), current_statement_begin__, prog_reader__());
         }
@@ -636,7 +636,7 @@ public:
         double cas_rep_delay_shap(0);
         cas_rep_delay_shap = vals_r__[pos__++];
         try {
-            writer__.scalar_lb_unconstrain(0, cas_rep_delay_shap);
+            writer__.scalar_lb_unconstrain(0.5, cas_rep_delay_shap);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable cas_rep_delay_shap: ") + e.what()), current_statement_begin__, prog_reader__());
         }
@@ -662,7 +662,7 @@ public:
         double die_rep_delay_shap(0);
         die_rep_delay_shap = vals_r__[pos__++];
         try {
-            writer__.scalar_lb_unconstrain(0, die_rep_delay_shap);
+            writer__.scalar_lb_unconstrain(0.5, die_rep_delay_shap);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable die_rep_delay_shap: ") + e.what()), current_statement_begin__, prog_reader__());
         }
@@ -801,9 +801,9 @@ public:
             local_scalar_t__ p_die_if_sev;
             (void) p_die_if_sev;  // dummy to suppress unused var warning
             if (jacobian__)
-                p_die_if_sev = in__.scalar_lub_constrain(0, 1, lp__);
+                p_die_if_sev = in__.scalar_lub_constrain(0, 0.3, lp__);
             else
-                p_die_if_sev = in__.scalar_lub_constrain(0, 1);
+                p_die_if_sev = in__.scalar_lub_constrain(0, 0.3);
             current_statement_begin__ = 83;
             local_scalar_t__ scale_dx_delay_sym;
             (void) scale_dx_delay_sym;  // dummy to suppress unused var warning
@@ -822,9 +822,9 @@ public:
             local_scalar_t__ cas_rep_delay_shap;
             (void) cas_rep_delay_shap;  // dummy to suppress unused var warning
             if (jacobian__)
-                cas_rep_delay_shap = in__.scalar_lb_constrain(0, lp__);
+                cas_rep_delay_shap = in__.scalar_lb_constrain(0.5, lp__);
             else
-                cas_rep_delay_shap = in__.scalar_lb_constrain(0);
+                cas_rep_delay_shap = in__.scalar_lb_constrain(0.5);
             current_statement_begin__ = 87;
             local_scalar_t__ cas_rep_delay_rate;
             (void) cas_rep_delay_rate;  // dummy to suppress unused var warning
@@ -836,9 +836,9 @@ public:
             local_scalar_t__ die_rep_delay_shap;
             (void) die_rep_delay_shap;  // dummy to suppress unused var warning
             if (jacobian__)
-                die_rep_delay_shap = in__.scalar_lb_constrain(0, lp__);
+                die_rep_delay_shap = in__.scalar_lb_constrain(0.5, lp__);
             else
-                die_rep_delay_shap = in__.scalar_lb_constrain(0);
+                die_rep_delay_shap = in__.scalar_lb_constrain(0.5);
             current_statement_begin__ = 89;
             local_scalar_t__ die_rep_delay_rate;
             (void) die_rep_delay_rate;  // dummy to suppress unused var warning
@@ -1405,7 +1405,7 @@ public:
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_die_if_sym: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
             check_greater_or_equal(function__, "p_die_if_sym", p_die_if_sym, 0);
-            check_less_or_equal(function__, "p_die_if_sym", p_die_if_sym, 1);
+            check_less_or_equal(function__, "p_die_if_sym", p_die_if_sym, 0.1);
             current_statement_begin__ = 129;
             size_t new_sym_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_sym_j_1_max__; ++j_1__) {
@@ -1843,17 +1843,17 @@ public:
         vars__.push_back(p_sym_if_inf);
         double p_sev_if_sym = in__.scalar_lub_constrain(0, 1);
         vars__.push_back(p_sev_if_sym);
-        double p_die_if_sev = in__.scalar_lub_constrain(0, 1);
+        double p_die_if_sev = in__.scalar_lub_constrain(0, 0.3);
         vars__.push_back(p_die_if_sev);
         double scale_dx_delay_sym = in__.scalar_lub_constrain(0, 1);
         vars__.push_back(scale_dx_delay_sym);
         double scale_dx_delay_sev = in__.scalar_lub_constrain(0, 1);
         vars__.push_back(scale_dx_delay_sev);
-        double cas_rep_delay_shap = in__.scalar_lb_constrain(0);
+        double cas_rep_delay_shap = in__.scalar_lb_constrain(0.5);
         vars__.push_back(cas_rep_delay_shap);
         double cas_rep_delay_rate = in__.scalar_lb_constrain(0);
         vars__.push_back(cas_rep_delay_rate);
-        double die_rep_delay_shap = in__.scalar_lb_constrain(0);
+        double die_rep_delay_shap = in__.scalar_lb_constrain(0.5);
         vars__.push_back(die_rep_delay_shap);
         double die_rep_delay_rate = in__.scalar_lb_constrain(0);
         vars__.push_back(die_rep_delay_rate);
@@ -2286,7 +2286,7 @@ public:
             (void) function__;  // dummy to suppress unused var warning
             current_statement_begin__ = 127;
             check_greater_or_equal(function__, "p_die_if_sym", p_die_if_sym, 0);
-            check_less_or_equal(function__, "p_die_if_sym", p_die_if_sym, 1);
+            check_less_or_equal(function__, "p_die_if_sym", p_die_if_sym, 0.1);
             // write transformed parameters
             if (include_tparams__) {
                 size_t log_new_inf_j_1_max__ = N_days_tot;
