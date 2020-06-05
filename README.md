@@ -13,17 +13,15 @@ Quick description of Covidcast and what it does
 if (!require("devtools")) {
   install.packages("devtools")
 }
-devtools::install_github("mel-hc/covidcast")
+devtools::install_github("covidcasting/covidcast")
 ```
 
 # Usage
 
-- To see how to run `covidcast` on example NYC data, see `vignette("nyc")`
-
-- To see how to run `covidcast` on your own data, see `vignette("ILINet")`.
+TBD!
 
 # Resources
 
 - [Ask a question](mailto:marcus.russi@yale.edu?subject=covidcast)
-- [Open an issue](https://github.com/mel-hc/covidcast/issues) (GitHub
+- [Open an issue](https://github.com/covidcasting/covidcast/issues) (GitHub
   issues for bug reports, feature requests)
