@@ -4,175 +4,168 @@ viz <- function(...) UseMethod('viz')
 
 #' Visualize results of Covidcast
 #'
-#' Creates several graphs of covidcast results
+#' Returns several graphs of Covidcast input and estimates
 #'
-#' @param cc The result of calling \code{\link{run}}. An object of class
+#' @param ccr The result of calling \code{\link{run}}. An object of class
 #'   \code{covidcast_result}.
 #'
-#' @param renderPDF A logical scalar. If true, will render a pdf to the working
-#'   directory with name \code{covidcast_figures.pdf}.
+#' @param renderPDF If \code{FALSE}, figures are returned as a list of
+#'   \code{ggplot} objects. If a string, a \code{pdf} will be rendered to that
+#'   location, and and the list of \code{ggplot} objects will still be
+#'   returned.
 #'
-#' @return At this time, returns a \code{\link[ggplot]{ggplot}} object with the
-#'   last plot rendered. This is likely to change.
+#' @return A list with the following keys:
+#'
+#' \itemize{
+#'   \item \code{observedVsFitted} A \code{ggplot} of input cases/deaths data, and the
+#'     fit of the model to that data.
+#'   \item \code{infectionsAndCases} A \code{ggplot} of estimated daily infections,
+#'     compared to reported/observed cases.
+#' }
+#'
+#' If \code{include.RtEstim == TRUE}:
+#'
+#' \itemize{
+#'   \item \code{RtEstim} A \code{ggplot} object of estimated Rt
+#'   \item \code{RtEstimNaive} A \code{ggplot} object of Rt estimated
+#'     \strong{purely} from input data
+#' }
 #'
 #' @export
-viz.covidcast_result <- function(cc, renderPDF = FALSE) {
-
-  pdfname <- glue("covidcast-output.pdf")
-
-  # if (renderPDF)
-  #   pdf(file = pdfname, width = 8, height = 6) 
+viz.covidcast_result <- function(ccr, include.RtEstim = FALSE, renderPDF = FALSE) {
 
   # Prep all the intermediate representations of the data that are ultimately
   # used to plot everything
-  intermediate_objects <- viz_prep(cc)
+  run_summary <- summary(ccr, include.RtEstim = include.RtEstim)
 
-  input_data  <- intermediate_objects$input_data
-  fit_to_data <- intermediate_objects$fit_to_data 
-  diag        <- intermediate_objects$diag 
-  deltas      <- intermediate_objects$deltas 
+  first_date <- as.Date(ccr$config$first_date, origin = '1970-01-01')
+  ndays      <- ccr$config$N_days
 
-  N_days_before <- cc$config$N_days_before
 
-  # if (renderPDF) {
-  #   dev.off()
-  #   message(glue("PDF successfully rendered to ./{pdfname}"))
-  # }
+  # Kind of hack-y way to get the "input data frame"
+  dplyr::bind_cols(
+    date = seq(first_date, first_date + lubridate::days(ndays - 1), by = '1 day'),
+    cases = ccr$config$obs_cas,
+    deaths = ccr$config$obs_die
+  ) -> input_data
 
-  # Plot the first four graphs. The remaining graphs aren't active yet.
+  # Plot the two main graphs
   list(
-    p1 = viz_observed_and_fitted(cc, input_data, fit_to_data, N_days_before),
-    p2 = viz_all_cases_to_data(cc, input_data, deltas),
-    p3 = viz_modeled_cases(cc, fit_to_data, diag, deltas)
-#     p4 = viz_incidence(cc, fit_to_data, diag, deltas)
-  ) 
+    observedVsFitted = viz_observed_and_fitted(run_summary, input_data),
+    infectionsAndCases = viz_all_cases_to_data(run_summary, input_data)
+  ) -> result
+
+  if (include.RtEstim)
+    result <- append(result,
+      list(
+        RtEstim      = viz_RtEstim(run_summary),
+        RtEstimNaive = viz_RtEstimNaive(run_summary)
+      )
+    )
+
+  if (!identical(renderPDF, FALSE))
+    ggsave(file = renderPDF, width = 8.5, height = 11) 
+
+  result
 }
 
+viz_RtEstim <- function(run_summary) {
 
-#' COVID viz 
-#' @importFrom dplyr mutate group_by summarise ungroup arrange
-#' @importFrom magrittr %>%
-viz_prep <- function(obj) {
-  result  <- obj$result
-  fit     <- obj$extracted
-  datList <- obj$config
-
-  summary_fit <- rstan::summary(result)
-
-  N_days_before <- obj$config$N_days_before
-
-  outcomeGen <- function(idx) {
-    as.data.frame(fit[[idx]]) %>% 
-    tidyr::gather(key = day, value = estim) %>%
-    mutate(outcome = idx)
-  }
-
-  new_inf   <- outcomeGen("new_inf")
-  new_sym   <- outcomeGen("new_sym")
-  new_sev   <- outcomeGen("new_sev")
-  new_die   <- outcomeGen("new_die")
-
-  new_sym_dx  <- outcomeGen("new_sym_dx")
-  new_sev_dx  <- outcomeGen("new_sev_dx")
-  new_die_dx  <- outcomeGen("new_die_dx")
-  diag_all    <- outcomeGen("diag_all")
-
-  occur_cas <- outcomeGen("occur_cas")
-  occur_die <- outcomeGen("occur_die")
-
-  reformat_staninputs <- function(vec, outcome)
-    tibble::as_tibble(list(estim = vec)) %>%
-      mutate(day = 1:n(), outcome = outcome)
-
-  obs_cas <- reformat_staninputs(obj$config$obs_cas, "obs_cas")
-  obs_die <- reformat_staninputs(obj$config$obs_die, "obs_die")
-
-  deltas <- rbind(new_inf, new_sym, new_sev, new_die) %>%
-    group_by(day, outcome) %>%
-      summarise(median = median(estim), 
-      lo = quantile(estim, 0.025), 
-      hi = quantile(estim, 0.975)) %>%
-    ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - N_days_before) %>%
-    arrange(day)
-
-  diag <- rbind(new_sym_dx, new_sev_dx, diag_all, new_die_dx) %>%
-    group_by(day, outcome) %>%
-    summarise(median = median(estim), 
-              lo = quantile(estim, 0.025), 
-              hi = quantile(estim, 0.975)) %>%
-    ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - N_days_before) %>%
-    arrange(day)
-
-
-  fit_to_data <- rbind(occur_cas, occur_die) %>%
-    group_by(day, outcome) %>%
-    summarise(median = median(estim), 
-              lo = quantile(estim, 0.025), 
-              hi = quantile(estim, 0.975)) %>%
-    ungroup() %>%
-    mutate(day = as.numeric(substr(day, start = 2, stop = 4)) - N_days_before) %>%
-    arrange(day)
-
-
-  input_data <- rbind(obs_cas, obs_die) %>%
-                group_by(day, outcome) %>% summarise(median = median(estim), 
-                                         lo = quantile(estim, 0.025), 
-                                         hi = quantile(estim, 0.975)) %>%
-                ungroup() %>% arrange(day)
-
-  list(deltas=deltas, diag=diag, fit_to_data=fit_to_data, input_data=input_data)
+  ggplot2::ggplot(run_summary, aes(x = date)) +
+    geom_hline(
+      yintercept = 1,
+      color = "red",
+      size = 0.5,
+      show.legend = FALSE
+    ) +
+    geom_line(aes(y = Rt), na.rm = TRUE) + 
+    geom_ribbon(aes(y = Rt, ymin=Rt.lo, ymax=Rt.hi), alpha=0.3, na.rm = TRUE) +
+    scale_x_date(date_breaks = '1 week',
+                 date_labels = "%b %d",
+                 minor_breaks = NULL) +
+    labs(
+      x = NULL,
+      y = "Rt", 
+      title = "Effective Reproduction Number Estimate"
+    ) +
+    theme_linedraw() +
+    theme(
+      axis.text.x = element_text(
+        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
+      )
+    )
+  # return(Rt_df)
 }
 
+viz_RtEstimNaive <- function(run_summary) {
+
+  ggplot2::ggplot(run_summary, aes(x = date)) +
+    geom_hline(
+      yintercept = 1,
+      color = "red",
+      size = 0.5,
+      show.legend = FALSE
+    ) +
+    geom_line(aes(y = NaiveRt), na.rm = TRUE) + 
+    geom_ribbon(aes(y = NaiveRt, ymin=NaiveRt.lo, ymax=NaiveRt.hi), alpha=0.3,
+                na.rm = TRUE) +
+    scale_x_date(date_breaks = '1 week',
+                 date_labels = "%b %d",
+                 minor_breaks = NULL,
+                 limits = c(min(run_summary$date), NA)) +
+    coord_cartesian(ylim = c(0, 8)) +
+    labs(
+      x = NULL,
+      y = "Rt", 
+      title = "Naive Effective Reproduction Number Estimate"
+    ) +
+    theme_linedraw() +
+    theme(
+      axis.text.x = element_text(
+        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
+      )
+    )
+}
 
 #' @import ggplot2
-viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
-                                    N_days_before) {
+viz_observed_and_fitted <- function(run_summary, input_data) {
 
-  first_date <- as.Date(cvc_result$config$first_date, origin = '1970-01-01')
+  first_date <- min(run_summary$date)
 
-  over1k_old <- scale_y_continuous(
-    name = "Count (log1p scale)",
-    trans = scales::pseudo_log_trans(base = 10),
-    labels = scales::label_number_si(),
-    breaks = function(lims) sort(c(0, scales::breaks_log(n = 5)(0.01, lims[2]))),
-    minor_breaks = NULL
-  )
-
-  over1k <- scale_y_continuous(
+  custom_logscale <- scale_y_continuous(
     name = "Count (log scale)",
     trans = "log1p",
     labels = scales::label_number_si(),
     breaks = function(l) c(0, scales::breaks_log(n=5)(c(1, l[2]))),
     minor_breaks = NULL
   )
-  
-  under1k <- scale_y_continuous(name = "Count")
 
-  # dynamicScale <- if (max(input_data$median) > 1e3) over1k else under1k
+  ggplot2::ggplot(run_summary, aes(x = date)) + 
+    geom_point(data = input_data, aes(y = cases, color = "ocas"),  size = rel(0.6)) + 
+    geom_line(data  = input_data, aes(y = cases, color = "ocas")) + 
 
-  ggplot2::ggplot(input_data,
-                  aes(x = first_date + lubridate::days(day - 1),
-                      y = median,
-                      color = outcome)) + 
-    geom_point(data = input_data, size = rel(0.6)) + 
-    geom_line(data  = input_data) + 
-    geom_line(data  = filter(fit_to_data, day > 0)) + 
+    geom_point(data = input_data, aes(y = deaths, color = "odth"), size = rel(0.6)) + 
+    geom_line(data  = input_data, aes(y = deaths, color = "odth")) + 
+
+    geom_line(aes(y = cases.fitted, color = "fcas")) + 
     geom_ribbon(
-      data = filter(fit_to_data, day > 0),
-      aes(ymin = lo, ymax = hi),
-      alpha = 0.3,
-      linetype = 'dashed'
+      aes(ymin = cases.fitted.lo, ymax = cases.fitted.hi, color = "fcas"),
+      alpha = 0.3, linetype = 'dashed'
     ) +
-    # dynamicScale +
-    over1k +
+
+    geom_line(aes(y = deaths.fitted)) + 
+    geom_ribbon(
+      aes(ymin = deaths.fitted.lo, ymax = deaths.fitted.hi, color = "fdth"),
+      alpha = 0.3, linetype = 'dashed'
+    ) +
+
+    custom_logscale +
     scale_color_manual(
       values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
-      labels = c("Observed Cases",
-                 "Observed Deaths",
-                 "Fitted Cases",
-                 "Fitted Deaths"),
+      labels = c("ocas" = "Observed Cases",
+                 "odth" = "Observed Deaths",
+                 "fcas" = "Fitted Cases",
+                 "fdth" = "Fitted Deaths"),
       guide = guide_legend(
         override.aes = list(
           linetype = c(rep("solid", 2), rep("dashed", 2))
@@ -196,36 +189,28 @@ viz_observed_and_fitted <- function(cvc_result, input_data, fit_to_data,
     )
 }
 
-  ## all cases to data 
-
 #' @import ggplot2
-viz_all_cases_to_data <- function(cc, input_data, deltas) {
+viz_all_cases_to_data <- function(run_summary, input_data) {
 
-  first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
-
-  ggplot2::ggplot(mapping = aes(x = first_date + lubridate::days(day - 1),
-                                y = median,
-                                color = outcome)) + 
-    geom_point(data = filter(input_data, outcome == "obs_cas"),
+  ggplot2::ggplot(run_summary, aes(x = date)) + 
+    geom_point(data = input_data,
+               aes(y = cases, color = "ocas"),
                size = rel(0.6)) +
-    geom_line(
-      data = filter(input_data, outcome == "obs_cas")
-    ) + 
-    geom_line(data = filter(deltas, outcome == "new_inf", day >= 1)) + 
+    geom_line(data = input_data,
+              aes(y = cases, color = "ocas")) +
+    geom_line(aes(y = infections, color = "ninf")) + 
     geom_ribbon(
-      data = filter(deltas, outcome == "new_inf", day >= 1),
-      aes(ymin=lo, ymax=hi),
+      aes(ymin = infections.lo, ymax = infections.hi),
       alpha=0.3,
       linetype = 2
     ) +
     scale_color_manual(
       values = c('#a6cee3','#fc8d62'),
-      labels = c("New Infections", "Observed Cases")
+      labels = c("ninf" = "New Infections", "ocas" = "Observed Cases")
     ) +
     scale_y_continuous(
       trans = scales::pseudo_log_trans(base = 10),
       labels = scales::label_number_si(),
-      # breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
       breaks = c(0, 10^(1:6)),
       minor_breaks = NULL,
       limits = c(0, NA)
@@ -319,70 +304,3 @@ viz_modeled_cases <- function(cc, fit_to_data, diag, deltas) {
     )
 }
 
-# plotting: all, diagnosed, reported outcomes
-
-#' @import ggplot2
-viz_incidence <- function(cc, fit_to_data, diag, deltas) {
-  ggplot2::ggplot(
-    mapping = aes(x = day, y = median, color = outcome)
-  ) +
-    geom_line(data = fit_to_data) +
-    geom_line(data = diag) +
-    geom_line(data = deltas) +
-    scale_y_continuous(trans = "log10") +
-    scale_color_manual(
-      values = c('#08519c','#3182bd', '#bdd7e7', '#238b45',
-                 '#74c476','#bae4b3', '#6a51a3', '#cbc9e2'
-                 # 'green', 'purple', 'orange', 'blue'
-                 ), 
-      breaks = c("new_inf",
-                 "new_sym",
-                 #"new_sev",
-                 "new_die",
-                 "diag_all",
-                 "new_sym_dx",
-                 #"new_sev_dx",
-                 "new_die_dx",
-                 "occur_cas",
-                 "occur_die",
-                 #"obs_cas", 
-                 #"obs_die"
-                 ),
-      labels = c("Modeled New Infections",
-                 "Modeled Symptomatic Cases", 
-                 #"Modeled New Severe Cases",
-                 "Modeled Deaths",
-                 "Modeled All Diagnosed", 
-                 #"Modeled Diagnosed at Symptomatic", 
-                 "Modeled Diagnosed at Severe", 
-                 "Modeled Diagnosed at Death", 
-                 "Fitted Cases",
-                 "Fitted Deaths"
-                 #"Observed Cases",
-                 #"Observed Deaths"
-                 )
-    ) +
-    scale_y_continuous(
-      trans = scales::pseudo_log_trans(base = 10),
-      labels = scales::label_number_si(),
-      # breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
-      breaks = 10^(1:6),
-      minor_breaks = NULL,
-      limits = c(0, NA)
-    ) +
-    scale_x_date(date_breaks = '1 week',
-                 date_labels = "%b %d",
-                 minor_breaks = NULL) +
-    labs(x = NULL,
-         y = "Count",
-         title = "Median Modeled Outcomes Compared to Data",
-         color = "")
-    theme_linedraw() +
-    theme(
-      axis.text.x = element_text(
-        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-      ),
-      legend.position = "bottom",
-      legend.text = element_text(size = rel(0.75))
-    )
-}
