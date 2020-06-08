@@ -360,7 +360,7 @@ model {
   if(cas_yes==1){
     tmp_obs_cas = obs_cas[1];
     tmp_occur_cas = occur_cas[1 + N_days_before];
-    for(i in 1:(N_days + nda0)) {
+    for(i in 1:N_days) {
       target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/N_days_av;
       if(i>nda0){
         tmp_obs_cas   -= obs_cas[i - nda0];
@@ -375,7 +375,7 @@ model {
   if(die_yes==1){
     tmp_obs_die = obs_die[1];
     tmp_occur_die = occur_die[1 + N_days_before];
-    for(i in 1:(N_days + nda0)) {
+    for(i in 1:N_days) {
       target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/N_days_av;
       if(i>nda0){  
         tmp_obs_die   -= obs_die[i - nda0];
