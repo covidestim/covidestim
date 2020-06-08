@@ -74,7 +74,9 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
     "cumulative_incidence" = "cum.incidence",
     "new_sym"              = "symptomatic",
     "new_sev"              = "severe",
-    "new_die"              = "deaths"
+    "new_die"              = "deaths",
+    "new_die_dx"           = "deaths.diagnosed",
+    "diag_all"             = "diagnoses"
   ) -> params
 
   # Used for renaming quantiles output by Stan
