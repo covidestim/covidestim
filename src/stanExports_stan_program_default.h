@@ -1589,7 +1589,7 @@ public:
                 current_statement_begin__ = 362;
                 stan::math::assign(tmp_occur_cas, get_base1(occur_cas, (1 + N_days_before), "occur_cas", 1));
                 current_statement_begin__ = 363;
-                for (int i = 1; i <= (N_days + nda0); ++i) {
+                for (int i = 1; i <= N_days; ++i) {
                     current_statement_begin__ = 364;
                     lp_accum__.add((neg_binomial_2_log(tmp_obs_cas, tmp_occur_cas, phi_cas) / N_days_av));
                     current_statement_begin__ = 365;
@@ -1615,7 +1615,7 @@ public:
                 current_statement_begin__ = 377;
                 stan::math::assign(tmp_occur_die, get_base1(occur_die, (1 + N_days_before), "occur_die", 1));
                 current_statement_begin__ = 378;
-                for (int i = 1; i <= (N_days + nda0); ++i) {
+                for (int i = 1; i <= N_days; ++i) {
                     current_statement_begin__ = 379;
                     lp_accum__.add((neg_binomial_2_log(tmp_obs_die, tmp_occur_die, phi_die) / N_days_av));
                     current_statement_begin__ = 380;
