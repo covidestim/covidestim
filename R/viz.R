@@ -35,7 +35,7 @@ viz <- function(...) UseMethod('viz')
 #'   quantities being plotted
 #'
 #' @export
-viz.covidcast_result <- function(ccr, include.RtEstim = FALSE, renderPDF = FALSE) {
+viz.covidcast_result <- function(ccr, include.RtEstim = TRUE, renderPDF = FALSE) {
 
   # Prep all the intermediate representations of the data that are ultimately
   # used to plot everything

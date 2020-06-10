@@ -50,7 +50,7 @@
 #'       CIs. See \code{\link{RtEst}}.
 #'
 #'     \item \code{NaiveRt}, \code{NaiveRt.lo}, \code{NaiveRt.hi}: Naive
-#'       estimate of Rt, with 95\% CIs. See \code{\link{RtNaiveEstim}}.
+#'       estimate of Rt, with 95% CIs. See \code{\link{RtNaiveEstim}}.
 #'
 #'     \item \code{index}
 #'   }
@@ -74,9 +74,7 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
     "cumulative_incidence" = "cum.incidence",
     "new_sym"              = "symptomatic",
     "new_sev"              = "severe",
-    "new_die"              = "deaths",
-    "new_die_dx"           = "deaths.diagnosed",
-    "diag_all"             = "diagnoses"
+    "new_die"              = "deaths"
   ) -> params
 
   # Used for renaming quantiles output by Stan
@@ -203,3 +201,53 @@ cum_inc_hdi <- function(ccr) {
     dplyr::rename(cum.incidence.lo = lo,
                   cum.incidence.hi = hi)
 }
+
+#' Summarize internal parameters of a Covidcast run
+#'
+#' Returns a \code{data.frame} with a information on the posterior of a few
+#' key Stan parameters.
+#'
+#' @param ccr A \code{covidcast_result} object
+#'
+#' @return A \code{data.frame} with the following variables:
+#'
+#'   \itemize{
+#'     \item \code{par}: Name of the Stan parameter
+#'
+#'     \item \code{2.5%}, \code{50%}, \code{97.5%}: Quantiles for the posterior
+#'       distribution of \code{par}.
+#'   }
+#'
+#' @export
+#' @importFrom magrittr %>%
+summary.epi <- function(ccr) {
+  
+  c(
+    "p_sym_if_inf",
+    "p_sev_if_sym",
+    "p_die_if_sev",
+    "p_die_if_sym",
+    "p_diag_if_sym",
+    "p_diag_if_sev"
+  ) -> pars_of_interest
+
+  # Used for renaming quantiles output by Stan
+  quantile_names <- c("2.5%" = ".lo", "50%" = "median", "97.5%" = ".hi")
+
+  rstan::summary(
+    ccr$result,
+    pars = pars_of_interest,
+    probs = c(0.025, 0.5, 0.975)
+  )$summary %>% # Get rid of the per-chain summaries by indexing into `$summary`
+    as.data.frame %>%
+    tibble::as_tibble(rownames = "par") -> melted
+
+  # These are the variables that are going to be selected from the melted
+  # representation created above
+  vars_of_interest <- c("par", names(quantile_names))
+
+  result <- dplyr::select_at(melted, vars_of_interest)
+
+  result
+}
+
