@@ -4,7 +4,8 @@ RtEst <- function(...) UseMethod('RtEst')
 
 #' Calculate the Effective Reprouction Number from Covidestim output
 #'
-#' Creates a figure with Rt estimates over time and 95% CI and undelrying df. 
+#' Creates a \code{data.frame} with Rt estimates over time and 95% CI and
+#' underlying df. 
 #'
 #' @param ccr The result of calling \code{\link{run}}. An object of class
 #'   \code{covidcast_result}.
@@ -18,16 +19,12 @@ RtEst <- function(...) UseMethod('RtEst')
 #' @param std.si The standard deviation of the serial interval; defaults to 
 #' 2.9 days.  
 #'
-#' @param graph A logical scalar. Whether or not to return a `ggplot` object,
-#'   or a `data.frame` with the Rt estimates and its 95\% confidence intervals.
-#'
-#' @return If \code{graphs == FALSE}, a `data.frame` with columns `date`, `Rt`,
-#'   `Rt.lo`, `Rt.hi`, where `date` is a vector of \code{\link[base]{Date}}
-#'   objects.
+#' @return A `data.frame` with columns `date`, `Rt`, `Rt.lo`, `Rt.hi`, where
+#'   `date` is a vector of \code{\link[base]{Date}} objects.
 #'
 #' @export
 RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
-                                   std.si = 2.9, graph = TRUE) {
+                                   std.si = 2.9) {
 
 
   att(window.length %% 2 == 1)
@@ -61,8 +58,6 @@ RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
   # This calculates an Rt+bounds for a single time series of incidence data
   runEpiEstim <- function(new_inf, iteration) {
 
-    # message(glue::glue("Iteration {iteration} beginning"))
-
     EpiEstim::estimate_R(
       new_inf,
       method = "parametric_si",
@@ -76,10 +71,8 @@ RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
     last_day_centered  <- first_day_centered + lubridate::days(nrow(R_est) - 1)
 
     list(
-      date = seq(first_day_centered, last_day_centered, by = '1 day'),
-      mean = R_est$`Mean(R)`,
-      lo   = R_est$`Quantile.0.025(R)`,
-      hi   = R_est$`Quantile.0.975(R)`
+      date   = seq(first_day_centered, last_day_centered, by = '1 day'),
+      median = R_est$`Median(R)`
     )
   }
 
@@ -88,57 +81,21 @@ RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
   EpiEstim.result <-
     purrr::imap_dfr(1:nrow(new_inf), ~runEpiEstim(new_inf[.x, ], .y))
 
-  # Summarize all of these iterations by taking the mean of 'Rt', the 2.5%
-  # quantile of all the 2.5% quantiles, and the 97.5% quantile of all the 
-  # 97.5% quantiles.
+  # Summarize all of these iterations by taking the median of 'Rt', and
+  # calculating all quantiles based off of that
   dplyr::summarize(
     dplyr::group_by(EpiEstim.result, date),
-    Rt    = mean(I(mean)), # The 'I()' call preserves meaning of 'mean'
-    Rt.lo = quantile(lo, 0.025),
-    Rt.hi = quantile(hi, 0.975)
-  ) -> final_values
-
-  if (graph == FALSE) 
-    return(final_values)
-
-  ggplot2::ggplot(final_values, aes(x = date)) +
-    geom_hline(
-      yintercept = 1,
-      color = "red",
-      size = 0.5,
-      show.legend = FALSE
-    ) +
-    geom_line(aes(y = Rt)) + 
-    geom_ribbon(aes(y = Rt, ymin=Rt.lo, ymax=Rt.hi), alpha=0.3) +
-    scale_x_date(date_breaks = '1 week',
-                 date_labels = "%b %d",
-                 minor_breaks = NULL) +
-    scale_y_continuous(
-      trans = "log10",
-      limits = c(0, 8),
-      breaks = c(0.5, 1, 2, 4, 8),
-      minor_breaks = NULL,
-      expand = c(0,0)
-    ) +
-    labs(
-      x = NULL,
-      y = "Rt", 
-      title = "Effective Reproduction Number Estimate"
-    ) +
-    theme_linedraw() +
-    theme(
-      axis.text.x = element_text(
-        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-      )
-    )
-  # return(Rt_df)
+    Rt    = median(I(median)), # The 'I()' call preserves meaning of 'median'
+    Rt.lo = quantile(I(median), 0.025),
+    Rt.hi = quantile(I(median), 0.975)
+  )
 }
 
 #' Calculate the naive Effective Reprouction Number from Covidestim input data
 #'
-#' Creates a figure with Rt estimates over time and 95% CI and underlying df.
-#' These estimates are based entirely on input case data. This function is
-#' essentially a wrapper around \code{link[EpiEstim]{estimate_R}}.
+#' Creates a \code{data.frame} with Rt estimates over time and 95% CI and
+#' underlying df.  These estimates are based entirely on input case data. This
+#' function is essentially a wrapper around \code{link[EpiEstim]{estimate_R}}.
 #'
 #' @param ccr The result of calling \code{\link{run}}. An object of class
 #'   \code{covidcast_result}.
@@ -152,20 +109,12 @@ RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
 #' @param std.si The standard deviation of the serial interval; defaults to 
 #' 2.9 days.  
 #'
-#' @param graph A logical scalar. Whether or not to return a `ggplot` object,
-#'   or a `data.frame` with the Rt estimates and its' 95\% confidence
-#'   intervals.
-#'
-#' @return If \code{graphs == FALSE}, a `data.frame` with columns `date`,
-#'   `NaiveRt`, `NaiveRt.lo`, `NaiveRt.hi`, where `date` is a vector of
+#' @return A \code{data.frame} with columns \code{date}, \code{NaiveRt},
+#'   \code{NaiveRt.lo}, \code{NaiveRt.hi}, where \code{date} is a vector of
 #'   \code{\link[base]{Date}} objects.
 #'
 #' @export
-RtNaiveEstim <- function(cc,
-                         window = 5, 
-                         mean.si = 4.7,
-                         std.si = 2.9,
-                         graph = TRUE) {
+RtNaiveEstim <- function(cc, window = 5, mean.si = 4.7, std.si = 2.9) {
 
   day_start <- 2
   day_end   <- day_start + window - 1
@@ -173,6 +122,8 @@ RtNaiveEstim <- function(cc,
   ndb       <- cc$config$N_days_before
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
+
+  # The case data used in this model run
   cases <- cc$config$obs_cas
 
   EpiEstim::make_config(
@@ -191,53 +142,16 @@ RtNaiveEstim <- function(cc,
   ) -> Rt_Est
 
   result <- tibble::as_tibble(Rt_Est[["R"]])
-  result <- dplyr::transmute(result, day = t_start, y = `Median(R)`,
-                      ymin = `Quantile.0.025(R)`, ymax=`Quantile.0.975(R)`)
-
-  if (graph == FALSE)
-    return(
-      dplyr::transmute(
-        result,
-        date = as.Date(first_date, origin = '1970-01-01') + lubridate::days(day - 1),
-        NaiveRt = y, NaiveRt.lo = ymin, NaiveRt.hi = ymax
-      )
-    )
-
-  p <- ggplot2::ggplot(
-    result, aes(x = as.Date(first_date) + lubridate::days(day - 1))
-  ) +
-    geom_hline(
-      yintercept = 1,
-      color = "red",
-      size = 0.5,
-      show.legend = FALSE
-    ) +
-    geom_line(aes(y = y)) + 
-    geom_ribbon(aes(y = y, ymin=ymin, ymax=ymax), alpha=0.3) +
-    scale_x_date(date_breaks = '1 week',
-                 date_labels = "%b %d",
-                 minor_breaks = NULL,
-                 limits = c(first_date, NA)) +
-    coord_cartesian(ylim = c(0, 8)) +
-    scale_y_continuous(
-      trans = "log10",
-      limits = c(0, 8),
-      breaks = c(0.5, 1, 2, 4, 8),
-      minor_breaks = NULL,
-      expand = c(0,0)
-    ) +
-    labs(
-      x = NULL,
-      y = "Rt", 
-      title = "Naive Effective Reproduction Number Estimate"
-    ) +
-    theme_linedraw() +
-    theme(
-      axis.text.x = element_text(
-        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-      )
-    )
-
-  p
+  
+  # Pull quantiles directly from the result of EpiEstim::estimate_R()
+  dplyr::transmute(
+    result,
+    date = seq(first_date + lubridate::days(1+2),
+               first_date + lubridate::days(n_days - 1 - 2),
+               by = '1 day'),
+    NaiveRt = `Median(R)`,
+    NaiveRt.lo = `Quantile.0.025(R)`,
+    NaiveRt.hi = `Quantile.0.975(R)`
+  )
 }
 
