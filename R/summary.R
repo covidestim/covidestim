@@ -131,23 +131,24 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
 
   # Join in Rt estimates if requested
   if (include.RtEstim) {
-    Rt   <- RtEst(ccr, graph = FALSE)
-    Rt_n <- RtNaiveEstim(ccr, graph = FALSE)
+    Rt   <- RtEst(ccr)
+    Rt_n <- RtNaiveEstim(ccr)
     d <- dplyr::left_join(d, Rt, by = "date")
     d <- dplyr::left_join(d, Rt_n, by = "date")
   }
-
-  # Get rid of 'before period' data if not requested
-  if (include.before == FALSE)
-    d <- dplyr::filter(d, date >= start_date)
 
   # Column-bind high-density interval CI's for cumulative incidence
   # First, remove the traditionally-calculated lo and hi estimates
   d <- dplyr::select(d, -cum.incidence.lo, -cum.incidence.hi)
   d <- dplyr::bind_cols(d, cum_inc_hdi(ccr))
 
+
   if (index == TRUE)
     d <- dplyr::bind_cols(d, list(index = 1:ndays_total))
+
+  # Get rid of 'before period' data if not requested
+  if (include.before == FALSE)
+    d <- dplyr::filter(d, date >= start_date)
 
   d
 }
@@ -214,7 +215,7 @@ cum_inc_hdi <- function(ccr) {
 #'   \itemize{
 #'     \item \code{par}: Name of the Stan parameter
 #'
-#'     \item \code{2.5%}, \code{50%}, \code{97.5%}: Quantiles for the posterior
+#'     \item \code{2.5\%}, \code{50\%}, \code{97.5\%}: Quantiles for the posterior
 #'       distribution of \code{par}.
 #'   }
 #'
