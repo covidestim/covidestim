@@ -221,7 +221,7 @@ cum_inc_hdi <- function(ccr) {
 #'
 #' @export
 #' @importFrom magrittr %>%
-summary.epi <- function(ccr) {
+summaryEpi <- function(ccr) {
   
   c(
     "p_sym_if_inf",
