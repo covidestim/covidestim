@@ -86,6 +86,8 @@ viz_RtEstim <- function(run_summary) {
     scale_x_date(date_breaks = '1 week',
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
+    scale_y_log10(breaks = c(seq(0.5, 1.5, 0.1), 1, 2, 3, 4, 5),
+                  minor_breaks = NULL) +
     labs(
       x = NULL,
       y = "Rt", 
@@ -97,7 +99,6 @@ viz_RtEstim <- function(run_summary) {
         size = rel(3/4), angle = 45, hjust = 1, vjust = 1
       )
     )
-  # return(Rt_df)
 }
 
 viz_RtEstimNaive <- function(run_summary) {
@@ -116,6 +117,8 @@ viz_RtEstimNaive <- function(run_summary) {
                  date_labels = "%b %d",
                  minor_breaks = NULL,
                  limits = c(min(run_summary$date), NA)) +
+    scale_y_log10(breaks = c(seq(0.5, 1.5, 0.1), 1, 2, 3, 4, 5),
+                  minor_breaks = NULL) +
     coord_cartesian(ylim = c(0, 8)) +
     labs(
       x = NULL,
