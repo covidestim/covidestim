@@ -120,7 +120,7 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @examples
 #' cfg <- covidcast(N_days = 50) + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
-priors_transitions <- function(p_sym_if_inf = c(55.9, 28.8),      # a/b 
+priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),      # a/b 
                                p_sev_if_sym = c(11.9, 47.7),      # a/b
                                p_die_if_sev = c(3, 97),         # a/b
                                p_die_if_sym = c(1.12, 85.1)) {  # a/b
