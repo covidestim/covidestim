@@ -32,8 +32,12 @@ NULL
 #'   modeled. This should always be set to the number of days in your input data.
 #' @param N_days_before A positive integer. How many days before the first day
 #'   of model data should be modeled?
-#' @param rho_sym A number in \code{(0, 1]}. Needs documentation.
-#' @param rho_sev A number in \code{(0, 1]}. Needs documentation.
+#' @param rho_sym A number in \code{(0, 1]}. Modulates the strength of 
+#'   the relationship between the fraction of positive tests and the 
+#'   probability of diagnosis for symptomatic, but not severely ill, cases. 
+#' @param rho_sev A number in \code{(0, 1]}. Modulates the strength of 
+#'   the relationship between the fraction of positive tests and the 
+#'   probability of diagnosis for severely ill cases. 
 #' @param seed A number. The random number generator seed for use in sampling.
 #'
 #' @return An S3 object of type \code{covidcast}. This can be passed to 
