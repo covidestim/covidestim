@@ -32,7 +32,8 @@ NULL
 #'   modeled. This should always be set to the number of days in your input data.
 #' @param N_days_before A positive integer. How many days before the first day
 #'   of model data should be modeled?
-#' @param rho A number in \code{(0, 1]}. Needs documentation.
+#' @param rho_sym A number in \code{(0, 1]}. Needs documentation.
+#' @param rho_sev A number in \code{(0, 1]}. Needs documentation.
 #' @param seed A number. The random number generator seed for use in sampling.
 #'
 #' @return An S3 object of type \code{covidcast}. This can be passed to 
@@ -45,14 +46,16 @@ NULL
 #' @importFrom magrittr %>%
 #' @export
 covidcast <- function(N_days, N_days_before=28,
-                      chains=3, iter=1500, thin = 1, rho = 1, seed=42) {
+                      chains=3, iter=1500, thin = 1, 
+                      rho_sym = 1, rho_sev = 0.5, seed=42) {
 
   att(is.numeric(N_days), N_days >= 1)
 
   defaultConfig(
     N_days = N_days,
     N_days_before = N_days_before,
-    rho = rho
+    rho_sym = rho_sym, 
+    rho_sev = rho_sev
   ) -> config
 
   # All user-specified config-related things must be specified above this line

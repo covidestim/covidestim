@@ -170,9 +170,10 @@ or removing your custom prior.
   # att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
 }
 
-genData <- function(N_days, N_days_before = 28, rho = 1) #new default value
+genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5) #new default value
 {
-  att(rho > 0 && rho <= 1)
+  att(rho_sym > 0 && rho_sym <= 1)
+  att(rho_sev > 0 && rho_sev <= 1)
 
   # The first set of components of 'datList'
   config <- rlang::dots_list(
@@ -190,7 +191,8 @@ genData <- function(N_days, N_days_before = 28, rho = 1) #new default value
     # moving average for likelihood function 
     N_days_av = 5, 
 
-    rho = rho,
+    rho_sym = rho_sym,
+    rho_sev = rho_sev,
 
     is_weekend = rep(0, N_days_before + N_days),
     

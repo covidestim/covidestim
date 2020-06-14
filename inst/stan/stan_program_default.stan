@@ -8,7 +8,8 @@ data {
   int<lower=0>           obs_cas[N_days]; //~~
   int<lower=0>           obs_die[N_days]; //~~
   real<lower=0,upper=1>  frac_pos[N_days+N_days_before]; //~~
-  real<lower=0,upper=1>  rho; 
+  real<lower=0,upper=1>  rho_sym; 
+  real<lower=0,upper=1>  rho_sev; 
   int<lower=0,upper=1>   is_weekend[N_days+N_days_before]; //~
   // PRIORS
   // random walk 
@@ -236,7 +237,7 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
       new_sym_dx[i+(j-1)] += new_sym[i]  * 
-                             p_diag_if_sym * pow(1-frac_pos[i], rho) * 
+                             p_diag_if_sym * pow(1-frac_pos[i], rho_sym) * 
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sym_diag_delay[j];
     }
@@ -246,8 +247,8 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
           for(i in 1:N_days_tot){
             for(j in 1:Max_delay){
               if(i+(j-1) <= N_days_tot){
-              dx_sym_sev[i+(j-1)] += new_sym_dx[i] * p_sev_if_sym *
-              sym_prg_delay[j];
+               dx_sym_sev[i+(j-1)] += new_sym[i] * p_diag_if_sym * 
+               p_sev_if_sym * sym_prg_delay[j];
             }
           }
       }
@@ -266,7 +267,7 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
       new_sev_dx[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-                             p_diag_if_sev * 
+                             p_diag_if_sev * pow(1-frac_pos[i], rho_sev) * 
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sev_diag_delay[j]; 
     }
@@ -275,7 +276,8 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
           for(i in 1:N_days_tot){
             for(j in 1:Max_delay){
               if(i+(j-1) <= N_days_tot){
-              dx_sev_die[i+(j-1)] += new_sev_dx[i] * p_die_if_sev * sev_prg_delay[j];
+              dx_sev_die[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
+              p_diag_if_sev * p_die_if_sev * sev_prg_delay[j];
             }
           }
         }  
@@ -302,9 +304,12 @@ if(obs_cas_rep == 1) {
     }
   }  
 } else {
-  for(i in 1:N_days_tot)  {
-  occur_cas[i] += diag_all[i] * cas_cum_report_delay[N_days_tot - i + 1];
-}
+   for(i in 1:(N_days_tot - Max_delay )){
+        occur_cas[i] = diag_all[i]; 
+      }
+      for(i in (N_days_tot - Max_delay + 1):N_days_tot)  {
+        occur_cas[i] += diag_all[i] * cas_cum_report_delay[N_days_tot - i + 1];
+      }
 }
 
 if(obs_die_rep == 1) {
@@ -316,9 +321,12 @@ if(obs_die_rep == 1) {
   }
 }  
 } else {
-for(i in 1:N_days_tot)  {
-  occur_die[i] += new_die_dx[i] * die_cum_report_delay[N_days_tot - i + 1];
- }
+ for(i in 1:(N_days_tot - Max_delay)){
+        occur_die[i] = new_die_dx[i]; 
+      }
+      for(i in (N_days_tot - Max_delay + 1):N_days_tot)  {
+        occur_die[i] += new_die_dx[i] * cas_cum_report_delay[N_days_tot - i + 1];
+      }
 }
 
 }
