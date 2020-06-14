@@ -92,29 +92,31 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 
 #' Priors for transitions
 #'
-#' BUG: the following description needs information about what the defaults
-#' were sourced from
-#'
 #' This function returns a keyed list of priors related to progression to
 #' various health states. Called with no arguments, the default values are
-#' returned. All parameters must be non-negative real numbers. Additionally,
-#' the mean of the distribution described by \code{p_sym_if_inf} should be
-#' \code{<=} than the mean of the
-#' \code{\link[=priors_diagnosis]{p_diag_if_sym}}. Otherwise, a warning will be
-#' triggered.
+#' returned. All parameters must be non-negative real numbers. 
 #'
 #' @param p_sym_if_inf A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of being
-#'   symptomatic if infectious
+#'   symptomatic if infectious. 
+#'   Sources: 
+#'   https://doi.org/10.1101/2020.05.10.20097543, 
+#'   https://doi.org/10.2807/1560-7917.es.2020.25.10.2000180 
+#'   https://doi.org/10.1016/j.ijid.2020.03.020 
 #' @param p_sev_if_sym A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
-#'   severe if symptomatic
+#'   severe if symptomatic. 
+#'   Sources: 
+#'   http://dx.doi.org/10.15585/mmwr.mm6912e2
+#'   https://doi.org/10.1016/S1473-3099(20)30243-7 
 #' @param p_die_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
-#'   if severely ill
+#'   if severely ill. 
+#'   Sources: http://dx.doi.org/10.15585/mmwr.mm6912e2
 #' @param p_die_if_sym A two-element numeric vector containing \code{c(alpha,
-#' beta)} parameters of a Beta distribution modeling the probability of dying
-#' if symptomatic 
+#'   beta)} parameters of a Beta distribution modeling the probability of dying
+#'   if symptomatic. 
+#'   Source: https://doi.org/10.1377/hlthaff.2020.00455
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
@@ -148,21 +150,24 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),      # a/b
 
 #' Fixed values on delay to progression
 #'
-#' BUG: the following description needs information about what the defaults
-#' were sourced from
-#'
 #' This function returns a keyed list of values related to progression to
 #' the infectious state. Called with no arguments, the default values are
 #' returned. The following arguments can be passed to create different priors:
 #'
 #' @param inf_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
-#' parameters of a Gamma distribution modeling [...]
+#' parameters of a Gamma distribution modeling the time from infection to 
+#' sypmtom onset. 
+#' Source: https://doi.org/10.7326/M20-0504
 #'
 #' @param sym_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
-#' parameters of a Gamma distribution modeling [...] 
+#' parameters of a Gamma distribution modeling the time from symptom onset to 
+#' severe disease. 
+#' Source: https://doi.org/10.1016/S0140-6736(20)30566-3 
 #'
 #' @param sev_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
-#' parameters of a Gamma distribution modeling [...] 
+#' parameters of a Gamma distribution modeling the time from severe symptoms 
+#' to death. 
+#' Source: https://dx.doi.org/10.3390%2Fjcm9020538 
 #' 
 #' @param ... A set of key-value pairs from those listed above. If no
 #'   arguments are passed, default values will be used
@@ -195,15 +200,15 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #' Priors on probability of diagnosis
 #'
 #' This function returns a keyed list of priors related to probability of
-#' diagnosis.  Called with no arguments, the default values are returned. 
+#' diagnosis. Called with no arguments, the default values are returned. 
 #'
-#' Default values should be explained here, as well as constraints on custom
-#' values. (Default values are assumed?)
+#' Boundary avoiding priors are used by default; a weakly informative prior
+#' is used for the probability of diagnosis if severely ill. 
 #'
 #' @param p_diag_if_sym A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
 #'   diagnosed if symptomatic. The mean of this distribution should be less
-#'   the mean of the distribution parameterized by \code{p_diag_if_hos}.
+#'   the mean of the distribution parameterized by \code{p_diag_if_sev}.
 #'   Otherwise, a warning will be displayed.
 #'
 #' @param p_diag_if_sev A two-element numeric vector containing \code{c(alpha,
@@ -247,18 +252,17 @@ priors_diagnosis <- function(p_diag_if_sym = c(2, 2), # a/b
 #' of delays related reporting of cases and deaths.  Called with no arguments, 
 #' the default values are returned. 
 #'
-#' Default values should be explained here, as well as constraints on custom
-#' values. (Default values are assumed?)
-#'
 #' @param cas_rep_delay A two-element numeric vector containing the mean shape
 #' and rate for a gamma distribution describing delay in case reporting. Shape
 #' and rate are parameterized with a lognormal prior where the log of the input 
-#' value is the median and the variance is 0.5. 
+#' value is the median and the variance is 0.5. Based on average delay reported
+#' in Santa Clara County, CA on 8 April 2020. 
 #'
 #' @param die_rep_delay A two-element numeric vector containing the mean shape
 #' and rate for a gamma distribution describing delay in death reporting. Shape
 #' and rate are parameterized with a lognormal prior where the log of the input 
-#' value is the median and the variance is 0.5. 
+#' value is the median and the variance is 0.5. Based on average delay reported
+#' in Santa Clara County, CA on 8 April 2020. 
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
@@ -288,12 +292,17 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #' of cases, hospitalizations, and deaths.  Called with no arguments, the
 #' default values are returned. 
 #'
-#' Default values should be explained here, as well as constraints on custom
-#' values. (Default values are assumed?)
+#' Boundary avoiding priors are use by default. 
 #'
-#' @param dx_delay_sym Documentation about this prior
+#' @param dx_delay_sym A two element vector containing the \code{c(alpha,beta)} 
+#' parameters of a Beta distribution modeling a scaleing factor. elay to 
+#' diagnosis for symptomatic cases is modeled as the fraction of time in 
+#' the symptomatic disease state, scaled by this factor. 
 #'
-#' @param dx_delay_sev Documentation about this prior
+#' @param dx_delay_sev A two element vector containing the \code{c(alpha,beta)} 
+#' parameters of a Beta distribution modeling a scaleing factor. Delay to 
+#' diagnosis for severe cases is modeled as the fraction of time in 
+#' the severe disease state, scaled by this factor. 
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
