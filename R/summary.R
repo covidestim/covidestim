@@ -19,38 +19,38 @@
 #'   \itemize{
 #'     \item \code{date}
 #'     \item \code{cases.fitted}, \code{cases.fitted.lo},
-#'       \code{cases.fitted.hi}: Median and 95\% interval around fitted case
-#'       data.
+#'       \code{cases.fitted.hi}: Median and 95\% HDI around fitted
+#'       case data.
 #'
 #'     \item \code{cum.incidence}, \code{cum.incidence.lo},
-#'       \code{cum.incidence.hi}: Median and 95\% interval around cumulative 
-#'       incidence data.
+#'       \code{cum.incidence.hi}: Median and 95\% HDI around
+#'       cumulative incidence data.
 #'
 #'     \item \code{deaths.fitted}, \code{deaths.fitted.lo},
-#'       \code{deaths.fitted.hi}: Median and 95\% interval around fitted deaths
-#'       data.
+#'       \code{deaths.fitted.hi}: Median and 95\% HDI around fitted
+#'       deaths data.
 #'
 #'     \item \code{deaths}, \code{deaths.lo}, \code{deaths.hi}: Median and 95\%
-#'       interval around estimated deaths/day.
+#'     HDI around estimated deaths/day.
 #'
 #'     \item \code{infections}, \code{infections.lo}, \code{infections.hi}:
-#'       Median and 95\% interval around estimated infections/day.
+#'       Median and 95\% HDI around estimated infections/day.
 #'
 #'     \item \code{severe}, \code{severe.lo}, \code{severe.hi}: Median and 95\%
-#'        interval around "severe" estimate.
+#'        HDI around "severe" estimate.
 #'
 #'     \item \code{symptomatic}, \code{symptomatic.lo}, \code{symptomatic.hi}:
-#'        Median and 95\% interval around estimate of quantity of individuals
-#'        symtomatic on a particular day.
+#'     Median and 95\% HDI around estimate of quantity of individuals
+#'     symtomatic on a particular day.
 #'
 #'     \item \code{data.available}: \code{TRUE/FALSE} for whether input data
 #'       was available on that particular day.
 #'
 #'     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of Rt, with 95\%
-#'       CIs. See \code{\link{RtEst}}.
+#'       HDI. See \code{\link{RtEst}}.
 #'
 #'     \item \code{NaiveRt}, \code{NaiveRt.lo}, \code{NaiveRt.hi}: Naive
-#'       estimate of Rt, with 95% CIs. See \code{\link{RtNaiveEstim}}.
+#'       estimate of Rt, with 95% HDI. See \code{\link{RtNaiveEstim}}.
 #'
 #'     \item \code{index}
 #'   }
@@ -78,7 +78,7 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
   ) -> params
 
   # Used for renaming quantiles output by Stan
-  quantile_names <- c("2.5%" = ".lo", "50%" = "", "97.5%" = ".hi")
+  quantile_names <- c("50%" = "")
 
   # This creates the list of `pars` that gets passed to `rstan::summary`
   # by enumerating all combs of varnames and indices
@@ -91,8 +91,8 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
   rstan::summary(
     ccr$result,
     pars = pars,
-    probs = c(0.025, 0.5, 0.975)
-  )$summary %>% # Get rid of the per-chain summaries by indexing into `$summary`
+    probs = 0.5
+  )$summary %>% # Exclude per-chain summaries by indexing into `$summary`
     as.data.frame %>%
     tibble::as_tibble(rownames = "parname") -> melted
 
@@ -137,14 +137,26 @@ summary.covidcast_result <- function(ccr, include.before = TRUE,
     d <- dplyr::left_join(d, Rt_n, by = "date")
   }
 
-  # Column-bind high-density interval CI's for cumulative incidence
-  # First, remove the traditionally-calculated lo and hi estimates
-  d <- dplyr::select(d, -cum.incidence.lo, -cum.incidence.hi)
-  d <- dplyr::bind_cols(d, cum_inc_hdi(ccr))
-
-
   if (index == TRUE)
     d <- dplyr::bind_cols(d, list(index = 1:ndays_total))
+
+  # Calculate HDI's for all parameters and name them appropriately
+  purrr::map2_dfc(
+    names(params), params,
+    function(stan_name, df_name_prefix) {
+
+      # Result of this is a list with keys $lo and $hi
+      interval <- hdi_for_ccr_indexed_par(ccr, stan_name)
+
+      # Compose the final names for these HDIs
+      df_names <- paste0(df_name_prefix, c(".lo", ".hi"))
+      
+      rlang::dots_list(!!df_names[1] := interval$lo,
+                       !!df_names[2] := interval$hi)
+    }
+  ) %>% as.list -> hdis
+
+  d <- dplyr::bind_cols(d, hdis)
 
   # Get rid of 'before period' data if not requested
   if (include.before == FALSE)
@@ -169,6 +181,7 @@ split_array_indexing <- function(elnames) {
   captured
 }
 
+# 'x' is a numeric vector
 hdi <- function(x) {
   # order samples
   x <- x[order(x)]
@@ -189,8 +202,12 @@ hdi <- function(x) {
   list(lo = hd_interval[1], hi = hd_interval[2])
 }
 
-cum_inc_hdi <- function(ccr) {
-  samples <- ccr$extracted$cumulative_incidence
+# covidcast_result, string -> list(lo, hi) of HDIs for a particular Stan param
+hdi_for_ccr_indexed_par <- function(ccr, parname) {
+
+  att(parname %in% names(ccr$extracted))
+
+  samples <- ccr$extracted[[parname]]
 
   ndays        <- ccr$config$N_days
   ndays_before <- ccr$config$N_days_before
@@ -198,9 +215,18 @@ cum_inc_hdi <- function(ccr) {
 
   start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
 
-  purrr::map_dfr(1:ndays_total, ~hdi(samples[, .])) %>%
-    dplyr::rename(cum.incidence.lo = lo,
-                  cum.incidence.hi = hi)
+  purrr::map_dfr(1:ndays_total, ~hdi(samples[, .])) %>% as.list
+}
+
+# covidcast_result, string -> list(lo, hi) of HDIs for Stan params that are
+# NOT indexed
+hdi_for_ccr_par <- function(ccr, parname) {
+
+  att(parname %in% names(ccr$extracted))
+
+  samples <- ccr$extracted[[parname]]
+
+  hdi(samples)
 }
 
 #' Summarize internal parameters of a Covidcast run
