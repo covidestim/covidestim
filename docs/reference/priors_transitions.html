@@ -40,8 +40,9 @@
 
 
 <meta property="og:title" content="Priors for transitions — priors_transitions" />
-<meta property="og:description" content="BUG: the following description needs information about what the defaults
-were sourced from" />
+<meta property="og:description" content="This function returns a keyed list of priors related to progression to
+various health states. Called with no arguments, the default values are
+returned. All parameters must be non-negative real numbers." />
 
 
 
@@ -122,14 +123,15 @@ were sourced from" />
     </div>
 
     <div class="ref-description">
-    <p>BUG: the following description needs information about what the defaults
-were sourced from</p>
+    <p>This function returns a keyed list of priors related to progression to
+various health states. Called with no arguments, the default values are
+returned. All parameters must be non-negative real numbers.</p>
     </div>
 
     <pre class="usage"><span class='fu'>priors_transitions</span>(
-  <span class='kw'>p_sym_if_inf</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.9</span>, <span class='fl'>4.1</span>),
-  <span class='kw'>p_sev_if_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3.1</span>, <span class='fl'>6.9</span>),
-  <span class='kw'>p_die_if_sev</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.3</span>, <span class='fl'>9.7</span>),
+  <span class='kw'>p_sym_if_inf</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>44.9</span>, <span class='fl'>9.9</span>),
+  <span class='kw'>p_sev_if_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>11.9</span>, <span class='fl'>47.7</span>),
+  <span class='kw'>p_die_if_sev</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>97</span>),
   <span class='kw'>p_die_if_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.12</span>, <span class='fl'>85.1</span>)
 )</pre>
 
@@ -140,40 +142,40 @@ were sourced from</p>
       <th>p_sym_if_inf</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
 beta)</a></code> parameters of a Beta distribution modeling the probability of being
-symptomatic if infectious</p></td>
+symptomatic if infectious. 
+Sources: 
+https://doi.org/10.1101/2020.05.10.20097543, 
+https://doi.org/10.2807/1560-7917.es.2020.25.10.2000180 
+https://doi.org/10.1016/j.ijid.2020.03.020</p></td>
     </tr>
     <tr>
       <th>p_sev_if_sym</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
 beta)</a></code> parameters of a Beta distribution modeling the probability of
-severe if symptomatic</p></td>
+severe if symptomatic. 
+Sources: 
+http://dx.doi.org/10.15585/mmwr.mm6912e2
+https://doi.org/10.1016/S1473-3099(20)30243-7</p></td>
     </tr>
     <tr>
       <th>p_die_if_sev</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
 beta)</a></code> parameters of a Beta distribution modeling the probability of dying
-if severely ill</p></td>
+if severely ill. 
+Sources: http://dx.doi.org/10.15585/mmwr.mm6912e2</p></td>
     </tr>
     <tr>
       <th>p_die_if_sym</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
 beta)</a></code> parameters of a Beta distribution modeling the probability of dying
-if symptomatic</p></td>
+if symptomatic. 
+Source: https://doi.org/10.1377/hlthaff.2020.00455</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An S3 object of class <code>priors</code></p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This function returns a keyed list of priors related to progression to
-various health states. Called with no arguments, the default values are
-returned. All parameters must be non-negative real numbers. Additionally,
-the mean of the distribution described by <code>p_sym_if_inf</code> should be
-<code>&lt;=</code> than the mean of the
-<code><a href='priors_diagnosis.html'>p_diag_if_sym</a></code>. Otherwise, a warning will be
-triggered.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>cfg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='covidcast.html'>covidcast</a></span>(<span class='kw'>N_days</span> <span class='kw'>=</span> <span class='fl'>50</span>) + <span class='fu'>priors_transitions</span>(<span class='kw'>p_sym_if_inf</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.5</span>, <span class='fl'>0.2</span>))</div></pre>

@@ -40,9 +40,9 @@
 
 
 <meta property="og:title" content="Calculate the naive Effective Reprouction Number from Covidestim input data — RtNaiveEstim" />
-<meta property="og:description" content="Creates a figure with Rt estimates over time and 95
-These estimates are based entirely on input case data. This function is
-essentially a wrapper around link[EpiEstim]{estimate_R}." />
+<meta property="og:description" content="Creates a data.frame with Rt estimates over time and 95
+underlying df.  These estimates are based entirely on input case data. This
+function is essentially a wrapper around link[EpiEstim]{estimate_R}." />
 
 
 
@@ -123,12 +123,12 @@ essentially a wrapper around link[EpiEstim]{estimate_R}." />
     </div>
 
     <div class="ref-description">
-    <p>Creates a figure with Rt estimates over time and 95<!-- % CI and underlying df. -->
-These estimates are based entirely on input case data. This function is
-essentially a wrapper around <code>link[EpiEstim]{estimate_R}</code>.</p>
+    <p>Creates a <code>data.frame</code> with Rt estimates over time and 95<!-- % CI and -->
+underlying df.  These estimates are based entirely on input case data. This
+function is essentially a wrapper around <code>link[EpiEstim]{estimate_R}</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>RtNaiveEstim</span>(<span class='no'>cc</span>, <span class='kw'>window</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>mean.si</span> <span class='kw'>=</span> <span class='fl'>4.7</span>, <span class='kw'>std.si</span> <span class='kw'>=</span> <span class='fl'>2.9</span>, <span class='kw'>graph</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>RtNaiveEstim</span>(<span class='no'>cc</span>, <span class='kw'>window</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>mean.si</span> <span class='kw'>=</span> <span class='fl'>4.7</span>, <span class='kw'>std.si</span> <span class='kw'>=</span> <span class='fl'>2.9</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -144,12 +144,6 @@ to 4.7 days.</p></td>
 2.9 days.</p></td>
     </tr>
     <tr>
-      <th>graph</th>
-      <td><p>A logical scalar. Whether or not to return a `ggplot` object,
-or a `data.frame` with the Rt estimates and its' 95% confidence
-intervals.</p></td>
-    </tr>
-    <tr>
       <th>ccr</th>
       <td><p>The result of calling <code><a href='run.covidcast.html'>run</a></code>. An object of class
 <code>covidcast_result</code>.</p></td>
@@ -163,8 +157,8 @@ estimated; defaults to 5 days. This number must be odd.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>graphs == FALSE</code>, a `data.frame` with columns `date`,
-  `NaiveRt`, `NaiveRt.lo`, `NaiveRt.hi`, where `date` is a vector of
+    <p>A <code>data.frame</code> with columns <code>date</code>, <code>NaiveRt</code>,
+  <code>NaiveRt.lo</code>, <code>NaiveRt.hi</code>, where <code>date</code> is a vector of
   <code><a href='https://rdrr.io/r/base/Dates.html'>Date</a></code> objects.</p>
 
   </div>

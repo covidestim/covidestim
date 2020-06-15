@@ -128,21 +128,24 @@ of cases, hospitalizations, and deaths.  Called with no arguments, the
 default values are returned.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>priors_diagnosis_delays_scale</span>(
-  <span class='kw'>dx_delay_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.1</span>, <span class='fl'>1.1</span>),
-  <span class='kw'>dx_delay_sev</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.1</span>, <span class='fl'>1.1</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>priors_diagnosis_delays_scale</span>(<span class='kw'>dx_delay_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>), <span class='kw'>dx_delay_sev</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dx_delay_sym</th>
-      <td><p>Documentation about this prior</p></td>
+      <td><p>A two element vector containing the <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,beta)</a></code> 
+parameters of a Beta distribution modeling a scaleing factor. elay to 
+diagnosis for symptomatic cases is modeled as the fraction of time in 
+the symptomatic disease state, scaled by this factor.</p></td>
     </tr>
     <tr>
       <th>dx_delay_sev</th>
-      <td><p>Documentation about this prior</p></td>
+      <td><p>A two element vector containing the <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,beta)</a></code> 
+parameters of a Beta distribution modeling a scaleing factor. Delay to 
+diagnosis for severe cases is modeled as the fraction of time in 
+the severe disease state, scaled by this factor.</p></td>
     </tr>
     </table>
 
@@ -151,8 +154,7 @@ default values are returned.</p>
     <p>An S3 object of class 'priors'</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Default values should be explained here, as well as constraints on custom
-values. (Default values are assumed?)</p>
+    <p>Boundary avoiding priors are use by default.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>cfg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='covidcast.html'>covidcast</a></span>(<span class='kw'>N_days</span> <span class='kw'>=</span> <span class='fl'>50</span>) + <span class='fu'>priors_reporting_delays_new</span>(<span class='kw'>p_diag_if_inf</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.5</span>, <span class='fl'>0.1</span>))</div><div class='output co'>#&gt; <span class='error'>Error in priors_reporting_delays_new(p_diag_if_inf = c(0.5, 0.1)): could not find function "priors_reporting_delays_new"</span></div></pre>

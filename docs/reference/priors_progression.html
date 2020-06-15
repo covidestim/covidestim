@@ -40,8 +40,6 @@
 
 
 <meta property="og:title" content="Fixed values on delay to progression — priors_progression" />
-<meta property="og:description" content="BUG: the following description needs information about what the defaults
-were sourced from" />
 
 
 
@@ -122,8 +120,6 @@ were sourced from" />
     </div>
 
     <div class="ref-description">
-    <p>BUG: the following description needs information about what the defaults
-were sourced from</p>
     </div>
 
     <pre class="usage"><span class='fu'>priors_progression</span>(
@@ -138,36 +134,29 @@ were sourced from</p>
     <tr>
       <th>inf_prg_delay</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(shape, scale)</a></code>
-parameters of a Gamma distribution modeling [...]</p></td>
+parameters of a Gamma distribution modeling the time from infection to 
+sypmtom onset. 
+Source: https://doi.org/10.7326/M20-0504</p></td>
     </tr>
     <tr>
       <th>sym_prg_delay</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(shape, scale)</a></code>
-parameters of a Gamma distribution modeling [...]</p></td>
+parameters of a Gamma distribution modeling the time from symptom onset to 
+severe disease. 
+Source: https://doi.org/10.1016/S0140-6736(20)30566-3</p></td>
     </tr>
     <tr>
       <th>sev_prg_delay</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(shape, scale)</a></code>
-parameters of a Gamma distribution modeling [...]</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>A set of key-value pairs from those listed above. If no
+parameters of a Gamma distribution modeling the time from severe symptoms 
+to death. 
+Source: https://dx.doi.org/10.3390<!-- %2Fjcm9020538} --></p>
+<p>...A set of key-value pairs from those listed above. If no
 arguments are passed, default values will be used</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An S3 object of class <code>priors</code></p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This function returns a keyed list of values related to progression to
-the infectious state. Called with no arguments, the default values are
-returned. The following arguments can be passed to create different priors:</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>cfg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='covidcast.html'>covidcast</a></span>(<span class='kw'>N_days</span> <span class='kw'>=</span> <span class='fl'>50</span>) + <span class='fu'>priors_progression</span>(<span class='kw'>inf_prg_delay</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

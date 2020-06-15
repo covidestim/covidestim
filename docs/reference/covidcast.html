@@ -140,7 +140,8 @@ be passed to <code><a href='run.covidcast.html'>run</a></code>.</p>
   <span class='kw'>chains</span> <span class='kw'>=</span> <span class='fl'>3</span>,
   <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>1500</span>,
   <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>rho_sym</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>rho_sev</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
   <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>42</span>
 )</pre>
 
@@ -173,8 +174,16 @@ of model data should be modeled?</p></td>
 passed to <code><a href='https://rdrr.io/pkg/rstan/man/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
     </tr>
     <tr>
-      <th>rho</th>
-      <td><p>A number in <code>(0, 1]</code>. Needs documentation.</p></td>
+      <th>rho_sym</th>
+      <td><p>A number in <code>(0, 1]</code>. Modulates the strength of 
+the relationship between the fraction of positive tests and the 
+probability of diagnosis for symptomatic, but not severely ill, cases.</p></td>
+    </tr>
+    <tr>
+      <th>rho_sev</th>
+      <td><p>A number in <code>(0, 1]</code>. Modulates the strength of 
+the relationship between the fraction of positive tests and the 
+probability of diagnosis for severely ill cases.</p></td>
     </tr>
     <tr>
       <th>seed</th>
@@ -199,12 +208,12 @@ passed to <code><a href='https://rdrr.io/pkg/rstan/man/stanmodel-method-sampling
 #&gt; 	log_new_inf_0_sd	10
 #&gt; 	deriv1_log_new_inf_sd	0.5
 #&gt; 	deriv2_log_new_inf_sd	0.05
-#&gt; 	p_sym_if_inf	[alpha]	5.9
-#&gt; 	p_sym_if_inf	[beta]	4.1
-#&gt; 	p_sev_if_sym	[alpha]	3.1
-#&gt; 	p_sev_if_sym	[beta]	6.9
-#&gt; 	p_die_if_sev	[alpha]	0.3
-#&gt; 	p_die_if_sev	[beta]	9.7
+#&gt; 	p_sym_if_inf	[alpha]	44.9
+#&gt; 	p_sym_if_inf	[beta]	9.9
+#&gt; 	p_sev_if_sym	[alpha]	11.9
+#&gt; 	p_sev_if_sym	[beta]	47.7
+#&gt; 	p_die_if_sev	[alpha]	3
+#&gt; 	p_die_if_sev	[beta]	97
 #&gt; 	p_die_if_sym	[alpha]	1.12
 #&gt; 	p_die_if_sym	[beta]	85.1
 #&gt; 	inf_prg_delay	[shape]	5.202
@@ -221,8 +230,8 @@ passed to <code><a href='https://rdrr.io/pkg/rstan/man/stanmodel-method-sampling
 #&gt; 	p_diag_if_sym	[beta]	2
 #&gt; 	p_diag_if_sev	[alpha]	1.5
 #&gt; 	p_diag_if_sev	[beta]	1
-#&gt; 	weekend_eff	[alpha]	1.5
-#&gt; 	weekend_eff	[beta]	1.5
+#&gt; 	weekend_eff	[alpha]	2
+#&gt; 	weekend_eff	[beta]	2
 #&gt; 
 #&gt; Inputs:
 #&gt; 

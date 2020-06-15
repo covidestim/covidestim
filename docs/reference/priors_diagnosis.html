@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Priors on probability of diagnosis — priors_diagnosis" />
 <meta property="og:description" content="This function returns a keyed list of priors related to probability of
-diagnosis.  Called with no arguments, the default values are returned." />
+diagnosis. Called with no arguments, the default values are returned." />
 
 
 
@@ -123,13 +123,13 @@ diagnosis.  Called with no arguments, the default values are returned." />
 
     <div class="ref-description">
     <p>This function returns a keyed list of priors related to probability of
-diagnosis.  Called with no arguments, the default values are returned.</p>
+diagnosis. Called with no arguments, the default values are returned.</p>
     </div>
 
     <pre class="usage"><span class='fu'>priors_diagnosis</span>(
   <span class='kw'>p_diag_if_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>),
   <span class='kw'>p_diag_if_sev</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.5</span>, <span class='fl'>1</span>),
-  <span class='kw'>weekend_eff</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.5</span>, <span class='fl'>1.5</span>)
+  <span class='kw'>weekend_eff</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>)
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -140,7 +140,7 @@ diagnosis.  Called with no arguments, the default values are returned.</p>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
 beta)</a></code> parameters of a Beta distribution modeling the probability of
 diagnosed if symptomatic. The mean of this distribution should be less
-the mean of the distribution parameterized by <code>p_diag_if_hos</code>.
+the mean of the distribution parameterized by <code>p_diag_if_sev</code>.
 Otherwise, a warning will be displayed.</p></td>
     </tr>
     <tr>
@@ -163,8 +163,8 @@ diagnosis at symptomatic and severe disease states equally.</p></td>
     <p>An S3 object of class 'priors'</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Default values should be explained here, as well as constraints on custom
-values. (Default values are assumed?)</p>
+    <p>Boundary avoiding priors are used by default; a weakly informative prior
+is used for the probability of diagnosis if severely ill.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>cfg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='covidcast.html'>covidcast</a></span>(<span class='kw'>N_days</span> <span class='kw'>=</span> <span class='fl'>50</span>) + <span class='fu'>priors_diagnosis</span>(<span class='kw'>p_diag_if_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>))</div></pre>

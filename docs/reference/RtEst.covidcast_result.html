@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Calculate the Effective Reprouction Number from Covidestim output — RtEst" />
-<meta property="og:description" content="Creates a figure with Rt estimates over time and 95" />
+<meta property="og:description" content="Creates a data.frame with Rt estimates over time and 95
+underlying df." />
 
 
 
@@ -121,13 +122,14 @@
     </div>
 
     <div class="ref-description">
-    <p>Creates a figure with Rt estimates over time and 95<!-- % CI and undelrying df. --></p>
+    <p>Creates a <code>data.frame</code> with Rt estimates over time and 95<!-- % CI and -->
+underlying df.</p>
     </div>
 
     <pre class="usage"><span class='fu'>RtEst</span>(<span class='no'>...</span>)
 
 <span class='co'># S3 method for covidcast_result</span>
-<span class='fu'>RtEst</span>(<span class='no'>ccr</span>, <span class='kw'>window.length</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>mean.si</span> <span class='kw'>=</span> <span class='fl'>4.7</span>, <span class='kw'>std.si</span> <span class='kw'>=</span> <span class='fl'>2.9</span>, <span class='kw'>graph</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+<span class='fu'>RtEst</span>(<span class='no'>ccr</span>, <span class='kw'>window.length</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>mean.si</span> <span class='kw'>=</span> <span class='fl'>4.7</span>, <span class='kw'>std.si</span> <span class='kw'>=</span> <span class='fl'>2.9</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,18 +154,12 @@ to 4.7 days.</p></td>
       <td><p>The standard deviation of the serial interval; defaults to 
 2.9 days.</p></td>
     </tr>
-    <tr>
-      <th>graph</th>
-      <td><p>A logical scalar. Whether or not to return a `ggplot` object,
-or a `data.frame` with the Rt estimates and its 95% confidence intervals.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>graphs == FALSE</code>, a `data.frame` with columns `date`, `Rt`,
-  `Rt.lo`, `Rt.hi`, where `date` is a vector of <code><a href='https://rdrr.io/r/base/Dates.html'>Date</a></code>
-  objects.</p>
+    <p>A `data.frame` with columns `date`, `Rt`, `Rt.lo`, `Rt.hi`, where
+  `date` is a vector of <code><a href='https://rdrr.io/r/base/Dates.html'>Date</a></code> objects.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
