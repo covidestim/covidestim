@@ -189,7 +189,7 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5) #new
     Max_delay = 60, 
 
     # moving average for likelihood function 
-    N_days_av = 5, 
+    N_days_av = 7, #5, CHANGE BACK AFTER 6/15 RUN!!
 
     rho_sym = rho_sym,
     rho_sev = rho_sev,
