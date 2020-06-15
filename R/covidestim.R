@@ -1,10 +1,10 @@
-#' The 'covidcast' package.
+#' The 'covidestim' package.
 #'
 #' @description A DESCRIPTION OF THE PACKAGE
 #'
 #' @docType package
-#' @name covidcast
-#' @useDynLib covidcast, .registration = TRUE
+#' @name covidestim
+#' @useDynLib covidestim, .registration = TRUE
 #' @import methods
 #' @import Rcpp
 #' @importFrom rstan sampling
@@ -14,9 +14,9 @@
 #'
 NULL
 
-#' Configure a Covidcast run on a set of data and priors
+#' Configure a Covidestim run on a set of data and priors
 #'
-#' \code{covidcast} returns a base configuration of the model with the default
+#' \code{covidestim} returns a base configuration of the model with the default
 #' set of priors, and no input data. This configuration, after adding input
 #' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, and
 #' \code{\link{input_fracpos}}, represents a valid model configuration that can
@@ -40,16 +40,16 @@ NULL
 #'   probability of diagnosis for severely ill cases. 
 #' @param seed A number. The random number generator seed for use in sampling.
 #'
-#' @return An S3 object of type \code{covidcast}. This can be passed to 
+#' @return An S3 object of type \code{covidestim}. This can be passed to 
 #'   \code{\link{run}} to execute the model. This object can also be saved
 #'   to disk using \code{\link[base]{saveRDS}} to enable reproducibility across
 #'  platforms or sessions.
 #'
 #' @examples
-#' covidcast(N_days = 50, seed = 42)
+#' covidestim(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(N_days, N_days_before=28,
+covidestim <- function(N_days, N_days_before=28,
                       chains=3, iter=1500, thin = 1, 
                       rho_sym = 1, rho_sev = 0.5, seed=42) {
 
@@ -77,19 +77,19 @@ covidcast <- function(N_days, N_days_before=28,
     control = list(adapt_delta = 0.92, max_treedepth = 12)
   ) -> properties
 
-  structure(properties, class='covidcast')
+  structure(properties, class='covidestim')
 }
 
 #' @export
-#' @rdname run.covidcast
+#' @rdname run.covidestim
 run <- function(...) UseMethod('run')
 
 #' @export
-run.default <- function(...) stop("Must pass an object of type `covidcast`")
+run.default <- function(...) stop("Must pass an object of type `covidestim`")
 
-#' Run the Covidcast model
+#' Run the Covidestim model
 #'
-#' Calling \code{run()} with a \code{\link{covidcast}} object executes the
+#' Calling \code{run()} with a \code{\link{covidestim}} object executes the
 #' model and returns a result. \code{run} will attempt to run on as
 #' many cores as appear to be available on the host machine, through calling
 #' \code{\link[parallel]{detectCores}}. Model runtimes will range anywhere from
@@ -101,17 +101,17 @@ run.default <- function(...) stop("Must pass an object of type `covidcast`")
 #' other environments, for instance on a cluster, \code{rstan} will produce 
 #' no output until the end of sampling.
 #'
-#' @param cc A valid \code{\link{covidcast}} configuration
+#' @param cc A valid \code{\link{covidestim}} configuration
 #' @param cores A number. How many cores to use to execute runs.
 #' @param ... Extra arguments to be passed to \code{\link[rstan]{sampling}}
 #'
-#' @return A S3 object of class \code{covidcast_result} containing the
+#' @return A S3 object of class \code{covidestim_result} containing the
 #'   configuration used to run the model, the raw results, the extracted
 #'   result as produced by \code{\link[rstan]{extract}}, and the summarized
 #'   results as produced by \code{\link[rstan]{extract}}.
 #'
 #' @export
-run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {
+run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 
   if (is.null(cc$config$obs_cas))
     stop("Case data was not entered. See `?input_cases`.")
@@ -139,36 +139,36 @@ run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {
          summary   = rstan::summary(result)$summary,
          extracted = rstan::extract(result),
          config    = cc$config),
-    class='covidcast_result'
+    class='covidestim_result'
   )
 }
 
 #' @export
-"+.covidcast" <- function(a, b) {
-  # 'a' is covidcast, 'b' should be priors or input
-  covidcast_add(b, a)
+"+.covidestim" <- function(a, b) {
+  # 'a' is covidestim, 'b' should be priors or input
+  covidestim_add(b, a)
 }
 
-covidcast_add <- function(rightside, leftside) UseMethod('covidcast_add')
+covidestim_add <- function(rightside, leftside) UseMethod('covidestim_add')
 
 #' When adding priors, we want to be sure that a new 'modelconfig' object is
 #' created, in order to check these priors
 #' @importFrom glue glue
-covidcast_add.priors <- function(rightside, leftside) {
+covidestim_add.priors <- function(rightside, leftside) {
   newConfig       <- structure(leftside$config, class="modelconfig") + rightside
   leftside$config <- newConfig
-  structure(leftside, class='covidcast')
+  structure(leftside, class='covidestim')
 }
 
-covidcast_add.input <- function(rightside, leftside) {
+covidestim_add.input <- function(rightside, leftside) {
   newConfig       <- structure(leftside$config, class="modelconfig") + rightside
   leftside$config <- newConfig
-  structure(leftside, class='covidcast')
+  structure(leftside, class='covidestim')
 }
 
 #' @export
-print.covidcast <- function(cc) {
-'Covidcast Configuration:
+print.covidestim <- function(cc) {
+'Covidestim Configuration:
 
 Seed:\t{cc$seed}
 Chains:\t{cc$chains}

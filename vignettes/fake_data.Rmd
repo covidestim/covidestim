@@ -1,5 +1,5 @@
 ---
-title: "Running Covidcast with fake data"
+title: "Running Covidestim with fake data"
 author: "Marcus Russi"
 date: "4/27/2020"
 output: html_document
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Fake data
 
 ```{r}
-library(covidcast)
+library(covidestim)
 library(lubridate)
 library(ggplot2)
 library(magrittr)

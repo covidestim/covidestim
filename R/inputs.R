@@ -106,9 +106,9 @@ reformat_dates <- function(vec) vec
 
 #' Input observational data
 #'
-#' A family of functions used for inputting data into Covidcast.
+#' A family of functions used for inputting data into Covidestim.
 #'
-#' There are three types of observational data that can be used with Covidcast:
+#' There are three types of observational data that can be used with Covidestim:
 #'
 #' \itemize{
 #'   \item Case data, detailing the number of new cases each day
@@ -118,7 +118,7 @@ reformat_dates <- function(vec) vec
 #'   of data. 
 #' }
 #'
-#' All input data to Covidcast is expected to be a
+#' All input data to Covidestim is expected to be a
 #' \code{\link[base]{data.frame}} of two variables. One variable, \code{date}
 #' must be a vector of type \code{\link[base]{POSIXct}} or
 #' \code{\link[base]{Date}}. The second column, \code{observations} will be a
@@ -154,7 +154,7 @@ reformat_dates <- function(vec) vec
 #' }
 #'
 #' Missing values in cases and deaths data should be represented as \code{0}.
-#' The date range of all sets of data passed to \code{\link{covidcast}} must be
+#' The date range of all sets of data passed to \code{\link{covidestim}} must be
 #' equivalent, with one observation each day, and no gaps in the data.
 #' Assertions attempt to enforce this specification.
 #'

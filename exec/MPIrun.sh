@@ -8,7 +8,7 @@
 
 module purge
 module load miniconda intel/2018b OpenMPI
-source activate covidcast
+source activate covidestim
 
 mkdir -p logs
 
@@ -27,4 +27,4 @@ mpirun --bind-to none --display-map Rscript MPIrun.R \
 #
 # `--id-vars` specifies which variables in the input data ($1) to use as
 #   grouping variables. Each group will be transformed into a model
-#   configuration and passed to `covidcast::run()`
+#   configuration and passed to `covidestim::run()`

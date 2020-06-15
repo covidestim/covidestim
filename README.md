@@ -1,19 +1,19 @@
-# Covidcast
+# Covidestim
 
-Quick description of Covidcast and what it does
+Quick description of Covidestim and what it does
 
 # Installation
 
 ```r
-# Currently, Covidcast is not availble on CRAN
-# install.packages("covidcast")
+# Currently, Covidestim is not availble on CRAN
+# install.packages("covidestim")
 
 # Install development version from GitHub. This requires that the 'devtools'
 # package be installed.
 if (!require("devtools")) {
   install.packages("devtools")
 }
-devtools::install_github("covidcasting/covidcast")
+devtools::install_github("covidestim/covidestim")
 ```
 
 # Usage
@@ -22,6 +22,6 @@ TBD!
 
 # Resources
 
-- [Ask a question](mailto:marcus.russi@yale.edu?subject=covidcast)
-- [Open an issue](https://github.com/covidcasting/covidcast/issues) (GitHub
+- [Ask a question](mailto:marcus.russi@yale.edu?subject=covidestim)
+- [Open an issue](https://github.com/covidestim/covidestim/issues) (GitHub
   issues for bug reports, feature requests)
