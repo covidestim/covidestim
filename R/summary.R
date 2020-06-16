@@ -4,7 +4,7 @@
 #'
 #' @param include.before A logical scalar. Include estimations that fall in the
 #'   period before the first day of input data? (This period is of length
-#'   \code{N_days_before} as passed to \code{covidestim}). If  \code{TRUE}, any
+#'   \code{ndays_before} as passed to \code{covidestim}). If  \code{TRUE}, any
 #'   elements of variables which do not have values for this "before" period
 #'   will be represented as \code{NA}.
 #'
@@ -12,7 +12,7 @@
 #'   Will add ~1 minute to runtime.
 #'
 #' @param index A logical scalar. If \code{TRUE}, will include a variable
-#'   \code{index} in the output, with range \code{1:(N_days_before + N_days)}.
+#'   \code{index} in the output, with range \code{1:(ndays_before + ndays)}.
 #'
 #' @return A \code{data.frame} with the following variables:
 #'

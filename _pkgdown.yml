@@ -2,18 +2,18 @@ destination: docs
 reference:
 - title: Model execution
 - contents:
-  - run
+  - run.covidestim
 
 - title: Model configuration
 - contents:
   - covidestim
 
-- subtitle: Data
+- subtitle: Model configuration — Data
   desc: Covidestim expects three data sources to be present - case data, death data, and hospitalization data. These functions allow adding these data sources to the model configuration.
 - contents:
   - starts_with("input")
 
-- subtitle: Priors
+- subtitle: Model configuration — Priors
   desc: These functions allow customization of model priors. By default, Covidestim comes with a complete set of priors. However, these functions make it possible to override the default parameterizations of the prior distributions, within certain constraints.
 - contents:
   - starts_with("priors")
@@ -23,8 +23,10 @@ reference:
 - contents:
   - summary.covidestim_result
   - starts_with("viz")
+  - RtEst.covidestim_result
+  - RtNaiveEstim.covidestim_result
 
 - title: Example data
-  desc: Covidestim includes a utility to generate fake epidemic data, consisting of underlying truthy data, and reporting data that represents a limited and inaccurate picture of this underlying truthy data. These data can be used to assess model fit under a variety of hypothetical scenarios. We also provide an example NYC dataset to run the model with.
+  desc: Covidestim provides an example NYC dataset to try running the model with.
 - contents:
   - example_nyc_data

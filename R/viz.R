@@ -1,5 +1,3 @@
-#' @export
-#' @rdname viz.covidestim_result
 viz <- function(...) UseMethod('viz')
 
 #' Visualize results of Covidestim
