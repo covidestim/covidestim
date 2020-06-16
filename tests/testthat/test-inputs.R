@@ -153,6 +153,23 @@ test_that("Not specifying fracpos results in the correct internal representation
   expect_null(cfg$config$frac_pos_user)
 })
 
+test_that("Specifying fracpos results in the correct internal representation", {
+  obs <- c(rep(0.05, 30), rep(0.03, 10), rep(0.01, 10))
+
+  input <- input_fracpos(
+    data.frame(
+      date = seq(lubridate::now() - lubridate::days(49),
+                 lubridate::now(),
+                 by = '1 day'),
+      observation = obs
+    )
+  )
+
+  cfg <- covidcast(N_days = 50, N_days_before = 10) + input
+
+  expect_equal(cfg$config$frac_pos, c(rep(0, 10), obs))
+})
+
 test_that("Weekend effect is represented correctly internally", {
   library(lubridate)
   library(magrittr)
