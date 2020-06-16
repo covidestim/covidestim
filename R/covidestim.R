@@ -51,7 +51,8 @@ NULL
 #' @export
 covidestim <- function(N_days, N_days_before=28,
                       chains=3, iter=1500, thin = 1, 
-                      rho_sym = 1, rho_sev = 0.5, seed=42) {
+                      rho_sym = 1, rho_sev = 0.5, seed=42,
+                      adapt_delta = 0.93) { # CHANGE BACK TO 0.92
 
   att(is.numeric(N_days), N_days >= 1)
 
@@ -74,7 +75,7 @@ covidestim <- function(N_days, N_days_before=28,
     thin    = thin,
     warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
     seed    = seed,
-    control = list(adapt_delta = 0.93, max_treedepth = 13) # CHANGE BACK TO 0.92, 12!!!
+    control = list(adapt_delta = adapt_delta, max_treedepth = 13) # CHANGE BACK TO 0.92, 12!!!
   ) -> properties
 
   structure(properties, class='covidestim')
