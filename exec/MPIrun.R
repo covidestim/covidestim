@@ -1,4 +1,4 @@
-library(covidcast)
+library(covidestim)
 
 suppressPackageStartupMessages(library(doMPI))
 library(Rmpi)
@@ -14,7 +14,7 @@ library(stringr)
 
 options(warn = 1)
 
-glue('covidcast MPI runner
+glue('covidestim MPI runner
 
 Usage:
   {name} [--cpus-per-task=<cores>] [--id-vars=<vars>] --output=<path> <path>
@@ -29,7 +29,7 @@ Options:
   --id-vars=<vars>          Grouping vars in <path>. [default: state]
 ', name = "MPIrun.R") -> doc
 
-arguments <- docopt(doc, version = 'covidcast MPI runner 0.4')
+arguments <- docopt(doc, version = 'covidestim MPI runner 0.4')
 
 input_file_path  <- arguments$path
 id_vars          <- str_split(arguments[["id-vars"]], ',')[[1]]
@@ -78,11 +78,11 @@ cli_alert_success("Read {.file {input_file_path}}, all assertions passed")
 # })
 
 # This function takes some data for a geographic tract (likely a state), and
-# produces a `covidcast` object which, if created without warnings or errors,
+# produces a `covidestim` object which, if created without warnings or errors,
 # represents a valid model configuration that is ready to be run.
 #
 # `type_cases`, `type_deaths` should be either "reported" or "occurred"
-gen_covidcast_run <- function(d, type_cases = "reported",
+gen_covidestim_run <- function(d, type_cases = "reported",
                               type_deaths = "reported", N_days_before = 28) {
 
   d_cases   <- transmute(d, date, observation = cases)
@@ -90,16 +90,16 @@ gen_covidcast_run <- function(d, type_cases = "reported",
   d_fracpos <- transmute(d, date, observation = fracpos)
   N_days    <- nrow(d_cases)
 
-  covidcast::covidcast(N_days = N_days,
+  covidestim::covidcast(N_days = N_days,
                        N_days_before = N_days_before) +
-    covidcast::input_cases(d_cases,   type = type_cases) +
-    covidcast::input_deaths(d_deaths, type = type_deaths) +
-    covidcast::input_fracpos(d_fracpos)
+    covidestim::input_cases(d_cases,   type = type_cases) +
+    covidestim::input_deaths(d_deaths, type = type_deaths) +
+    covidestim::input_fracpos(d_fracpos)
 }
 
 # Take the data, and split it into smaller tibbles for each state
 states_nested <- group_by_at(d, id_vars) %>% nest() %>%
-  mutate(config = map(data, gen_covidcast_run))
+  mutate(config = map(data, gen_covidestim_run))
 
 cli_alert_success("Configuration finished successfully. Summary:")
 cli_ul()
@@ -125,7 +125,7 @@ foreach(i = seq_along(states_nested$state), # By row
   # current_state   <- states_nested$state[i] # name of state
   current_group      <- as.list(states_nested[i, id_vars])
   current_group_name <- paste(current_group, collapse = "-")
-  safe_run           <- purrr::quietly(covidcast::run) # capture warning msgs
+  safe_run           <- purrr::quietly(covidestim::run) # capture warning msgs
   core               <- Rmpi::mpi.get.processor.name(short = FALSE)
   diagnostic_file    <- glue::glue("logs/stan-{current_group_name}") # Stan logs
   startTime          <- Sys.time()

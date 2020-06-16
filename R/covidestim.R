@@ -1,25 +1,26 @@
-#' The 'covidcast' package.
+#' The 'covidestim' package.
 #'
 #' @description A DESCRIPTION OF THE PACKAGE
 #'
 #' @docType package
-#' @name covidcast
-#' @useDynLib covidcast, .registration = TRUE
+#' @name covidestim-package
+#' @useDynLib covidestim, .registration = TRUE
 #' @import methods
 #' @import Rcpp
 #' @importFrom rstan sampling
+#' @importFrom Rdpack reprompt
 #'
 #' @references
 #' Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org
 #'
 NULL
 
-#' Configure a Covidcast run on a set of data and priors
+#' Configure a Covidestim run on a set of data and priors
 #'
-#' \code{covidcast} returns a base configuration of the model with the default
+#' \code{covidestim} returns a base configuration of the model with the default
 #' set of priors, and no input data. This configuration, after adding input
 #' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, and
-#' \code{\link{input_fracpos}}, represents a valid model configuration that can
+#' \code{\link{input_fracpos}}), represents a valid model configuration that can
 #' be passed to \code{\link{run}}.
 #'
 #' @param chains The number of chains to use during MCMC, as passed to
@@ -28,9 +29,9 @@ NULL
 #'   \code{\link[rstan]{sampling}}.
 #' @param thin A positive integer to specify period for saving samples, as
 #'   passed to \code{\link[rstan]{sampling}}. 
-#' @param N_days A positive integer. The number of days of input data being
+#' @param ndays A positive integer. The number of days of input data being
 #'   modeled. This should always be set to the number of days in your input data.
-#' @param N_days_before A positive integer. How many days before the first day
+#' @param ndays_before A positive integer. How many days before the first day
 #'   of model data should be modeled?
 #' @param rho_sym A number in \code{(0, 1]}. Modulates the strength of 
 #'   the relationship between the fraction of positive tests and the 
@@ -39,32 +40,40 @@ NULL
 #'   the relationship between the fraction of positive tests and the 
 #'   probability of diagnosis for severely ill cases. 
 #' @param seed A number. The random number generator seed for use in sampling.
+#' @param weekend A logical scalar. Many regions see decreased testing volumes
+#'   during the weekend. If this is a feature of your data, you may want to
+#'   experiment with \code{weekend = TRUE}, which will cause the model to
+#'   explicitly take this effect into account.
 #'
-#' @return An S3 object of type \code{covidcast}. This can be passed to 
+#' @return An S3 object of type \code{covidestim}. This can be passed to 
 #'   \code{\link{run}} to execute the model. This object can also be saved
 #'   to disk using \code{\link[base]{saveRDS}} to enable reproducibility across
-#'  platforms or sessions.
+#'   platforms or sessions. The \code{print} method is overloaded to return
+#'   to the user a summary of the configuration, including prior values and 
+#'   the presence or absence of input data.
 #'
 #' @examples
-#' covidcast(N_days = 50, seed = 42)
+#' covidestim(ndays = 50, seed = 42, weekend = TRUE)
 #' @importFrom magrittr %>%
 #' @export
-covidcast <- function(N_days, N_days_before=28,
+covidestim <- function(ndays, ndays_before=28,
                       chains=3, iter=1500, thin = 1, 
-                      rho_sym = 1, rho_sev = 0.5, seed=42) {
+                      rho_sym = 1, rho_sev = 0.5, seed=42,
+                      adapt_delta = 0.93, weekend = FALSE) { # CHANGE BACK TO 0.92
 
-  att(is.numeric(N_days), N_days >= 1)
+  att(is.numeric(ndays), ndays >= 1)
 
   defaultConfig(
-    N_days = N_days,
-    N_days_before = N_days_before,
+    N_days = ndays,
+    N_days_before = ndays_before,
     rho_sym = rho_sym, 
-    rho_sev = rho_sev
+    rho_sev = rho_sev,
+    weekend = weekend
   ) -> config
 
   # All user-specified config-related things must be specified above this line
   # to avoid double-validation/no-validation
-  if (!missing(N_days) || !missing(N_days_before))
+  if (!missing(ndays) || !missing(ndays_before))
     validate.modelconfig(config)
 
   list(
@@ -74,22 +83,17 @@ covidcast <- function(N_days, N_days_before=28,
     thin    = thin,
     warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
     seed    = seed,
-    control = list(adapt_delta = 0.92, max_treedepth = 12)
+    control = list(adapt_delta = adapt_delta, max_treedepth = 13) # CHANGE BACK TO 0.92, 12!!!
   ) -> properties
 
-  structure(properties, class='covidcast')
+  structure(properties, class='covidestim')
 }
 
-#' @export
-#' @rdname run.covidcast
 run <- function(...) UseMethod('run')
 
-#' @export
-run.default <- function(...) stop("Must pass an object of type `covidcast`")
-
-#' Run the Covidcast model
+#' Run the Covidestim model
 #'
-#' Calling \code{run()} with a \code{\link{covidcast}} object executes the
+#' Calling \code{run()} with a \code{\link{covidestim}} object executes the
 #' model and returns a result. \code{run} will attempt to run on as
 #' many cores as appear to be available on the host machine, through calling
 #' \code{\link[parallel]{detectCores}}. Model runtimes will range anywhere from
@@ -101,18 +105,19 @@ run.default <- function(...) stop("Must pass an object of type `covidcast`")
 #' other environments, for instance on a cluster, \code{rstan} will produce 
 #' no output until the end of sampling.
 #'
-#' @param cc A valid \code{\link{covidcast}} configuration
+#' @param cc A valid \code{\link{covidestim}} configuration
 #' @param cores A number. How many cores to use to execute runs.
 #' @param ... Extra arguments to be passed to \code{\link[rstan]{sampling}}
 #'
-#' @return A S3 object of class \code{covidcast_result} containing the
+#' @return A S3 object of class \code{covidestim_result} containing the
 #'   configuration used to run the model, the raw results, the extracted
 #'   result as produced by \code{\link[rstan]{extract}}, and the summarized
 #'   results as produced by \code{\link[rstan]{extract}}.
 #'
 #' @export
-run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {
+run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 
+    # Require that case and death data be entered
   if (is.null(cc$config$obs_cas))
     stop("Case data was not entered. See `?input_cases`.")
 
@@ -139,44 +144,43 @@ run.covidcast <- function(cc, cores = parallel::detectCores(), ...) {
          summary   = rstan::summary(result)$summary,
          extracted = rstan::extract(result),
          config    = cc$config),
-    class='covidcast_result'
+    class='covidestim_result'
   )
 }
 
 #' @export
-"+.covidcast" <- function(a, b) {
-  # 'a' is covidcast, 'b' should be priors or input
-  covidcast_add(b, a)
+"+.covidestim" <- function(a, b) {
+  # 'a' is covidestim, 'b' should be priors or input
+  covidestim_add(b, a)
 }
 
-covidcast_add <- function(rightside, leftside) UseMethod('covidcast_add')
+covidestim_add <- function(rightside, leftside) UseMethod('covidestim_add')
 
 #' When adding priors, we want to be sure that a new 'modelconfig' object is
 #' created, in order to check these priors
 #' @importFrom glue glue
-covidcast_add.priors <- function(rightside, leftside) {
+covidestim_add.priors <- function(rightside, leftside) {
   newConfig       <- structure(leftside$config, class="modelconfig") + rightside
   leftside$config <- newConfig
-  structure(leftside, class='covidcast')
+  structure(leftside, class='covidestim')
 }
 
-covidcast_add.input <- function(rightside, leftside) {
+covidestim_add.input <- function(rightside, leftside) {
   newConfig       <- structure(leftside$config, class="modelconfig") + rightside
   leftside$config <- newConfig
-  structure(leftside, class='covidcast')
+  structure(leftside, class='covidestim')
 }
 
 #' @export
-print.covidcast <- function(cc) {
-'Covidcast Configuration:
+print.covidestim <- function(cc) {
+'Covidestim Configuration:
 
 Seed:\t{cc$seed}
 Chains:\t{cc$chains}
 Iterations:\t{cc$iter}
 Warmup runs:\t{cc$warmup}
 Priors: Valid
-Stan file:\t{cc$file}
-N_days:\t{cc$config$N_days}
+ndays:\t{cc$config$N_days}
 
 
 ' -> model_summary

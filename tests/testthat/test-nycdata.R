@@ -21,7 +21,7 @@ test_that("NYC data is validated by model", {
     mutate(date = lubridate::mdy(date)) 
 
   expect_silent(
-    cfg <- covidcast(N_days=45, chains=3) +
+    cfg <- covidestim(ndays=45, chains=3) +
       input_cases(case) +
       input_deaths(mort) +
       priors_diagnosis(p_diag_if_sym = c(1.5,1.5), 

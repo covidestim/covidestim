@@ -1,13 +1,11 @@
-#' @export
-#' @rdname viz.covidcast_result
 viz <- function(...) UseMethod('viz')
 
-#' Visualize results of Covidcast
+#' Visualize results of Covidestim
 #'
-#' Returns several graphs of Covidcast input and estimates
+#' Returns several graphs of Covidestim input and estimates
 #'
 #' @param ccr The result of calling \code{\link{run}}. An object of class
-#'   \code{covidcast_result}.
+#'   \code{covidestim_result}.
 #'
 #' @param renderPDF If \code{FALSE}, figures are returned as a list of
 #'   \code{ggplot} objects. If a string, a \code{pdf} will be rendered to that
@@ -31,11 +29,11 @@ viz <- function(...) UseMethod('viz')
 #'     \strong{purely} from input data
 #' }
 #'
-#' @seealso \code{\link{summary.covidcast_result}} for more details on the
+#' @seealso \code{\link{summary.covidestim_result}} for more details on the
 #'   quantities being plotted
 #'
 #' @export
-viz.covidcast_result <- function(ccr, include.RtEstim = TRUE, renderPDF = FALSE) {
+viz.covidestim_result <- function(ccr, include.RtEstim = TRUE, renderPDF = FALSE) {
 
   # Prep all the intermediate representations of the data that are ultimately
   # used to plot everything

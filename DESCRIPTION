@@ -1,4 +1,4 @@
-Package: covidcast
+Package: covidestim
 Title: Real-time Bayesian forcasting of R_t
 Version: 0.1.1.0000
 Authors@R: 
@@ -28,12 +28,16 @@ Imports:
     rstantools (>= 2.0.0),
     splines,
     stats,
-    stringr
+    stringr,
+    Rdpack
 Suggests: 
-  tidyr,
-  testthat,
-  grDevices
+    tidyr,
+    testthat,
+    grDevices,
+    knitr,
+    rmarkdown
 RoxygenNote: 7.1.0
+RdMacros: Rdpack
 Depends: 
     R (>= 3.4.0)
 LinkingTo:
@@ -44,3 +48,4 @@ LinkingTo:
     StanHeaders (>= 2.18.0)
 SystemRequirements: GNU make
 Biarch: true
+VignetteBuilder: knitr

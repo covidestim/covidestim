@@ -3,13 +3,13 @@ test_that("addition is commutative", {
   nd       <- nrow(d_deaths)
 
   expect_silent(
-    form1 <- covidcast(N_days = nd) + 
+    form1 <- covidestim(ndays = nd) + 
       input_deaths(d_deaths) + 
       priors_progression(sym_prg_delay = c(5, 0.5))
   )
 
   expect_silent(
-    form2 <- covidcast(N_days = nd) + 
+    form2 <- covidestim(ndays = nd) + 
       priors_progression(sym_prg_delay = c(5, 0.5)) +
       input_deaths(d_deaths)
   )
