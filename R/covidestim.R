@@ -57,9 +57,9 @@ NULL
 #' @importFrom magrittr %>%
 #' @export
 covidestim <- function(ndays, ndays_before=28,
-                      chains=3, iter=1500, thin = 1, 
-                      rho_sym = 1, rho_sev = 0.5, seed=42,
-                      adapt_delta = 0.93, weekend = FALSE) { # CHANGE BACK TO 0.92
+                       chains=3, iter=1500, thin = 1, 
+                       rho_sym = 1, rho_sev = 0.5, seed=42,
+                       adapt_delta = 0.92, weekend = FALSE) {
 
   att(is.numeric(ndays), ndays >= 1)
 
