@@ -28,7 +28,8 @@ Imports:
     rstantools (>= 2.0.0),
     splines,
     stats,
-    stringr
+    stringr,
+    Rdpack
 Suggests: 
     tidyr,
     testthat,
@@ -36,6 +37,7 @@ Suggests:
     knitr,
     rmarkdown
 RoxygenNote: 7.1.0
+RdMacros: Rdpack
 Depends: 
     R (>= 3.4.0)
 LinkingTo:

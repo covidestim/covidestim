@@ -99,24 +99,37 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @param p_sym_if_inf A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of being
 #'   symptomatic if infectious. 
-#'   Sources: 
-#'   https://doi.org/10.1101/2020.05.10.20097543, 
-#'   https://doi.org/10.2807/1560-7917.es.2020.25.10.2000180 
-#'   https://doi.org/10.1016/j.ijid.2020.03.020 
+#'
+#'   Sources for default value: 
+#'   
+#'   \itemize{
+#'     \item \insertRef{byambasuren_estimating_2020}{covidestim}
+#'     \item \insertRef{mizumoto_estimating_2020}{covidestim}
+#'     \item \insertRef{nishiura_estimation_2020-1}{covidestim}
+#'   }
+#'
 #' @param p_sev_if_sym A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
 #'   severe if symptomatic. 
-#'   Sources: 
-#'   http://dx.doi.org/10.15585/mmwr.mm6912e2
-#'   https://doi.org/10.1016/S1473-3099(20)30243-7 
+#'
+#'   Sources for default value: 
+#'
+#'   \itemize{
+#'     \item \insertRef{cdc_covid-19_response_team_severe_2020-1}{covidestim}
+#'     \item \insertRef{verity_estimates_2020}{covidestim}
+#'   }
+#'
 #' @param p_die_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
 #'   if severely ill. 
-#'   Sources: http://dx.doi.org/10.15585/mmwr.mm6912e2
+#'
+#'   Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020-2}{covidestim}
+#'
 #' @param p_die_if_sym A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
 #'   if symptomatic. 
-#'   Source: https://doi.org/10.1377/hlthaff.2020.00455
+#'
+#'   Source for default value: \insertRef{basu_estimating_2020-1}{covidestim}
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
@@ -157,21 +170,21 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),      # a/b
 #' @param inf_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
 #' parameters of a Gamma distribution modeling the time from infection to 
 #' sypmtom onset. 
-#' Source: https://doi.org/10.7326/M20-0504
+#'
+#' Source for default value: \insertRef{lauer_incubation_2020-1}{covidestim}
 #'
 #' @param sym_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
 #' parameters of a Gamma distribution modeling the time from symptom onset to 
 #' severe disease. 
-#' Source: https://doi.org/10.1016/S0140-6736(20)30566-3 
 #'
-#' @param sev_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
-#' parameters of a Gamma distribution modeling the time from severe symptoms 
-#' to death. 
-#' Source: https://dx.doi.org/10.3390%2Fjcm9020538 
+#' Source for default value: \insertRef{zhou_clinical_2020-1}{covidestim}
+#'
+#' @param sev_prg_delay A two-element numeric vector containing
+#'   \code{c(shape, scale)} parameters of a Gamma distribution modeling the
+#'   time from severe symptoms to death. 
+#'
+#' Source for default value: \insertRef{linton_incubation_2020}{covidestim}
 #' 
-#' @param ... A set of key-value pairs from those listed above. If no
-#'   arguments are passed, default values will be used
-#'
 #' @return An S3 object of class \code{priors}
 #' @examples
 #' cfg <- covidestim(N_days = 50) + priors_progression(inf_prg_delay = c(4, 1))
@@ -266,7 +279,7 @@ priors_diagnosis <- function(p_diag_if_sym = c(2, 2), # a/b
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(N_days = 50) + priors_reporting_delays_new(p_diag_if_inf = c(0.5, 0.1))
+#' cfg <- covidestim(N_days = 50) + priors_reporting_delays(cas_rep_delay = c(0.5, 0.1))
 #' @export
 priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
                                     die_rep_delay = c(2.2,1)) {
@@ -295,7 +308,7 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #' Boundary avoiding priors are use by default. 
 #'
 #' @param dx_delay_sym A two element vector containing the \code{c(alpha,beta)} 
-#' parameters of a Beta distribution modeling a scaleing factor. elay to 
+#' parameters of a Beta distribution modeling a scaleing factor. Delay to 
 #' diagnosis for symptomatic cases is modeled as the fraction of time in 
 #' the symptomatic disease state, scaled by this factor. 
 #'
@@ -306,7 +319,7 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(N_days = 50) + priors_reporting_delays_new(p_diag_if_inf = c(0.5, 0.1))
+#' cfg <- covidestim(N_days = 50) + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
 #' @export
 priors_diagnosis_delays_scale <- function(dx_delay_sym = c(2,2),
                                           dx_delay_sev = c(2,2)) {

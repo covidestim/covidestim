@@ -3,11 +3,12 @@
 #' @description A DESCRIPTION OF THE PACKAGE
 #'
 #' @docType package
-#' @name covidestim
+#' @name covidestim-package
 #' @useDynLib covidestim, .registration = TRUE
 #' @import methods
 #' @import Rcpp
 #' @importFrom rstan sampling
+#' @importFrom Rdpack reprompt
 #'
 #' @references
 #' Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org
@@ -19,7 +20,7 @@ NULL
 #' \code{covidestim} returns a base configuration of the model with the default
 #' set of priors, and no input data. This configuration, after adding input
 #' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, and
-#' \code{\link{input_fracpos}}, represents a valid model configuration that can
+#' \code{\link{input_fracpos}}), represents a valid model configuration that can
 #' be passed to \code{\link{run}}.
 #'
 #' @param chains The number of chains to use during MCMC, as passed to
