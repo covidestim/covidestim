@@ -89,6 +89,7 @@ covidestim <- function(ndays, ndays_before=28,
   structure(properties, class='covidestim')
 }
 
+#' @export
 run <- function(...) UseMethod('run')
 
 #' Run the Covidestim model

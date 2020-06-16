@@ -1,3 +1,4 @@
+#' @export
 RtEst <- function(...) UseMethod('RtEst')
 
 #' Calculate Effective Reproduction Number from Covidestim output
@@ -100,6 +101,7 @@ RtEst.covidestim_result <- function(ccr, window.length = 5, mean.si = 4.7,
   )
 }
 
+#' @export
 RtNaiveEstim <- function(...) UseMethod('RtNaiveEstim')
 
 #' @rdname RtEst.covidestim_result
