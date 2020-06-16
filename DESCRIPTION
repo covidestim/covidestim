@@ -30,9 +30,11 @@ Imports:
     stats,
     stringr
 Suggests: 
-  tidyr,
-  testthat,
-  grDevices
+    tidyr,
+    testthat,
+    grDevices,
+    knitr,
+    rmarkdown
 RoxygenNote: 7.1.0
 Depends: 
     R (>= 3.4.0)
@@ -44,3 +46,4 @@ LinkingTo:
     StanHeaders (>= 2.18.0)
 SystemRequirements: GNU make
 Biarch: true
+VignetteBuilder: knitr
