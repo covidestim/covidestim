@@ -1,17 +1,24 @@
-#' @export
-#' @rdname RtEst.covidestim_result
 RtEst <- function(...) UseMethod('RtEst')
 
-#' Calculate the Effective Reprouction Number from Covidestim output
+#' Calculate Effective Reproduction Number from Covidestim output
 #'
-#' Creates a \code{data.frame} with Rt estimates over time and 95% CI and
-#' underlying df. 
+#' Creates a \code{data.frame} with Rt estimates over time and 95\% CIs.
+#'
+#' This code makes use of the \code{EpiEstim} package, described here:
+#'
+#' \insertRef{cori_new_2013}{covidestim}
+#'
+#' The method used in \code{EpiEstim} is \code{"parametric_si"}, and a 5-day
+#' sliding window is used by default. \strong{Warning messages specifying that 
+#' you are \code{"estimating R too early"} are expected and should be ignored}.
 #'
 #' @param ccr The result of calling \code{\link{run}}. An object of class
 #'   \code{covidestim_result}.
 #'   
 #' @param window.length The size of the moving window over which Rt should be 
-#' estimated; defaults to 5 days. This number must be odd. 
+#' estimated; defaults to 5 days. This number must be odd, so that the
+#' interval's true center always falls on a complete day. It also must be less
+#' than half the number of data days, i.e., \code{window.length < ndays/2}.
 #' 
 #' @param mean.si The mean serial interval to use in the Rt estimate; defaults
 #' to 4.7 days. 
@@ -19,21 +26,23 @@ RtEst <- function(...) UseMethod('RtEst')
 #' @param std.si The standard deviation of the serial interval; defaults to 
 #' 2.9 days.  
 #'
-#' @return A `data.frame` with columns `date`, `Rt`, `Rt.lo`, `Rt.hi`, where
-#'   `date` is a vector of \code{\link[base]{Date}} objects.
+#' @return A \code{data.frame} with columns \code{date}, \code{Rt},
+#'   \code{Rt.lo}, \code{Rt.hi}, where \code{date} is a vector of
+#'   \code{\link[base]{Date}} objects. Or, for \code{RtNaiveEstim}, columns
+#'   \code{date}, \code{NaiveRt}, \code{NaiveRt.lo}, \code{NaiveRt.hi}
 #'
 #' @export
 RtEst.covidestim_result <- function(ccr, window.length = 5, mean.si = 4.7,
-                                   std.si = 2.9) {
-
-
-  att(window.length %% 2 == 1)
+                                    std.si = 2.9) {
 
   # Calculating Rt for the entire period, not just the portion of the period
   # for which we have data
   n_days        <- ccr$config$N_days
   n_days_before <- ccr$config$N_days_before
   n_days_tot    <- n_days_before + n_days
+
+  att(window.length %% 2 == 1)
+  att(window.length < n_days / 2)
 
   # Grab the estimated number of infections/day for the whole period and
   # round it to an integer value
@@ -91,35 +100,20 @@ RtEst.covidestim_result <- function(ccr, window.length = 5, mean.si = 4.7,
   )
 }
 
-#' Calculate the naive Effective Reprouction Number from Covidestim input data
-#'
-#' Creates a \code{data.frame} with Rt estimates over time and 95% CI and
-#' underlying df.  These estimates are based entirely on input case data. This
-#' function is essentially a wrapper around \code{link[EpiEstim]{estimate_R}}.
-#'
-#' @param ccr The result of calling \code{\link{run}}. An object of class
-#'   \code{covidestim_result}.
-#'   
-#' @param window.length The size of the moving window over which Rt should be 
-#' estimated; defaults to 5 days. This number must be odd. 
-#' 
-#' @param mean.si The mean serial interval to use in the Rt estimate; defaults
-#' to 4.7 days. 
-#' 
-#' @param std.si The standard deviation of the serial interval; defaults to 
-#' 2.9 days.  
-#'
-#' @return A \code{data.frame} with columns \code{date}, \code{NaiveRt},
-#'   \code{NaiveRt.lo}, \code{NaiveRt.hi}, where \code{date} is a vector of
-#'   \code{\link[base]{Date}} objects.
-#'
+RtNaiveEstim <- function(...) UseMethod('RtNaiveEstim')
+
+#' @rdname RtEst.covidestim_result
 #' @export
-RtNaiveEstim <- function(cc, window = 5, mean.si = 4.7, std.si = 2.9) {
+RtNaiveEstim.covidcast_result <- function(cc, window.length = 5, mean.si = 4.7,
+                                          std.si = 2.9) {
 
   day_start <- 2
-  day_end   <- day_start + window - 1
+  day_end   <- day_start + window.length - 1
   n_days    <- cc$config$N_days
   ndb       <- cc$config$N_days_before
+
+  att(window.length %% 2 == 1)
+  att(window.length < n_days / 2)
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
 
@@ -128,7 +122,7 @@ RtNaiveEstim <- function(cc, window = 5, mean.si = 4.7, std.si = 2.9) {
 
   EpiEstim::make_config(
     list(
-      t_start = seq(day_start, n_days - window + 1), 
+      t_start = seq(day_start, n_days - window.length + 1), 
       t_end   = seq(day_end,   n_days),
       mean_si = mean.si, 
       std_si  = std.si
