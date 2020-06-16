@@ -1,3 +1,4 @@
+#' @export
 viz <- function(...) UseMethod('viz')
 
 #' Visualize results of Covidestim
