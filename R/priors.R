@@ -105,7 +105,7 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #'   \itemize{
 #'     \item \insertRef{byambasuren_estimating_2020}{covidestim}
 #'     \item \insertRef{mizumoto_estimating_2020}{covidestim}
-#'     \item \insertRef{nishiura_estimation_2020-1}{covidestim}
+#'     \item \insertRef{nishiura_estimation_2020}{covidestim}
 #'   }
 #'
 #' @param p_sev_if_sym A two-element numeric vector containing \code{c(alpha,
@@ -115,7 +115,7 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #'   Sources for default value: 
 #'
 #'   \itemize{
-#'     \item \insertRef{cdc_covid-19_response_team_severe_2020-1}{covidestim}
+#'     \item \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}
 #'     \item \insertRef{verity_estimates_2020}{covidestim}
 #'   }
 #'
@@ -123,17 +123,17 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
 #'   if severely ill. 
 #'
-#'   Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020-2}{covidestim}
+#'   Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}
 #'
 #' @param p_die_if_sym A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
 #'   if symptomatic. 
 #'
-#'   Source for default value: \insertRef{basu_estimating_2020-1}{covidestim}
+#'   Source for default value: \insertRef{basu_estimating_2020}{covidestim}
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
-#' cfg <- covidestim(N_days = 50) + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
+#' cfg <- covidestim(ndays = 50) + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
 priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),      # a/b 
                                p_sev_if_sym = c(11.9, 47.7),      # a/b
@@ -171,13 +171,13 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),      # a/b
 #' parameters of a Gamma distribution modeling the time from infection to 
 #' sypmtom onset. 
 #'
-#' Source for default value: \insertRef{lauer_incubation_2020-1}{covidestim}
+#' Source for default value: \insertRef{lauer_incubation_2020}{covidestim}
 #'
 #' @param sym_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
 #' parameters of a Gamma distribution modeling the time from symptom onset to 
 #' severe disease. 
 #'
-#' Source for default value: \insertRef{zhou_clinical_2020-1}{covidestim}
+#' Source for default value: \insertRef{zhou_clinical_2020}{covidestim}
 #'
 #' @param sev_prg_delay A two-element numeric vector containing
 #'   \code{c(shape, scale)} parameters of a Gamma distribution modeling the
@@ -187,7 +187,7 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),      # a/b
 #' 
 #' @return An S3 object of class \code{priors}
 #' @examples
-#' cfg <- covidestim(N_days = 50) + priors_progression(inf_prg_delay = c(4, 1))
+#' cfg <- covidestim(ndays = 50) + priors_progression(inf_prg_delay = c(4, 1))
 #' @export
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
@@ -235,7 +235,7 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(N_days = 50) + priors_diagnosis(p_diag_if_sym = c(2, 2))
+#' cfg <- covidestim(ndays = 50) + priors_diagnosis(p_diag_if_sym = c(2, 2))
 #' @export
 priors_diagnosis <- function(p_diag_if_sym = c(2, 2), # a/b
                              p_diag_if_sev = c(1.5, 1), 
@@ -279,7 +279,7 @@ priors_diagnosis <- function(p_diag_if_sym = c(2, 2), # a/b
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(N_days = 50) + priors_reporting_delays(cas_rep_delay = c(0.5, 0.1))
+#' cfg <- covidestim(ndays = 50) + priors_reporting_delays(cas_rep_delay = c(0.5, 0.1))
 #' @export
 priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
                                     die_rep_delay = c(2.2,1)) {
@@ -319,7 +319,7 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(N_days = 50) + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
+#' cfg <- covidestim(ndays = 50) + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
 #' @export
 priors_diagnosis_delays_scale <- function(dx_delay_sym = c(2,2),
                                           dx_delay_sev = c(2,2)) {

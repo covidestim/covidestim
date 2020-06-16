@@ -53,7 +53,7 @@ NULL
 #'   the presence or absence of input data.
 #'
 #' @examples
-#' covidestim(N_days = 50, seed = 42)
+#' covidestim(ndays = 50, seed = 42, weekend = TRUE)
 #' @importFrom magrittr %>%
 #' @export
 covidestim <- function(ndays, ndays_before=28,

@@ -24,7 +24,6 @@ reference:
   - summary.covidestim_result
   - starts_with("viz")
   - RtEst.covidestim_result
-  - RtNaiveEstim.covidestim_result
 
 - title: Example data
   desc: Covidestim provides an example NYC dataset to try running the model with.
