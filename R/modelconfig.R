@@ -79,23 +79,26 @@ modelconfig_add.input <- function(rightside, leftside) {
   # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
-  # Update the is_weekend vector
-  # local({
-  #   first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
-  #   seq(
-  #     # First day in N_days_before
-  #     first_date_Date - lubridate::days(cfg$N_days_before), 
-  #     # Last day in N_days
-  #     first_date_Date + lubridate::days(cfg$N_days - 1), 
-  #     by = '1 day'
-  #   ) -> entire_period
+  # Update the is_weekend vector, IFF `weekend = TRUE` was passed
+  local({
+    first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
+    seq(
+      # First day in N_days_before
+      first_date_Date - lubridate::days(cfg$N_days_before), 
+      # Last day in N_days
+      first_date_Date + lubridate::days(cfg$N_days - 1), 
+      by = '1 day'
+    ) -> entire_period
 
-  #   days_of_week <- purrr::map_dbl(entire_period, lubridate::wday)
+    days_of_week <- purrr::map_dbl(entire_period, lubridate::wday)
 
-  #   # In lubridate, by default, 6 and 7 are Saturday and Sunday,
-  #   # respectively
-  #   ifelse(days_of_week %in% c(6,7), 1, 0)
-  # }) -> cfg$is_weekend
+    # In lubridate, by default, 7 and 1 are Saturday and Sunday,
+    # respectively
+    ifelse(days_of_week %in% c(7,1), 1, 0)
+  }) -> weekend_modifiers
+  
+  if (cfg$user_weekend_effect)
+    cfg$is_weekend <- weekend_modifiers
 
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
@@ -170,7 +173,7 @@ or removing your custom prior.
   # att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
 }
 
-genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5) #new default value
+genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5, weekend=FALSE) #new default value
 {
   att(rho_sym > 0 && rho_sym <= 1)
   att(rho_sev > 0 && rho_sev <= 1)
@@ -195,6 +198,7 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5) #new
     rho_sev = rho_sev,
 
     is_weekend = rep(0, N_days_before + N_days),
+    user_weekend_effect = weekend,
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day

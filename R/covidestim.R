@@ -29,9 +29,9 @@ NULL
 #'   \code{\link[rstan]{sampling}}.
 #' @param thin A positive integer to specify period for saving samples, as
 #'   passed to \code{\link[rstan]{sampling}}. 
-#' @param N_days A positive integer. The number of days of input data being
+#' @param ndays A positive integer. The number of days of input data being
 #'   modeled. This should always be set to the number of days in your input data.
-#' @param N_days_before A positive integer. How many days before the first day
+#' @param ndays_before A positive integer. How many days before the first day
 #'   of model data should be modeled?
 #' @param rho_sym A number in \code{(0, 1]}. Modulates the strength of 
 #'   the relationship between the fraction of positive tests and the 
@@ -40,33 +40,40 @@ NULL
 #'   the relationship between the fraction of positive tests and the 
 #'   probability of diagnosis for severely ill cases. 
 #' @param seed A number. The random number generator seed for use in sampling.
+#' @param weekend A logical scalar. Many regions see decreased testing volumes
+#'   during the weekend. If this is a feature of your data, you may want to
+#'   experiment with \code{weekend = TRUE}, which will cause the model to
+#'   explicitly take this effect into account.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to 
 #'   \code{\link{run}} to execute the model. This object can also be saved
 #'   to disk using \code{\link[base]{saveRDS}} to enable reproducibility across
-#'  platforms or sessions.
+#'   platforms or sessions. The \code{print} method is overloaded to return
+#'   to the user a summary of the configuration, including prior values and 
+#'   the presence or absence of input data.
 #'
 #' @examples
 #' covidestim(N_days = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidestim <- function(N_days, N_days_before=28,
+covidestim <- function(ndays, ndays_before=28,
                       chains=3, iter=1500, thin = 1, 
                       rho_sym = 1, rho_sev = 0.5, seed=42,
-                      adapt_delta = 0.93) { # CHANGE BACK TO 0.92
+                      adapt_delta = 0.93, weekend = FALSE) { # CHANGE BACK TO 0.92
 
-  att(is.numeric(N_days), N_days >= 1)
+  att(is.numeric(ndays), ndays >= 1)
 
   defaultConfig(
-    N_days = N_days,
-    N_days_before = N_days_before,
+    N_days = ndays,
+    N_days_before = ndays_before,
     rho_sym = rho_sym, 
-    rho_sev = rho_sev
+    rho_sev = rho_sev,
+    weekend = weekend
   ) -> config
 
   # All user-specified config-related things must be specified above this line
   # to avoid double-validation/no-validation
-  if (!missing(N_days) || !missing(N_days_before))
+  if (!missing(ndays) || !missing(ndays_before))
     validate.modelconfig(config)
 
   list(
@@ -82,12 +89,7 @@ covidestim <- function(N_days, N_days_before=28,
   structure(properties, class='covidestim')
 }
 
-#' @export
-#' @rdname run.covidestim
 run <- function(...) UseMethod('run')
-
-#' @export
-run.default <- function(...) stop("Must pass an object of type `covidestim`")
 
 #' Run the Covidestim model
 #'
@@ -115,6 +117,7 @@ run.default <- function(...) stop("Must pass an object of type `covidestim`")
 #' @export
 run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 
+    # Require that case and death data be entered
   if (is.null(cc$config$obs_cas))
     stop("Case data was not entered. See `?input_cases`.")
 
@@ -177,8 +180,7 @@ Chains:\t{cc$chains}
 Iterations:\t{cc$iter}
 Warmup runs:\t{cc$warmup}
 Priors: Valid
-Stan file:\t{cc$file}
-N_days:\t{cc$config$N_days}
+ndays:\t{cc$config$N_days}
 
 
 ' -> model_summary
