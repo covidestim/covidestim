@@ -65,9 +65,23 @@ data {
 transformed data {
  int  N_days_tot;
  int  nda0;
+ 
+  vector[Max_delay]  inf_prg_delay;
+  vector[Max_delay]  sym_prg_delay;
+  vector[Max_delay]  sev_prg_delay;
   
   N_days_tot = N_days + N_days_before; 
   nda0 = N_days_av - 1;
+  
+  for(i in 1:Max_delay) {
+    inf_prg_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
+      - gamma_cdf(i-1.0, inf_prg_delay_shap, inf_prg_delay_rate);
+    sym_prg_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate)
+      - gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate);
+    sev_prg_delay[i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate)
+      - gamma_cdf(i-1.0, sev_prg_delay_shap, sev_prg_delay_rate);
+  }
+  
 }
 ///////////////////////////////////////////////////////////
 parameters {
@@ -111,10 +125,6 @@ transformed parameters {
   
 // delay probabilitily of reporting w x days delay (PDF of delay distribution)
 
-  vector[Max_delay]  inf_prg_delay;
-  vector[Max_delay]  sym_prg_delay;
-  vector[Max_delay]  sev_prg_delay;
-  
   vector[Max_delay]  sym_diag_delay;
   vector[Max_delay]  sev_diag_delay;
   
@@ -149,16 +159,7 @@ transformed parameters {
 
 // DLEAYS /////////////////////////
 
-//  progression
-  for(i in 1:Max_delay) {
-    inf_prg_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
-      - gamma_cdf(i-1.0, inf_prg_delay_shap, inf_prg_delay_rate);
-    sym_prg_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate)
-      - gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate);
-    sev_prg_delay[i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate)
-      - gamma_cdf(i-1.0, sev_prg_delay_shap, sev_prg_delay_rate);
-  }
-  
+// diagnosis 
 for(i in 1:Max_delay){
     sym_diag_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym)
       - gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
@@ -220,8 +221,7 @@ die_cum_report_delay = cumulative_sum(die_rep_delay);
   }  
   
 p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
-// CASCADE OF INCIDENT OUTCOMES << DIAGNOSED >> ///////////
-
+// CASCADE OF INCIDENT OUTCOMES << DIAGNOSED >> //
   new_sym_dx = rep_vector(0, N_days_tot);
     dx_sym_sev = rep_vector(0, N_days_tot);
     dx_sym_die = rep_vector(0, N_days_tot);
