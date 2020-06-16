@@ -56,7 +56,7 @@ test_that("example data validates", {
   expect_silent(idth <- input_deaths(d_deaths))
 
   expect_silent(
-    covidcast(N_days = N_days, N_days_before = 10) +
+    covidestim(N_days = N_days, N_days_before = 10) +
       icas + idth
   )
 })
@@ -85,22 +85,22 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidcast(N_days = N_days, N_days_before = 10) + icas
+    cfg <- covidestim(N_days = N_days, N_days_before = 10) + icas
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidcast(N_days = N_days, N_days_before = 10) + idth
+    cfg <- covidestim(N_days = N_days, N_days_before = 10) + idth
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidcast(N_days = N_days, N_days_before = 10) + icas + idth
+    cfg <- covidestim(N_days = N_days, N_days_before = 10) + icas + idth
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidcast(N_days = N_days, N_days_before = 10) + idth + icas
+    cfg <- covidestim(N_days = N_days, N_days_before = 10) + idth + icas
   )
 
   # You should be able to see the `*_rep` flags set now
@@ -109,7 +109,7 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidcast(N_days = N_days, N_days_before = 10) + ifracpos
+    cfg <- covidestim(N_days = N_days, N_days_before = 10) + ifracpos
   )
 
   expect_equal(cfg$config$frac_pos, c(rep(0, 10), d_fracpos$observation))
@@ -128,7 +128,7 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidcast(N_days = N_days, N_days_before = 10) + icas + idth
+    cfg <- covidestim(N_days = N_days, N_days_before = 10) + icas + idth
   )
 
   # You should be able to see the `*_rep` flags UNset now
@@ -147,7 +147,7 @@ test_that("bad `type` arguments don't validate to valid input objects", {
 })
 
 test_that("Not specifying fracpos results in the correct internal representation", {
-  cfg <- covidcast(N_days = 50, N_days_before = 10)
+  cfg <- covidestim(N_days = 50, N_days_before = 10)
 
   expect_equal(cfg$config$frac_pos, rep(0, 60))
   expect_null(cfg$config$frac_pos_user)
@@ -185,7 +185,7 @@ test_that("Weekend effect is represented correctly internally", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidcast(N_days = N_days, N_days_before = 10) + icas + idth
+    cfg <- covidestim(N_days = N_days, N_days_before = 10) + icas + idth
   )
 
   first_day <- d_cases$date[1]

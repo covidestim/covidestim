@@ -57,7 +57,7 @@ modelconfig_add.input <- function(rightside, leftside) {
 
   att(
     !names(d) %in% names(preexisting_inputs_lst),
-    msg = glue("Input {names(d)} cannot be added twice to covidcast config")
+    msg = glue("Input {names(d)} cannot be added twice to covidestim config")
   )
 
   att(
@@ -112,7 +112,7 @@ modelconfig_add.input <- function(rightside, leftside) {
     cfg$frac_pos_user <- d[[1]]$observation
     cfg$frac_pos      <- c(rep(0, cfg$N_days_before), d[[1]]$observation)
   } else {
-    stop(glue("{data_key} is not a valid input to a covidcast configuration"))
+    stop(glue("{data_key} is not a valid input to a covidestim configuration"))
   }
 
   cfg
@@ -189,7 +189,7 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5) #new
     Max_delay = 60, 
 
     # moving average for likelihood function 
-    N_days_av = 5, 
+    N_days_av = 7, #5, CHANGE BACK AFTER 6/15 RUN!!
 
     rho_sym = rho_sym,
     rho_sev = rho_sev,

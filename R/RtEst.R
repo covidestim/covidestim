@@ -1,5 +1,5 @@
 #' @export
-#' @rdname RtEst.covidcast_result
+#' @rdname RtEst.covidestim_result
 RtEst <- function(...) UseMethod('RtEst')
 
 #' Calculate the Effective Reprouction Number from Covidestim output
@@ -8,7 +8,7 @@ RtEst <- function(...) UseMethod('RtEst')
 #' underlying df. 
 #'
 #' @param ccr The result of calling \code{\link{run}}. An object of class
-#'   \code{covidcast_result}.
+#'   \code{covidestim_result}.
 #'   
 #' @param window.length The size of the moving window over which Rt should be 
 #' estimated; defaults to 5 days. This number must be odd. 
@@ -23,7 +23,7 @@ RtEst <- function(...) UseMethod('RtEst')
 #'   `date` is a vector of \code{\link[base]{Date}} objects.
 #'
 #' @export
-RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
+RtEst.covidestim_result <- function(ccr, window.length = 5, mean.si = 4.7,
                                    std.si = 2.9) {
 
 
@@ -98,7 +98,7 @@ RtEst.covidcast_result <- function(ccr, window.length = 5, mean.si = 4.7,
 #' function is essentially a wrapper around \code{link[EpiEstim]{estimate_R}}.
 #'
 #' @param ccr The result of calling \code{\link{run}}. An object of class
-#'   \code{covidcast_result}.
+#'   \code{covidestim_result}.
 #'   
 #' @param window.length The size of the moving window over which Rt should be 
 #' estimated; defaults to 5 days. This number must be odd. 

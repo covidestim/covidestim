@@ -1,4 +1,4 @@
 library(testthat)
-library(covidcast)
+library(covidestim)
 
-test_check("covidcast")
+test_check("covidestim")

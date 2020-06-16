@@ -1,10 +1,10 @@
-#' Summarize a Covidcast run
+#' Summarize a Covidestim run
 #'
-#' @param ccr A \code{covidcast_result} object
+#' @param ccr A \code{covidestim_result} object
 #'
 #' @param include.before A logical scalar. Include estimations that fall in the
 #'   period before the first day of input data? (This period is of length
-#'   \code{N_days_before} as passed to \code{covidcast}). If  \code{TRUE}, any
+#'   \code{N_days_before} as passed to \code{covidestim}). If  \code{TRUE}, any
 #'   elements of variables which do not have values for this "before" period
 #'   will be represented as \code{NA}.
 #'
@@ -57,7 +57,7 @@
 #'
 #' @export
 #' @importFrom magrittr %>%
-summary.covidcast_result <- function(ccr, include.before = TRUE, 
+summary.covidestim_result <- function(ccr, include.before = TRUE, 
                                      include.RtEstim = TRUE, index = FALSE) {
 
   # Used for dealing with indices and dates
@@ -202,7 +202,7 @@ hdi <- function(x) {
   list(lo = hd_interval[1], hi = hd_interval[2])
 }
 
-# covidcast_result, string -> list(lo, hi) of HDIs for a particular Stan param
+# covidestim_result, string -> list(lo, hi) of HDIs for a particular Stan param
 hdi_for_ccr_indexed_par <- function(ccr, parname) {
 
   att(parname %in% names(ccr$extracted))
@@ -218,7 +218,7 @@ hdi_for_ccr_indexed_par <- function(ccr, parname) {
   purrr::map_dfr(1:ndays_total, ~hdi(samples[, .])) %>% as.list
 }
 
-# covidcast_result, string -> list(lo, hi) of HDIs for Stan params that are
+# covidestim_result, string -> list(lo, hi) of HDIs for Stan params that are
 # NOT indexed
 hdi_for_ccr_par <- function(ccr, parname) {
 
@@ -229,12 +229,12 @@ hdi_for_ccr_par <- function(ccr, parname) {
   hdi(samples)
 }
 
-#' Summarize internal parameters of a Covidcast run
+#' Summarize internal parameters of a Covidestim run
 #'
 #' Returns a \code{data.frame} with a information on the posterior of a few
 #' key Stan parameters.
 #'
-#' @param ccr A \code{covidcast_result} object
+#' @param ccr A \code{covidestim_result} object
 #'
 #' @return A \code{data.frame} with the following variables:
 #'

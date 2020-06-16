@@ -106,48 +106,46 @@ reformat_dates <- function(vec) vec
 
 #' Input observational data
 #'
-#' A family of functions used for inputting data into Covidcast.
+#' A family of functions used for inputting data into Covidestim.
 #'
-#' There are three types of observational data that can be used with Covidcast:
+#' There are three types of observational data that can be used with Covidestim:
 #'
 #' \itemize{
-#'   \item Case reporting data, detailing the number of new cases each day
+#'   \item Case data, detailing the number of new cases each day
 #'   \item Death data, detailing the number of confirmed Covid-19 deaths each
 #'   day
 #'   \item Testing data, detailing the fraction of positive tests for each day
 #'   of data. 
 #' }
 #'
-#' All input data to Covidcast is expected to be a
+#' All input data to Covidestim is expected to be a
 #' \code{\link[base]{data.frame}} of two variables. One variable, \code{date}
 #' must be a vector of type \code{\link[base]{POSIXct}} or
 #' \code{\link[base]{Date}}. The second column, \code{observations} will be a
 #' non-negative numeric vector, except in the case of testing data, where the
 #' column must be a numeric vector between \code{[0,1]}.
 #'
-#' Fraction positve data should represent, for a given day, the fraction of
+#' Fraction positve data should represent, for a given day, the number of
 #' positive test results reported that day, over the total number of test
 #' results received that day. Note that the model tends to perform poorly on
-#' fraction positive data that contains dramatic jumps. With jumpy data, it 
-#' is recommended to smooth the fraction positive data with a moving average,
-#' for example by using the function \code{\link[smooth]{sma}}. Reasons for
-#' these jumps, as they have manifested in publicly available datasets, have
-#' included:
+#' fraction positive data that contains dramatic jumps. With highly variable 
+#' data, we recommened users smooth the fraction positive data with a moving 
+#' average,for example by using the function \code{\link[smooth]{sma}}. Reasons 
+#' for this variation, as they have manifested in publicly available datasets, 
+#' have included:
 #'
 #' \itemize{
-#'   \item \strong{Dumping of test results}: Some states have a tendency to dump batches
-#'     of results on particular days. Sometimes, these batches are composed of
-#'     only positive results, or only negative results, but other times it is
-#'     a mix.
+#'   \item \strong{Dumping of test results}: Some states have a tendency to dump 
+#'     batches of results on particular days. 
 #'
-#'   \item \strong{Accumulation of test results reported over the weekend}: Many states
-#'     have lower reporting volume over the weekend, creating an unstable
+#'   \item \strong{Accumulation of test results reported over the weekend}: Many 
+#'     states have lower reporting volume over the weekend, creating an unstable
 #'     fraction positive quantity as the sample size increases and decreases
 #'     dramatically.
 #'
 #'   \item \strong{Reclassification of results}: Some states have retroactively changed
 #'     test results, or removed test results entirely, and these changes may 
-#'     manifest all on a single day, rather than being applied to all previous
+#'     manifest on a single day, rather than being applied to all previous
 #'     days affected by the change.
 #'
 #'   \item \strong{Antibody tests}: Some states have been pooling antibody tests with
@@ -156,7 +154,7 @@ reformat_dates <- function(vec) vec
 #' }
 #'
 #' Missing values in cases and deaths data should be represented as \code{0}.
-#' The date range of all sets of data passed to \code{\link{covidcast}} must be
+#' The date range of all sets of data passed to \code{\link{covidestim}} must be
 #' equivalent, with one observation each day, and no gaps in the data.
 #' Assertions attempt to enforce this specification.
 #'
@@ -165,7 +163,7 @@ reformat_dates <- function(vec) vec
 #' 
 #'   \code{"reported"} applies to the following situations:
 #'   \itemize{
-#'     \item Cases or deaths data where the count for a particular day
+#'     \item Case or death data where the count for a particular day
 #'     represents the number of cases or deaths that were reported publicly on
 #'     that day (for example, as of June 1st, 2020, this is the type of data
 #'       reported by the New York Times'
@@ -179,12 +177,13 @@ reformat_dates <- function(vec) vec
 #'
 #'   \code{"occurred"} applies to the following situations:
 #'   \itemize{
-#'     \item Data where counts represent the number of times a particular event
+#'     \item Data where counts represent the number of of cases or deaths that
 #'       actually occured on that day. For case data, this would be the day a 
-#'       test was administered, and for deaths data, this would be the day an
-#'       individual died. Note that, if the deaths data represented the day an
-#'       individual's death was first reported as a SARS-Cov-2-related death,
-#'       that data should be passed with \code{type = "reported"}, instead.
+#'       test was administered or the date of symptom onset. For deaths, this 
+#'       would be the day an individual died. Note that, if the deaths data 
+#'       represented the day an individual's death was first reported as a 
+#'       SARS-Cov-2-related death, that data should be passed with 
+#'       \code{type = "reported"}, instead.
 #'   }
 #'
 #'
