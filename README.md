@@ -1,4 +1,4 @@
-# Covidestim
+# Covidestim <img src="man/figures/logo.png" width="120" align="right" />
 
 Quick description of Covidestim and what it does
 
