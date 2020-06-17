@@ -173,7 +173,8 @@ or removing your custom prior.
   # att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
 }
 
-genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5, weekend=FALSE) #new default value
+genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
+                    N_days_av = 5, weekend=FALSE) #new default value
 {
   att(rho_sym > 0 && rho_sym <= 1)
   att(rho_sev > 0 && rho_sev <= 1)
@@ -192,7 +193,7 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5, week
     Max_delay = 60, 
 
     # moving average for likelihood function 
-    N_days_av = 5, 
+    N_days_av = N_days_av, 
 
     rho_sym = rho_sym,
     rho_sev = rho_sev,
