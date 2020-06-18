@@ -34,7 +34,6 @@ jobs:
         run: |
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
-          remotes::install_dev("StanHeaders")
           remotes::install_dev("rstantools")
         shell: Rscript {0}
 
