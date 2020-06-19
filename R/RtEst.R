@@ -106,7 +106,7 @@ RtNaiveEstim <- function(...) UseMethod('RtNaiveEstim')
 
 #' @rdname RtEst.covidestim_result
 #' @export
-RtNaiveEstim.covidcast_result <- function(cc, window.length = 5, mean.si = 4.7,
+RtNaiveEstim.covidestim_result <- function(cc, window.length = 5, mean.si = 4.7,
                                           std.si = 2.9) {
 
   day_start <- 2

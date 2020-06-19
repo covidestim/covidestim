@@ -59,7 +59,8 @@ NULL
 covidestim <- function(ndays, ndays_before=28,
                        chains=3, iter=1500, thin = 1, 
                        rho_sym = 1, rho_sev = 0.5, seed=42,
-                       adapt_delta = 0.92, weekend = FALSE) {
+                       adapt_delta = 0.92, max_treedepth = 12,
+                       window.length = 5, weekend = FALSE) {
 
   att(is.numeric(ndays), ndays >= 1)
 
@@ -68,7 +69,8 @@ covidestim <- function(ndays, ndays_before=28,
     N_days_before = ndays_before,
     rho_sym = rho_sym, 
     rho_sev = rho_sev,
-    weekend = weekend
+    weekend = weekend,
+    N_days_av = window.length
   ) -> config
 
   # All user-specified config-related things must be specified above this line
@@ -191,4 +193,13 @@ ndays:\t{cc$config$N_days}
   cat(substituted_string)
 
   print.modelconfig(cc)
+}
+
+#' @export
+covidcast_register <- function() {
+  run.covidcast                 <<- run.covidestim
+  viz.covidcast_result          <<- viz.covidestim_result
+  summary.covidcast_result      <<- summary.covidestim_result
+  RtEst.covidcast_result        <<- RtEst.covidestim_result
+  RtNaiveEstim.covidcast_result <<- RtNaiveEstim.covidestim_result
 }
