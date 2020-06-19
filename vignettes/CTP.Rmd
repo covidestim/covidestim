@@ -2,7 +2,7 @@
 title: "Basic Covidestim run"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{CTP}
+  %\VignetteIndexEntry{Basic Covidestim run}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,9 +15,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(covidcast)
+library(covidestim)
 ```
 
 ```{r}
+print("Hello, world!")
 ```
 
