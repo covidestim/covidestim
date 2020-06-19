@@ -103,7 +103,7 @@
 <a href="#usage" class="anchor"></a>Usage</h1>
 <div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">covidestim</span>)
 
-<span class="no">cfg</span> <span class="kw">&lt;-</span> <span class="fu">covidestim</span>(<span class="kw">ndays</span><span class="kw">=</span><span class="fl">80</span>) + <span class="fu">input_cases</span>(<span class="no">df</span>) + <span class="fu">input_deaths</span>(<span class="no">df2</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"occurred"</span>)
+<span class="no">cfg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/covidestim.html">covidestim</a></span>(<span class="kw">ndays</span><span class="kw">=</span><span class="fl">80</span>) + <span class="fu"><a href="reference/input_cases.html">input_cases</a></span>(<span class="no">df</span>) + <span class="fu"><a href="reference/input_cases.html">input_deaths</a></span>(<span class="no">df2</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"occurred"</span>)
 
 <span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu">run</span>(<span class="no">cfg</span>)
 
