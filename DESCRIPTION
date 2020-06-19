@@ -2,12 +2,12 @@ Package: covidestim
 Title: Real-time Bayesian forcasting of R_t
 Version: 0.1.1.0000
 Authors@R: 
-    c(person(given = "Melanie", family = "Chitwood",
-             role = c("aut", "cre"),
-             email = "melanie.chitwood@yale.edu"),
-      person(given = "Marcus", family = "Russi",  
-             role = c("aut"),            
+    c(person(given = "Marcus", family = "Russi",  
+             role = c("aut", "cre"),            
              email = "marcus.russi@yale.edu")) 
+      person(given = "Melanie", family = "Chitwood",
+             role = c("aut"),
+             email = "melanie.chitwood@yale.edu"),
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
