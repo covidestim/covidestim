@@ -35,6 +35,8 @@ jobs:
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
           install.packages("pkgdown")
+          remotes::install_github("StanHeaders")
+          remotes::install_github("rstantools")
         shell: Rscript {0}
 
       - name: Install package
