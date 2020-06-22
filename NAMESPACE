@@ -32,6 +32,4 @@ importFrom(Rdpack,reprompt)
 importFrom(glue,glue)
 importFrom(magrittr,"%>%")
 importFrom(rstan,sampling)
-importFrom(RcppParallel, RcppParallelLibs)
 useDynLib(covidestim, .registration = TRUE)
-

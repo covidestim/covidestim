@@ -18,3 +18,4 @@ docs
 man
 docs/
 inst/doc
+vignettes/output_data.RData

@@ -1,0 +1,66 @@
+---
+title: "Using Covidestim"
+author: "Melanie H. Chitwood, Marcus Russi" 
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Covidestim}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+This vignette is intended to guide users through running the covidestim model, 
+accessing the model output, and visualizing that output. 
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(covidestim)
+```
+
+# Running the model 
+## Data
+Will we demonstrate how to use the covidestim paackage using data from the [Massachusetts Department of Public Health](https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts) 
+Users can use case and/or death data with the model. Data on the fraction of tests with a positive results may also be used; we strongly recommend users smooth fraciton positive data using a moving average or spline. Each data type should be entered as its own dataframe with two columns: a column called 'date' and a column called 'observation.' 
+
+```{r, echo=FALSE, message=FALSE}
+d <- readr::read_csv("input_data.csv")
+df.cases   <- dplyr::transmute(d, date, observation = cases)
+df.deaths  <- dplyr::transmute(d, date, observation = deaths)
+df.fracpos <- dplyr::transmute(d, date, observation = fraction.positive)
+```
+```{r}
+head(df.cases)
+```
+## Generate a model configuration 
+Inpute data and model run options are summarized into a covidestim configuration with the funciton call [`r covidestim()`](\code{?covidestim}). Users must specify the number of days of data in the input data. More information on data formating can be found [here](\code{?input_cases}). 
+```{r}
+covidestim(ndays = nrow(df.cases)) 
+```
+Notice, this is not a valid model configuration because it does not contain data! Each dataframe needs to be added to the covidestim call using calls [`r input_cases()`](\code{?input_cases}), [`r input_deaths()`](\code{?input_deaths}), and [`r input_fracpos()`](\code{?input_fracpos}). Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.   
+Because we use date-of-occurrence data, we choose to enable the 'weekend effect.' As individuals are less likely to be tested on Saturdays and Sundays, enabling the weekend effect allows the model to estimate a systematically lower probability of diagnosis on the weekend. This generally improves model fit to data when the data are by date-of-occurrence. 
+For additional information about changing the base configuration of the model, see \code{?covidestim}
+```{r}
+config1 <-
+covidestim(ndays = nrow(df.cases), weekend = TRUE) +
+  input_cases(df.cases, type = "occurred") + 
+  input_deaths(df.cases, type = "occurred") + 
+  input_fracpos(df.fracpos)
+config1
+```
+## Initializing a model run
+Finally, the model is run with the call `r run()`. Do not forget to assign the a name to the output of the run. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in RStudio, periodic status updates will appear in the console. 
+```{r, eval = FALSE}
+output <- run(config1, cores = parallel::detectCores())
+```
+
+
+
+
+
+
+
+
