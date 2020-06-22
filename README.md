@@ -1,4 +1,4 @@
-# Covidestim <img src="man/figures/logo.png" width="120" align="right" />
+# covidestim <img src="man/figures/logo.png" width="120" align="right" />
 
 Real-time estimates of the true size and trajectory of local COVID-19 epidemics are
 key metrics to guide policy responses. *covidestim* is a Bayesian nowcasting approach that
@@ -38,7 +38,7 @@ result.graphs  <- viz(result)
 
 # Resources
 
-- *(coming soon)* Read our preprint
-- [Ask a question](mailto:marcus.russi@yale.edu?subject=covidestim)
-- [Open an issue](https://github.com/covidestim/covidestim/issues) (GitHub
+* [Read our preprint](https://www.medrxiv.org/content/10.1101/2020.06.17.20133983v1)
+* [Ask a question](mailto:marcus.russi@yale.edu?subject=covidestim)
+* [Open an issue](https://github.com/covidestim/covidestim/issues) (GitHub
   issues for bug reports, feature requests)

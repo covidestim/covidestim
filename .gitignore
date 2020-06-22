@@ -14,8 +14,6 @@ src/rstanarm.dll
 src/init.o
 src/*.o
 src/*.so
-docs
-man
 docs/
 inst/doc
 vignettes/output_data.RData

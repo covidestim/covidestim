@@ -85,7 +85,7 @@ covidestim <- function(ndays, ndays_before=28,
     thin    = thin,
     warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
     seed    = seed,
-    control = list(adapt_delta = adapt_delta, max_treedepth = 13) # CHANGE BACK TO 0.92, 12!!!
+    control = list(adapt_delta = adapt_delta, max_treedepth = 12)
   ) -> properties
 
   structure(properties, class='covidestim')
