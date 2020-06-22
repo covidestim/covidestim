@@ -1,4 +1,4 @@
-# Covidestim <img src="man/figures/logo.png" width="120" align="right" />
+# covidestim <img src="man/figures/logo.png" width="120" align="right" />
 
 Real-time estimates of the true size and trajectory of local COVID-19 epidemics are
 key metrics to guide policy responses. *covidestim* is a Bayesian nowcasting approach that
