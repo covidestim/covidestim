@@ -1,6 +1,6 @@
-#' Example NYC case/hospitalization/death data
+#' Example NYC case/death data
 #'
-#' Returns a \code{\link[tibble]{tibble}} of NYC case/hospitalization/death
+#' Returns a \code{\link[tibble]{tibble}} of NYC case anddeath
 #' data from March 2nd, 2020 to April 15, 2020. Only one type of data will be
 #' returned at a time.
 #'
