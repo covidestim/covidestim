@@ -17,3 +17,5 @@ src/*.so
 docs/
 inst/doc
 vignettes/output_data.RData
+doc
+Meta
