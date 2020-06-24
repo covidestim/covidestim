@@ -1,0 +1,126 @@
+---
+title: "Using Covidestim"
+author: "Melanie H. Chitwood, Marcus Russi" 
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Covidestim}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+**This vignette is intended to guide users through running the covidestim model and 
+accessing the model output.**
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(covidestim)
+```
+
+## Running the model 
+### Data
+Will we demonstrate how to use the covidestim paackage using data from the [Massachusetts Department of Public Health](https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts) 
+Users can use case and/or death data with the model. Data on the fraction of tests with a positive results may also be used; we strongly recommend users smooth fraciton positive data using a moving average or spline. Each data type should be entered as its own dataframe with two columns: a column called 'date' and a column called 'observation.' 
+
+```{r, echo=FALSE, message=FALSE}
+d <- readr::read_csv("input_data.csv")
+df.cases   <- dplyr::transmute(d, date, observation = cases)
+df.deaths  <- dplyr::transmute(d, date, observation = deaths)
+df.fracpos <- dplyr::transmute(d, date, observation = fraction.positive)
+```
+```{r}
+head(df.cases)
+```
+### Generate a model configuration 
+Inpute data and model run options are summarized into a covidestim configuration with the funciton call [`covidestim()`](\code{?covidestim}). Users must specify the number of days of data in the input data. More information on data formating can be found [here](\code{?input_cases}). Calling `covidestim()` will produce a summary of model run conditions, priors, and data inputs. 
+```{r}
+covidestim(ndays = nrow(df.cases)) 
+```
+Notice that what we input is **not** a valid model configuration because it does not contain data! Each dataframe must be added to the covidestim call using calls [`input_cases()`](\code{?input_cases}),  [`input_deaths()`](\code{?input_deaths}), and [`input_fracpos()`](\code{?input_fracpos}). Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.   
+  
+Because we use date-of-occurrence data, we choose to enable the 'weekend effect.' As individuals are less likely to be tested on Saturdays and Sundays, enabling the weekend effect allows the model to estimate a systematically lower probability of diagnosis on the weekend. This generally improves model fit to data when the data are by date-of-occurrence. 
+For additional information about changing the base configuration of the model, see [`covidestim()`](\code{?covidestim}). 
+```{r}
+config1 <-
+covidestim(ndays = nrow(df.cases), weekend = TRUE) +
+  input_cases(df.cases, type = "occurred") + 
+  input_deaths(df.cases, type = "occurred") + 
+  input_fracpos(df.fracpos)
+config1
+```
+### Initializing a model run
+Finally, the model is run with the call [`run`](\code{?run}). Do not forget to assign the a name to the output of the run. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in RStudio, periodic status updates will appear in the console. 
+```{r, eval = FALSE}
+output <- run(config1, cores = parallel::detectCores())
+```
+
+## Accessing model output 
+Calling `run()` on a valid covidestim configuration will produce a S3 object of class `covidestim_result` containing the configuration used to run the model ("config"), the raw results ("result"), the extracted result as produced by [`rstan::extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) ("extracted"), and the summarized results as produced by [`rstan::summary`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) ("summary"). 
+
+```{r, echo=FALSE, message=FALSE}
+load("output_data.RData")
+```
+```{r}
+
+```
+
+First, we describe summary functions in covidestim to view model results. Next, we describe the various items within `covidestim_result`.  
+
+### Summarizing covidestim output
+A covidestim object can be easily converted to a summary data frame with the call [`summary`](\code{?summary}). Each row of the data frame is a date. Each column of the data frame is a value of interest. Variables appened with .hi or .lo indicate the 0.975 and 0.025 quantiles, respectively. A data dictionary for summarized results can be found [here](\code{?summary}). 
+
+```{r, eval = FALSE}
+output.summary <- summary(output)
+```
+```{r}
+head(output.summary)
+```
+
+The posterior distributions of key time-invariant parameters can also be summarized with the call [`summaryEpi`](\?code{?summaryEpi})
+
+```{r}
+covidestim::summaryEpi(output)
+```
+Note that p_diag_if_sym (the probability a symptomatic case is diagnosed) and p_diag_if_sev (the probability that a severe case is diagnosed) are summarized without the adjustment for changing diagnostic coverage. 
+
+### result
+Covidestim uses Bayesian inference to estiamte incident cases. The model is run using [rstan](https://mc-stan.org/users/interfaces/rstan), a package for the R programming language that allows for the estimation and analysis of Bayesian models with Stan. `result` is a stanfit object, the output of calling [`rstan::stan()`](https://mc-stan.org/rstan/reference/stanfit-class.html). 
+
+We make use of the rstan functions [`summary()`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) and  [`extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) to pull model results of interest for easy visualization and analysis. 
+
+### extracted
+`extracted` contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of samples from the paremeter. All three chains have been mixed. 
+
+```{r}
+summary(output[["extracted"]])
+```
+In this format, it's possible to view the time series of estimates within a single iteration. 
+```{r}
+# a matrix of new infection point estimates for each timepoint, iteration
+new_sym <- output[["extracted"]]$new_sym
+# view first 8 iterations, first 5 days
+new_sym[1:8, 1:5]
+```
+This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections over the first week of data. 
+```{r}
+# create a data frame with the final 7 days from the model 
+new_sym_df <- as.data.frame(new_sym[,29:35]) 
+# compute the row average 
+new_sym_df$avg <- rowSums(new_sym_df)/7
+# calculate the mean and 95% uncertainty bounds
+quantile(new_sym_df$avg, probs = c(0.025,  0.5, 0.975))
+```
+`extracted` is generally useful for cases where it's necessary to compute an average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals). 
+
+### summary
+`summary` contains the point estimate and uncertainty bounds for every parameter in the model. The number in brackets indicates the inex day of the estimate. `summary` also contains information about model fit, including the effective sample size and Rhat estimates. 
+```{r}
+head(output[["summary"]])
+```
+While `summary` can be easily converted to a dataframe, we recommend using helper functions with covidestim. 
+
+
