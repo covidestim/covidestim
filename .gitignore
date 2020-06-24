@@ -16,6 +16,6 @@ src/*.o
 src/*.so
 docs/
 inst/doc
-vignettes
+vignettes/output_data.RData
 doc
 Meta
