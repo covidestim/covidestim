@@ -14,25 +14,28 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     EpiEstim,
-    Hmisc,
-    RColorBrewer,
-    Rcpp (>= 1.0.4.6),
-    RcppParallel (>= 5.0),
-    Rdpack,
+    ggplot2,
     glue,
+    Hmisc,
     lubridate,
+    magrittr,
     methods,
     parallel,
     plyr,
     purrr,
+    RColorBrewer,
+    Rcpp (>= 1.0.4.6),
+    RcppParallel (>= 5.0),
+    Rdpack,
     rlang,
     rstan (>= 2.19.3),
     rstantools (>= 2.0.0),
     splines,
     stats,
-    stringr
-Suggests: 
+    stringr,
     tidyr,
+    tibble
+Suggests: 
     testthat,
     grDevices,
     knitr,
