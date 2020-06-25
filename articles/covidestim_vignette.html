@@ -97,7 +97,7 @@
 <div id="data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h3>
-<p>Will we demonstrate how to use the covidestim paackage using data from the <a href="https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts">Massachusetts Department of Public Health</a> Users can use case and/or death data with the model. Data on the fraction of tests with a positive results may also be used; we strongly recommend users smooth fraciton positive data using a moving average or spline. Each data type should be entered as its own dataframe with two columns: a column called ‘date’ and a column called ‘observation.’</p>
+<p>We will demonstrate how to use the covidestim paackage using data from the <a href="https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts">Massachusetts Department of Public Health</a>. Users can run the model with case and/or death data. Data on the fraction of tests with a positive results may also be used; we strongly recommend users smooth fraciton positive data using a moving average or spline. Each data type should be entered as its own dataframe with two columns: a column called ‘date’ and a column called ‘observation.’</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">df.cases</span>)
 <span class="co">#&gt; # A tibble: 6 x 2</span>
 <span class="co">#&gt;   date       observation</span>
@@ -112,7 +112,7 @@
 <div id="generate-a-model-configuration" class="section level3">
 <h3 class="hasAnchor">
 <a href="#generate-a-model-configuration" class="anchor"></a>Generate a model configuration</h3>
-<p>Inpute data and model run options are summarized into a covidestim configuration with the funciton call <a href="%5Ccode%7B?covidestim%7D"><code><a href="../reference/covidestim.html">covidestim()</a></code></a>. Users must specify the number of days of data in the input data. More information on data formating can be found <a href="%5Ccode%7B?input_cases%7D">here</a>. Calling <code><a href="../reference/covidestim.html">covidestim()</a></code> will produce a summary of model run conditions, priors, and data inputs.</p>
+<p>Input data and model run options are summarized into a covidestim configuration with the funciton call <a href="%5Ccode%7B?covidestim%7D"><code><a href="../reference/covidestim.html">covidestim()</a></code></a>. Users must specify the number of days of data in the input data. More information on data formating can be found <a href="%5Ccode%7B?input_cases%7D">here</a>. Calling <code><a href="../reference/covidestim.html">covidestim()</a></code> will produce a summary of the model run conditions, priors, and data inputs.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="../reference/covidestim.html">covidestim</a></span>(<span class="kw">ndays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">df.cases</span>))
 <span class="co">#&gt; Covidestim Configuration:</span>
 <span class="co">#&gt; </span>
@@ -159,7 +159,7 @@
 <span class="co">#&gt;  [ ❌ ]   Cases</span>
 <span class="co">#&gt;  [ ❌ ]   Deaths</span>
 <span class="co">#&gt;  [ ❌ ]   Fraction positive</span></pre></body></html></div>
-<p>Notice that what we input is <strong>not</strong> a valid model configuration because it does not contain data! Each dataframe must be added to the covidestim call using calls <a href="%5Ccode%7B?input_cases%7D"><code><a href="../reference/input_cases.html">input_cases()</a></code></a>, <a href="%5Ccode%7B?input_deaths%7D"><code><a href="../reference/input_cases.html">input_deaths()</a></code></a>, and <a href="%5Ccode%7B?input_fracpos%7D"><code><a href="../reference/input_cases.html">input_fracpos()</a></code></a>. Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.</p>
+<p>Notice that what we input here is <strong>not</strong> a valid model configuration because it does not contain data! Each dataframe must be added to the covidestim call using the calls <a href="%5Ccode%7B?input_cases%7D"><code><a href="../reference/input_cases.html">input_cases()</a></code></a>, <a href="%5Ccode%7B?input_deaths%7D"><code><a href="../reference/input_cases.html">input_deaths()</a></code></a>, and <a href="%5Ccode%7B?input_fracpos%7D"><code><a href="../reference/input_cases.html">input_fracpos()</a></code></a>. Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.</p>
 <p>Because we use date-of-occurrence data, we choose to enable the ‘weekend effect.’ As individuals are less likely to be tested on Saturdays and Sundays, enabling the weekend effect allows the model to estimate a systematically lower probability of diagnosis on the weekend. This generally improves model fit to data when the data are by date-of-occurrence. For additional information about changing the base configuration of the model, see <a href="%5Ccode%7B?covidestim%7D"><code><a href="../reference/covidestim.html">covidestim()</a></code></a>.</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">config1</span> <span class="kw">&lt;-</span>
 <span class="fu"><a href="../reference/covidestim.html">covidestim</a></span>(<span class="kw">ndays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">df.cases</span>), <span class="kw">weekend</span> <span class="kw">=</span> <span class="fl">TRUE</span>) +
@@ -216,7 +216,7 @@
 <div id="initializing-a-model-run" class="section level3">
 <h3 class="hasAnchor">
 <a href="#initializing-a-model-run" class="anchor"></a>Initializing a model run</h3>
-<p>Finally, the model is run with the call <a href="%5Ccode%7B?run%7D"><code>run</code></a>. Do not forget to assign the a name to the output of the run. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in RStudio, periodic status updates will appear in the console.</p>
+<p>Finally, the model is run with the call <a href="%5Ccode%7B?run%7D"><code>run</code></a>. Do not forget to assign a name to the output of the run. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in RStudio, periodic status updates will appear in the console.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">output</span> <span class="kw">&lt;-</span> <span class="fu">run</span>(<span class="no">config1</span>, <span class="kw">cores</span> <span class="kw">=</span> <span class="kw pkg">parallel</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span>())</pre></body></html></div>
 </div>
 </div>
@@ -224,11 +224,11 @@
 <h2 class="hasAnchor">
 <a href="#accessing-model-output" class="anchor"></a>Accessing model output</h2>
 <p>Calling <code>run()</code> on a valid covidestim configuration will produce a S3 object of class <code>covidestim_result</code> containing the configuration used to run the model (“config”), the raw results (“result”), the extracted result as produced by <a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html"><code><a href="https://rdrr.io/pkg/rstan/man/stanfit-method-extract.html">rstan::extract()</a></code></a> (“extracted”), and the summarized results as produced by <a href="https://mc-stan.org/rstan/reference/stanfit-method-summary.html"><code>rstan::summary</code></a> (“summary”).</p>
-<p>First, we describe summary functions in covidestim to view model results. Next, we describe the various items within <code>covidestim_result</code>.</p>
+<p>First, we describe summary functions in covidestim to access model results. Next, we describe the various items within <code>covidestim_result</code>.</p>
 <div id="summarizing-covidestim-output" class="section level3">
 <h3 class="hasAnchor">
 <a href="#summarizing-covidestim-output" class="anchor"></a>Summarizing covidestim output</h3>
-<p>A covidestim object can be easily converted to a summary data frame with the call <a href="%5Ccode%7B?summary%7D"><code>summary</code></a>. Each row of the data frame is a date. Each column of the data frame is a value of interest. Variables appened with .hi or .lo indicate the 0.975 and 0.025 quantiles, respectively. A data dictionary for summarized results can be found <a href="%5Ccode%7B?summary%7D">here</a>.</p>
+<p>A covidestim object can be easily converted to a summary data frame with the call <a href="%5Ccode%7B?summary%7D"><code>summary</code></a>. Each row of the data frame is a date. Each column of the data frame is a value of interest. Variables appended with .hi or .lo indicate the 0.975 and 0.025 quantiles, respectively. A data dictionary for summarized results can be found <a href="%5Ccode%7B?summary%7D">here</a>.</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">output.summary</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">output</span>)</pre></body></html></div>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">output.summary</span>)
 <span class="co">#&gt; # A tibble: 6 x 35</span>
@@ -251,6 +251,7 @@
 <span class="co">#&gt; #   Rt &lt;dbl&gt;, Rt.lo &lt;I&lt;dbl&gt;&gt;, Rt.hi &lt;I&lt;dbl&gt;&gt;, NaiveRt &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   NaiveRt.lo &lt;dbl&gt;, NaiveRt.hi &lt;dbl&gt;, cum.incidence.lo &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   cum.incidence.hi &lt;dbl&gt;</span></pre></body></html></div>
+<p>Note that the model initializes 28 days before the first reported case or death by default. This allows the time series of new infections sufficient time to reach a level that is consistent with the first days of reported cases and deaths.</p>
 <p>The posterior distributions of key time-invariant parameters can also be summarized with the call <a href="?code%7B?summaryEpi%7D"><code>summaryEpi</code></a></p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="kw pkg">covidestim</span><span class="kw ns">::</span><span class="fu"><a href="../reference/summaryEpi.html">summaryEpi</a></span>(<span class="no">output</span>)
 <span class="co">#&gt; # A tibble: 6 x 4</span>
@@ -262,7 +263,7 @@
 <span class="co">#&gt; 4 p_die_if_sym  0.0104 0.0185  0.0269</span>
 <span class="co">#&gt; 5 p_diag_if_sym 0.0296 0.0812  0.179 </span>
 <span class="co">#&gt; 6 p_diag_if_sev 0.312  0.806   0.994</span></pre></body></html></div>
-<p>Note that p_diag_if_sym (the probability a symptomatic case is diagnosed) and p_diag_if_sev (the probability that a severe case is diagnosed) are summarized without the adjustment for changing diagnostic coverage.</p>
+<p>Note that p_diag_if_sym (the probability a symptomatic, but not severe, case is diagnosed) and p_diag_if_sev (the probability that a severe case is diagnosed) are summarized without the adjustment for changing diagnostic coverage.</p>
 </div>
 <div id="result" class="section level3">
 <h3 class="hasAnchor">
@@ -273,7 +274,7 @@
 <div id="extracted" class="section level3">
 <h3 class="hasAnchor">
 <a href="#extracted" class="anchor"></a>extracted</h3>
-<p><code>extracted</code> contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of samples from the paremeter. All three chains have been mixed.</p>
+<p><code>extracted</code> contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of posterior samples for a paremeter. All three chains have been mixed.</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">output</span><span class="kw">[[</span><span class="st">"extracted"</span>]])
 <span class="co">#&gt;                      Length Class  Mode   </span>
 <span class="co">#&gt; log_new_inf_0           900 -none- numeric</span>
@@ -346,8 +347,8 @@
 <span class="co">#&gt;       [6,] 0.40018058</span>
 <span class="co">#&gt;       [7,] 0.37628729</span>
 <span class="co">#&gt;       [8,] 0.95003396</span></pre></body></html></div>
-<p>This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections over the first week of data.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="co"># create a data frame with the final 7 days from the model </span>
+<p>This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections in the first week for which we have case and death data.</p>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="co"># create a data frame with the first 7 days  </span>
 <span class="no">new_sym_df</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="no">new_sym</span>[,<span class="fl">29</span>:<span class="fl">35</span>])
 <span class="co"># compute the row average </span>
 <span class="no">new_sym_df</span>$<span class="no">avg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">new_sym_df</span>)/<span class="fl">7</span>
@@ -355,12 +356,12 @@
 <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">new_sym_df</span>$<span class="no">avg</span>, <span class="kw">probs</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.025</span>,  <span class="fl">0.5</span>, <span class="fl">0.975</span>))
 <span class="co">#&gt;      2.5%       50%     97.5% </span>
 <span class="co">#&gt;  54.62054 106.99165 298.04064</span></pre></body></html></div>
-<p><code>extracted</code> is generally useful for cases where it’s necessary to compute an average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals).</p>
+<p><code>extracted</code> is generally useful for cases where it’s necessary to compute a sum or average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals).</p>
 </div>
 <div id="summary" class="section level3">
 <h3 class="hasAnchor">
 <a href="#summary" class="anchor"></a>summary</h3>
-<p><code>summary</code> contains the point estimate and uncertainty bounds for every parameter in the model. The number in brackets indicates the inex day of the estimate. <code>summary</code> also contains information about model fit, including the effective sample size and Rhat estimates.</p>
+<p><code>summary</code> contains the point estimate and quantile-based uncertainty bounds for every parameter in the model. The number in brackets indicates the inex day of the estimate. <code>summary</code> also contains information about model fit, including the effective sample size and Rhat estimates.</p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">output</span><span class="kw">[[</span><span class="st">"summary"</span>]])
 <span class="co">#&gt;                              mean     se_mean        sd       2.5%</span>
 <span class="co">#&gt; log_new_inf_0         -0.20513781 0.096584159 1.7019611 -3.7129190</span>
@@ -383,7 +384,7 @@
 <span class="co">#&gt; deriv1_log_new_inf[3] 413.6924 1.003046</span>
 <span class="co">#&gt; deriv1_log_new_inf[4] 426.0676 1.005748</span>
 <span class="co">#&gt; deriv1_log_new_inf[5] 407.2815 1.005308</span></pre></body></html></div>
-<p>While <code>summary</code> can be easily converted to a dataframe, we recommend using helper functions with covidestim.</p>
+<p>While <code>summary</code> can be easily converted to a dataframe, we recommend using the helper functions in covidestim, as described above.</p>
 </div>
 </div>
   </div>
