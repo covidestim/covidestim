@@ -31,12 +31,13 @@ Options:
 ', name = "MPIrun.R") -> doc
 
 arguments <- docopt(doc, version = 'covidestim SLURM batch submitter 0.1')
+# print(arguments)
 
 input_file_path  <- arguments$path
 jobname          <- arguments$name
 partition        <- arguments$partition
-id_vars          <- str_split(arguments[["id-vars"]], ',')[[1]]
-cpus_per_task    <- as.numeric(arguments[['cpus-per-task']])
+id_vars          <- str_split(arguments$id_vars, ',')[[1]]
+cpus_per_task    <- as.numeric(arguments$cpus_per_task)
 runtime          <- arguments$time # Stored as a string
 ntasks           <- as.numeric(arguments$ntasks)
 
@@ -76,7 +77,7 @@ gen_covidestim_run <- function(d, type_cases = "reported",
 # Take the data, and split it into smaller tibbles for each state
 runs_nested <- group_by_at(d, id_vars) %>% nest() %>%
   mutate(config = map(data, gen_covidestim_run),
-         group_name = paste(as.list(dplyr::cur_group()), collapse = '-'))
+         group_name = paste(as.list(cur_group()), collapse = '-'))
 
 cli_alert_success("Configuration generated successfully. Summary:")
 cli_ul()
@@ -95,21 +96,22 @@ do_covidestim_run <- function(config, group_name) {
   diagnostic_file    <- glue::glue("logs/stan-{group_name}") # Stan logs
   startTime          <- Sys.time()
 
-  cli::cli_alert_info("Started {current_group_name} at {startTime}")
+  cli::cli_alert_info("Started {group_name} at {startTime}")
 
   safe_run(
-    cfg,
+    config,
     cores = cpus_per_task,
     diagnostic_file = diagnostic_file
   ) -> result
-  endTime <- Sys.time()
 
-  cli::cli_alert_info("Finished {current_group_name} on {core} at {endTime}")
+  endTime <- Sys.time()
+  cli::cli_alert_info("Finished {group_name} on {core} at {endTime}")
   cli::cli_alert_info("Runtime was {prettyunits::pretty_dt(endTime - startTime)}")
 
   warnings_observed <- result$warnings
 
-  tibble::tibble(!!! current_group, result = list(result),
+  tibble::tibble(group_name,
+                 result   = list(result),
                  time     = endTime - startTime,
                  warnings = warnings_observed)
 }
@@ -127,11 +129,12 @@ slurm_apply(
                      # `cpus_per_task` value, which is the one that SLURM will
                      # actually look at, since rightmost args have precedence
   preschedule_cores = FALSE,
+  sh_template   = "batch_template.txt",
   slurm_options = list(
-    cpus_per_task = cpus_per_task,
-    mem_per_cpu   = "1G",
-    time          = runtime,
-    partition     = partition,
+    `cpus-per-task` = cpus_per_task,
+    `mem-per-cpu`   = "1G",
+    time            = runtime,
+    partition       = partition
   ),
   submit = FALSE
 )
