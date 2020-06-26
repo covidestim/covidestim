@@ -16,4 +16,4 @@
 module load R miniconda
 source activate covidcast
 
-{{{rscript}}} --vanilla slurm_run.R
+/usr/bin/time {{{rscript}}} --vanilla slurm_run.R
