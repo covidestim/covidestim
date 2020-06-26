@@ -129,9 +129,9 @@ slurm_apply(
   preschedule_cores = FALSE,
   slurm_options = list(
     cpus_per_task = cpus_per_task,
+    mem_per_cpu   = "1G",
     time          = runtime,
     partition     = partition,
-    account       = 'covid'
   ),
   submit = FALSE
 )
