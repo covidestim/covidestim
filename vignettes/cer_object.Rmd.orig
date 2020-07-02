@@ -1,0 +1,56 @@
+---
+title: "Acessing Covidestim Results Object"
+author: "Melanie H. Chitwood, Marcus Russi" 
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Covidestim}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+## Covidestim Results
+
+*This guide is intended to describe the various result objects contained in the object produced by the call `covidestim::run()`
+
+### Overview
+
+Calling `run()` on a valid covidestim configuration will produce a S3 object of class `covidestim_result` containing the configuration used to run the model ("config"), the raw results ("result"), the extracted result as produced by [`rstan::extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) ("extracted"), and the summarized results as produced by [`rstan::summary`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) ("summary"). 
+
+```{r, echo=FALSE, message=FALSE}
+load("output_data.RData")
+```
+
+### Result
+Covidestim uses Bayesian inference to estiamte incident cases. The model is run using [rstan](https://mc-stan.org/users/interfaces/rstan), a package for the R programming language that allows for the estimation and analysis of Bayesian models with Stan. `result` is a stanfit object, the output of calling [`rstan::stan()`](https://mc-stan.org/rstan/reference/stanfit-class.html). 
+
+We make use of the rstan functions [`summary()`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) and  [`extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) to pull model results of interest for easy visualization and analysis. 
+
+### Extracted
+`extracted` contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of samples from the paremeter. All three chains have been mixed. 
+
+```{r}
+summary(output[["extracted"]])
+```
+In this format, it's possible to view the time series of estimates within a single iteration. 
+```{r}
+# a matrix of new infection point estimates for each timepoint, iteration
+new_sym <- output[["extracted"]]$new_sym
+# view first 8 iterations, first 5 days
+new_sym[1:8, 1:5]
+```
+This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections over the first week of data. 
+```{r}
+# create a data frame with the final 7 days from the model 
+new_sym_df <- as.data.frame(new_sym[,29:35]) 
+# compute the row average 
+new_sym_df$avg <- rowSums(new_sym_df)/7
+# calculate the mean and 95% uncertainty bounds
+quantile(new_sym_df$avg, probs = c(0.025,  0.5, 0.975))
+```
+`extracted` is generally useful for cases where it's necessary to compute an average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals). 
+
+### Summary
+`summary` contains the point estimate and uncertainty bounds for every parameter in the model. The number in brackets indicates the inex day of the estimate. `summary` also contains information about model fit, including the effective sample size and Rhat estimates. 
+```{r}
+head(output[["summary"]])
+```
+While `summary` can be easily converted to a dataframe, we recommend using helper functions with covidestim. 
