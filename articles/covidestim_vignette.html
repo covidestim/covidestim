@@ -251,17 +251,17 @@
 <p>The figure ‘observedVsFitted’ plots the observed cases and deaths (the input data) against the modeled values for reported cases and deaths. In the plot bellow, note that the effect of weekends on detection and reporting can be clearly observed in both the input data and in the model output.</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">visual</span>$<span class="no">observedVsFitted</span></pre></body></html></div>
 <div class="figure">
-<img src="figure/unnamed-chunk-12-1.png" alt=""><p class="caption">plot of chunk unnamed-chunk-12</p>
+<embed src="figure/Rplot001.pdf"></embed><p class="caption">plot of fig 12</p>
 </div>
 <p>The figure ‘infectionsAndCases’ plots modeled reported cases against modeled ‘true’ new infections. The latter is what we estimate to be the complete, un-lagged time series of incident infections that would give rise to the trends we observe in the case and death data.</p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">visual</span>$<span class="no">infectionsAndCases</span></pre></body></html></div>
 <div class="figure">
-<img src="figure/unnamed-chunk-13-1.png" alt=""><p class="caption">plot of chunk unnamed-chunk-13</p>
+<embed src="figure/Rplot002.pdf"></embed><p class="caption">plot of fig 2</p>
 </div>
 <p>Finlly, ‘RtEstim’ is the estimated effective reproduction number (Rt) based on the modeled time series of new infections. These estimates are produced using the <a href="https://cran.r-project.org/web/packages/EpiEstim/index.html">EpiEstim package for R</a>. We use a five-day moving average. Values are plotted on the middle day of the moving average (e.g. the Rt estimate for March 16 is the average Rt over the period March 14 - March 18).</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">visual</span>$<span class="no">RtEstim</span></pre></body></html></div>
 <div class="figure">
-<img src="figure/unnamed-chunk-14-1.png" alt=""><p class="caption">plot of chunk unnamed-chunk-14</p>
+<embed src="figure/Rplot003.pdf"></embed><p class="caption">plot of fig 3</p>
 </div>
 </div>
   </div>
