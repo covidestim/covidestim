@@ -288,7 +288,7 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
       new_sym_dx[i+(j-1)] += new_sym[i]  * 
-                             p_diag_if_sym * pow(1-frac_pos[i], rho_sym) * 
+                             p_diag_if_sym * pow(1-frac_pos[i+(j-1)], rho_sym) * 
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sym_diag_delay[j];
     }
@@ -301,6 +301,8 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
             for(j in 1:Max_delay){
               if(i+(j-1) <= N_days_tot){
                dx_sym_sev[i+(j-1)] += new_sym[i] * p_diag_if_sym * 
+               pow(1-frac_pos[i+(j-1)], rho_sym) * 
+               (1 - (is_weekend[i+(j-1)]* weekend_eff)) *
                p_sev_if_sym * sym_prg_delay[j];
             }
           }
@@ -321,7 +323,7 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
       new_sev_dx[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-                             p_diag_if_sev * pow(1-frac_pos[i], rho_sev) * 
+                             p_diag_if_sev * pow(1-frac_pos[i+(j-1)], rho_sev) * 
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sev_diag_delay[j]; 
     }
@@ -333,7 +335,9 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
             for(j in 1:Max_delay){
               if(i+(j-1) <= N_days_tot){
               dx_sev_die[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-              p_diag_if_sev * p_die_if_sev * sev_prg_delay[j];
+              p_diag_if_sev *  pow(1-frac_pos[i + (j-1)], rho_sev) * 
+              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
+              p_die_if_sev * sev_prg_delay[j];
             }
           }
         }  
