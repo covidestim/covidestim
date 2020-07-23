@@ -1,5 +1,5 @@
 ---
-title: "Covidestim Results"
+title: "Results Object"
 author: "Melanie H. Chitwood, Marcus Russi" 
 output: rmarkdown::html_vignette
 vignette: >
@@ -31,54 +31,95 @@ summary(output[["extracted"]])
 ```
 
 ```
-## Error in summary(output[["extracted"]]): object 'output' not found
+##                      Length Class  Mode   
+## log_new_inf_0           900 -none- numeric
+## deriv1_log_new_inf   117000 -none- numeric
+## p_sym_if_inf            900 -none- numeric
+## p_sev_if_sym            900 -none- numeric
+## p_die_if_sev            900 -none- numeric
+## scale_dx_delay_sym      900 -none- numeric
+## scale_dx_delay_sev      900 -none- numeric
+## cas_rep_delay_shap      900 -none- numeric
+## cas_rep_delay_rate      900 -none- numeric
+## die_rep_delay_shap      900 -none- numeric
+## die_rep_delay_rate      900 -none- numeric
+## p_diag_if_sym           900 -none- numeric
+## p_diag_if_sev           900 -none- numeric
+## weekend_eff             900 -none- numeric
+## inv_sqrt_phi_c          900 -none- numeric
+## inv_sqrt_phi_d          900 -none- numeric
+## log_new_inf          117900 -none- numeric
+## new_inf              117900 -none- numeric
+## deriv2_log_new_inf   116100 -none- numeric
+## sym_diag_delay        54000 -none- numeric
+## sev_diag_delay        54000 -none- numeric
+## cas_rep_delay         54000 -none- numeric
+## die_rep_delay         54000 -none- numeric
+## cas_cum_report_delay  54000 -none- numeric
+## die_cum_report_delay  54000 -none- numeric
+## p_die_if_sym            900 -none- numeric
+## new_sym              117900 -none- numeric
+## new_sev              117900 -none- numeric
+## new_die              117900 -none- numeric
+## new_sym_dx           117900 -none- numeric
+## dx_sym_sev           117900 -none- numeric
+## dx_sym_die           117900 -none- numeric
+## new_sev_dx           117900 -none- numeric
+## dx_sev_die           117900 -none- numeric
+## new_die_dx           117900 -none- numeric
+## diag_all             117900 -none- numeric
+## occur_cas            117900 -none- numeric
+## occur_die            117900 -none- numeric
+## phi_cas                 900 -none- numeric
+## phi_die                 900 -none- numeric
+## cumulative_incidence 117900 -none- numeric
+## lp__                    900 -none- numeric
 ```
 In this format, it's possible to view the time series of estimates within a single iteration. 
 
 ```r
 # a matrix of new infection point estimates for each timepoint, iteration
 new_sym <- output[["extracted"]]$new_sym
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'output' not found
-```
-
-```r
 # view first 8 iterations, first 5 days
 new_sym[1:8, 1:5]
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'new_sym' not found
+##           
+## iterations         [,1]        [,2]        [,3]       [,4]
+##       [1,] 5.000831e-03 0.085774934 0.338419803 0.74767701
+##       [2,] 2.759352e-02 0.471483881 1.832557686 3.93464305
+##       [3,] 1.236652e-02 0.209725612 0.793641668 1.64612047
+##       [4,] 1.700063e-04 0.002945658 0.012050677 0.02808664
+##       [5,] 9.283942e-04 0.015940230 0.063102423 0.13984681
+##       [6,] 7.966206e-05 0.001393664 0.005899647 0.01451118
+##       [7,] 8.527537e-03 0.146649289 0.584590739 1.31825915
+##       [8,] 2.317722e-03 0.039494329 0.152152961 0.32462729
+##           
+## iterations       [,5]
+##       [1,] 1.22779122
+##       [2,] 6.18706202
+##       [3,] 2.48977357
+##       [4,] 0.04920852
+##       [5,] 0.23017528
+##       [6,] 0.02744720
+##       [7,] 2.24049591
+##       [8,] 0.51045805
 ```
 This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections over the first week of data. 
 
 ```r
 # create a data frame with the final 7 days from the model 
 new_sym_df <- as.data.frame(new_sym[,29:35]) 
-```
-
-```
-## Error in as.data.frame(new_sym[, 29:35]): object 'new_sym' not found
-```
-
-```r
 # compute the row average 
 new_sym_df$avg <- rowSums(new_sym_df)/7
-```
-
-```
-## Error in is.data.frame(x): object 'new_sym_df' not found
-```
-
-```r
 # calculate the mean and 95% uncertainty bounds
 quantile(new_sym_df$avg, probs = c(0.025,  0.5, 0.975))
 ```
 
 ```
-## Error in quantile(new_sym_df$avg, probs = c(0.025, 0.5, 0.975)): object 'new_sym_df' not found
+##      2.5%       50%     97.5% 
+##  66.93261 126.27501 368.72355
 ```
 `extracted` is generally useful for cases where it's necessary to compute an average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals). 
 
@@ -90,6 +131,26 @@ head(output[["summary"]])
 ```
 
 ```
-## Error in head(output[["summary"]]): object 'output' not found
+##                              mean     se_mean        sd       2.5%
+## log_new_inf_0         -0.09407199 0.124892339 1.7422593 -3.4863638
+## deriv1_log_new_inf[1]  0.09878696 0.007698155 0.1555521 -0.2177846
+## deriv1_log_new_inf[2]  0.09810893 0.007726969 0.1467691 -0.1901038
+## deriv1_log_new_inf[3]  0.10165363 0.007604998 0.1381510 -0.1704727
+## deriv1_log_new_inf[4]  0.10310780 0.007564192 0.1332101 -0.1565756
+## deriv1_log_new_inf[5]  0.10713639 0.007379831 0.1261482 -0.1348862
+##                                25%        50%       75%     97.5%
+## log_new_inf_0         -1.335545023 0.06478394 1.1358392 3.1786627
+## deriv1_log_new_inf[1] -0.005289537 0.10252738 0.1994855 0.3871890
+## deriv1_log_new_inf[2] -0.002556148 0.09851323 0.1934680 0.3815958
+## deriv1_log_new_inf[3]  0.013838110 0.10828554 0.1967466 0.3597289
+## deriv1_log_new_inf[4]  0.015198660 0.10588400 0.1922527 0.3604025
+## deriv1_log_new_inf[5]  0.022216874 0.10796443 0.1893202 0.3602236
+##                          n_eff     Rhat
+## log_new_inf_0         194.6050 1.013847
+## deriv1_log_new_inf[1] 408.2993 1.003926
+## deriv1_log_new_inf[2] 360.7869 1.005759
+## deriv1_log_new_inf[3] 329.9968 1.008112
+## deriv1_log_new_inf[4] 310.1340 1.008822
+## deriv1_log_new_inf[5] 292.1928 1.008697
 ```
 While `summary` can be easily converted to a dataframe, we recommend using helper functions with covidestim. 

@@ -450,8 +450,8 @@ model {
     
 //// LIKELIHOOD
   if(cas_yes==1){ // if cases data are present
-    tmp_obs_cas = obs_cas[1]; // case data, first day
-    tmp_occur_cas = occur_cas[1 + N_days_before]; // modeled, first day data
+    tmp_obs_cas = obs_cas[1]; // cases, first day model
+    tmp_occur_cas = occur_cas[1 + N_days_before]; // cases, first day data
     for(i in 1:N_days) {
       target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/N_days_av;
       if(i>nda0){ // if day is greater than or equal to moving avg. size

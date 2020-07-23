@@ -16,7 +16,8 @@ vignette: >
 Calling `run()` on a valid covidestim configuration will produce a S3 object of class `covidestim_result` containing the configuration used to run the model ("config"), the raw results ("result"), the extracted result as produced by [`rstan::extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) ("extracted"), and the summarized results as produced by [`rstan::summary`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) ("summary"). 
 
 ```{r, echo=FALSE, message=FALSE}
-load("output_data.RData")
+load("~/Desktop/covidestim/vignettes/output_data.RData")
+output <- cer
 ```
 
 ### Result
