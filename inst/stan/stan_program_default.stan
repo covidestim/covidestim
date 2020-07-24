@@ -15,11 +15,14 @@ data {
   
   int<lower=0,upper=1>   is_weekend[N_days+N_days_before]; // weekend indicator
   // TERMS FOR PRIOR DISTRIBTUIONS
-  // for the random walk for new infections
-  real                   pri_log_new_inf_0_mu;
-  real<lower=0>          pri_log_new_inf_0_sd;
-  real<lower=0>          pri_deriv1_log_new_inf_sd; //~~ new name
-  real<lower=0>          pri_deriv2_log_new_inf_sd;
+    // for the random walk for new infections
+    //real                   pri_log_new_inf_0_mu;
+    //real<lower=0>          pri_log_new_inf_0_sd;
+    //real<lower=0>          pri_deriv1_log_new_inf_sd; 
+    //real<lower=0>          pri_deriv2_log_new_inf_sd;
+  // for splines for new infectoins
+  int<lower=1> n_spl_par;
+  matrix[(N_days + N_days_before), n_spl_par] spl_basis;
   // probabilities of progression inf -> sym -> sev -> die
   real<lower=0>          pri_p_sym_if_inf_a; 
   real<lower=0>          pri_p_sym_if_inf_b;
@@ -102,8 +105,11 @@ transformed data {
 parameters {
   
 // INCIDENCE random walk 
- real                  log_new_inf_0; // intercept in log space
- vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of random walk 
+ // random walk 
+ //real                  log_new_inf_0; // intercept in log space
+ //vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of random walk 
+ // spline
+ vector[n_spl_par]     b_spline;
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -139,7 +145,11 @@ transformed parameters {
 // INCIDENCE
   vector[N_days_tot]      log_new_inf;
   vector[N_days_tot]      new_inf;
-  vector[N_days_tot-2]    deriv2_log_new_inf;
+  // random walk 
+  //vector[N_days_tot-2]    deriv2_log_new_inf;
+  // spline
+  vector[n_spl_par-2]         deriv2_b_spline;
+  vector[n_spl_par-1]         deriv1_b_spline;
   
 // DIAGNOSIS AND REPORTING  
  // daily probabilities of diagnosis and report
@@ -222,14 +232,24 @@ die_cum_report_delay = cumulative_sum(die_rep_delay);
   
   // NEW INCIDENT CASES
   // modeled with a random walk
-
-  log_new_inf[1] = log_new_inf_0;
-   for(i in 1:(N_days_tot-1)) {
-    log_new_inf[i+1] =  log_new_inf[i] + deriv1_log_new_inf[i];
+  //log_new_inf[1] = log_new_inf_0;
+  // for(i in 1:(N_days_tot-1)) {
+  //  log_new_inf[i+1] =  log_new_inf[i] + deriv1_log_new_inf[i];
+  //}
+  //for(i in 1:(N_days_tot-2)) {
+  //  deriv2_log_new_inf[i] = log_new_inf[i+1] * 2 - log_new_inf[i] 
+  //  - log_new_inf[i+2];
+  //}
+  
+  // modeled with a spline
+  log_new_inf = spl_basis * b_spline;
+  // second derivative
+  for(i in 1:(n_spl_par-2)) {
+    deriv2_b_spline[i] = b_spline[i+1] * 2 - b_spline[i] - b_spline[i+2];
   }
-  for(i in 1:(N_days_tot-2)) {
-    deriv2_log_new_inf[i] = log_new_inf[i+1] * 2 - log_new_inf[i] 
-    - log_new_inf[i+2];
+  // first derivative
+  for(i in 1:(n_spl_par-1)) {
+    deriv1_b_spline[i] = b_spline[i+1] - b_spline[i];
   }
 
   new_inf = exp(log_new_inf);
@@ -416,9 +436,13 @@ model {
   real tmp_occur_die;
 //// PRIORS
   // INCIDENCE
-  log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd); // 
-  deriv1_log_new_inf    ~ normal(0, pri_deriv1_log_new_inf_sd); //~~
-  deriv2_log_new_inf    ~ normal(0, pri_deriv2_log_new_inf_sd);
+  // random walk 
+  //log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd); // 
+  //deriv1_log_new_inf    ~ normal(0, pri_deriv1_log_new_inf_sd); //~~
+  //deriv2_log_new_inf    ~ normal(0, pri_deriv2_log_new_inf_sd);
+  // spline
+  deriv2_b_spline ~ student_t(10, 0, 5);
+  deriv1_b_spline ~ student_t(10, 0, 1);
   
   // DISEASE PROGRESSION
   // prbability of transitioning from inf -> sym -> sev -> die
