@@ -179,6 +179,10 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
   att(rho_sym > 0 && rho_sym <= 1)
   att(rho_sev > 0 && rho_sev <= 1)
 
+  n_spl_par <- round((N_days + N_days_before)/7) 
+  des_mat <- splines::bs(1:((N_days + N_days_before)), 
+                         df=n_spl_par, degree=3, intercept=T)
+  
   # The first set of components of 'datList'
   config <- rlang::dots_list(
     .homonyms = "error", # Ensure that no keys are entered twice
@@ -211,24 +215,19 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
     # matching the above^ case data to specific dates.
     first_date = NA,
 
-    ## Priors Parameters of random walk in log space <- new infections per day
-    # mean of log daily infections on day 1
-    pri_log_new_inf_0_mu = 0,
- 
-    # sd of log daily infections on day 1
-    pri_log_new_inf_0_sd = 10,
-
-    # drift gives some direction to random walk. stronger prior here.
-    # mean of daily change in log infections
-    #pri_log_new_inf_drift_mu = 0,
-    # hyper prior on random walk
-    # sd of daily change in log infections
-    # pri_log_new_inf_drift_sd = 1,
-
-    # priors on the second derivative; penalizes sharp changes in random walk;
-    # gives rw momentum
-    pri_deriv1_log_new_inf_sd = 0.5,
-    pri_deriv2_log_new_inf_sd = 0.05,
+    # Priors Parameters of random walk in log space <- new infections per day
+      # mean of log daily infections on day 1
+      #pri_log_new_inf_0_mu = 0,
+      # sd of log daily infections on day 1
+      #pri_log_new_inf_0_sd = 10,
+      # priors on the second derivative; penalizes sharp changes in random walk;
+      # gives rw momentum
+      #pri_deriv1_log_new_inf_sd = 0.5,
+      #pri_deriv2_log_new_inf_sd = 0.05,
+    
+    # parameters for spline <- new infections per day 
+    n_spl_par = n_spl_par, 
+    spl_basis = as.matrix(as.data.frame(des_mat)),
 
     # indicates whether case or death data are being used 
     cas_yes = as.integer(1), 
