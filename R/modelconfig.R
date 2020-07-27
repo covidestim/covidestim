@@ -179,8 +179,8 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
   att(rho_sym > 0 && rho_sym <= 1)
   att(rho_sev > 0 && rho_sev <= 1)
 
-  n_spl_par <- round((N_days + N_days_before)/7) 
-  des_mat <- splines::bs(1:((N_days + N_days_before)), 
+  n_spl_par <- ceiling((N_days + N_days_before)/4) 
+  des_mat <- splines::bs(1:n_spl_par*4, 
                          df=n_spl_par, degree=3, intercept=T)
   
   # The first set of components of 'datList'
