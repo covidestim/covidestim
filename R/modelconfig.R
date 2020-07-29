@@ -180,7 +180,7 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
   att(rho_sev > 0 && rho_sev <= 1)
 
   n_spl_par <- ceiling((N_days + N_days_before)/4) 
-  des_mat <- splines::bs(1:n_spl_par*4, 
+  des_mat <- splines::bs(1:(n_spl_par*4), 
                          df=n_spl_par, degree=3, intercept=T)
   
   # The first set of components of 'datList'
@@ -227,7 +227,7 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
     
     # parameters for spline <- new infections per day 
     n_spl_par = n_spl_par, 
-    spl_basis = as.matrix(as.data.frame(des_mat)),
+    spl_basis = as.matrix(as.data.frame(des_mat))[1:(N_days + N_days_before),],
 
     # indicates whether case or death data are being used 
     cas_yes = as.integer(1), 
