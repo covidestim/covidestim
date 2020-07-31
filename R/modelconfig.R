@@ -222,8 +222,8 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
     pri_logRt_sd = 2, # intercept for logRt
     pri_serial_i_a = 1.375, # for serial interval prior
     pri_serial_i_b = 0.05538,  # for serial interval prior
-    pri_inf_imported_mu = 0,   # imported infections 
-    pri_inf_imported_sd = 0.5/0.798,   # imported infections 
+    #pri_inf_imported_mu = 0,   # imported infections, for counties
+    #pri_inf_imported_sd = 0.5/0.798,   # imported infections, for counties 
     pri_deriv1_b_spline_sd = 0.2, # penalizes changes in Rt level
     pri_deriv2_b_spline_sd = 0.1, # penalizes changes in Rt curvature
     n_spl_par = n_spl_par, 

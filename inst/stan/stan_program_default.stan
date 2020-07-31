@@ -51,8 +51,8 @@ data {
   real<lower=0>          pri_logRt_sd; // ~~ NEW
   real                   pri_serial_i_a; // ~~ NEW
   real<lower=0>          pri_serial_i_b; // ~~ NEW
-  real                   pri_inf_imported_mu; // ~~ NEW
-  real<lower=0>          pri_inf_imported_sd; // ~~ NEW
+//  real                   pri_inf_imported_mu; // ~~ NEW // for counties
+//  real<lower=0>          pri_inf_imported_sd; // ~~ NEW // for counties
   real<lower=0>          pri_deriv1_b_spline_sd; // ~~ NEW
   real<lower=0>          pri_deriv2_b_spline_sd; // ~~ NEW
   // probabilities of progression inf -> sym -> sev -> die
@@ -137,7 +137,7 @@ parameters {
  real                  log_new_inf_0; // infection intercept in log space
  vector[n_spl_par]     b_spline; // spline for Rt
  real<lower=0>         serial_i; // serial interval
- real<lower=0>         inf_imported; // imported cases
+ //real<lower=0>         inf_imported; // imported cases for counties
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -242,7 +242,7 @@ for(i in 1:Max_delay){
   
   log_new_inf = cumulative_sum(deriv1_log_new_inf);
   log_new_inf = log_new_inf - log_new_inf[N_days_before] + log_new_inf_0;
-  new_inf = exp(log_new_inf) + inf_imported;
+  new_inf = exp(log_new_inf); //+ inf_imported;
   
   // second derivative
   for(i in 1:(n_spl_par-2)) {
@@ -439,6 +439,7 @@ model {
   serial_i              ~ lognormal(pri_serial_i_a, pri_serial_i_b);
   deriv2_b_spline       ~ normal(0, pri_deriv1_b_spline_sd);
   deriv1_b_spline       ~ normal(0, pri_deriv2_b_spline_sd);
+  //inf_imported         ~ normal(pri_inf_imported_mu,pri_inf_imported_sd); // for counties
   
   // DISEASE PROGRESSION
   // prbability of transitioning from inf -> sym -> sev -> die

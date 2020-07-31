@@ -298,11 +298,11 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
   structure(ps, class = 'priors')
 }
 
-#' Priors on reporting delays
+#' Priors on diagnostic delays
 #'
-#' This function returns a keyed list of priors related to delays in reporting
-#' of cases, hospitalizations, and deaths.  Called with no arguments, the
-#' default values are returned. 
+#' This function returns a keyed list of priors related to delays in diagnosing
+#' of cases and deaths.  Called with no arguments, the default values are 
+#' returned. 
 #'
 #' Boundary avoiding priors are use by default. 
 #'
