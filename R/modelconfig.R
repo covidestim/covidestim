@@ -225,7 +225,7 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
     pri_inf_imported_mu = 0,   # imported infections 
     pri_inf_imported_sd = 0.5/0.798,   # imported infections 
     pri_deriv1_b_spline_sd = 0.2, # penalizes changes in Rt level
-    pri_deriv2_b_spline_sdd = 0.1, # penalizes changes in Rt curvature
+    pri_deriv2_b_spline_sd = 0.1, # penalizes changes in Rt curvature
     n_spl_par = n_spl_par, 
     spl_basis = as.matrix(as.data.frame(des_mat))[1:(N_days + N_days_before),],
 
