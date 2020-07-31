@@ -12,17 +12,49 @@ data {
   // modulate relationship between testing fraction, diagnosis
   real<lower=0,upper=1>  rho_sym; 
   real<lower=0,upper=1>  rho_sev; 
-  
   int<lower=0,upper=1>   is_weekend[N_days+N_days_before]; // weekend indicator
-  // TERMS FOR PRIOR DISTRIBTUIONS
-    // for the random walk for new infections
-    //real                   pri_log_new_inf_0_mu;
-    //real<lower=0>          pri_log_new_inf_0_sd;
-    //real<lower=0>          pri_deriv1_log_new_inf_sd; 
-    //real<lower=0>          pri_deriv2_log_new_inf_sd;
-  // for splines for new infectoins
+  
+  // terms for spline
   int<lower=1> n_spl_par;
   matrix[(N_days + N_days_before), n_spl_par] spl_basis;
+  
+  // delay distributions! 
+  // fixed delay distribtions. time from inf -> sym, sym -> sev, sev -> die
+  real<lower=0>          inf_prg_delay_shap; 
+  real<lower=0>          inf_prg_delay_rate;
+  real<lower=0>          sym_prg_delay_shap;
+  real<lower=0>          sym_prg_delay_rate;
+  real<lower=0>          sev_prg_delay_shap;
+  real<lower=0>          sev_prg_delay_rate;
+  // fixed delay from diagnosis to report
+  real<lower=0>          cas_rep_delay_shap;
+  real<lower=0>          cas_rep_delay_rate;
+  real<lower=0>          die_rep_delay_shap;
+  real<lower=0>          die_rep_delay_rate;
+  
+  /// control nobs! 
+  //  what data are included --  cases, deaths: 
+  int<lower = 0, upper = 1> cas_yes; 
+  int<lower = 0, upper = 1> die_yes; 
+  //  how are the data dated -- report, occurrence: 
+  int<lower = 0, upper = 1> obs_cas_rep;
+  int<lower = 0, upper = 1> obs_die_rep;
+  //  how many days should be used for the moving average in the likelihood 
+  //  function? 
+  int<lower = 1, upper = 10> N_days_av; 
+
+  // TERMS FOR PRIOR DISTRIBTUIONS
+  // for new infections
+  real                   pri_log_new_inf_0_mu;
+  real<lower=0>          pri_log_new_inf_0_sd;
+  real                   pri_logRt_mu; // ~~ NEW
+  real<lower=0>          pri_logRt_sd; // ~~ NEW
+  real                   pri_serial_i_a; // ~~ NEW
+  real<lower=0>          pri_serial_i_b; // ~~ NEW
+  real                   pri_inf_imported_mu; // ~~ NEW
+  real<lower=0>          pri_inf_imported_sd; // ~~ NEW
+  real<lower=0>          pri_deriv1_b_spline_sd; // ~~ NEW
+  real<lower=0>          pri_deriv2_b_spline_sd; // ~~ NEW
   // probabilities of progression inf -> sym -> sev -> die
   real<lower=0>          pri_p_sym_if_inf_a; 
   real<lower=0>          pri_p_sym_if_inf_b;
@@ -47,46 +79,29 @@ data {
   real<lower=0>          scale_dx_delay_sym_b; 
   real<lower=0>          scale_dx_delay_sev_a; 
   real<lower=0>          scale_dx_delay_sev_b;
-  // delay from diagnosis to report
-  // delay is gamma distributed, terms of that gamma distribution are 
-  // log normal; each value here is a mean of a lognormal distribution
-  real<lower=0>          pri_cas_rep_delay_shp_a;
-  real<lower=0>          pri_cas_rep_delay_shp_b;
-  real<lower=0>          pri_die_rep_delay_shp_a;
-  real<lower=0>          pri_die_rep_delay_shp_b;
-  ///
-  // fixed delay distribtions. time from inf -> sym, sym -> sev, sev -> die
-  real<lower=0>          inf_prg_delay_shap; //~~ new names
-  real<lower=0>          inf_prg_delay_rate;
-  real<lower=0>          sym_prg_delay_shap;
-  real<lower=0>          sym_prg_delay_rate;
-  real<lower=0>          sev_prg_delay_shap;
-  real<lower=0>          sev_prg_delay_rate;
-  /// control nobs! 
-  //  what data are included --  cases, deaths: 
-  int<lower = 0, upper = 1> cas_yes; 
-  int<lower = 0, upper = 1> die_yes; 
-  //  how are the data dated -- report, occurrence: 
-  int<lower = 0, upper = 1> obs_cas_rep;
-  int<lower = 0, upper = 1> obs_die_rep;
-  //  how many days should be used for the moving average in the likelihood 
-  //  function? 
-  int<lower = 1, upper = 10> N_days_av; 
+
 }
 ///////////////////////////////////////////////////////////
 transformed data {
  int  N_days_tot;
  int  nda0;
  
+ // Progression delays
  vector[Max_delay]  inf_prg_delay;
  vector[Max_delay]  sym_prg_delay;
  vector[Max_delay]  sev_prg_delay;
+// Reporting delays
+ vector[Max_delay]  cas_rep_delay;
+ vector[Max_delay]  die_rep_delay;
+// Cumulative reporting delays
+ vector[Max_delay]  cas_cum_report_delay; 
+ vector[Max_delay]  die_cum_report_delay; 
  
-  // for likelihood function moving avg. 
+// for likelihood function moving avg. 
   nda0 = N_days_av - 1; 
    
- // create 'N_days_tot', which is days of data plus days to model before first 
- // case or death 
+// create 'N_days_tot', which is days of data plus days to model before first 
+// case or death 
   N_days_tot = N_days + N_days_before; 
   
  // calculate the daily probability of transitioning to a new disease state
@@ -100,42 +115,49 @@ transformed data {
       - gamma_cdf(i-1.0, sev_prg_delay_shap, sev_prg_delay_rate);
   }
   
+// Calcluate the probability of reporting for each day after diagnosis
+// for 1 to 60 post diagnosis. 
+  for(i in 1:Max_delay) {
+    cas_rep_delay[i] = gamma_cdf(i+0.0, cas_rep_delay_shap,cas_rep_delay_rate)
+      - gamma_cdf(i-1.0, cas_rep_delay_shap, cas_rep_delay_rate);
+    die_rep_delay[i] = gamma_cdf(i+0.0, die_rep_delay_shap, die_rep_delay_rate)
+      - gamma_cdf(i-1.0, die_rep_delay_shap, die_rep_delay_rate);
+}
+
+// Cumlative Reporting Delays
+// Calculate the cumulative probability of reporting for each day 
+// after diagnosis.
+cas_cum_report_delay = cumulative_sum(cas_rep_delay);
+die_cum_report_delay = cumulative_sum(die_rep_delay);
 }
 ///////////////////////////////////////////////////////////
 parameters {
   
-// INCIDENCE random walk 
- // random walk 
- //real                  log_new_inf_0; // intercept in log space
- //vector[N_days_tot-1]  deriv1_log_new_inf; // first derivative of random walk 
- // spline
- vector[n_spl_par]     b_spline;
+// INCIDENCE 
+ real                  log_new_inf_0; // infection intercept in log space
+ vector[n_spl_par]     b_spline; // spline for Rt
+ real<lower=0>         serial_i; // serial interval
+ real<lower=0>         inf_imported; // imported cases
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
   real<lower=0, upper=1>    p_sym_if_inf;
   real<lower=0, upper=1>    p_sev_if_sym;
   real<lower=0, upper=0.3>  p_die_if_sev;
+  
 // DIANGOSIS
 // scaling factor for time to diagnosis
-  real<lower=0, upper=1>     scale_dx_delay_sym; 
-  real<lower=0, upper=1>     scale_dx_delay_sev; 
-// terms for gamma distribution of reporting delays  
-  real<lower=0.5>     cas_rep_delay_shap;
-  real<lower=0>       cas_rep_delay_rate;
-  real<lower=0.5>     die_rep_delay_shap;
-  real<lower=0>       die_rep_delay_rate;
-
-// DIAGNOSIS 
+  real<lower=0, upper=1>    scale_dx_delay_sym; 
+  real<lower=0, upper=1>    scale_dx_delay_sev; 
 // probability of diagnosis at each illness state
-  real<lower=0, upper=1>  p_diag_if_sym;
-  real<lower=0, upper=1>  p_diag_if_sev;
-  real<lower=0, upper=1>  weekend_eff;
-
-// LIKELIHOOD
-// phi terms for negative bino imal likelihood function 
-  real<lower=0>           inv_sqrt_phi_c;
-  real<lower=0>           inv_sqrt_phi_d;
+  real<lower=0, upper=1>    p_diag_if_sym;
+  real<lower=0, upper=1>    p_diag_if_sev;
+  real<lower=0, upper=1>    weekend_eff;
+ 
+// LIKELIHOOD 
+// phi terms for negative b ino imal likelihood function 
+  real<lower=0>             inv_sqrt_phi_c;
+  real<lower=0>             inv_sqrt_phi_d;
 
 }
 
@@ -145,27 +167,24 @@ transformed parameters {
 // INCIDENCE
   vector[N_days_tot]      log_new_inf;
   vector[N_days_tot]      new_inf;
-  // random walk 
-  //vector[N_days_tot-2]    deriv2_log_new_inf;
-  // spline
-  vector[n_spl_par-2]         deriv2_b_spline;
-  vector[n_spl_par-1]         deriv1_b_spline;
+  vector[N_days_tot]      deriv1_log_new_inf;
+  
+  // Rt spline
+  vector[N_days_tot]      logRt;
+  vector[N_days_tot]      Rt;
+  vector[n_spl_par-2]     deriv2_b_spline;
+  vector[n_spl_par-1]     deriv1_b_spline;
   
 // DIAGNOSIS AND REPORTING  
  // daily probabilities of diagnosis and report
  // for days 1 to 60 after entering that state
   vector[Max_delay]  sym_diag_delay;
   vector[Max_delay]  sev_diag_delay;
-  vector[Max_delay]  cas_rep_delay;
-  vector[Max_delay]  die_rep_delay;
- // cumulative probability of reporting on day i, for days 1 - 60
- // used when data are dated by occurrence
-  vector[Max_delay]  cas_cum_report_delay; 
-  vector[Max_delay]  die_cum_report_delay; 
-  
+
 // DISEASE OUTCOMES
   // overall case fatality rate
   real<lower=0, upper=0.1>  p_die_if_sym;
+  
   // "true" number entering disease state each day
   vector[N_days_tot]  new_sym; 
   vector[N_days_tot]  new_sev;
@@ -208,41 +227,23 @@ for(i in 1:Max_delay){
                         sev_prg_delay_rate/scale_dx_delay_sev);
 }
   
-// Reporting Delays
-// Calcluate the probability of reporting for each day after diagnosis
-// for 1 to 60 post diagnosis. 
-  for(i in 1:Max_delay) {
-    cas_rep_delay[i] = gamma_cdf(i+0.0, cas_rep_delay_shap,cas_rep_delay_rate)
-      - gamma_cdf(i-1.0, cas_rep_delay_shap, cas_rep_delay_rate);
-    die_rep_delay[i] = gamma_cdf(i+0.0, die_rep_delay_shap, die_rep_delay_rate)
-      - gamma_cdf(i-1.0, die_rep_delay_shap, die_rep_delay_rate);
-}
-
-// Cumlative Reporting Delays
-// Calculate the cumulative probability of reporting for each day 
-// after diagnosis.
-cas_cum_report_delay = cumulative_sum(cas_rep_delay);
-die_cum_report_delay = cumulative_sum(die_rep_delay);
-
 // CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 // initialize empty vectors
   new_sym = rep_vector(0, N_days_tot);
   new_sev = rep_vector(0, N_days_tot);
   new_die = rep_vector(0, N_days_tot);
   
-  // NEW INCIDENT CASES
-  // modeled with a random walk
-  //log_new_inf[1] = log_new_inf_0;
-  // for(i in 1:(N_days_tot-1)) {
-  //  log_new_inf[i+1] =  log_new_inf[i] + deriv1_log_new_inf[i];
-  //}
-  //for(i in 1:(N_days_tot-2)) {
-  //  deriv2_log_new_inf[i] = log_new_inf[i+1] * 2 - log_new_inf[i] 
-  //  - log_new_inf[i+2];
-  //}
+// NEW INCIDENT CASES
   
   // modeled with a spline
-  log_new_inf = spl_basis * b_spline;
+  logRt = spl_basis * b_spline;
+  Rt = exp(logRt); 
+  deriv1_log_new_inf = logRt/serial_i; 
+  
+  log_new_inf = cumulative_sum(deriv1_log_new_inf);
+  log_new_inf = log_new_inf - log_new_inf[N_days_before] + log_new_inf_0;
+  new_inf = exp(log_new_inf) + inf_imported;
+  
   // second derivative
   for(i in 1:(n_spl_par-2)) {
     deriv2_b_spline[i] = b_spline[i+1] * 2 - b_spline[i] - b_spline[i+2];
@@ -252,8 +253,6 @@ die_cum_report_delay = cumulative_sum(die_rep_delay);
     deriv1_b_spline[i] = b_spline[i+1] - b_spline[i];
   }
 
-  new_inf = exp(log_new_inf);
- 
  // SYMPTOMATIC CASES
  // cases entering a state on day i + j - 1: 
  // cases entering previous state on day i * the probability of progression *
@@ -435,14 +434,11 @@ model {
   int  tmp_obs_die;
   real tmp_occur_die;
 //// PRIORS
-  // INCIDENCE
-  // random walk 
-  //log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd); // 
-  //deriv1_log_new_inf    ~ normal(0, pri_deriv1_log_new_inf_sd); //~~
-  //deriv2_log_new_inf    ~ normal(0, pri_deriv2_log_new_inf_sd);
-  // spline
-  deriv2_b_spline ~ student_t(10, 0, 5);
-  deriv1_b_spline ~ student_t(10, 0, 1);
+  log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
+  b_spline              ~ normal(pri_logRt_mu, pri_logRt_sd);
+  serial_i              ~ lognormal(pri_serial_i_a, pri_serial_i_b);
+  deriv2_b_spline       ~ normal(0, pri_deriv1_b_spline_sd);
+  deriv1_b_spline       ~ normal(0, pri_deriv2_b_spline_sd);
   
   // DISEASE PROGRESSION
   // prbability of transitioning from inf -> sym -> sev -> die
@@ -451,13 +447,6 @@ model {
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   // overall case fatality rate
   p_die_if_sym         ~ beta(pri_p_die_if_sym_a, pri_p_die_if_sym_b);
-
-  // REPORTING
-  // reporting delay terms
-  cas_rep_delay_shap   ~ lognormal(log(pri_cas_rep_delay_shp_a), 0.5);  
-  cas_rep_delay_rate   ~ lognormal(log(pri_cas_rep_delay_shp_b), 0.5); 
-  die_rep_delay_shap   ~ lognormal(log(pri_die_rep_delay_shp_a), 0.5);  
-  die_rep_delay_rate   ~ lognormal(log(pri_die_rep_delay_shp_b), 0.5);
 
 // DIAGNOSIS    
   // probabilities of diagnosis
