@@ -1,5 +1,5 @@
 ---
-title: "Using Covidestim"
+title: "Covidestim Quick Guide"
 author: "Melanie H. Chitwood, Marcus Russi" 
 output: rmarkdown::html_vignette
 vignette: >
@@ -19,8 +19,8 @@ library(covidestim)
 
 ## Running the model 
 ### Data
-We will demonstrate how to use the covidestim package using data from the [Massachusetts Department of Public Health](https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts). 
-Users can run the model with case and/or death data. Data on the fraction of tests with a positive results may also be used; we strongly recommend users smooth fraction positive data using a moving average or spline. Each data type should be entered as its own data frame with two columns: a column called 'date' and a column called 'observation.' 
+Will we demonstrate how to use the covidestim paackage using data from the [Massachusetts Department of Public Health](https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts) 
+Users can use case and/or death data with the model. Data on the fraction of tests with a positive results may also be used; we strongly recommend users smooth fraciton positive data using a moving average or spline. Each data type should be entered as its own dataframe with two columns: a column called 'date' and a column called 'observation.' 
 
 
 
@@ -37,7 +37,7 @@ head(df.cases)
 #> 6 2020-03-06          14
 ```
 ### Generate a model configuration 
-Input data and model run options are summarized into a covidestim configuration with the funciton call [`covidestim()`](\code{?covidestim}). Users must specify the number of days of data in the input data. More information on data formatting can be found [here](\code{?input_cases}). Calling `covidestim()` will produce a summary of the model run conditions, priors, and data inputs. 
+Inpute data and model run options are summarized into a covidestim configuration with the funciton call [`covidestim()`](\code{?covidestim}). Users must specify the number of days of data in the input data. More information on data formating can be found [here](\code{?input_cases}). Calling `covidestim()` will produce a summary of model run conditions, priors, and data inputs. 
 
 ```r
 covidestim(ndays = nrow(df.cases)) 
@@ -87,7 +87,7 @@ covidestim(ndays = nrow(df.cases))
 #> 	[ ❌ ]	Deaths
 #> 	[ ❌ ]	Fraction positive
 ```
-Notice that what we input here is **not** a valid model configuration because it does not contain data! Each data frame must be added to the covidestim call using the calls [`input_cases()`](\code{?input_cases}), [`input_deaths()`](\code{?input_deaths}), and [`input_fracpos()`](\code{?input_fracpos}). Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.   
+Notice that what we input is **not** a valid model configuration because it does not contain data! Each dataframe must be added to the covidestim call using calls [`input_cases()`](\code{?input_cases}),  [`input_deaths()`](\code{?input_deaths}), and [`input_fracpos()`](\code{?input_fracpos}). Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.   
   
 Because we use date-of-occurrence data, we choose to enable the 'weekend effect.' As individuals are less likely to be tested on Saturdays and Sundays, enabling the weekend effect allows the model to estimate a systematically lower probability of diagnosis on the weekend. This generally improves model fit to data when the data are by date-of-occurrence. 
 For additional information about changing the base configuration of the model, see [`covidestim()`](\code{?covidestim}). 
@@ -146,19 +146,17 @@ config1
 #> 	[ 103]	Fraction positive
 ```
 ### Initializing a model run
-Finally, the model is run with the call [`run`](\code{?run}). Do not forget to assign a name to the output of the run. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in RStudio, periodic status updates will appear in the console. 
+Finally, the model is run with the call [`run`](\code{?run}). Do not forget to assign the a name to the output of the run. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in RStudio, periodic status updates will appear in the console. 
 
 ```r
 output <- run(config1, cores = parallel::detectCores())
 ```
 
 ## Accessing model output 
-Calling `run()` on a valid covidestim configuration will produce a S3 object of class `covidestim_result` containing the configuration used to run the model ("config"), the raw results ("result"), the extracted result as produced by [`rstan::extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) ("extracted"), and the summarized results as produced by [`rstan::summary`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) ("summary"). 
-
-First, we describe summary functions in covidestim to access model results. Next, we describe the various items within `covidestim_result`.  
+Calling `run()` on a valid covidestim configuration will produce a S3 object of class `covidestim_result`. Here, we describe the summary functions in covidestim to view model results. In the vignette [Acessing Covidestim Results Object](https://www.covidestim.org/articles/covidestim_vignette.html) we describe the various items within `covidestim_result`.  
 
 ### Summarizing covidestim output
-A covidestim object can be easily converted to a summary data frame with the call [`summary`](\code{?summary}). Each row of the data frame is a date. Each column of the data frame is a value of interest. Variables appended with ".hi" or ".lo" indicate the 0.975 and 0.025 quantiles, respectively. A data dictionary for summarized results can be found [here](\code{?summary}). 
+A covidestim object can be easily converted to a summary data frame with the call [`summary`](\code{?summary}). Each row of the data frame is a date. Each column of the data frame is a value of interest. Variables appened with .hi or .lo indicate the 0.975 and 0.025 quantiles, respectively. A data dictionary for summarized results can be found [here](\code{?summary}). 
 
 
 ```r
@@ -166,173 +164,62 @@ output.summary <- summary(output)
 ```
 
 ```r
-head(output.summary)
-#> # A tibble: 6 x 35
-#>   date       cases.fitted cases.fitted.hi cases.fitted.lo cum.incidence
-#>   <date>            <dbl>           <dbl>           <dbl>         <dbl>
-#> 1 2020-02-02    0.0000160        0.000554     0.000000204         0.846
-#> 2 2020-02-03    0.000329         0.0100       0.00000530          1.78 
-#> 3 2020-02-04    0.00209          0.0503       0.0000431           2.80 
-#> 4 2020-02-05    0.00678          0.128        0.000185            3.97 
-#> 5 2020-02-06    0.0147           0.224        0.000437            5.23 
-#> 6 2020-02-07    0.0248           0.348        0.000897            6.63 
-#> # … with 30 more variables: deaths <dbl>, deaths.diagnosed <dbl>,
-#> #   deaths.diagnosed.hi <dbl>, deaths.diagnosed.lo <dbl>,
-#> #   deaths.fitted <dbl>, deaths.fitted.hi <dbl>,
-#> #   deaths.fitted.lo <dbl>, deaths.hi <dbl>, deaths.lo <dbl>,
-#> #   diagnoses <dbl>, diagnoses.hi <dbl>, diagnoses.lo <dbl>,
-#> #   infections <dbl>, infections.hi <dbl>, infections.lo <dbl>,
-#> #   severe <dbl>, severe.hi <dbl>, severe.lo <dbl>, symptomatic <dbl>,
-#> #   symptomatic.hi <dbl>, symptomatic.lo <dbl>, data.available <lgl>,
-#> #   Rt <dbl>, Rt.lo <I<dbl>>, Rt.hi <I<dbl>>, NaiveRt <dbl>,
-#> #   NaiveRt.lo <dbl>, NaiveRt.hi <dbl>, cum.incidence.lo <dbl>,
-#> #   cum.incidence.hi <dbl>
+print(output.summary[40:45, 1:5])
+#> Error in print(output.summary[40:45, 1:5]): object 'output.summary' not found
 ```
-Note that the model initializes 28 days before the first reported case or death by default. This allows the time series of new infections sufficient time to reach a level that is consistent with the first days of reported cases and deaths. 
 
 The posterior distributions of key time-invariant parameters can also be summarized with the call [`summaryEpi`](\?code{?summaryEpi})
 
 
 ```r
 covidestim::summaryEpi(output)
-#> # A tibble: 6 x 4
-#>   par           `2.5%`  `50%` `97.5%`
-#>   <chr>          <dbl>  <dbl>   <dbl>
-#> 1 p_sym_if_inf  0.710  0.822   0.908 
-#> 2 p_sev_if_sym  0.123  0.213   0.326 
-#> 3 p_die_if_sev  0.0735 0.0859  0.104 
-#> 4 p_die_if_sym  0.0104 0.0185  0.0269
-#> 5 p_diag_if_sym 0.0296 0.0812  0.179 
-#> 6 p_diag_if_sev 0.312  0.806   0.994
+#> Error in rstan::summary(ccr$result, pars = pars_of_interest, probs = c(0.025, : object 'output' not found
 ```
-Note that p_diag_if_sym (the probability a symptomatic, but not severe, case is diagnosed) and p_diag_if_sev (the probability that a severe case is diagnosed) are summarized without the adjustment for changing diagnostic coverage. 
+Note that p_diag_if_sym (the probability a symptomatic case is diagnosed) and p_diag_if_sev (the probability that a severe case is diagnosed) are summarized without the adjustment for changing diagnostic coverage. 
 
-### result
-Covidestim uses Bayesian inference to estimate incident cases. The model is run using [rstan](https://mc-stan.org/users/interfaces/rstan), a package for the R programming language that allows for the estimation and analysis of Bayesian models with Stan. `result` is a stanfit object, the output of calling [`rstan::stan()`](https://mc-stan.org/rstan/reference/stanfit-class.html). 
-
-We make use of the rstan functions [`summary()`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) and  [`extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) to pull model results of interest for easy visualization and analysis. 
-
-### extracted
-`extracted` contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of posterior samples for a parameter. All three chains have been mixed. 
+## Visualizing model output
+Model results can be visualized with a the call [`viz`](\code{?viz}). Three figures will be produced: 
 
 
 ```r
-summary(output[["extracted"]])
-#>                      Length Class  Mode   
-#> log_new_inf_0           900 -none- numeric
-#> deriv1_log_new_inf   117000 -none- numeric
-#> p_sym_if_inf            900 -none- numeric
-#> p_sev_if_sym            900 -none- numeric
-#> p_die_if_sev            900 -none- numeric
-#> scale_dx_delay_sym      900 -none- numeric
-#> scale_dx_delay_sev      900 -none- numeric
-#> cas_rep_delay_shap      900 -none- numeric
-#> cas_rep_delay_rate      900 -none- numeric
-#> die_rep_delay_shap      900 -none- numeric
-#> die_rep_delay_rate      900 -none- numeric
-#> p_diag_if_sym           900 -none- numeric
-#> p_diag_if_sev           900 -none- numeric
-#> weekend_eff             900 -none- numeric
-#> inv_sqrt_phi_c          900 -none- numeric
-#> inv_sqrt_phi_d          900 -none- numeric
-#> log_new_inf          117900 -none- numeric
-#> new_inf              117900 -none- numeric
-#> deriv2_log_new_inf   116100 -none- numeric
-#> inf_prg_delay         54000 -none- numeric
-#> sym_prg_delay         54000 -none- numeric
-#> sev_prg_delay         54000 -none- numeric
-#> sym_diag_delay        54000 -none- numeric
-#> sev_diag_delay        54000 -none- numeric
-#> cas_rep_delay         54000 -none- numeric
-#> die_rep_delay         54000 -none- numeric
-#> cas_cum_report_delay  54000 -none- numeric
-#> die_cum_report_delay  54000 -none- numeric
-#> p_die_if_sym            900 -none- numeric
-#> new_sym              117900 -none- numeric
-#> new_sev              117900 -none- numeric
-#> new_die              117900 -none- numeric
-#> new_sym_dx           117900 -none- numeric
-#> dx_sym_sev           117900 -none- numeric
-#> dx_sym_die           117900 -none- numeric
-#> new_sev_dx           117900 -none- numeric
-#> dx_sev_die           117900 -none- numeric
-#> new_die_dx           117900 -none- numeric
-#> diag_all             117900 -none- numeric
-#> occur_cas            117900 -none- numeric
-#> occur_die            117900 -none- numeric
-#> phi_cas                 900 -none- numeric
-#> phi_die                 900 -none- numeric
-#> cumulative_incidence 117900 -none- numeric
-#> lp__                    900 -none- numeric
+visual <- covidestim::viz(output)
 ```
-In this format, it's possible to view the time series of estimates within a single iteration. 
 
 ```r
-# a matrix of new infection point estimates for each timepoint, iteration
-new_sym <- output[["extracted"]]$new_sym
-# view first 8 iterations, first 5 days
-new_sym[1:8, 1:5]
-#>           
-#> iterations         [,1]         [,2]        [,3]        [,4]
-#>       [1,] 3.274829e-03 0.0560706616 0.219644176 0.477916283
-#>       [2,] 5.032763e-05 0.0008716628 0.003556969 0.008219075
-#>       [3,] 1.958447e-03 0.0335117160 0.130883960 0.282419126
-#>       [4,] 1.570663e-03 0.0270281841 0.107926993 0.243060987
-#>       [5,] 5.757425e-05 0.0009934615 0.003999409 0.009035890
-#>       [6,] 1.460804e-03 0.0252677683 0.102576842 0.234446367
-#>       [7,] 1.545208e-03 0.0265116400 0.104644103 0.230502169
-#>       [8,] 3.610453e-03 0.0622773026 0.250509470 0.566421047
-#>           
-#> iterations       [,5]
-#>       [1,] 0.76287176
-#>       [2,] 0.01428653
-#>       [3,] 0.44659259
-#>       [4,] 0.40893295
-#>       [5,] 0.01517172
-#>       [6,] 0.40018058
-#>       [7,] 0.37628729
-#>       [8,] 0.95003396
+summary.default(visual)
+#>                    Length Class Mode
+#> observedVsFitted   9      gg    list
+#> infectionsAndCases 9      gg    list
+#> RtEstim            9      gg    list
 ```
-This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections in the first week for which we have case and death data.  
+
+The figure 'observedVsFitted' plots the observed cases and deaths (the input data) against the modeled values for reported cases and deaths. In the plot bellow, note that the effect of weekends on detection and reporting can be clearly observed in both the input data and in the model output. 
+
 
 ```r
-# create a data frame with the first 7 days  
-new_sym_df <- as.data.frame(new_sym[,29:35]) 
-# compute the row average 
-new_sym_df$avg <- rowSums(new_sym_df)/7
-# calculate the mean and 95% uncertainty bounds
-quantile(new_sym_df$avg, probs = c(0.025,  0.5, 0.975))
-#>      2.5%       50%     97.5% 
-#>  54.62054 106.99165 298.04064
+visual$observedVsFitted
 ```
-`extracted` is generally useful for cases where it's necessary to compute a sum or average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals). 
 
-### summary
-`summary` contains the point estimate and quantile-based uncertainty bounds for every parameter in the model. The number in brackets indicates the index day of the estimate. `summary` also contains information about model fit, including the effective sample size and Rhat estimates. 
+![Figure 1](figure/Rplot001.png)
+
+The figure 'infectionsAndCases' plots reported cases against modeled 'true' new infections. The latter is what we estimate to be the complete, un-lagged time series of incident infections that would give rise to the trends we observe in the case and death data. 
 
 ```r
-head(output[["summary"]])
-#>                              mean     se_mean        sd       2.5%
-#> log_new_inf_0         -0.20513781 0.096584159 1.7019611 -3.7129190
-#> deriv1_log_new_inf[1]  0.09328947 0.007057905 0.1490608 -0.1941232
-#> deriv1_log_new_inf[2]  0.09288524 0.006673217 0.1410403 -0.1863570
-#> deriv1_log_new_inf[3]  0.09333115 0.006440995 0.1310062 -0.1613550
-#> deriv1_log_new_inf[4]  0.09454527 0.006044516 0.1247673 -0.1445126
-#> deriv1_log_new_inf[5]  0.09915530 0.005979370 0.1206710 -0.1217462
-#>                                25%         50%       75%     97.5%
-#> log_new_inf_0         -1.273065857 -0.16726647 1.0535618 2.7781061
-#> deriv1_log_new_inf[1] -0.012128721  0.09428490 0.1985366 0.3724622
-#> deriv1_log_new_inf[2] -0.008922209  0.09393375 0.1923225 0.3679413
-#> deriv1_log_new_inf[3]  0.005446738  0.09212803 0.1819946 0.3393304
-#> deriv1_log_new_inf[4]  0.006003373  0.09236378 0.1808786 0.3380771
-#> deriv1_log_new_inf[5]  0.008539548  0.09831075 0.1869341 0.3287108
-#>                          n_eff     Rhat
-#> log_new_inf_0         310.5185 1.007401
-#> deriv1_log_new_inf[1] 446.0418 1.002887
-#> deriv1_log_new_inf[2] 446.6999 1.003825
-#> deriv1_log_new_inf[3] 413.6924 1.003046
-#> deriv1_log_new_inf[4] 426.0676 1.005748
-#> deriv1_log_new_inf[5] 407.2815 1.005308
+visual$infectionsAndCases
 ```
-While `summary` can be easily converted to a data frame, we recommend using the helper functions in covidestim, as described above. 
+
+![Figure 2](figure/Rplot002.png)
+
+Finlly, 'RtEstim' is the estimated effective reproduction number (Rt) based on the modeled time series of new infections. These estimates are produced using the [EpiEstim package for R](https://cran.r-project.org/web/packages/EpiEstim/index.html). We use a five-day moving average. Values are plotted on the middle day of the moving average (e.g. the Rt estimate for March 16 is the average Rt over the period March 14 - March 18). 
+
+
+```r
+visual$RtEstim
+```
+
+![Figure 3](figure/Rplot003.png)
+
+
+
+
 

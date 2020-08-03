@@ -60,8 +60,8 @@ viz.covidestim_result <- function(ccr, include.RtEstim = TRUE, renderPDF = FALSE
   if (include.RtEstim)
     result <- append(result,
       list(
-        RtEstim      = viz_RtEstim(run_summary),
-        RtEstimNaive = viz_RtEstimNaive(run_summary)
+        RtEstim      = viz_RtEstim(run_summary)#,
+        #RtEstimNaive = viz_RtEstimNaive(run_summary)
       )
     )
 
@@ -85,7 +85,7 @@ viz_RtEstim <- function(run_summary) {
     scale_x_date(date_breaks = '1 week',
                  date_labels = "%b %d",
                  minor_breaks = NULL) +
-    scale_y_log10(breaks = c(seq(0.5, 1.5, 0.1), 1, 2, 3, 4, 5),
+    scale_y_log10(breaks = c(0.5, 0.7, 1, 1.5, 2, 3, 4, 5),
                   minor_breaks = NULL) +
     labs(
       x = NULL,
@@ -99,38 +99,38 @@ viz_RtEstim <- function(run_summary) {
       )
     )
 }
-
-viz_RtEstimNaive <- function(run_summary) {
-
-  ggplot2::ggplot(run_summary, aes(x = date)) +
-    geom_hline(
-      yintercept = 1,
-      color = "red",
-      size = 0.5,
-      show.legend = FALSE
-    ) +
-    geom_line(aes(y = NaiveRt), na.rm = TRUE) + 
-    geom_ribbon(aes(y = NaiveRt, ymin=NaiveRt.lo, ymax=NaiveRt.hi), alpha=0.3,
-                na.rm = TRUE) +
-    scale_x_date(date_breaks = '1 week',
-                 date_labels = "%b %d",
-                 minor_breaks = NULL,
-                 limits = c(min(run_summary$date), NA)) +
-    scale_y_log10(breaks = c(seq(0.5, 1.5, 0.1), 1, 2, 3, 4, 5),
-                  minor_breaks = NULL) +
-    coord_cartesian(ylim = c(0, 8)) +
-    labs(
-      x = NULL,
-      y = "Rt", 
-      title = "Naive Effective Reproduction Number Estimate"
-    ) +
-    theme_linedraw() +
-    theme(
-      axis.text.x = element_text(
-        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-      )
-    )
-}
+#
+#viz_RtEstimNaive <- function(run_summary) {
+#
+#  ggplot2::ggplot(run_summary, aes(x = date)) +
+#    geom_hline(
+#      yintercept = 1,
+#      color = "red",
+#      size = 0.5,
+#      show.legend = FALSE
+#    ) +
+#    geom_line(aes(y = NaiveRt), na.rm = TRUE) + 
+#    geom_ribbon(aes(y = NaiveRt, ymin=NaiveRt.lo, ymax=NaiveRt.hi), alpha=0.3,
+#                na.rm = TRUE) +
+#    scale_x_date(date_breaks = '1 week',
+#                 date_labels = "%b %d",
+#                 minor_breaks = NULL,
+#                 limits = c(min(run_summary$date), NA)) +
+#    scale_y_log10(breaks = c(seq(0.5, 1.5, 0.1), 1, 2, 3, 4, 5),
+#                  minor_breaks = NULL) +
+#    coord_cartesian(ylim = c(0, 8)) +
+#    labs(
+#      x = NULL,
+#      y = "Rt", 
+#      title = "Naive Effective Reproduction Number Estimate"
+#    ) +
+#    theme_linedraw() +
+#    theme(
+#      axis.text.x = element_text(
+#        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
+#      )
+#    )
+#}
 
 #' @import ggplot2
 viz_observed_and_fitted <- function(run_summary, input_data) {
