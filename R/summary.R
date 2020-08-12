@@ -71,12 +71,13 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
     "new_inf"              = "infections",
     "occur_cas"            = "cases.fitted",
     "occur_die"            = "deaths.fitted",
-    "cumulative_incidence" = "cum.incidence",
+    # "cumulative_incidence" = "cum.incidence",
     "new_sym"              = "symptomatic",
     "new_sev"              = "severe",
     "new_die"              = "deaths",
     "new_die_dx"           = "deaths.diagnosed",
-    "diag_all"             = "diagnoses"
+    "diag_all"             = "diagnoses",
+    "Rt"                   = "Rt"
   ) -> params
 
   # Used for renaming quantiles output by Stan
@@ -131,19 +132,10 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
 
   d <- stan_extracts
 
-  # Join in Rt estimates if requested
-  if (include.RtEstim) {
-    Rt   <- RtEst(ccr)
-    Rt_n <- RtNaiveEstim(ccr)
-    d <- dplyr::left_join(d, Rt, by = "date")
-    d <- dplyr::left_join(d, Rt_n, by = "date")
-  }
-
   # Column-bind high-density interval CI's for cumulative incidence
   # First, remove the traditionally-calculated lo and hi estimates
-  d <- dplyr::select(d, -cum.incidence.lo, -cum.incidence.hi)
-  d <- dplyr::bind_cols(d, cum_inc_hdi(ccr))
-
+  # d <- dplyr::select(d, -cum.incidence.lo, -cum.incidence.hi)
+  # d <- dplyr::bind_cols(d, cum_inc_hdi(ccr))
 
   if (index == TRUE)
     d <- dplyr::bind_cols(d, list(index = 1:ndays_total))

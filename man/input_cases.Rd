@@ -3,14 +3,11 @@
 \name{input_cases}
 \alias{input_cases}
 \alias{input_deaths}
-\alias{input_fracpos}
 \title{Input observational data}
 \usage{
 input_cases(data, type = "reported")
 
 input_deaths(data, type = "reported")
-
-input_fracpos(data)
 }
 \arguments{
 \item{data}{A \code{\link[base]{data.frame}} as described below.}

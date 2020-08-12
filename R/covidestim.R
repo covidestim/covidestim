@@ -57,20 +57,16 @@ NULL
 #' @importFrom magrittr %>%
 #' @export
 covidestim <- function(ndays, ndays_before=28,
-                       chains=3, iter=1500, thin = 1, 
-                       rho_sym = 1, rho_sev = 0.5, seed=42,
-                       adapt_delta = 0.92, max_treedepth = 12,
-                       window.length = 5, weekend = FALSE) {
+                       chains=3, iter=300, 
+                       seed=42,
+                       adapt_delta = 0.8, max_treedepth = 10,
+                       weekend = FALSE) {
 
   att(is.numeric(ndays), ndays >= 1)
 
   defaultConfig(
     N_days = ndays,
-    N_days_before = ndays_before,
-    rho_sym = rho_sym, 
-    rho_sev = rho_sev,
-    weekend = weekend,
-    N_days_av = window.length
+    N_days_before = ndays_before
   ) -> config
 
   # All user-specified config-related things must be specified above this line
@@ -82,8 +78,8 @@ covidestim <- function(ndays, ndays_before=28,
     config  = config,
     chains  = chains,
     iter    = iter,
-    thin    = thin,
-    warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
+    # thin    = thin,
+    warmup  = round(2/3*iter), # Warmup runs should be 66% of iter runs
     seed    = seed,
     control = list(adapt_delta = adapt_delta, max_treedepth = 12)
   ) -> properties
@@ -135,7 +131,6 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
     seed    = cc$seed,
     chains  = cc$chains,
     iter    = cc$iter,
-    thin    = cc$thin,
     warmup  = cc$warmup,
     ...
   ) -> result

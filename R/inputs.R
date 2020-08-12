@@ -191,6 +191,7 @@ reformat_dates <- function(vec) vec
 input_cases <- function(data, type = "reported") {
   validate_input(data, type)
   data <- transform_input(data)
+  data <- c(rep(0, 7), data)
   structure(list(obs_cas=data), class='input', date_type = type)
 }
 
@@ -199,13 +200,14 @@ input_cases <- function(data, type = "reported") {
 input_deaths <- function(data, type = "reported") {
   validate_input(data, type)
   data <- transform_input(data)
+  data <- c(rep(0, 7), data)
   structure(list(obs_die=data), class='input', date_type = type)
 }
 
 #' @rdname input_cases
 #' @export
-input_fracpos <- function(data) {
-  validate_fracpos(data)
-  data <- transform_fracpos(data)
-  structure(list(frac_pos=data), class='input', date_type = "reported")
-}
+# input_fracpos <- function(data) {
+#   validate_fracpos(data)
+#   data <- transform_fracpos(data)
+#   structure(list(frac_pos=data), class='input', date_type = "reported")
+# }

@@ -80,25 +80,25 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
   # Update the is_weekend vector, IFF `weekend = TRUE` was passed
-  local({
-    first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
-    seq(
-      # First day in N_days_before
-      first_date_Date - lubridate::days(cfg$N_days_before), 
-      # Last day in N_days
-      first_date_Date + lubridate::days(cfg$N_days - 1), 
-      by = '1 day'
-    ) -> entire_period
+  # local({
+  #   first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
+  #   seq(
+  #     # First day in N_days_before
+  #     first_date_Date - lubridate::days(cfg$N_days_before), 
+  #     # Last day in N_days
+  #     first_date_Date + lubridate::days(cfg$N_days - 1), 
+  #     by = '1 day'
+  #   ) -> entire_period
 
-    days_of_week <- purrr::map_dbl(entire_period, lubridate::wday)
+  #   days_of_week <- purrr::map_dbl(entire_period, lubridate::wday)
 
-    # In lubridate, by default, 7 and 1 are Saturday and Sunday,
-    # respectively
-    ifelse(days_of_week %in% c(7,1), 1, 0)
-  }) -> weekend_modifiers
-  
-  if (cfg$user_weekend_effect)
-    cfg$is_weekend <- weekend_modifiers
+  #   # In lubridate, by default, 7 and 1 are Saturday and Sunday,
+  #   # respectively
+  #   ifelse(days_of_week %in% c(7,1), 1, 0)
+  # }) -> weekend_modifiers
+  # 
+  # if (cfg$user_weekend_effect)
+  #   cfg$is_weekend <- weekend_modifiers
 
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
@@ -173,84 +173,196 @@ or removing your custom prior.
   # att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
 }
 
-genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
-                    N_days_av = 5, weekend=FALSE) #new default value
+genData <- function(N_days, N_days_before = 28) #new default value
 {
-  att(rho_sym > 0 && rho_sym <= 1)
-  att(rho_sev > 0 && rho_sev <= 1)
+
+   N_days_ <- as.integer(N_days)
+   N_days_before_ <- as.integer(N_days_before) - 7
 
   # The first set of components of 'datList'
   config <- rlang::dots_list(
     .homonyms = "error", # Ensure that no keys are entered twice
-
-    #n days of data to model 
-    N_days = as.integer(N_days),
-
-    #n day to model before start of data
-    N_days_before = as.integer(N_days_before),
     
-    #max delay to allow the model to consider. 60 is recommended. 
-    Max_delay = 60, 
+    # Data
+    # vector of non-negative integer daily diagnoses, with a week of leading zeros
+    obs_cas = NULL,   
 
-    # moving average for likelihood function 
-    N_days_av = N_days_av, 
+    # vector of non-negative integer daily deaths, with a week of leading zeros
+    obs_die = NULL,   
 
-    rho_sym = rho_sym,
-    rho_sev = rho_sev,
+    # non-negative integer of data length  
+    N_days = N_days_,
 
-    is_weekend = rep(0, N_days_before + N_days),
-    user_weekend_effect = weekend,
-    
-    # vectors of event counts; default to 0 if no input
-    obs_cas = NULL, # vector of int by date. should have 0s if no event that day
-    obs_die = NULL, # vector of int by date. should have 0s if no event that day
-    frac_pos = rep(0, N_days_before + N_days), # vector of int by date. default is 0
-    frac_pos_user = NULL,
+    # non-negative integer, length of burn-in, minus the week of leading zeros
+    N_days_before = N_days_before_,
 
-    # first day of data, as determined by looking at input data. This allows 
-    # matching the above^ case data to specific dates.
-    first_date = NA,
+    # non-negative integer
+    Max_delay = 6*7,      
 
-    ## Priors Parameters of random walk in log space <- new infections per day
-    # mean of log daily infections on day 1
-    pri_log_new_inf_0_mu = 0,
- 
-    # sd of log daily infections on day 1
+  # Incidence time series
+    #  real
+    pri_log_new_inf_0_mu = 0, 
+
+    # non-negative real
     pri_log_new_inf_0_sd = 10,
 
-    # drift gives some direction to random walk. stronger prior here.
-    # mean of daily change in log infections
-    #pri_log_new_inf_drift_mu = 0,
-    # hyper prior on random walk
-    # sd of daily change in log infections
-    # pri_log_new_inf_drift_sd = 1,
+    # priors_list$serial_intvl_lnorm_pars[1], 
+    pri_serial_i_a = 1.753997, 
 
-    # priors on the second derivative; penalizes sharp changes in random walk;
-    # gives rw momentum
-    pri_deriv1_log_new_inf_sd = 0.5,
-    pri_deriv2_log_new_inf_sd = 0.05,
+    # priors_list$serial_intvl_lnorm_pars[2],
+    pri_serial_i_b = 0.08787308, 
 
-    # indicates whether case or death data are being used 
-    cas_yes = as.integer(1), 
-    die_yes = as.integer(1), 
-    
-    obs_cas_rep = as.integer(0),  # This ~means FALSE in stan
-    obs_die_rep = as.integer(0),  # This ~means FALSE in stan
+    # intercept for logRt
+    pri_logRt_mu = 0, 
+
+    # intercept for logRt
+    pri_logRt_sd = 1.5, 
+
+    # penalizes changes in Rt level
+    pri_deriv1_spl_par_sd = 0.5, 
+
+    # penalizes changes in Rt curvature
+    pri_deriv2_spl_par_sd = 0.1, 
+
+    # imported infections 
+    pri_inf_imported_mu = 0,   
+
+    # imported infections mean 0.5 per day
+    pri_inf_imported_sd = 0.5/0.798,   
+
+  # Transition probabilities  
+    # priors_list$pct_inf_sym_beta_prior[1],  # positive real
+    pri_p_sym_if_inf_a = 5.14303, 
+
+    # priors_list$pct_inf_sym_beta_prior[2],  # positive real
+    pri_p_sym_if_inf_b = 3.535966, 
+
+    # priors_list$pct_sym_sev_beta_prior[1] , # positive real
+    pri_p_sev_if_sym_a = 1.885352, 
+
+    # priors_list$pct_sym_sev_beta_prior[2] , # positive real
+    pri_p_sev_if_sym_b = 20.00246, 
+
+    # priors_list$pct_sev_die_beta_prior[1] , # positive real
+    pri_p_die_if_sev_a = 28.23883, 
+
+    # priors_list$pct_sev_die_beta_prior[2] , # positive real
+    pri_p_die_if_sev_b = 162.303, 
+
+    # priors_list$ifr_beta_prior[1],          # positive real
+    pri_p_die_if_inf_a = 72.14682, 
+
+    # priors_list$ifr_beta_prior[2],          # positive real
+    pri_p_die_if_inf_b = 10976.78, 
+
+  # Probability of diagnosis (terms for beta priors)
+    # positive real
+    pri_p_diag_if_sev_a = 5,          
+
+    # positive real
+    pri_p_diag_if_sev_b = 2,          
+
+    # positive real
+    pri_rr_diag_sym_vs_sev_a = 2,     
+
+    # positive real
+    pri_rr_diag_sym_vs_sev_b = 2,      
+
+  # Progression delays
+    # priors_list$inf_prg_delay_gamma_pars[1], #  positive real
+    inf_prg_delay_shap = 3.4131301, 
+
+    # priors_list$inf_prg_delay_gamma_pars[2], # positive real
+    inf_prg_delay_rate = 0.6051395, 
+
+    # priors_list$sym_prg_delay_gamma_pars[1], # positive real
+    sym_prg_delay_shap = 1.6236462, 
+
+    # priors_list$sym_prg_delay_gamma_pars[1], # positive real
+    sym_prg_delay_rate = 0.2175309, 
+
+    # priors_list$sev_prg_delay_gamma_pars[1], # positive real
+    sev_prg_delay_shap = 2.061454,  
+
+    # priors_list$sev_prg_delay_gamma_pars[2], # positive real
+    sev_prg_delay_rate = 0.227708,  
+
+  # Scale diagnosis delay to progression delay (terms for beta priors)
+    scale_dx_delay_sym_a = 2,  #  positive real
+    scale_dx_delay_sym_b = 2,  #  positive real
+    scale_dx_delay_sev_a = 2,  #  positive real
+    scale_dx_delay_sev_b = 2,  #  positive real
+  # Reporting delays (terms for lognormal distribution of beta prior terms)  
+    pri_cas_rep_delay_shap_a = log(2.2), #  positive real
+    pri_cas_rep_delay_rate_a = log(1),   #  positive real 
+    pri_die_rep_delay_shap_a = log(2.2), #  positive real
+    pri_die_rep_delay_rate_a = log(1),   #  positive real
+    pri_cas_rep_delay_shap_b = 0.5,      #  positive real
+    pri_cas_rep_delay_rate_b = 0.5,      #  positive real
+    pri_die_rep_delay_shap_b = 0.5,      #  positive real
+    pri_die_rep_delay_rate_b = 0.5,      #  positive real
+  # Prior on phi  
+    pri_inv_sqrt_phi = 1.0, #  positive real
+  # Which data included  
+    die_yes = 1,  #  0 or 1
+    cas_yes = 1,  #  0 or 1
+  # Are data by date of case report (1) or by date of test (0)?
+    obs_cas_rep = 1, #  0 or 1
+    obs_die_rep = 1, #  0 or 1
+  # No. days of moving average 
+    n_day_av = 5,   #  integer in 1:7 )
+
+    !!! local({
+      # Spline parameters for rt
+      days_per_spl_par <- 4  # non-negative integer
+      tot_days <- N_days_ + N_days_before_
+      no_spl_par_rt <- ceiling(tot_days/days_per_spl_par)
+
+      splines::bs(
+        1:(days_per_spl_par*no_spl_par_rt),
+        df = no_spl_par_rt,
+        degree = 3,
+        intercept = T
+      ) -> des_mat
+
+      list(
+        N_spl_par = no_spl_par_rt,
+        spl_basis = as.matrix(as.data.frame(des_mat))[1:tot_days,]
+      )
+    }),
+
+    !!! local({
+      tot_days <- N_days_ + N_days_before_
+      N_spl_par_dx <- 6
+
+      splines::bs(1:tot_days,
+         df = N_spl_par_dx,
+         degree = 3,
+         intercept = T
+      ) -> des_mat_dx  
+
+      list(
+        spl_basis_dx = as.matrix(as.data.frame(des_mat_dx)),
+        N_spl_par_dx = N_spl_par_dx
+      )
+    })
   )
+
+  structure(config, class='modelconfig')
 
   # Adding the priors in separately is neccessary in order to make checks
   # on the priors that depend on the value of 'config$N_days' run
-  structure(config, class='modelconfig') +
-    structure(
-      rlang::dots_list(
-        !!! priors_transitions(),
-        !!! priors_progression(),
-        !!! priors_reporting_delays(),
-        !!! priors_diagnosis(),
-        !!! priors_diagnosis_delays_scale()
-      ),
-      class = 'priors'
-    )
+  # structure(config, class='modelconfig') +
+  #   structure(
+  #     rlang::dots_list(
+  #       !!! priors_transitions(),
+  #       !!! priors_progression(),
+  #       !!! priors_reporting_delays(),
+  #       !!! priors_diagnosis(),
+  #       !!! priors_diagnosis_delays_scale()
+  #     ),
+  #     class = 'priors'
+  #   )
 }
 
 #' High level description of the function

@@ -2,7 +2,7 @@
 % Please edit documentation in R/example-data.R
 \name{example_nyc_data}
 \alias{example_nyc_data}
-\title{Example NYC case/hospitalization/death data}
+\title{Example NYC case/death data}
 \usage{
 example_nyc_data(type = "cases")
 }
@@ -14,7 +14,7 @@ A tibble with two variables: \code{date}, a vector of \code{Date}
   objects, and \code{observation}, a vector of doubles.
 }
 \description{
-Returns a \code{\link[tibble]{tibble}} of NYC case/hospitalization/death
+Returns a \code{\link[tibble]{tibble}} of NYC case anddeath
 data from March 2nd, 2020 to April 15, 2020. Only one type of data will be
 returned at a time.
 }

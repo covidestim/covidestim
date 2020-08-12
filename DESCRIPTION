@@ -5,11 +5,11 @@ Authors@R:
     c(person("Marcus", "Russi",  
              role = c("aut", "cre"),            
              email = "marcus.russi@yale.edu",
-             comment = c(ORCID = "0000-0002-7106-068X"),
+             comment = c(ORCID = "0000-0002-7106-068X")),
       person("Melanie", "Chitwood",
              role = c("aut"),
              email = "melanie.chitwood@yale.edu",
-             comment = c(ORCID = "0000-0002-9289-5694"))
+             comment = c(ORCID = "0000-0002-9289-5694")))
 Description: What the package does (one paragraph).
 URL: http://covidestim.org, https://github.com/covidestim
 BugReports: https://github.com/covidestim/covidestim/issues

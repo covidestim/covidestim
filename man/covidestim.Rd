@@ -8,14 +8,10 @@ covidestim(
   ndays,
   ndays_before = 28,
   chains = 3,
-  iter = 1500,
-  thin = 1,
-  rho_sym = 1,
-  rho_sev = 0.5,
+  iter = 300,
   seed = 42,
-  adapt_delta = 0.92,
-  max_treedepth = 12,
-  window.length = 5,
+  adapt_delta = 0.8,
+  max_treedepth = 10,
   weekend = FALSE
 )
 }
@@ -32,6 +28,13 @@ of model data should be modeled?}
 \item{iter}{The number of iterations to run during MCMC, as passed to
 \code{\link[rstan]{sampling}}.}
 
+\item{seed}{A number. The random number generator seed for use in sampling.}
+
+\item{weekend}{A logical scalar. Many regions see decreased testing volumes
+during the weekend. If this is a feature of your data, you may want to
+experiment with \code{weekend = TRUE}, which will cause the model to
+explicitly take this effect into account.}
+
 \item{thin}{A positive integer to specify period for saving samples, as
 passed to \code{\link[rstan]{sampling}}.}
 
@@ -42,13 +45,6 @@ probability of diagnosis for symptomatic, but not severely ill, cases.}
 \item{rho_sev}{A number in \code{(0, 1]}. Modulates the strength of 
 the relationship between the fraction of positive tests and the 
 probability of diagnosis for severely ill cases.}
-
-\item{seed}{A number. The random number generator seed for use in sampling.}
-
-\item{weekend}{A logical scalar. Many regions see decreased testing volumes
-during the weekend. If this is a feature of your data, you may want to
-experiment with \code{weekend = TRUE}, which will cause the model to
-explicitly take this effect into account.}
 }
 \value{
 An S3 object of type \code{covidestim}. This can be passed to 
