@@ -1,5 +1,3 @@
- ## Emacs, make this -*- mode: sh; -*-
-
 FROM rocker/tidyverse:latest
 
 LABEL org.label-schema.license="GPL-2.0" \
@@ -14,10 +12,17 @@ RUN wget -O - https://deb.nodesource.com/setup_14.x | bash - \
         && apt-get install -y libnode-dev \
         && rm -rf /var/lib/apt/lists/*
 
-ENV R_BASE_VERSION 4.0.2
+# All future commands are run as 'rstudio' user
+USER rstudio
 
-## Now install covidestim
-RUN installGithub.r covidestim/covidestim \
-	&& rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+# Copy over the GitHub repo
+COPY --chown=rstudio . /tmp/covidestim-install/
+
+# Enable O3 compilation
+RUN Rscript /tmp/covidestim-install/O3-enable.R 
+
+# Now install covidestim
+RUN r -e "devtools::install('/tmp/covidestim-install')" \
+      && rm -rf /tmp/covidestim-install
 
 CMD ["R"]
