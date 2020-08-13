@@ -69,6 +69,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
   # Mappings between names in Stan and variable names in the output `df`
   c(
     "new_inf"              = "infections",
+    "Rt"                   = "Rt",
     "occur_cas"            = "cases.fitted",
     "occur_die"            = "deaths.fitted",
     "cumulative_incidence" = "cum.incidence",
@@ -76,6 +77,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
     "new_sev"              = "severe",
     "new_die"              = "deaths",
     "new_die_dx"           = "deaths.diagnosed",
+    "diag_cases"           = "cases.diagnosed",
     "diag_all"             = "diagnoses"
   ) -> params
 
@@ -133,9 +135,9 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
 
   # Join in Rt estimates if requested
   if (include.RtEstim) {
-    Rt   <- RtEst(ccr)
+   # Rt   <- RtEst(ccr)
     Rt_n <- RtNaiveEstim(ccr)
-    d <- dplyr::left_join(d, Rt, by = "date")
+   # d <- dplyr::left_join(d, Rt, by = "date")
     d <- dplyr::left_join(d, Rt_n, by = "date")
   }
 
