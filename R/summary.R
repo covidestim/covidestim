@@ -77,7 +77,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
     "new_sev"              = "severe",
     "new_die"              = "deaths",
     "new_die_dx"           = "deaths.diagnosed",
-    "diag_cases"           = "cases.diagnosed",
+    "diag_cases"           = "symptomatic.diagnosed", 
     "diag_all"             = "diagnoses"
   ) -> params
 
