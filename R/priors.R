@@ -138,7 +138,7 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b 
                                p_sev_if_sym = c(11.9, 47.7),    # a/b
                                p_die_if_sev = c(3, 97),         # a/b
-                               p_die_if_inf = c()) {  # a/b
+                               p_die_if_inf = c(72.147, 10976)) {  # a/b
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_sev_if_sym) == 2)
@@ -196,8 +196,8 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
                                sev_prg_delay = c(2.383, 0.27), # shap/rate
-                               asy_rec_delay = ()) { # shap/rate
-
+                               asy_rec_delay = (14,2)) { # shap/rate PLACEHOLDER!!!
+  
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)
   att(length(sev_prg_delay) == 2)
@@ -248,8 +248,8 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_diagnosis(p_diag_if_sym = c(2, 2))
 #' @export
-priors_diagnosis <- function(rr_diag_asy_vs_sym = c(), # a/b
-                             rr_diag_sym_vs_sev = c(), # a/b
+priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2,2), # a/b
+                             rr_diag_sym_vs_sev = c(2,2), # a/b
                              p_diag_if_sev = c(1.5, 1), 
                              weekend_eff = c(2, 2)) {# a/b
 
