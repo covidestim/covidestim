@@ -179,6 +179,10 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
   att(rho_sym > 0 && rho_sym <= 1)
   att(rho_sev > 0 && rho_sev <= 1)
 
+  n_spl_par <- ceiling((N_days + N_days_before)/3) 
+  des_mat <- splines::bs(1:(n_spl_par*3), 
+                         df=n_spl_par, degree=3, intercept=T)
+  
   # The first set of components of 'datList'
   config <- rlang::dots_list(
     .homonyms = "error", # Ensure that no keys are entered twice
@@ -211,24 +215,19 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
     # matching the above^ case data to specific dates.
     first_date = NA,
 
-    ## Priors Parameters of random walk in log space <- new infections per day
-    # mean of log daily infections on day 1
+    # Rt and new infections
     pri_log_new_inf_0_mu = 0,
- 
-    # sd of log daily infections on day 1
     pri_log_new_inf_0_sd = 10,
-
-    # drift gives some direction to random walk. stronger prior here.
-    # mean of daily change in log infections
-    #pri_log_new_inf_drift_mu = 0,
-    # hyper prior on random walk
-    # sd of daily change in log infections
-    # pri_log_new_inf_drift_sd = 1,
-
-    # priors on the second derivative; penalizes sharp changes in random walk;
-    # gives rw momentum
-    pri_deriv1_log_new_inf_sd = 0.5,
-    pri_deriv2_log_new_inf_sd = 0.05,
+    pri_logRt_mu = 0, # intercept for logRt
+    pri_logRt_sd = 2, # intercept for logRt
+    pri_serial_i_a = 1.375, # for serial interval prior
+    pri_serial_i_b = 0.05538,  # for serial interval prior
+    #pri_inf_imported_mu = 0,   # imported infections, for counties
+    #pri_inf_imported_sd = 0.5/0.798,   # imported infections, for counties 
+    pri_deriv1_b_spline_sd = 0.2, # penalizes changes in Rt level
+    pri_deriv2_b_spline_sd = 0.1, # penalizes changes in Rt curvature
+    n_spl_par = n_spl_par, 
+    spl_basis = as.matrix(as.data.frame(des_mat))[1:(N_days + N_days_before),],
 
     # indicates whether case or death data are being used 
     cas_yes = as.integer(1), 

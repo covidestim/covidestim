@@ -135,8 +135,8 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
-priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),      # a/b 
-                               p_sev_if_sym = c(11.9, 47.7),      # a/b
+priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b 
+                               p_sev_if_sym = c(11.9, 47.7),    # a/b
                                p_die_if_sev = c(3, 97),         # a/b
                                p_die_if_sym = c(1.12, 85.1)) {  # a/b
 
@@ -259,7 +259,7 @@ priors_diagnosis <- function(p_diag_if_sym = c(2, 2), # a/b
   structure(ps, class="priors")
 }
 
-#' Priors on reporting delays
+#' Fixed distributions on reporting delays
 #'
 #' This function returns a keyed list of mean values for the gamma distribution 
 #' of delays related reporting of cases and deaths.  Called with no arguments, 
@@ -292,18 +292,17 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
   build_priors(
     cas_rep_delay,
     die_rep_delay,
-    .postfix = c("_shp_a", "_shp_b"),
-    .prefix = "pri_"
+    .postfix = c("_shap", "_rate")
   ) -> ps
 
   structure(ps, class = 'priors')
 }
 
-#' Priors on reporting delays
+#' Priors on diagnostic delays
 #'
-#' This function returns a keyed list of priors related to delays in reporting
-#' of cases, hospitalizations, and deaths.  Called with no arguments, the
-#' default values are returned. 
+#' This function returns a keyed list of priors related to delays in diagnosing
+#' of cases and deaths.  Called with no arguments, the default values are 
+#' returned. 
 #'
 #' Boundary avoiding priors are use by default. 
 #'
