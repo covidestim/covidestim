@@ -125,9 +125,9 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #'
 #'   Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}
 #'
-#' @param p_die_if_sym A two-element numeric vector containing \code{c(alpha,
+#' @param p_die_if_inf A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
-#'   if symptomatic. 
+#'   if infected (e.g. the infection fatality rate). 
 #'
 #'   Source for default value: \insertRef{basu_estimating_2020}{covidestim}
 #'
@@ -138,22 +138,22 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b 
                                p_sev_if_sym = c(11.9, 47.7),    # a/b
                                p_die_if_sev = c(3, 97),         # a/b
-                               p_die_if_sym = c(1.12, 85.1)) {  # a/b
+                               p_die_if_inf = c()) {  # a/b
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_sev_if_sym) == 2)
   att(length(p_die_if_sev) == 2)
-  att(length(p_die_if_sym) == 2)
+  att(length(p_die_if_inf) == 2)
   att(is_nonNegativeReal(p_sym_if_inf))
   att(is_nonNegativeReal(p_sev_if_sym))
   att(is_nonNegativeReal(p_die_if_sev))
-  att(is_nonNegativeReal(p_die_if_sym))
+  att(is_nonNegativeReal(p_die_if_inf))
   
   build_priors(
     p_sym_if_inf,
     p_sev_if_sym,
     p_die_if_sev,
-    p_die_if_sym,
+    p_die_if_inf,
     .postfix=c("_a", "_b"),
     .prefix="pri_"
   ) -> ps
@@ -182,6 +182,10 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b
 #' @param sev_prg_delay A two-element numeric vector containing
 #'   \code{c(shape, scale)} parameters of a Gamma distribution modeling the
 #'   time from severe symptoms to death. 
+#'   
+#' @param asy_rec_delay A two-element numeric vector containing 
+#'    \code{c(shape,scale)} parameters of a Gamma distribution mnodeling the  
+#'    time from infection to recovery without symptom development. 
 #'
 #' Source for default value: \insertRef{linton_incubation_2020}{covidestim}
 #' 
@@ -191,19 +195,23 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b
 #' @export
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
-                               sev_prg_delay = c(2.383, 0.27)) {# shap/rate
+                               sev_prg_delay = c(2.383, 0.27), # shap/rate
+                               asy_rec_delay = ()) { # shap/rate
 
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)
   att(length(sev_prg_delay) == 2)
+  att(length(asy_rec_delay) == 2)
   att(is_nonNegativeReal(inf_prg_delay))
   att(is_nonNegativeReal(sym_prg_delay))
   att(is_nonNegativeReal(sev_prg_delay))
+  att(is_nonNegativeReal(asy_rec_delay))
 
   build_priors(
     inf_prg_delay,
     sym_prg_delay,
     sev_prg_delay,
+    asy_rec_delay,
     .postfix=c("_shap", "_rate")
   ) -> ps
 
@@ -218,12 +226,15 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #' Boundary avoiding priors are used by default; a weakly informative prior
 #' is used for the probability of diagnosis if severely ill. 
 #'
-#' @param p_diag_if_sym A two-element numeric vector containing \code{c(alpha,
-#'   beta)} parameters of a Beta distribution modeling the probability of
-#'   diagnosed if symptomatic. The mean of this distribution should be less
-#'   the mean of the distribution parameterized by \code{p_diag_if_sev}.
-#'   Otherwise, a warning will be displayed.
-#'
+#' @param rr_diag_asy_vs_sym A two-element numeric vector containing 
+#'   \code{c(alpha, beta)} parameters of a Beta distribution modeling the rate 
+#'   ratio of diagnosis among asymptomatic vs symptomatic, but not severe, 
+#'   infections. 
+#'   
+#' @param rr_diag_sym_vs_asy A two-element numeric vector containing 
+#'   \code{c(alpha, beta)} parameters of a Beta distribution modeling the rate 
+#'   ratio of diagnosis at the symptomatic vs severe stage of infection. 
+#'   
 #' @param p_diag_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
 #'   being diagnosed if severely ill. 
@@ -237,19 +248,23 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_diagnosis(p_diag_if_sym = c(2, 2))
 #' @export
-priors_diagnosis <- function(p_diag_if_sym = c(2, 2), # a/b
+priors_diagnosis <- function(rr_diag_asy_vs_sym = c(), # a/b
+                             rr_diag_sym_vs_sev = c(), # a/b
                              p_diag_if_sev = c(1.5, 1), 
                              weekend_eff = c(2, 2)) {# a/b
 
-  att(length(p_diag_if_sym) == 2)
+  att(length(rr_diag_asy_vs_sym) == 2)
+  att(length(rr_diag_sym_vs_sev) == 2)
   att(length(p_diag_if_sev) == 2)
   att(length(weekend_eff) == 2)
-  att(is_nonNegativeReal(p_diag_if_sym))
+  att(is_nonNegativeReal(rr_diag_asy_vs_sym))
+  att(is_nonNegativeReal(rr_diag_sym_vs_sev))
   att(is_nonNegativeReal(p_diag_if_sev))
   att(is_nonNegativeReal(weekend_eff))
 
   build_priors(
-    p_diag_if_sym,
+    rr_diag_asy_vs_sym, 
+    rr_diag_sym_vs_sev,
     p_diag_if_sev,
     weekend_eff,
     .postfix=c("_a", "_b"),
@@ -306,6 +321,11 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #'
 #' Boundary avoiding priors are use by default. 
 #'
+#'#' @param dx_delay_sym A two element vector containing the \code{c(alpha,beta)} 
+#' parameters of a Beta distribution modeling a scaleing factor. Delay to 
+#' diagnosis from infection for asymptomatic infections is modeled as the 
+#' fraction of time in  the symptomatic disease state, scaled by this factor. 
+#' 
 #' @param dx_delay_sym A two element vector containing the \code{c(alpha,beta)} 
 #' parameters of a Beta distribution modeling a scaleing factor. Delay to 
 #' diagnosis for symptomatic cases is modeled as the fraction of time in 
@@ -320,15 +340,19 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
 #' @export
-priors_diagnosis_delays_scale <- function(dx_delay_sym = c(2,2),
+priors_diagnosis_delays_scale <- function(dx_delay_asy = c(2,2)
+                                          dx_delay_sym = c(2,2),
                                           dx_delay_sev = c(2,2)) {
   
+  att(length(dx_delay_asy) == 2)
   att(length(dx_delay_sym) == 2)
   att(length(dx_delay_sev) == 2)
+  att(is_nonNegativeReal(dx_delay_asy))
   att(is_nonNegativeReal(dx_delay_sym))
   att(is_nonNegativeReal(dx_delay_sev))
   
   build_priors(
+    dx_delay_asy,
     dx_delay_sym,
     dx_delay_sev,
     .postfix = c("_a", "_b"),

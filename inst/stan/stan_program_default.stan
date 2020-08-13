@@ -10,20 +10,16 @@ data {
   int<lower=0,upper=1>   is_weekend[N_days+N_days_before]; // weekend indicator
   
   // terms for splines
-   // spline of Rt
+   // spline parameters and bases
   int<lower=0>                           N_spl_par;
   matrix[N_days+N_days_before,N_spl_par] spl_basis;
-   // splines for probability of diagnosis 
-  int<lower=0>                              N_spl_par_dx;
-  matrix[N_days+N_days_before,N_spl_par_dx] spl_basis_sym_dx;
-  matrix[N_days+N_days_before,N_spl_par_dx] spl_basis_asy_dx; 
-  
+
   // fixed delay distributions
   // fixed delay distribtions. time from inf -> sym, sym -> sev, sev -> die
   real<lower=0>          inf_prg_delay_shap; 
   real<lower=0>          inf_prg_delay_rate;
-  real<lower=0>          asy_prg_delay_shap;
-  real<lower=0>          asy_prg_delay_rate;
+  real<lower=0>          asy_rec_delay_shap;
+  real<lower=0>          asy_rec_delay_rate;
   real<lower=0>          sym_prg_delay_shap;
   real<lower=0>          sym_prg_delay_rate;
   real<lower=0>          sev_prg_delay_shap;
@@ -71,11 +67,12 @@ data {
   real<lower=0>          pri_p_die_if_inf_b;
   // probabilities of diagnosis 
      // rate ratio, pr(dx) asymptomatic to symptomatic
-  real<lower=0>         pri_rr_diag_asy_vs_sym_a; 
-  real<lower=0>         pri_rr_diag_asy_vs_sym_b;
+  real<lower=0>          pri_rr_diag_asy_vs_sym_a; 
+  real<lower=0>          pri_rr_diag_asy_vs_sym_b;
       // rate ratio, pr(dx) symptomatic to severe
   real<lower=0>          pri_rr_diag_sym_vs_sev_a; 
   real<lower=0>          pri_rr_diag_sym_vs_sev_b;
+     // probability of diagnosis at severe 
   real<lower=0>          pri_p_diag_if_sev_a;
   real<lower=0>          pri_p_diag_if_sev_b;
   // size of the 'weekend effect' on diagnosis 
@@ -98,7 +95,7 @@ transformed data {
  
  // Progression delays
  vector[Max_delay]  inf_prg_delay;
- vector[Max_delay]  asy_prg_delay; 
+ vector[Max_delay]  asy_rec_delay; 
  vector[Max_delay]  sym_prg_delay;
  vector[Max_delay]  sev_prg_delay;
 // Reporting delays
@@ -120,8 +117,8 @@ transformed data {
   for(i in 1:Max_delay) {
     inf_prg_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
       - gamma_cdf(i-1.0, inf_prg_delay_shap, inf_prg_delay_rate);
-    asy_prg_delay[i] = gamma_cdf(i+0.0, asy_prg_delay_shap, asy_prg_delay_rate)
-      - gamma_cdf(i-1.0, asy_prg_delay_shap, asy_prg_delay_rate);
+    asy_rec_delay[i] = gamma_cdf(i+0.0, asy_rec_delay_shap, asy_rec_delac_rate)
+      - gamma_cdf(i-1.0, asy_rec_delay_shap, asy_rec_delay_rate);
     sym_prg_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate)
       - gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate);
     sev_prg_delay[i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate)
@@ -165,8 +162,8 @@ parameters {
   real<lower=0, upper=1>    scale_dx_delay_sev; 
 // probability of diagnosis at each illness state
   real<lower=0, upper=1>    p_diag_if_sev;
-  vector[N_spl_par_dx]      spl_par_asy_dx;
-  vector[N_spl_par_dx]      spl_par_sym_dx;
+  vector[N_spl_par]         spl_par_asy_dx;
+  vector[N_spl_par]         spl_par_sym_dx;
   real<lower=0, upper=1>    weekend_eff;
  
 // LIKELIHOOD 
@@ -192,10 +189,10 @@ transformed parameters {
   
 // DIAGNOSIS AND REPORTING  
  // probability of diagnosis
-  vector[N_days_tot]  rr_diag_asy_vs_sym; // ~~ NEW
+  vector[N_days_tot]  rr_diag_asy_vs_sym; 
   vector[N_days_tot]  rr_diag_sym_vs_sev;
   
-  vector[N_days_tot]  p_diag_if_asy; // ~~ NEW
+  vector[N_days_tot]  p_diag_if_asy; 
   vector[N_days_tot]  p_diag_if_sym;
 
  // daily probabilities of diagnosis and report
@@ -235,8 +232,8 @@ transformed parameters {
 
 // DIAGNOSIS // 
  // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
-  rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * spl_par_sym_dx);
-  rr_diag_asy_vs_sym = inv_logit(spl_basis_dx * spl_par_asy_dx); 
+  rr_diag_sym_vs_sev = inv_logit(spl_basis * spl_par_sym_dx);
+  rr_diag_asy_vs_sym = inv_logit(spl_basis * spl_par_asy_dx); 
 // probability of diagnosis 
   p_diag_if_sym = p_diag_if_sev * rr_diag_sym_vs_sev;
   p_diag_if_asy = p_diag_if_sym * rr_diag_asy_vs_sym; 

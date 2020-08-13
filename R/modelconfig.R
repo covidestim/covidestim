@@ -173,7 +173,7 @@ or removing your custom prior.
   # att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
 }
 
-genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
+genData <- function(N_days, N_days_before = 28, 
                     N_days_av = 5, weekend=FALSE) #new default value
 {
   att(rho_sym > 0 && rho_sym <= 1)
@@ -199,9 +199,6 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
     # moving average for likelihood function 
     N_days_av = N_days_av, 
 
-    rho_sym = rho_sym,
-    rho_sev = rho_sev,
-
     is_weekend = rep(0, N_days_before + N_days),
     user_weekend_effect = weekend,
     
@@ -224,8 +221,9 @@ genData <- function(N_days, N_days_before = 28, rho_sym = 1, rho_sev = 0.5,
     pri_serial_i_b = 0.05538,  # for serial interval prior
     #pri_inf_imported_mu = 0,   # imported infections, for counties
     #pri_inf_imported_sd = 0.5/0.798,   # imported infections, for counties 
-    pri_deriv1_b_spline_sd = 0.2, # penalizes changes in Rt level
-    pri_deriv2_b_spline_sd = 0.1, # penalizes changes in Rt curvature
+    pri_deriv1_spl_par_sd = 0.2, # penalizes changes in Rt level
+    pri_deriv2_spl_par_sd = 0.1, # penalizes changes in Rt curvature
+    
     n_spl_par = n_spl_par, 
     spl_basis = as.matrix(as.data.frame(des_mat))[1:(N_days + N_days_before),],
 
