@@ -320,11 +320,6 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #' returned. 
 #'
 #' Boundary avoiding priors are use by default. 
-#'
-#'#' @param dx_delay_sym A two element vector containing the \code{c(alpha,beta)} 
-#' parameters of a Beta distribution modeling a scaleing factor. Delay to 
-#' diagnosis from infection for asymptomatic infections is modeled as the 
-#' fraction of time in  the symptomatic disease state, scaled by this factor. 
 #' 
 #' @param dx_delay_sym A two element vector containing the \code{c(alpha,beta)} 
 #' parameters of a Beta distribution modeling a scaleing factor. Delay to 
@@ -340,19 +335,15 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
 #' @export
-priors_diagnosis_delays_scale <- function(dx_delay_asy = c(2,2)
-                                          dx_delay_sym = c(2,2),
+priors_diagnosis_delays_scale <- function(dx_delay_sym = c(2,2),
                                           dx_delay_sev = c(2,2)) {
   
-  att(length(dx_delay_asy) == 2)
   att(length(dx_delay_sym) == 2)
   att(length(dx_delay_sev) == 2)
-  att(is_nonNegativeReal(dx_delay_asy))
   att(is_nonNegativeReal(dx_delay_sym))
   att(is_nonNegativeReal(dx_delay_sev))
   
   build_priors(
-    dx_delay_asy,
     dx_delay_sym,
     dx_delay_sev,
     .postfix = c("_a", "_b"),

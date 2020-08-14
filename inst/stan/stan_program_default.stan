@@ -161,6 +161,7 @@ parameters {
   real<lower=0, upper=1>    scale_dx_delay_sym; 
   real<lower=0, upper=1>    scale_dx_delay_sev; 
 // probability of diagnosis at each illness state
+  real<lower=0, upper=1>    rr_diag_asy_vs_sym; 
   real<lower=0, upper=1>    p_diag_if_sev;
   vector[N_spl_par]         spl_par_asy_dx;
   vector[N_spl_par]         spl_par_sym_dx;
@@ -189,9 +190,7 @@ transformed parameters {
   
 // DIAGNOSIS AND REPORTING  
  // probability of diagnosis
-  vector[N_days_tot]  rr_diag_asy_vs_sym; 
   vector[N_days_tot]  rr_diag_sym_vs_sev;
-  
   vector[N_days_tot]  p_diag_if_asy; 
   vector[N_days_tot]  p_diag_if_sym;
 
@@ -233,7 +232,6 @@ transformed parameters {
 // DIAGNOSIS // 
  // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
   rr_diag_sym_vs_sev = inv_logit(spl_basis * spl_par_sym_dx);
-  rr_diag_asy_vs_sym = inv_logit(spl_basis * spl_par_asy_dx); 
 // probability of diagnosis 
   p_diag_if_sym = p_diag_if_sev * rr_diag_sym_vs_sev;
   p_diag_if_asy = p_diag_if_sym * rr_diag_asy_vs_sym; 
@@ -500,7 +498,7 @@ model {
 
 // DIAGNOSIS    
   // probabilities of diagnosis
-  inv_logit(spl_par_asy_dx) ~ beta(pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
+  rr_diag_asy_vs_sym ~ beta(pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
   inv_logit(spl_par_sym_dx) ~ beta(pri_rr_diag_sym_vs_sev_a, pri_rr_diag_sym_vs_sev_b);
   p_diag_if_sev        ~ beta(pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
   weekend_eff          ~ beta(pri_weekend_eff_a, pri_weekend_eff_b);
