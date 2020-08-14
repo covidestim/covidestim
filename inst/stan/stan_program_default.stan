@@ -80,8 +80,6 @@ data {
   real<lower=0>          pri_weekend_eff_b; //~~
   // delay to diagnosis assumed to be some fraction of progression delay
   // Beta prior distribtuion for that fraction 
-  real<lower=0>          scale_dx_delay_asy_a; // ~~ NEW
-  real<lower=0>          scale_dx_delay_asy_b; // ~~ NEW
   real<lower=0>          scale_dx_delay_sym_a; 
   real<lower=0>          scale_dx_delay_sym_b; 
   real<lower=0>          scale_dx_delay_sev_a; 
@@ -196,7 +194,6 @@ transformed parameters {
 
  // daily probabilities of diagnosis and report
  // for days 1 to 60 after entering that state
-  vector[Max_delay]  asy_diag_delay; 
   vector[Max_delay]  sym_diag_delay;
   vector[Max_delay]  sev_diag_delay;
 
@@ -243,10 +240,6 @@ transformed parameters {
 // of the gamma distribution of progressiong delays by a modeled fraction 
 // (scale_dx_delay_xxx)
 for(i in 1:Max_delay){
-   asy_diag_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, 
-                        inf_prg_delay_rate/scale_dx_delay_asy)
-                        - gamma_cdf(i-1.0, inf_prg_delay_shap, 
-                        inf_prg_delay_rate/scale_dx_delay_asy); 
     sym_diag_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, 
                         sym_prg_delay_rate/scale_dx_delay_sym)
                       - gamma_cdf(i-1.0, sym_prg_delay_shap, 
@@ -345,7 +338,7 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
       if(i+(j-1) <= N_days_tot){ 
         new_asy_dx[i+(j-1)] += new_inf[i] * (1 - p_sym_if_inf) * 
            (1 - (is_weekend[i+(j-1)] * weekend_eff)) 
-           p_diag_if_asy[i] * asy_diag_delay[j]; 
+           p_diag_if_asy[i] * asy_rec_delay[j]; 
     }
   }
   
