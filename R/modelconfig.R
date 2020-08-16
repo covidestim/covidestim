@@ -179,9 +179,13 @@ genData <- function(N_days, N_days_before = 28,
   att(rho_sym > 0 && rho_sym <= 1)
   att(rho_sev > 0 && rho_sev <= 1)
 
-  n_spl_par <- ceiling((N_days + N_days_before)/3) 
-  des_mat <- splines::bs(1:(n_spl_par*3), 
-                         df=n_spl_par, degree=3, intercept=T)
+  n_spl_par_rt <- ceiling((N_days + N_days_before)/3) 
+  des_mat_rt <- splines::bs(1:(n_spl_par_rt*3), 
+                         df=n_spl_par_rt, degree=3, intercept=T)
+  
+  n_spl_par_dx <- ceiling((N_days + N_days_before)/14) 
+  des_mat_dx <- splines::bs(1:(n_spl_par_dx*14), 
+                         df=n_spl_par_dx, degree=3, intercept=T)
   
   # The first set of components of 'datList'
   config <- rlang::dots_list(
@@ -219,13 +223,15 @@ genData <- function(N_days, N_days_before = 28,
     pri_logRt_sd = 1.5, # intercept for logRt
     pri_serial_i_a = 1.754, # for serial interval prior
     pri_serial_i_b = 0.0879,  # for serial interval prior
-    #pri_inf_imported_mu = 0,   # imported infections, for counties
-    #pri_inf_imported_sd = 0.5/0.798,   # imported infections, for counties 
+    pri_inf_imported_mu = 0,   # imported infections
+    pri_inf_imported_sd = 0.5/0.798,   # imported infections 
     pri_deriv1_spl_par_sd = 0.5, # penalizes changes in Rt level
     pri_deriv2_spl_par_sd = 0.1, # penalizes changes in Rt curvature
     
-    n_spl_par = n_spl_par, 
-    spl_basis = as.matrix(as.data.frame(des_mat))[1:(N_days + N_days_before),],
+    n_spl_par_rt = n_spl_par_rt, 
+    spl_basis_rt = as.matrix(as.data.frame(des_mat_rt))[1:(N_days + N_days_before),],
+    n_spl_par_dx = n_spl_par_dx, 
+    spl_basis_dx = as.matrix(as.data.frame(des_mat_dx))[1:(N_days + N_days_before),],
 
     # indicates whether case or death data are being used 
     cas_yes = as.integer(1), 

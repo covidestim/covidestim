@@ -11,8 +11,10 @@ data {
   
   // terms for splines
    // spline parameters and bases
-  int<lower=0>                           N_spl_par;
-  matrix[N_days+N_days_before,N_spl_par] spl_basis;
+  int<lower=0>                           N_spl_par_rt;
+  matrix[N_days+N_days_before,N_spl_par] spl_basis_rt;
+  int<lower=0>                           N_spl_par_dx;
+  matrix[N_days+N_days_before,N_spl_par] spl_basis_dx;
 
   // fixed delay distributions
   // fixed delay distribtions. time from inf -> sym, sym -> sev, sev -> die
@@ -46,12 +48,12 @@ data {
   // for new infections
   real                   pri_log_new_inf_0_mu;
   real<lower=0>          pri_log_new_inf_0_sd;
-  real                   pri_logRt_mu; // ~~ NEW
-  real<lower=0>          pri_logRt_sd; // ~~ NEW
-  real                   pri_serial_i_a; // ~~ NEW
-  real<lower=0>          pri_serial_i_b; // ~~ NEW
-//  real                   pri_inf_imported_mu; // for counties
-//  real<lower=0>          pri_inf_imported_sd; // for counties
+  real                   pri_logRt_mu;   
+  real<lower=0>          pri_logRt_sd;   
+  real                   pri_serial_i_a; 
+  real<lower=0>          pri_serial_i_b; 
+  real                   pri_inf_imported_mu; 
+  real<lower=0>          pri_inf_imported_sd;
   real<lower=0>          pri_deriv1_spl_par_sd;
   real<lower=0>          pri_deriv2_spl_par_sd;
   
@@ -144,8 +146,8 @@ parameters {
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
   real<lower=0>           serial_i; // serial interval
-  vector[N_spl_par]       spl_par;
-  //real<lower=0>           inf_imported; // imported cases
+  vector[N_spl_par_rt]    spl_par_rt;
+  real<lower=0>           inf_imported; // imported cases
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -161,8 +163,7 @@ parameters {
 // probability of diagnosis at each illness state
   real<lower=0, upper=1>    rr_diag_asy_vs_sym; 
   real<lower=0, upper=1>    p_diag_if_sev;
-  vector[N_spl_par]         spl_par_asy_dx;
-  vector[N_spl_par]         spl_par_sym_dx;
+  vector[N_spl_par_dx]      spl_par_sym_dx;
   real<lower=0, upper=1>    weekend_eff;
  
 // LIKELIHOOD 
@@ -228,7 +229,7 @@ transformed parameters {
 
 // DIAGNOSIS // 
  // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
-  rr_diag_sym_vs_sev = inv_logit(spl_basis * spl_par_sym_dx);
+  rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * spl_par_sym_dx);
 // probability of diagnosis 
   p_diag_if_sym = p_diag_if_sev * rr_diag_sym_vs_sev;
   p_diag_if_asy = p_diag_if_sym * rr_diag_asy_vs_sym; 
@@ -259,13 +260,13 @@ p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
 // NEW INCIDENT CASES
   
   // modeled with a spline
-  logRt = spl_basis * b_spline;
+  logRt = spl_basis_rt * b_spline;
   Rt = exp(logRt); 
   deriv1_log_new_inf = logRt/serial_i; 
   
   log_new_inf = cumulative_sum(deriv1_log_new_inf);
   log_new_inf = log_new_inf - log_new_inf[N_days_before] + log_new_inf_0;
-  new_inf = exp(log_new_inf); //+ inf_imported;
+  new_inf = exp(log_new_inf) + inf_imported;
   
   // second derivative
      for(i in 1:(N_spl_par-2)) {
@@ -479,7 +480,7 @@ model {
   serial_i              ~ lognormal(pri_serial_i_a, pri_serial_i_b);
   deriv2_spl_par        ~ normal(0, pri_deriv1_spl_par_sd;);
   deriv1_spl_par        ~ normal(0, pri_deriv2_spl_par_sd;);
-  //inf_imported         ~ normal(pri_inf_imported_mu,pri_inf_imported_sd); // for counties
+  inf_imported          ~ normal(pri_inf_imported_mu, pri_inf_imported_sd); 
   
   // DISEASE PROGRESSION
   // prbability of transitioning from inf -> sym -> sev -> die
