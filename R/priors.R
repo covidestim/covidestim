@@ -183,11 +183,15 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b
 #'   \code{c(shape, scale)} parameters of a Gamma distribution modeling the
 #'   time from severe symptoms to death. 
 #'   
-#' @param asy_rec_delay A two-element numeric vector containing 
-#'    \code{c(shape,scale)} parameters of a Gamma distribution mnodeling the  
-#'    time from infection to recovery without symptom development. 
-#'
 #' Source for default value: \insertRef{linton_incubation_2020}{covidestim}
+#' 
+#' @param asy_rec_delay A two-element numeric vector containing 
+#'    \code{c(shape,scale)} parameters of a Gamma distribution modeling the  
+#'    time from infection to recovery without symptom development. 
+#'    
+#' @param pri_serial_i A two-element numeric vector containing 
+#'    \code{c(shape,scale)} parameters of a Gamma distribution modeling the 
+#'    serial interval, the average time between successive cases. 
 #' 
 #' @return An S3 object of class \code{priors}
 #' @examples
@@ -195,23 +199,28 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b
 #' @export
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
-                               sev_prg_delay = c(2.383, 0.27), # shap/rate
-                               asy_rec_delay = c(14,2)) { # shap/rate 
+                               sev_prg_delay = c(2.383, 0.27),  # shap/rate
+                               asy_rec_delay = c(14,2),         # shap/rate 
+                               pri_serial_i = c(1.754, 0.0879)) {   # shap/rate 
   
+
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)
   att(length(sev_prg_delay) == 2)
   att(length(asy_rec_delay) == 2)
+  att(length(pri_serial_i) == 2)
   att(is_nonNegativeReal(inf_prg_delay))
   att(is_nonNegativeReal(sym_prg_delay))
   att(is_nonNegativeReal(sev_prg_delay))
   att(is_nonNegativeReal(asy_rec_delay))
+  att(is_nonNegativeReal(pri_serial_i))
 
   build_priors(
     inf_prg_delay,
     sym_prg_delay,
     sev_prg_delay,
     asy_rec_delay,
+    pri_serial_i,
     .postfix=c("_shap", "_rate")
   ) -> ps
 

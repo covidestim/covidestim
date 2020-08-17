@@ -50,8 +50,8 @@ data {
   real<lower=0>          pri_log_new_inf_0_sd;
   real                   pri_logRt_mu;   
   real<lower=0>          pri_logRt_sd;   
-  real                   pri_serial_i_a; 
-  real<lower=0>          pri_serial_i_b; 
+  real                   pri_serial_i_rate; 
+  real<lower=0>          pri_serial_i_shap; 
   real                   pri_inf_imported_mu; 
   real<lower=0>          pri_inf_imported_sd;
   real<lower=0>          pri_deriv1_spl_par_sd;
@@ -480,7 +480,7 @@ model {
 //// PRIORS
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
   b_spline              ~ normal(pri_logRt_mu, pri_logRt_sd);
-  serial_i              ~ lognormal(pri_serial_i_a, pri_serial_i_b);
+  serial_i              ~ lognormal(pri_serial_i_rate, pri_serial_i_shap);
   deriv2_spl_par        ~ normal(0, pri_deriv1_spl_par_sd;);
   deriv1_spl_par        ~ normal(0, pri_deriv2_spl_par_sd;);
   inf_imported          ~ normal(pri_inf_imported_mu, pri_inf_imported_sd); 
