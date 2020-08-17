@@ -117,8 +117,10 @@ transformed data {
   for(i in 1:Max_delay) {
     inf_prg_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
       - gamma_cdf(i-1.0, inf_prg_delay_shap, inf_prg_delay_rate);
-    asy_rec_delay[i] = gamma_cdf(i+0.0, asy_rec_delay_shap, asy_rec_delac_rate)
-      - gamma_cdf(i-1.0, asy_rec_delay_shap, asy_rec_delay_rate);
+    asy_rec_delay[i] = gamma_cdf(i+0.0, asy_rec_delay_shap, asy_rec_delac_rate*2)
+      - gamma_cdf(i-1.0, asy_rec_delay_shap, asy_rec_delay_rate*2); 
+      // diagnosis happens, on average, midway through the infectious period
+      // therefore, we multiple the rate parameter by 2
     sym_prg_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate)
       - gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate);
     sev_prg_delay[i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate)
@@ -153,7 +155,7 @@ parameters {
 // probability of transitioning between disease states
   real<lower=0, upper=1>    p_sym_if_inf;
   real<lower=0, upper=1>    p_sev_if_sym;
-  real<lower=0, upper=0.3>  p_die_if_sev;
+  real<lower=0, upper=1>    p_die_if_sev;
   
 // DIANGOSIS
 // scaling factor for time to diagnosis
@@ -200,8 +202,7 @@ transformed parameters {
 
 // DISEASE OUTCOMES
   // overall case fatality rate
-  real<lower=0, upper=0.1>  p_die_if_inf;
-
+  real                p_die_if_inf;
   // "true" number entering disease state each day
   vector[N_days_tot]  new_sym; 
   vector[N_days_tot]  new_sev;
@@ -253,8 +254,11 @@ for(i in 1:Max_delay){
 
 // DEEATHS // 
 p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
-  
-  
+
+// overall case fatality rate is equal to the probability of death among
+// severely ill individuals times the probability of being severely ill. 
+p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
+
 // CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 
 // NEW INCIDENT CASES
@@ -269,7 +273,7 @@ p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
   new_inf = exp(log_new_inf) + inf_imported;
   
   // second derivative
-     for(i in 1:(N_spl_par-2)) {
+  for(i in 1:(N_spl_par-2)) {
     deriv2_spl_par[i] = spl_par[i+1] * 2 - spl_par[i] - spl_par[i+2];
   }
   // first derivative
@@ -311,9 +315,6 @@ p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
     }
   }  
   
-// overall case fatality rate is equal to the probability of death among
-// severely ill individuals times the probability of being severely ill. 
-p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
 
 // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 // initialize empty vectors
@@ -333,12 +334,14 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
 // a diagnosed asymptomatic infection on day i + j - 1
 // is an asymptomatic case on day i with some probability of diagnosis, 
 // and some probability that the diagnosis occurred on day j.
+// we assume asymptomatic diagnosis only occurs among individuals who will be
+// asymptomatic for the entire course of their infection. 
   
   for(i in 1:N_days_tot){ 
     for(j in 1:Max_delay){ 
       if(i+(j-1) <= N_days_tot){ 
         new_asy_dx[i+(j-1)] += new_inf[i] * (1 - p_sym_if_inf) * 
-           (1 - (is_weekend[i+(j-1)] * weekend_eff)) 
+           (1 - (is_weekend[i+(j-1)] * weekend_eff)) *
            p_diag_if_asy[i] * asy_rec_delay[j]; 
     }
   }
@@ -458,7 +461,7 @@ if(obs_die_rep == 1) {
         occur_die[i] = new_die_dx[i]; 
       }
       for(i in (N_days_tot - Max_delay + 1):N_days_tot)  {
-        occur_die[i] += new_die_dx[i] * cas_cum_report_delay[N_days_tot - i + 1];
+        occur_die[i] += new_die_dx[i] * die_cum_report_delay[N_days_tot - i + 1];
       }
 }
 
@@ -497,7 +500,6 @@ model {
   p_diag_if_sev        ~ beta(pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
   weekend_eff          ~ beta(pri_weekend_eff_a, pri_weekend_eff_b);
   // delay distribution scaling factors
-  scale_dx_delay_asy   ~ beta(scale_dx_delay_asy_a, scale_dx_delay_asy_b)
   scale_dx_delay_sym   ~ beta(scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
 

@@ -183,9 +183,9 @@ genData <- function(N_days, N_days_before = 28,
   des_mat_rt <- splines::bs(1:(n_spl_par_rt*3), 
                          df=n_spl_par_rt, degree=3, intercept=T)
   
-  n_spl_par_dx <- ceiling((N_days + N_days_before)/14) 
-  des_mat_dx <- splines::bs(1:(n_spl_par_dx*14), 
-                         df=n_spl_par_dx, degree=3, intercept=T)
+  n_spl_par_dx <- max(4,ceiling((N_days + N_days_before)/21)) 
+  des_mat_dx <- splines::bs(1:(n_spl_par_dx*21), 
+                         df=n_spl_par_dx, degree=3, intercept=T) 
   
   # The first set of components of 'datList'
   config <- rlang::dots_list(
