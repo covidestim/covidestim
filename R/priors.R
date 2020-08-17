@@ -196,7 +196,7 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b
 priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
                                sym_prg_delay = c(5.147, 0.468), # shap/rate 
                                sev_prg_delay = c(2.383, 0.27), # shap/rate
-                               asy_rec_delay = (14,2)) { # shap/rate PLACEHOLDER!!!
+                               asy_rec_delay = c(14,2)) { # shap/rate PLACEHOLDER!!!
   
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)
