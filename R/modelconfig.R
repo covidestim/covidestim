@@ -224,9 +224,9 @@ genData <- function(N_days, N_days_before = 28,
     pri_deriv1_spl_par_sd = 0.5, # penalizes changes in Rt level
     pri_deriv2_spl_par_sd = 0.1, # penalizes changes in Rt curvature
     
-    n_spl_par_rt = n_spl_par_rt, 
+    N_spl_par_rt = n_spl_par_rt, 
     spl_basis_rt = as.matrix(as.data.frame(des_mat_rt))[1:(N_days + N_days_before),],
-    n_spl_par_dx = n_spl_par_dx, 
+    N_spl_par_dx = n_spl_par_dx, 
     spl_basis_dx = as.matrix(as.data.frame(des_mat_dx))[1:(N_days + N_days_before),],
 
     # indicates whether case or death data are being used 
