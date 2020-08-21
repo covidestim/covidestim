@@ -11,10 +11,10 @@ data {
   
   // terms for splines
    // spline parameters and bases
-  int<lower=0>                           N_spl_par_rt;
-  matrix[N_days+N_days_before,N_spl_par] spl_basis_rt;
-  int<lower=0>                           N_spl_par_dx;
-  matrix[N_days+N_days_before,N_spl_par] spl_basis_dx;
+  int<lower=0>                              N_spl_par_rt;
+  matrix[N_days+N_days_before,N_spl_par_rt] spl_basis_rt;
+  int<lower=0>                              N_spl_par_dx;
+  matrix[N_days+N_days_before,N_spl_par_dx] spl_basis_dx;
 
   // fixed delay distributions
   // fixed delay distribtions. time from inf -> sym, sym -> sev, sev -> die
@@ -117,7 +117,7 @@ transformed data {
   for(i in 1:Max_delay) {
     inf_prg_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
       - gamma_cdf(i-1.0, inf_prg_delay_shap, inf_prg_delay_rate);
-    asy_rec_delay[i] = gamma_cdf(i+0.0, asy_rec_delay_shap, asy_rec_delac_rate*2)
+    asy_rec_delay[i] = gamma_cdf(i+0.0, asy_rec_delay_shap, asy_rec_delay_rate*2)
       - gamma_cdf(i-1.0, asy_rec_delay_shap, asy_rec_delay_rate*2); 
       // diagnosis happens, on average, midway through the infectious period
       // therefore, we multiple the rate parameter by 2
@@ -186,8 +186,8 @@ transformed parameters {
   // Rt spline
   vector[N_days_tot]      logRt;
   vector[N_days_tot]      Rt;
-  vector[N_spl_par-1]     deriv1_spl_par;
-  vector[N_spl_par-2]     deriv2_spl_par;
+  vector[N_spl_par_rt-1]  deriv1_spl_par_rt;
+  vector[N_spl_par_rt-2]  deriv2_spl_par_rt;
   
 // DIAGNOSIS AND REPORTING  
  // probability of diagnosis
@@ -235,7 +235,7 @@ transformed parameters {
   p_diag_if_sym = p_diag_if_sev * rr_diag_sym_vs_sev;
   p_diag_if_asy = p_diag_if_sym * rr_diag_asy_vs_sym; 
   
-// DLEAYS //
+// DELAYS //
 // Diagnosis Delays
 // Calcluate the probability of diagnosis for each day in state
 // for 1 to 60 days in state. We do this by scaling the rate term
@@ -252,19 +252,18 @@ for(i in 1:Max_delay){
                         sev_prg_delay_rate/scale_dx_delay_sev);
 }
 
-// DEEATHS // 
-p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
-
-// overall case fatality rate is equal to the probability of death among
-// severely ill individuals times the probability of being severely ill. 
-p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
+// DEATHS // 
+// infection fatality rate is the product of the probability of death among
+// severely ill individuals, the probability of being severely ill if symptomatic,
+// and the probability of becoming symptomatic if infected. 
+  p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
 
 // CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 
 // NEW INCIDENT CASES
   
   // modeled with a spline
-  logRt = spl_basis_rt * b_spline;
+  logRt = spl_basis_rt * spl_par_rt;
   Rt = exp(logRt); 
   deriv1_log_new_inf = logRt/serial_i; 
   
@@ -273,12 +272,12 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
   new_inf = exp(log_new_inf) + inf_imported;
   
   // second derivative
-  for(i in 1:(N_spl_par-2)) {
-    deriv2_spl_par[i] = spl_par[i+1] * 2 - spl_par[i] - spl_par[i+2];
+  for(i in 1:(N_spl_par_rt-2)) {
+    deriv2_spl_par_rt[i] = spl_par_rt[i+1] * 2 - spl_par_rt[i] - spl_par_rt[i+2];
   }
   // first derivative
-  for(i in 1:(N_spl_par-1)) {
-    deriv1_spl_par[i] = spl_par[i+1] - spl_par[i];
+  for(i in 1:(N_spl_par_rt-1)) {
+    deriv1_spl_par_rt[i] = spl_par_rt[i+1] - spl_par_rt[i];
   }
 
  // SYMPTOMATIC CASES
@@ -337,12 +336,13 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
 // we assume asymptomatic diagnosis only occurs among individuals who will be
 // asymptomatic for the entire course of their infection. 
   
-  for(i in 1:N_days_tot){ 
+  for(i in 1:N_days_tot){
     for(j in 1:Max_delay){ 
       if(i+(j-1) <= N_days_tot){ 
         new_asy_dx[i+(j-1)] += new_inf[i] * (1 - p_sym_if_inf) * 
            (1 - (is_weekend[i+(j-1)] * weekend_eff)) *
            p_diag_if_asy[i] * asy_rec_delay[j]; 
+      }
     }
   }
   
@@ -353,20 +353,20 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
   for(i in 1:N_days_tot){
     for(j in 1:Max_delay){
       if(i+(j-1) <= N_days_tot){
-      new_sym_dx[i+(j-1)] += new_sym[i]  * 
-                             p_diag_if_sym *  
+        new_sym_dx[i+(j-1)] += new_sym[i]  * 
+                             p_diag_if_sym[i] *  
                              (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
                              sym_diag_delay[j];
     }
   }
-}  
+}
 // cascade from diagnosis 
 // follow diagnosed cases forward to determine how many cases diagnosed
 // at symptomatic eventually die 
           for(i in 1:N_days_tot){
             for(j in 1:Max_delay){
               if(i+(j-1) <= N_days_tot){
-               dx_sym_sev[i+(j-1)] += new_sym[i] * p_diag_if_sym * 
+               dx_sym_sev[i+(j-1)] += new_sym[i] * p_diag_if_sym[i] * 
                p_sev_if_sym * sym_prg_delay[j];
             }
           }
@@ -392,7 +392,7 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
                              sev_diag_delay[j]; 
     }
   }
-} 
+}
 // cascade from diagnosis
 // as above for symptomatic 
           for(i in 1:N_days_tot){
@@ -402,11 +402,10 @@ p_die_if_sym = p_die_if_sev * p_sev_if_sym;
               p_diag_if_sev * p_die_if_sev * sev_prg_delay[j];
             }
           }
-        }  
+        }
 
 // TOTAL DIAGNOSED CASES AND DEATHS //
 diag_all = new_asy_dx + new_sym_dx + new_sev_dx;
-diag_cases = new_sym_dx + new_sev_dx; 
 new_die_dx = dx_sym_die + dx_sev_die;
 
 // REPORTING //
@@ -429,7 +428,7 @@ if(obs_cas_rep == 1) {
         occur_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
       }
     }
-  }  
+  }
 } else {
   // for cases by date of occurrence
   // we assume all cases diagnosed more than 60 days from the final day of data
@@ -479,10 +478,10 @@ model {
   real tmp_occur_die;
 //// PRIORS
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
-  b_spline              ~ normal(pri_logRt_mu, pri_logRt_sd);
+  spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ lognormal(pri_serial_i_rate, pri_serial_i_shap);
-  deriv2_spl_par        ~ normal(0, pri_deriv1_spl_par_sd;);
-  deriv1_spl_par        ~ normal(0, pri_deriv2_spl_par_sd;);
+  deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
+  deriv2_spl_par_rt     ~ normal(0, pri_deriv2_spl_par_sd);
   inf_imported          ~ normal(pri_inf_imported_mu, pri_inf_imported_sd); 
   
   // DISEASE PROGRESSION
@@ -504,15 +503,15 @@ model {
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
 
 // phi  
-  inv_sqrt_phi_c       ~ normal(0, 1); //~~
-  inv_sqrt_phi_d       ~ normal(0, 1); //~~
+  inv_sqrt_phi_c       ~ normal(0, 1);
+  inv_sqrt_phi_d       ~ normal(0, 1);
     
 //// LIKELIHOOD
   if(cas_yes==1){
     tmp_obs_cas = obs_cas[1];
     tmp_occur_cas = occur_cas[1 + N_days_before];
     for(i in 1:N_days) {
-      target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/n_day_av;
+      target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/N_days_av;
       if(i>nda0){
         tmp_obs_cas   -= obs_cas[i - nda0];
         tmp_occur_cas -= occur_cas[i + N_days_before - nda0];
@@ -527,7 +526,7 @@ model {
     tmp_obs_die = obs_die[1];
     tmp_occur_die = occur_die[1 + N_days_before];
     for(i in 1:N_days) {
-      target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/n_day_av;
+      target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/N_days_av;
       if(i>nda0){  
         tmp_obs_die   -= obs_die[i - nda0];
         tmp_occur_die -= occur_die[i + N_days_before - nda0];
@@ -543,8 +542,15 @@ model {
 generated quantities {
   // calculate cumulative incidence as the cumunlative sum of 
   // 'true' incident cases
+  real                p_die_if_sym;
+  vector[N_days_tot]  diag_cases;  
   vector[N_days_tot]  cumulative_incidence;  
+  
+  
   cumulative_incidence = cumulative_sum(new_inf); 
+  p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
+  diag_cases = new_sym_dx + new_sev_dx; 
+
 }
 
 

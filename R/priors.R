@@ -13,7 +13,7 @@
 pri_alpha <- function(mv) (mv[1]^2)/mv[2]
 
 #' @rdname pri_alpha
-pri_beta  <- function(mv) (mv[2]^2)/mv[1]
+pri_beta  <- function(mv) mv[1]/mv[2]
 
 # A list with arbitrary values, of class 'priors'
 priors <- function(...) structure(list(...), class='priors')
@@ -197,11 +197,11 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_progression(inf_prg_delay = c(4, 1))
 #' @export
-priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
-                               sym_prg_delay = c(5.147, 0.468), # shap/rate 
-                               sev_prg_delay = c(2.383, 0.27),  # shap/rate
-                               asy_rec_delay = c(14,2),         # shap/rate 
-                               pri_serial_i = c(1.754, 0.0879)) {   # shap/rate 
+priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
+                               sym_prg_delay = c(1.624, 0.2175), # shap/rate 
+                               sev_prg_delay = c(2.061, 0.2277),  # shap/rate
+                               asy_rec_delay = c(14   , 2     ),         # shap/rate 
+                               pri_serial_i  = c(1.754, 0.0879) ) {   # shap/rate 
   
 
   att(length(inf_prg_delay) == 2)
@@ -257,10 +257,10 @@ priors_progression <- function(inf_prg_delay = c(5.202, 0.946), # shap/rate
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_diagnosis(p_diag_if_sym = c(2, 2))
 #' @export
-priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2.5,7.5), # a/b
-                             rr_diag_sym_vs_sev = c(2,2), # a/b
-                             p_diag_if_sev = c(1.5, 1), 
-                             weekend_eff = c(2, 2)) {# a/b
+priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  , 8  ), # a/b
+                             rr_diag_sym_vs_sev = c(2  , 2  ), # a/b
+                             p_diag_if_sev      = c(5  , 2  ), 
+                             weekend_eff        = c(2  , 2  )) {# a/b
 
   att(length(rr_diag_asy_vs_sym) == 2)
   att(length(rr_diag_sym_vs_sev) == 2)

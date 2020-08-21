@@ -164,7 +164,7 @@ or removing your custom prior.
 'Mean case reporting delay (relative to total days of data) was longer than
 expected.
 
-Your case reporting delay (`die_rep_delay`) has a mean of {death_reporting_mean}
+Your death reporting delay (`die_rep_delay`) has a mean of {death_reporting_mean}
 days, whereas the total days of data, `N_days`, was {N_days}. Consider adjusting
 or removing your custom prior.
 ' -> death_reporting_warning
@@ -179,8 +179,8 @@ genData <- function(N_days, N_days_before = 28,
   att(rho_sym > 0 && rho_sym <= 1)
   att(rho_sev > 0 && rho_sev <= 1)
 
-  n_spl_par_rt <- ceiling((N_days + N_days_before)/3) 
-  des_mat_rt <- splines::bs(1:(n_spl_par_rt*3), 
+  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/4))
+  des_mat_rt <- splines::bs(1:(n_spl_par_rt*4), 
                          df=n_spl_par_rt, degree=3, intercept=T)
   
   n_spl_par_dx <- max(4,ceiling((N_days + N_days_before)/21)) 
