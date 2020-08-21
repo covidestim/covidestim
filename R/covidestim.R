@@ -33,12 +33,6 @@ NULL
 #'   modeled. This should always be set to the number of days in your input data.
 #' @param ndays_before A positive integer. How many days before the first day
 #'   of model data should be modeled?
-#' @param rho_sym A number in \code{(0, 1]}. Modulates the strength of 
-#'   the relationship between the fraction of positive tests and the 
-#'   probability of diagnosis for symptomatic, but not severely ill, cases. 
-#' @param rho_sev A number in \code{(0, 1]}. Modulates the strength of 
-#'   the relationship between the fraction of positive tests and the 
-#'   probability of diagnosis for severely ill cases. 
 #' @param seed A number. The random number generator seed for use in sampling.
 #' @param weekend A logical scalar. Many regions see decreased testing volumes
 #'   during the weekend. If this is a feature of your data, you may want to
@@ -58,7 +52,7 @@ NULL
 #' @export
 covidestim <- function(ndays, ndays_before=28,
                        chains=3, iter=1500, thin = 1, 
-                       rho_sym = 1, rho_sev = 0.5, seed=42,
+                       seed=42,
                        adapt_delta = 0.92, max_treedepth = 12,
                        window.length = 5, weekend = FALSE) {
 
@@ -67,8 +61,6 @@ covidestim <- function(ndays, ndays_before=28,
   defaultConfig(
     N_days = ndays,
     N_days_before = ndays_before,
-    rho_sym = rho_sym, 
-    rho_sev = rho_sev,
     weekend = weekend,
     N_days_av = window.length
   ) -> config

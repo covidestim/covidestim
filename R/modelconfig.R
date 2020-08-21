@@ -176,8 +176,6 @@ or removing your custom prior.
 genData <- function(N_days, N_days_before = 28, 
                     N_days_av = 5, weekend=FALSE) #new default value
 {
-  att(rho_sym > 0 && rho_sym <= 1)
-  att(rho_sev > 0 && rho_sev <= 1)
 
   n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/4))
   des_mat_rt <- splines::bs(1:(n_spl_par_rt*4), 
