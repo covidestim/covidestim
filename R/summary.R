@@ -8,8 +8,6 @@
 #'   elements of variables which do not have values for this "before" period
 #'   will be represented as \code{NA}.
 #'
-#' @param include.RtEstim A logical scalar. Include Rt estimates in output?
-#'   Will add ~1 minute to runtime.
 #'
 #' @param index A logical scalar. If \code{TRUE}, will include a variable
 #'   \code{index} in the output, with range \code{1:(ndays_before + ndays)}.
@@ -46,19 +44,15 @@
 #'     \item \code{data.available}: \code{TRUE/FALSE} for whether input data
 #'       was available on that particular day.
 #'
-#'     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of Rt, with 95\%
-#'       CIs. See \code{\link{RtEst}}.
-#'
-#'     \item \code{NaiveRt}, \code{NaiveRt.lo}, \code{NaiveRt.hi}: Naive
-#'       estimate of Rt, with 95% CIs. See \code{\link{RtNaiveEstim}}.
+#'     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of the effective 
+#'     reproductive number (Rt), with 95\% CIs.
 #'
 #'     \item \code{index}
 #'   }
 #'
 #' @export
 #' @importFrom magrittr %>%
-summary.covidestim_result <- function(ccr, include.before = TRUE, 
-                                     include.RtEstim = TRUE, index = FALSE) {
+summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE) {
 
   # Used for dealing with indices and dates
   ndays        <- ccr$config$N_days
@@ -132,14 +126,6 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
     dplyr::mutate(data.available = date >= start_date)
 
   d <- stan_extracts
-
-  # Join in Rt estimates if requested
-  if (include.RtEstim) {
-   # Rt   <- RtEst(ccr)
-    Rt_n <- RtNaiveEstim(ccr)
-   # d <- dplyr::left_join(d, Rt, by = "date")
-    d <- dplyr::left_join(d, Rt_n, by = "date")
-  }
 
   # Column-bind high-density interval CI's for cumulative incidence
   # First, remove the traditionally-calculated lo and hi estimates

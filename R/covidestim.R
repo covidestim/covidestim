@@ -191,6 +191,4 @@ covidcast_register <- function() {
   run.covidcast                 <<- run.covidestim
   viz.covidcast_result          <<- viz.covidestim_result
   summary.covidcast_result      <<- summary.covidestim_result
-  RtEst.covidcast_result        <<- RtEst.covidestim_result
-  RtNaiveEstim.covidcast_result <<- RtNaiveEstim.covidestim_result
 }
