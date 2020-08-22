@@ -167,30 +167,30 @@ priors_transitions <- function(p_sym_if_inf = c(44.9, 9.9),     # a/b
 #' the infectious state. Called with no arguments, the default values are
 #' returned. The following arguments can be passed to create different priors:
 #'
-#' @param inf_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' @param inf_prg_delay A two-element numeric vector containing \code{c(shape, rate)}
 #' parameters of a Gamma distribution modeling the time from infection to 
 #' sypmtom onset. 
 #'
 #' Source for default value: \insertRef{lauer_incubation_2020}{covidestim}
 #'
-#' @param sym_prg_delay A two-element numeric vector containing \code{c(shape, scale)}
+#' @param sym_prg_delay A two-element numeric vector containing \code{c(shape, rate)}
 #' parameters of a Gamma distribution modeling the time from symptom onset to 
 #' severe disease. 
 #'
 #' Source for default value: \insertRef{zhou_clinical_2020}{covidestim}
 #'
 #' @param sev_prg_delay A two-element numeric vector containing
-#'   \code{c(shape, scale)} parameters of a Gamma distribution modeling the
+#'   \code{c(shape, rate)} parameters of a Gamma distribution modeling the
 #'   time from severe symptoms to death. 
 #'   
 #' Source for default value: \insertRef{linton_incubation_2020}{covidestim}
 #' 
 #' @param asy_rec_delay A two-element numeric vector containing 
-#'    \code{c(shape,scale)} parameters of a Gamma distribution modeling the  
+#'    \code{c(shape,rate)} parameters of a Gamma distribution modeling the  
 #'    time from infection to recovery without symptom development. 
 #'    
 #' @param pri_serial_i A two-element numeric vector containing 
-#'    \code{c(shape,scale)} parameters of a Gamma distribution modeling the 
+#'    \code{c(shape,rate)} parameters of a Gamma distribution modeling the 
 #'    serial interval, the average time between successive cases. 
 #' 
 #' @return An S3 object of class \code{priors}
@@ -201,7 +201,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
                                sym_prg_delay = c(1.624, 0.2175), # shap/rate 
                                sev_prg_delay = c(2.061, 0.2277),  # shap/rate
                                asy_rec_delay = c(14   , 2     ),         # shap/rate 
-                               pri_serial_i  = c(1.754, 0.0879) ) {   # shap/rate 
+                               pri_serial_i  = c(129.1, 22.25 ) ) {   # shap/rate 
   
 
   att(length(inf_prg_delay) == 2)
@@ -257,7 +257,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_diagnosis(p_diag_if_sym = c(2, 2))
 #' @export
-priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  , 8  ), # a/b
+priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
                              rr_diag_sym_vs_sev = c(2  , 2  ), # a/b
                              p_diag_if_sev      = c(5  , 2  ), 
                              weekend_eff        = c(2  , 2  )) {# a/b
