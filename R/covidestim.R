@@ -19,13 +19,12 @@ NULL
 #'
 #' \code{covidestim} returns a base configuration of the model with the default
 #' set of priors, and no input data. This configuration, after adding input
-#' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, and
-#' \code{\link{input_fracpos}}), represents a valid model configuration that can
-#' be passed to \code{\link{run}}.
+#' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, represents 
+#' a valid model configuration that can be passed to \code{\link{run}}.
 #'
-#' @param chains The number of chains to use during MCMC, as passed to
+#' @param chains The number of chains to use during sampling, as passed to
 #'   \code{\link[rstan]{sampling}}.
-#' @param iter The number of iterations to run during MCMC, as passed to
+#' @param iter The number of iterations to run during sampling, as passed to
 #'   \code{\link[rstan]{sampling}}.
 #' @param thin A positive integer to specify period for saving samples, as
 #'   passed to \code{\link[rstan]{sampling}}. 

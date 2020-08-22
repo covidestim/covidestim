@@ -1,7 +1,7 @@
-# Equations for converting a mean and variance to the alpha/beta parameters
-# of a gamma distribution. Sourced from Reza's class slides.
+# Equations for converting a mean and variance to the shape/rate parameters
+# of a gamma distribution.
 
-#' Convert mean/variance stats to alpha/beta parameters of gamma distribution
+#' Convert mean/variance stats to shape/rate parameters of gamma distribution
 #'
 #' Using a method of moments approach, converts a sample with a specified
 #' mean and variance to a parameterization of a gamma distribution
@@ -9,11 +9,11 @@
 #' @param mv A two-element numeric vector, where \code{[1]} represents mean
 #'   and \code{[2]} represents variance.
 #'
-#' @return A number representing the alpha or beta parameter
-pri_alpha <- function(mv) (mv[1]^2)/mv[2]
+#' @return A number representing the shape or rate parameter
+pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]
 
 #' @rdname pri_alpha
-pri_beta  <- function(mv) mv[1]/mv[2]
+pri_gamma_rate  <- function(mv) mv[1]/mv[2]
 
 # A list with arbitrary values, of class 'priors'
 priors <- function(...) structure(list(...), class='priors')
