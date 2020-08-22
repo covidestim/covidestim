@@ -24,9 +24,6 @@ test_that("bad dates don't work", {
   expect_error(input_deaths(d2))
   expect_error(input_deaths(d1))
   expect_error(input_deaths(d2))
-  expect_error(input_fracpos(d3))
-  expect_error(input_fracpos(d2))
-  expect_error(input_fracpos(d3))
 })
 
 test_that("duplicate dates don't work", {
@@ -42,7 +39,6 @@ test_that("duplicate dates don't work", {
 
   expect_error(input_cases(d3))
   expect_error(input_deaths(d3))
-  expect_error(input_fracpos(d3))
 })
 
 test_that("example data validates", {
@@ -67,21 +63,14 @@ test_that("obs/rep causes change to underlying Stan configuration", {
   ndays <- nrow(d_cases)
 
   d_deaths <- example_nyc_data("deaths")
-  d_fracpos <- tibble::tibble(
-    date = seq(now() - ndays, now(), by = '1 day'),
-    observation = runif(ndays, 0, 1)
-  )
-
 
   # Configure things as reported
   expect_silent(icas     <- input_cases(d_cases))
   expect_silent(idth     <- input_deaths(d_deaths))
-  expect_silent(ifracpos <- input_fracpos(d_fracpos))
 
   # Should show up as an attribute
   expect_equal(attr(icas, 'date_type'), "reported")
   expect_equal(attr(idth, 'date_type'), "reported")
-  expect_equal(attr(ifracpos, 'date_type'), "reported")
 
   # Everything should succeed
   expect_silent(
@@ -109,10 +98,8 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10) + ifracpos
+    cfg <- covidestim(ndays = ndays, ndays_before = 10)
   )
-
-  expect_equal(cfg$config$frac_pos, c(rep(0, 10), d_fracpos$observation))
 
   #############################################################################
 
@@ -146,29 +133,6 @@ test_that("bad `type` arguments don't validate to valid input objects", {
   expect_error(idth <- input_deaths(d_deaths,type = "CAT"))
 })
 
-test_that("Not specifying fracpos results in the correct internal representation", {
-  cfg <- covidestim(ndays = 50, ndays_before = 10)
-
-  expect_equal(cfg$config$frac_pos, rep(0, 60))
-  expect_null(cfg$config$frac_pos_user)
-})
-
-test_that("Specifying fracpos results in the correct internal representation", {
-  obs <- c(rep(0.05, 30), rep(0.03, 10), rep(0.01, 10))
-
-  input <- input_fracpos(
-    data.frame(
-      date = seq(lubridate::now() - lubridate::days(49),
-                 lubridate::now(),
-                 by = '1 day'),
-      observation = obs
-    )
-  )
-
-  cfg <- covidestim(ndays = 50, ndays_before = 10) + input
-
-  expect_equal(cfg$config$frac_pos, c(rep(0, 10), obs))
-})
 
 test_that("Weekend effect is represented correctly internally", {
   library(lubridate)
