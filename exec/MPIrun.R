@@ -60,7 +60,6 @@ read_csv(
 
 assert_that(!any(is.na(d$cases)))
 assert_that(!any(is.na(d$deaths)))
-assert_that(!any(is.na(d$fracpos)))
 
 cli_alert_success("Read {.file {input_file_path}}, all assertions passed")
 
@@ -87,14 +86,12 @@ gen_covidestim_run <- function(d, type_cases = "reported",
 
   d_cases   <- transmute(d, date, observation = cases)
   d_deaths  <- transmute(d, date, observation = deaths)
-  d_fracpos <- transmute(d, date, observation = fracpos)
   N_days    <- nrow(d_cases)
 
   covidestim::covidcast(N_days = N_days,
                        N_days_before = N_days_before) +
     covidestim::input_cases(d_cases,   type = type_cases) +
-    covidestim::input_deaths(d_deaths, type = type_deaths) +
-    covidestim::input_fracpos(d_fracpos)
+    covidestim::input_deaths(d_deaths, type = type_deaths)
 }
 
 # Take the data, and split it into smaller tibbles for each state
@@ -110,7 +107,6 @@ pwalk(states_nested, function(data, config, ...) {
   ulid <- cli_ul()
   cli_li("Death data: {nrow(data)} obs")
   cli_li("Cases data: {nrow(data)} obs")
-  cli_li("Fracpos data: {nrow(data)} obs")
   cli_end(ulid)
 })
 cli_end()
