@@ -70,8 +70,7 @@ reformat_dates <- function(vec) vec
 #' \code{\link[base]{data.frame}} of two variables. One variable, \code{date}
 #' must be a vector of type \code{\link[base]{POSIXct}} or
 #' \code{\link[base]{Date}}. The second column, \code{observations} will be a
-#' non-negative numeric vector, except in the case of testing data, where the
-#' column must be a numeric vector between \code{[0,1]}.
+#' non-negative numeric vector.
 #'
 #' Missing values in cases and deaths data should be imputed before running the model.
 #' The date range of all sets of data passed to \code{\link{covidestim}} must be
