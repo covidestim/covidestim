@@ -13,7 +13,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    EpiEstim,
     ggplot2,
     glue,
     Hmisc,
@@ -23,7 +22,6 @@ Imports:
     parallel,
     plyr,
     purrr,
-    RColorBrewer,
     Rcpp (>= 1.0.4.6),
     RcppParallel (>= 5.0),
     Rdpack,

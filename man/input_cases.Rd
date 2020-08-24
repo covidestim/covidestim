@@ -3,14 +3,11 @@
 \name{input_cases}
 \alias{input_cases}
 \alias{input_deaths}
-\alias{input_fracpos}
 \title{Input observational data}
 \usage{
 input_cases(data, type = "reported")
 
 input_deaths(data, type = "reported")
-
-input_fracpos(data)
 }
 \arguments{
 \item{data}{A \code{\link[base]{data.frame}} as described below.}
@@ -33,65 +30,37 @@ input_fracpos(data)
 
   \code{"occurred"} applies to the following situations:
   \itemize{
-    \item Data where counts represent the number of of cases or deaths that
+    \item Data where counts represent the number of cases or deaths that
       actually occured on that day. For case data, this would be the day a 
       test was administered or the date of symptom onset. For deaths, this 
       would be the day an individual died. Note that, if the deaths data 
-      represented the day an individual's death was first reported as a 
+      represent the day an individual's death was first reported as a 
       SARS-Cov-2-related death, that data should be passed with 
       \code{type = "reported"}, instead.
-  }}
+  }
+
+
+#' @rdname input_cases}
 }
 \description{
 A family of functions used for inputting data into Covidestim.
 }
 \details{
-There are three types of observational data that can be used with Covidestim:
+There are two types of observational data that can be used with Covidestim:
 
 \itemize{
   \item Case data, detailing the number of new cases each day
   \item Death data, detailing the number of confirmed Covid-19 deaths each
   day
-  \item Testing data, detailing the fraction of positive tests for each day
-  of data. 
 }
 
 All input data to Covidestim is expected to be a
 \code{\link[base]{data.frame}} of two variables. One variable, \code{date}
 must be a vector of type \code{\link[base]{POSIXct}} or
 \code{\link[base]{Date}}. The second column, \code{observations} will be a
-non-negative numeric vector, except in the case of testing data, where the
-column must be a numeric vector between \code{[0,1]}.
+non-negative numeric vector.
 
-Fraction positve data should represent, for a given day, the number of
-positive test results reported that day, over the total number of test
-results received that day. Note that the model tends to perform poorly on
-fraction positive data that contains dramatic jumps. With highly variable 
-data, we recommened users smooth the fraction positive data with a moving 
-average,for example by using the function \code{\link[smooth]{sma}}. Reasons 
-for this variation, as they have manifested in publicly available datasets, 
-have included:
-
-\itemize{
-  \item \strong{Dumping of test results}: Some states have a tendency to dump 
-    batches of results on particular days. 
-
-  \item \strong{Accumulation of test results reported over the weekend}: Many 
-    states have lower reporting volume over the weekend, creating an unstable
-    fraction positive quantity as the sample size increases and decreases
-    dramatically.
-
-  \item \strong{Reclassification of results}: Some states have retroactively changed
-    test results, or removed test results entirely, and these changes may 
-    manifest on a single day, rather than being applied to all previous
-    days affected by the change.
-
-  \item \strong{Antibody tests}: Some states have been pooling antibody tests with
-    viral tests, as reported in \href{https://www.theatlantic.com/health/archive/2020/05/cdc-and-states-are-misreporting-covid-19-test-data-pennsylvania-georgia-texas/611935/}{The Atlantic}, and are now
-    removing that pooling from their data.
-}
-
-Missing values in cases and deaths data should be represented as \code{0}.
+Missing values in cases and deaths data should be imputed before running the model.
 The date range of all sets of data passed to \code{\link{covidestim}} must be
 equivalent, with one observation each day, and no gaps in the data.
 Assertions attempt to enforce this specification.

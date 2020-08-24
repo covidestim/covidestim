@@ -1755,7 +1755,7 @@ public:
             current_statement_begin__ = 481;
             lp_accum__.add(normal_log<propto__>(spl_par_rt, pri_logRt_mu, pri_logRt_sd));
             current_statement_begin__ = 482;
-            lp_accum__.add(lognormal_log<propto__>(serial_i, pri_serial_i_rate, pri_serial_i_shap));
+            lp_accum__.add(gamma_log<propto__>(serial_i, pri_serial_i_shap, pri_serial_i_rate));
             current_statement_begin__ = 483;
             lp_accum__.add(normal_log<propto__>(deriv1_spl_par_rt, 0, pri_deriv1_spl_par_sd));
             current_statement_begin__ = 484;

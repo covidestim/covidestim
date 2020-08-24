@@ -2,7 +2,7 @@
 % Please edit documentation in R/priors.R
 \name{priors_diagnosis_delays_scale}
 \alias{priors_diagnosis_delays_scale}
-\title{Priors on reporting delays}
+\title{Priors on diagnostic delays}
 \usage{
 priors_diagnosis_delays_scale(dx_delay_sym = c(2, 2), dx_delay_sev = c(2, 2))
 }
@@ -21,9 +21,9 @@ the severe disease state, scaled by this factor.}
 An S3 object of class 'priors'
 }
 \description{
-This function returns a keyed list of priors related to delays in reporting
-of cases, hospitalizations, and deaths.  Called with no arguments, the
-default values are returned.
+This function returns a keyed list of priors related to delays in diagnosing
+of cases and deaths.  Called with no arguments, the default values are 
+returned.
 }
 \details{
 Boundary avoiding priors are use by default.

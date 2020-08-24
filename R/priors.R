@@ -10,9 +10,10 @@
 #'   and \code{[2]} represents variance.
 #'
 #' @return A number representing the shape or rate parameter
+#' @export
 pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]
 
-#' @rdname pri_alpha
+#' @rdname pri_gamma_shape
 pri_gamma_rate  <- function(mv) mv[1]/mv[2]
 
 # A list with arbitrary values, of class 'priors'

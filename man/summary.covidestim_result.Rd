@@ -4,7 +4,7 @@
 \alias{summary.covidestim_result}
 \title{Summarize a Covidestim run}
 \usage{
-\method{summary}{covidestim_result}(ccr, include.before = TRUE, include.RtEstim = TRUE, index = FALSE)
+\method{summary}{covidestim_result}(ccr, include.before = TRUE, index = FALSE)
 }
 \arguments{
 \item{ccr}{A \code{covidestim_result} object}
@@ -14,9 +14,6 @@ period before the first day of input data? (This period is of length
 \code{ndays_before} as passed to \code{covidestim}). If  \code{TRUE}, any
 elements of variables which do not have values for this "before" period
 will be represented as \code{NA}.}
-
-\item{include.RtEstim}{A logical scalar. Include Rt estimates in output?
-Will add ~1 minute to runtime.}
 
 \item{index}{A logical scalar. If \code{TRUE}, will include a variable
 \code{index} in the output, with range \code{1:(ndays_before + ndays)}.}
@@ -54,11 +51,8 @@ A \code{data.frame} with the following variables:
     \item \code{data.available}: \code{TRUE/FALSE} for whether input data
       was available on that particular day.
 
-    \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of Rt, with 95\%
-      CIs. See \code{\link{RtEst}}.
-
-    \item \code{NaiveRt}, \code{NaiveRt.lo}, \code{NaiveRt.hi}: Naive
-      estimate of Rt, with 95% CIs. See \code{\link{RtNaiveEstim}}.
+    \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of the effective 
+    reproductive number (Rt), with 95\% CIs.
 
     \item \code{index}
   }

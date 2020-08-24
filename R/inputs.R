@@ -114,7 +114,7 @@ input_cases <- function(data, type = "reported") {
   structure(list(obs_cas=data), class='input', date_type = type)
 }
 
-#' @rdname input_deaths
+#' @rdname input_cases
 #' @export
 input_deaths <- function(data, type = "reported") {
   validate_input(data, type)

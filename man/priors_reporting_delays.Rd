@@ -2,7 +2,7 @@
 % Please edit documentation in R/priors.R
 \name{priors_reporting_delays}
 \alias{priors_reporting_delays}
-\title{Priors on reporting delays}
+\title{Fixed distributions on reporting delays}
 \usage{
 priors_reporting_delays(cas_rep_delay = c(2.2, 1), die_rep_delay = c(2.2, 1))
 }

@@ -5,17 +5,17 @@
 \title{Priors on probability of diagnosis}
 \usage{
 priors_diagnosis(
-  p_diag_if_sym = c(2, 2),
-  p_diag_if_sev = c(1.5, 1),
+  rr_diag_asy_vs_sym = c(2, 18),
+  rr_diag_sym_vs_sev = c(2, 2),
+  p_diag_if_sev = c(5, 2),
   weekend_eff = c(2, 2)
 )
 }
 \arguments{
-\item{p_diag_if_sym}{A two-element numeric vector containing \code{c(alpha,
-beta)} parameters of a Beta distribution modeling the probability of
-diagnosed if symptomatic. The mean of this distribution should be less
-the mean of the distribution parameterized by \code{p_diag_if_sev}.
-Otherwise, a warning will be displayed.}
+\item{rr_diag_asy_vs_sym}{A two-element numeric vector containing 
+\code{c(alpha, beta)} parameters of a Beta distribution modeling the rate 
+ratio of diagnosis among asymptomatic vs symptomatic, but not severe, 
+infections.}
 
 \item{p_diag_if_sev}{A two-element numeric vector containing \code{c(alpha,
 beta)} parameters of a Beta distribution modeling the probability of
@@ -25,6 +25,10 @@ being diagnosed if severely ill.}
 beta)} parameters of a Beta distribution modeling the effect of weekends on
 probability of diagnosis. Weekend effect is assumed to impact probability of 
 diagnosis at symptomatic and severe disease states equally.}
+
+\item{rr_diag_sym_vs_asy}{A two-element numeric vector containing 
+\code{c(alpha, beta)} parameters of a Beta distribution modeling the rate 
+ratio of diagnosis at the symptomatic vs severe stage of infection.}
 }
 \value{
 An S3 object of class 'priors'

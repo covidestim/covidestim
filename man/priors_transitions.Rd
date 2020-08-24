@@ -8,7 +8,7 @@ priors_transitions(
   p_sym_if_inf = c(44.9, 9.9),
   p_sev_if_sym = c(11.9, 47.7),
   p_die_if_sev = c(3, 97),
-  p_die_if_sym = c(1.12, 85.1)
+  p_die_if_inf = c(72.147, 10976)
 )
 }
 \arguments{
@@ -41,9 +41,9 @@ priors_transitions(
 
   Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}}
 
-\item{p_die_if_sym}{A two-element numeric vector containing \code{c(alpha,
+\item{p_die_if_inf}{A two-element numeric vector containing \code{c(alpha,
   beta)} parameters of a Beta distribution modeling the probability of dying
-  if symptomatic. 
+  if infected (e.g. the infection fatality rate). 
 
   Source for default value: \insertRef{basu_estimating_2020}{covidestim}}
 }

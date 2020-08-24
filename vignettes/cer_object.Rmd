@@ -3,7 +3,7 @@ title: "Results Object"
 author: "Melanie H. Chitwood, Marcus Russi" 
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using Covidestim}
+  %\VignetteIndexEntry{Results Object}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
