@@ -50,8 +50,8 @@ data {
   real<lower=0>          pri_log_new_inf_0_sd;
   real                   pri_logRt_mu;   
   real<lower=0>          pri_logRt_sd;   
-  real                   pri_serial_i_rate; 
   real<lower=0>          pri_serial_i_shap; 
+  real<lower=0>          pri_serial_i_rate; 
   real                   pri_inf_imported_mu; 
   real<lower=0>          pri_inf_imported_sd;
   real<lower=0>          pri_deriv1_spl_par_sd;
@@ -78,8 +78,8 @@ data {
   real<lower=0>          pri_p_diag_if_sev_a;
   real<lower=0>          pri_p_diag_if_sev_b;
   // size of the 'weekend effect' on diagnosis 
-  real<lower=0>          pri_weekend_eff_a; //~~    
-  real<lower=0>          pri_weekend_eff_b; //~~
+  real<lower=0>          pri_weekend_eff_a;   
+  real<lower=0>          pri_weekend_eff_b;
   // delay to diagnosis assumed to be some fraction of progression delay
   // Beta prior distribtuion for that fraction 
   real<lower=0>          scale_dx_delay_sym_a; 
@@ -92,18 +92,20 @@ data {
 transformed data {
  int  N_days_tot;
  int  nda0;
- 
+ int  idx1[N_days + N_days_before];
+ int  idx2[N_days + N_days_before];
+
  // Progression delays
- vector[Max_delay]  inf_prg_delay;
- vector[Max_delay]  asy_rec_delay; 
- vector[Max_delay]  sym_prg_delay;
- vector[Max_delay]  sev_prg_delay;
+ vector[Max_delay]  inf_prg_delay_rv;
+ vector[Max_delay]  asy_rec_delay_rv; 
+ vector[Max_delay]  sym_prg_delay_rv;
+ vector[Max_delay]  sev_prg_delay_rv;
 // Reporting delays
- vector[Max_delay]  cas_rep_delay;
- vector[Max_delay]  die_rep_delay;
+ vector[Max_delay]  cas_rep_delay_rv;
+ vector[Max_delay]  die_rep_delay_rv;
 // Cumulative reporting delays
- vector[Max_delay]  cas_cum_report_delay; 
- vector[Max_delay]  die_cum_report_delay; 
+ vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
+ vector[N_days + N_days_before]  die_cum_report_delay_rv; 
  
 // for likelihood function moving avg. 
   nda0 = N_days_av - 1; 
@@ -112,35 +114,52 @@ transformed data {
 // case or death 
   N_days_tot = N_days + N_days_before; 
   
+// Indexes for convolutions
+  for(i in 1:N_days_tot) {
+    if(i-Max_delay>0){
+      idx1[i] = i-Max_delay+1;
+      idx2[i] = N_days_tot-Max_delay+1;
+    } else {
+      idx1[i] = 1;
+      idx2[i] = N_days_tot-i+1;
+    }
+  }
+
  // calculate the daily probability of transitioning to a new disease state
  // for days 1 to 60 after entering that state
   for(i in 1:Max_delay) {
-    inf_prg_delay[i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
+    inf_prg_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, inf_prg_delay_shap, inf_prg_delay_rate)
       - gamma_cdf(i-1.0, inf_prg_delay_shap, inf_prg_delay_rate);
-    asy_rec_delay[i] = gamma_cdf(i+0.0, asy_rec_delay_shap, asy_rec_delay_rate*2)
+    asy_rec_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, asy_rec_delay_shap, asy_rec_delay_rate*2)
       - gamma_cdf(i-1.0, asy_rec_delay_shap, asy_rec_delay_rate*2); 
       // diagnosis happens, on average, midway through the infectious period
       // therefore, we multiple the rate parameter by 2
-    sym_prg_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate)
+    sym_prg_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate)
       - gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate);
-    sev_prg_delay[i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate)
+    sev_prg_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate)
       - gamma_cdf(i-1.0, sev_prg_delay_shap, sev_prg_delay_rate);
   }
   
 // Calcluate the probability of reporting for each day after diagnosis
 // for 1 to 60 post diagnosis. 
   for(i in 1:Max_delay) {
-    cas_rep_delay[i] = gamma_cdf(i+0.0, cas_rep_delay_shap,cas_rep_delay_rate)
+    cas_rep_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, cas_rep_delay_shap, cas_rep_delay_rate)
       - gamma_cdf(i-1.0, cas_rep_delay_shap, cas_rep_delay_rate);
-    die_rep_delay[i] = gamma_cdf(i+0.0, die_rep_delay_shap, die_rep_delay_rate)
+    die_rep_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, die_rep_delay_shap, die_rep_delay_rate)
       - gamma_cdf(i-1.0, die_rep_delay_shap, die_rep_delay_rate);
-}
+  }
 
-// Cumlative Reporting Delays
-// Calculate the cumulative probability of reporting for each day 
-// after diagnosis.
-cas_cum_report_delay = cumulative_sum(cas_rep_delay);
-die_cum_report_delay = cumulative_sum(die_rep_delay);
+// Cumulative reporting probability
+  for(i in 1:N_days_tot) {
+    if(i<Max_delay){
+      cas_cum_report_delay_rv[1+N_days_tot-i] = gamma_cdf(i+0.0, cas_rep_delay_shap, cas_rep_delay_rate);
+      die_cum_report_delay_rv[1+N_days_tot-i] = gamma_cdf(i+0.0, die_rep_delay_shap, die_rep_delay_rate);
+    } else {
+      cas_cum_report_delay_rv[1+N_days_tot-i] = 1.0;
+      die_cum_report_delay_rv[1+N_days_tot-i] = 1.0;
+    }
+  }
+    
 }
 ///////////////////////////////////////////////////////////
 parameters {
@@ -174,7 +193,6 @@ parameters {
   real<lower=0>             inv_sqrt_phi_d;
   
 }
-
 ///////////////////////////////////////////
 transformed parameters {
 ///~~~~~~~ Define ~~~~~~~
@@ -197,8 +215,8 @@ transformed parameters {
 
  // daily probabilities of diagnosis and report
  // for days 1 to 60 after entering that state
-  vector[Max_delay]  sym_diag_delay;
-  vector[Max_delay]  sev_diag_delay;
+  vector[Max_delay]  sym_diag_delay_rv;
+  vector[Max_delay]  sev_diag_delay_rv;
 
 // DISEASE OUTCOMES
   // overall case fatality rate
@@ -237,20 +255,20 @@ transformed parameters {
   
 // DELAYS //
 // Diagnosis Delays
-// Calcluate the probability of diagnosis for each day in state
+// Calculate the probability of diagnosis for each day in state
 // for 1 to 60 days in state. We do this by scaling the rate term
 // of the gamma distribution of progressiong delays by a modeled fraction 
 // (scale_dx_delay_xxx)
-for(i in 1:Max_delay){
-    sym_diag_delay[i] = gamma_cdf(i+0.0, sym_prg_delay_shap, 
+  for(i in 1:Max_delay){
+    sym_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sym_prg_delay_shap, 
                         sym_prg_delay_rate/scale_dx_delay_sym)
                       - gamma_cdf(i-1.0, sym_prg_delay_shap, 
                       sym_prg_delay_rate/scale_dx_delay_sym);
-    sev_diag_delay[i] = gamma_cdf(i+0.0, sev_prg_delay_shap, 
+    sev_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sev_prg_delay_shap, 
                         sev_prg_delay_rate/scale_dx_delay_sev)
                         - gamma_cdf(i-1.0, sev_prg_delay_shap, 
                         sev_prg_delay_rate/scale_dx_delay_sev);
-}
+  }
 
 // DEATHS // 
 // infection fatality rate is the product of the probability of death among
@@ -284,125 +302,70 @@ for(i in 1:Max_delay){
  // cases entering a state on day i + j - 1: 
  // cases entering previous state on day i * the probability of progression *
  // the probability progression occurred on day j 
- 
- // initialize empty vectors
-  new_sym = rep_vector(0, N_days_tot);
-  new_sev = rep_vector(0, N_days_tot);
-  new_die = rep_vector(0, N_days_tot);
-  
+
   for(i in 1:N_days_tot) {
-    for(j in 1:Max_delay) {
-      if(i+(j-1) <= N_days_tot){
-        new_sym[i+(j-1)] += new_inf[i] * p_sym_if_inf * inf_prg_delay[j];
-      }
-    }
+    new_sym[i] = dot_product(new_inf[idx1[i]:i],
+      inf_prg_delay_rv[idx2[i]:N_days_tot]) * p_sym_if_inf;
   }
   
   for(i in 1:N_days_tot) {
-    for(j in 1:Max_delay) {
-      if(i+(j-1) <= N_days_tot){
-        new_sev[i+(j-1)] += new_sym[i] * p_sev_if_sym * sym_prg_delay[j];
-      }
-    }
+    new_sev[i] = dot_product(new_sym[idx1[i]:i],
+      sym_prg_delay_rv[idx2[i]:N_days_tot]) * p_sev_if_sym;
   }
   
   for(i in 1:N_days_tot) {
-    for(j in 1:Max_delay) {
-      if(i+(j-1) <= N_days_tot){
-        new_die[i+(j-1)] += new_sev[i] * p_die_if_sev * sev_prg_delay[j];
-      }
-    }
-  }  
-  
+    new_die[i] = dot_product(new_sev[idx1[i]:i],
+      sev_prg_delay_rv[idx2[i]:N_days_tot]) * p_die_if_sev;
+  }
 
 // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
-// initialize empty vectors
-  new_asy_dx = rep_vector(0, N_days_tot); 
 
-  new_sym_dx = rep_vector(0, N_days_tot);
-    dx_sym_sev = rep_vector(0, N_days_tot);
-    dx_sym_die = rep_vector(0, N_days_tot);
-  
-  new_sev_dx = rep_vector(0, N_days_tot);
-    dx_sev_die = rep_vector(0, N_days_tot);
-  
-  diag_all   = rep_vector(0, N_days_tot);
-  new_die_dx = rep_vector(0, N_days_tot);
-  
 // diagnosed at asymptomatic
 // a diagnosed asymptomatic infection on day i + j - 1
 // is an asymptomatic case on day i with some probability of diagnosis, 
 // and some probability that the diagnosis occurred on day j.
 // we assume asymptomatic diagnosis only occurs among individuals who will be
 // asymptomatic for the entire course of their infection. 
-  
-  for(i in 1:N_days_tot){
-    for(j in 1:Max_delay){ 
-      if(i+(j-1) <= N_days_tot){ 
-        new_asy_dx[i+(j-1)] += new_inf[i] * (1 - p_sym_if_inf) * 
-           (1 - (is_weekend[i+(j-1)] * weekend_eff)) *
-           p_diag_if_asy[i] * asy_rec_delay[j]; 
-      }
-    }
+  for(i in 1:N_days_tot) {
+    new_asy_dx[i] = dot_product(new_inf[idx1[i]:i] .* p_diag_if_asy[idx1[i]:i], 
+      asy_rec_delay_rv[idx2[i]:N_days_tot]) * (1-p_sym_if_inf);
   }
   
 // diagnosed at symptomatic
 // a diagnosed symptomatic (not severe) case on day i + j - 1
 // is a symptomatic case on day i with some probability of diagnosis
 // and some probability that the diagnosis occurred on day j.  
-  for(i in 1:N_days_tot){
-    for(j in 1:Max_delay){
-      if(i+(j-1) <= N_days_tot){
-        new_sym_dx[i+(j-1)] += new_sym[i]  * 
-                             p_diag_if_sym[i] *  
-                             (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
-                             sym_diag_delay[j];
-    }
+  for(i in 1:N_days_tot) {
+    new_sym_dx[i] = dot_product(new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i], 
+      sym_diag_delay_rv[idx2[i]:N_days_tot]);
   }
-}
+  
 // cascade from diagnosis 
 // follow diagnosed cases forward to determine how many cases diagnosed
 // at symptomatic eventually die 
-          for(i in 1:N_days_tot){
-            for(j in 1:Max_delay){
-              if(i+(j-1) <= N_days_tot){
-               dx_sym_sev[i+(j-1)] += new_sym[i] * p_diag_if_sym[i] * 
-               p_sev_if_sym * sym_prg_delay[j];
-            }
-          }
-      }
-      
-      for(i in 1:N_days_tot){
-            for(j in 1:Max_delay){
-              if(i+(j-1) <= N_days_tot){
-              dx_sym_die[i+(j-1)] += dx_sym_sev[i] * p_die_if_sev *
-                sev_prg_delay[j];
-            }
-          }    
-        }
+  for(i in 1:N_days_tot) {
+    dx_sym_sev[i] = dot_product(new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i],
+      sym_prg_delay_rv[idx2[i]:N_days_tot]) * p_sev_if_sym;
+  }
+        
+  for(i in 1:N_days_tot) {
+    dx_sym_die[i] = dot_product(dx_sym_sev[idx1[i]:i],
+      sev_prg_delay_rv[idx2[i]:N_days_tot]) * p_die_if_sev;
+  }
         
 // diagnosed at severe 
 // as above for symptomatic 
-  for(i in 1:N_days_tot){
-    for(j in 1:Max_delay){
-      if(i+(j-1) <= N_days_tot){
-      new_sev_dx[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-                             p_diag_if_sev * 
-                             (1 - (is_weekend[i+(j-1)] * weekend_eff)) * 
-                             sev_diag_delay[j]; 
-    }
+  for(i in 1:N_days_tot) {
+    new_sev_dx[i] = dot_product(new_sev[idx1[i]:i]-dx_sym_sev[idx1[i]:i],
+      sev_diag_delay_rv[idx2[i]:N_days_tot]) * p_diag_if_sev;
   }
-}
+  
 // cascade from diagnosis
 // as above for symptomatic 
-          for(i in 1:N_days_tot){
-            for(j in 1:Max_delay){
-              if(i+(j-1) <= N_days_tot){
-              dx_sev_die[i+(j-1)] += (new_sev[i] - dx_sym_sev[i]) * 
-              p_diag_if_sev * p_die_if_sev * sev_prg_delay[j];
-            }
-          }
-        }
+  for(i in 1:N_days_tot) {
+    dx_sev_die[i] = dot_product(new_sev[idx1[i]:i]-dx_sym_sev[idx1[i]:i],
+      sev_prg_delay_rv[idx2[i]:N_days_tot]) * p_diag_if_sev * p_die_if_sev;
+  }
 
 // TOTAL DIAGNOSED CASES AND DEATHS //
 diag_all = new_asy_dx + new_sym_dx + new_sev_dx;
@@ -412,57 +375,25 @@ new_die_dx = dx_sym_die + dx_sev_die;
 // calcluate "occur_cas" and "occur_die", which are vectors of diagnosed cases 
 // and deaths by the date we expect them to appear in the reported data. 
 
-// initialize empty vectors
-occur_cas = rep_vector(0, N_days_tot);
-occur_die = rep_vector(0, N_days_tot);
-
 // how reporting delays are reflected in the data depend on how the data are 
 // dated
-if(obs_cas_rep == 1) {
-  // for cases by date of report: 
-  for(i in 1:N_days_tot) {
-    for(j in 1:Max_delay) {
-      if(i+(j-1) <= N_days_tot) {
-  // a reported case on day i + j - 1 is a case that was diagnosed on day i and
-  // has some probability of being reported on day j. 
-        occur_cas[i+(j-1)] += diag_all[i] * cas_rep_delay[j];
-      }
+  if(obs_cas_rep == 1) {
+    for(i in 1:N_days_tot) {
+      occur_cas[i] = dot_product(diag_all[idx1[i]:i] , cas_rep_delay_rv[idx2[i]:N_days_tot]);
     }
-  }
-} else {
+  } else {
   // for cases by date of occurrence
   // we assume all cases diagnosed more than 60 days from the final day of data
-  // have been reported
-   for(i in 1:(N_days_tot - Max_delay )){
-        occur_cas[i] = diag_all[i]; 
-      }
-  // we model completeness of reporting with a cumulative probability of 
-  // reporting on day j
-  //e.g. diagnosed cases * probability of reporting 1 day after diagnosis
-  //     diagnosed cases * probability of reporting 2 days after diagnosis
-  // etc. such that cases become less complete as we approach the end of 
-  // the time series of reported cases. 
-      for(i in (N_days_tot - Max_delay + 1):N_days_tot)  {
-        occur_cas[i] += diag_all[i] * cas_cum_report_delay[N_days_tot - i + 1];
-      }
-}
-// reporting delays modeled as described above for cases
-if(obs_die_rep == 1) {
-  for(i in 1:N_days_tot){
-    for(j in 1:Max_delay){
-      if(i+(j-1) <= N_days_tot){
-      occur_die[i+(j-1)] += new_die_dx[i] * die_rep_delay[j];
-    }
+    occur_cas = diag_all .* cas_cum_report_delay_rv;
   }
-}  
-} else {
- for(i in 1:(N_days_tot - Max_delay)){
-        occur_die[i] = new_die_dx[i]; 
-      }
-      for(i in (N_days_tot - Max_delay + 1):N_days_tot)  {
-        occur_die[i] += new_die_dx[i] * die_cum_report_delay[N_days_tot - i + 1];
-      }
-}
+// reporting delays modeled as described above for cases
+  if(obs_die_rep == 1) {
+    for(i in 1:N_days_tot) {
+      occur_die[i] = dot_product(new_die_dx[idx1[i]:i] , die_rep_delay_rv[idx2[i]:N_days_tot]);
+    }
+  } else {
+    occur_die = new_die_dx .* die_cum_report_delay_rv;
+  }
 
 // phi
 phi_cas = pow(inv_sqrt_phi_c, -2);
