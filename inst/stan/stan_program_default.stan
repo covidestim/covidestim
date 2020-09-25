@@ -2,15 +2,14 @@ data {
   // INPUT DATA
   int<lower=0>           N_days; // days of data
   int<lower=0>           N_days_before; // days before data to initialized epi model
+  int<lower=0>           N_init_zeros; // days of zeros at start of data
   int<lower=0>           Max_delay; // maximum days delay 
   
   int<lower=0>           obs_cas[N_days]; // vector of cases
   int<lower=0>           obs_die[N_days]; // vector of deaths
  
-  int<lower=0,upper=1>   is_weekend[N_days+N_days_before]; // weekend indicator
-  
   // terms for splines
-   // spline parameters and bases
+  // spline parameters and bases
   int<lower=0>                              N_spl_par_rt;
   matrix[N_days+N_days_before,N_spl_par_rt] spl_basis_rt;
   int<lower=0>                              N_spl_par_dx;
@@ -77,9 +76,6 @@ data {
      // probability of diagnosis at severe 
   real<lower=0>          pri_p_diag_if_sev_a;
   real<lower=0>          pri_p_diag_if_sev_b;
-  // size of the 'weekend effect' on diagnosis 
-  real<lower=0>          pri_weekend_eff_a;   
-  real<lower=0>          pri_weekend_eff_b;
   // delay to diagnosis assumed to be some fraction of progression delay
   // Beta prior distribtuion for that fraction 
   real<lower=0>          scale_dx_delay_sym_a; 
@@ -94,6 +90,8 @@ transformed data {
  int  nda0;
  int  idx1[N_days + N_days_before];
  int  idx2[N_days + N_days_before];
+ int  obs_cas0[N_days + N_init_zeros];
+ int  obs_die0[N_days + N_init_zeros];
 
  // Progression delays
  vector[Max_delay]  inf_prg_delay_rv;
@@ -113,6 +111,18 @@ transformed data {
 // create 'N_days_tot', which is days of data plus days to model before first 
 // case or death 
   N_days_tot = N_days + N_days_before; 
+
+// Append 0s at start of vector of observed cases and deaths
+  if(N_init_zeros>0){
+    for(i in 1:N_init_zeros) {
+      obs_cas0[i] = 0;
+      obs_die0[i] = 0;
+    }
+  }
+  for(i in 1:N_days) {
+    obs_cas0[i+N_init_zeros] = obs_cas[i];
+    obs_die0[i+N_init_zeros] = obs_die[i];
+  }
   
 // Indexes for convolutions
 for(i in 1:N_days_tot) {
@@ -184,9 +194,8 @@ parameters {
 // probability of diagnosis at each illness state
   real<lower=0, upper=1>    rr_diag_asy_vs_sym; 
   real<lower=0, upper=1>    p_diag_if_sev;
-  vector[N_spl_par_dx]      spl_par_sym_dx;
-  real<lower=0, upper=1>    weekend_eff;
- 
+  vector<lower=0, upper=1>[N_spl_par_dx]      spl_par_sym_dx;
+
 // LIKELIHOOD 
 // phi terms for negative b ino imal likelihood function 
   real<lower=0>             inv_sqrt_phi_c;
@@ -248,7 +257,7 @@ transformed parameters {
 
 // DIAGNOSIS // 
  // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
-  rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * spl_par_sym_dx);
+  rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * logit(spl_par_sym_dx));
 // probability of diagnosis 
   p_diag_if_sym = p_diag_if_sev * rr_diag_sym_vs_sev;
   p_diag_if_asy = p_diag_if_sym * rr_diag_asy_vs_sym; 
@@ -290,13 +299,12 @@ transformed parameters {
   new_inf = exp(log_new_inf) + inf_imported;
   
   // second derivative
-  for(i in 1:(N_spl_par_rt-2)) {
-    deriv2_spl_par_rt[i] = spl_par_rt[i+1] * 2 - spl_par_rt[i] - spl_par_rt[i+2];
-  }
+  deriv2_spl_par_rt[1:(N_spl_par_rt-2)] = spl_par_rt[2:(N_spl_par_rt-1)] * 2 - 
+    spl_par_rt[1:(N_spl_par_rt-2)] - spl_par_rt[3:N_spl_par_rt]; 
+  
   // first derivative
-  for(i in 1:(N_spl_par_rt-1)) {
-    deriv1_spl_par_rt[i] = spl_par_rt[i+1] - spl_par_rt[i];
-  }
+  deriv1_spl_par_rt[1:(N_spl_par_rt-1)] = spl_par_rt[2:N_spl_par_rt] - 
+    spl_par_rt[1:(N_spl_par_rt-1)];
 
  // SYMPTOMATIC CASES
  // cases entering a state on day i + j - 1: 
@@ -425,10 +433,9 @@ model {
 
 // DIAGNOSIS    
   // probabilities of diagnosis
-  rr_diag_asy_vs_sym ~ beta(pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
-  inv_logit(spl_par_sym_dx) ~ beta(pri_rr_diag_sym_vs_sev_a, pri_rr_diag_sym_vs_sev_b);
+  rr_diag_asy_vs_sym   ~ beta(pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
+  spl_par_sym_dx       ~ beta(pri_rr_diag_sym_vs_sev_a,pri_rr_diag_sym_vs_sev_b);
   p_diag_if_sev        ~ beta(pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
-  weekend_eff          ~ beta(pri_weekend_eff_a, pri_weekend_eff_b);
   // delay distribution scaling factors
   scale_dx_delay_sym   ~ beta(scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
@@ -437,34 +444,36 @@ model {
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
     
-//// LIKELIHOOD
+///// LIKELIHOOD
   if(cas_yes==1){
-    tmp_obs_cas = obs_cas[1];
-    tmp_occur_cas = occur_cas[1 + N_days_before];
-    for(i in 1:N_days) {
-      target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/N_days_av;
+    tmp_obs_cas = obs_cas0[1];
+    tmp_occur_cas = occur_cas[1 + N_days_before - N_init_zeros];
+    for(i in 1:(N_days+N_init_zeros)) {
+      target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/
+        N_days_av;
       if(i>nda0){
-        tmp_obs_cas   -= obs_cas[i - nda0];
-        tmp_occur_cas -= occur_cas[i + N_days_before - nda0];
+        tmp_obs_cas   -= obs_cas0[i - nda0];
+        tmp_occur_cas -= occur_cas[i + N_days_before - nda0 - N_init_zeros];
       }
-      if(i<N_days){
-        tmp_obs_cas   += obs_cas[i + 1];
-        tmp_occur_cas += occur_cas[i + N_days_before + 1];
+      if(i<(N_days+N_init_zeros)){
+        tmp_obs_cas   += obs_cas0[i + 1];
+        tmp_occur_cas += occur_cas[i + N_days_before + 1 - N_init_zeros];
       }
     }
   }
   if(die_yes==1){
-    tmp_obs_die = obs_die[1];
-    tmp_occur_die = occur_die[1 + N_days_before];
-    for(i in 1:N_days) {
-      target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/N_days_av;
+    tmp_obs_die = obs_die0[1];
+    tmp_occur_die = occur_die[1 + N_days_before - N_init_zeros];
+    for(i in 1:(N_days+N_init_zeros)) {
+      target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/
+        N_days_av;
       if(i>nda0){  
-        tmp_obs_die   -= obs_die[i - nda0];
-        tmp_occur_die -= occur_die[i + N_days_before - nda0];
+        tmp_obs_die   -= obs_die0[i - nda0];
+        tmp_occur_die -= occur_die[i + N_days_before - nda0 - N_init_zeros];
       }
-      if(i<N_days){
-        tmp_obs_die   += obs_die[i + 1];
-        tmp_occur_die += occur_die[i + N_days_before + 1];
+      if(i<(N_days+N_init_zeros)){
+        tmp_obs_die   += obs_die0[i + 1];
+        tmp_occur_die += occur_die[i + N_days_before + 1 - N_init_zeros];
       }
     }
   }

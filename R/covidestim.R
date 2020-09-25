@@ -32,11 +32,9 @@ NULL
 #'   modeled. This should always be set to the number of days in your input data.
 #' @param ndays_before A positive integer. How many days before the first day
 #'   of model data should be modeled?
+#' @param ninit_zeros A non-negative integer. How many days of zero cases and 
+#' deaths should be appended to the start of the data series?
 #' @param seed A number. The random number generator seed for use in sampling.
-#' @param weekend A logical scalar. Many regions see decreased testing volumes
-#'   during the weekend. If this is a feature of your data, you may want to
-#'   experiment with \code{weekend = TRUE}, which will cause the model to
-#'   explicitly take this effect into account.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to 
 #'   \code{\link{run}} to execute the model. This object can also be saved
@@ -46,21 +44,21 @@ NULL
 #'   the presence or absence of input data.
 #'
 #' @examples
-#' covidestim(ndays = 50, seed = 42, weekend = TRUE)
+#' covidestim(ndays = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidestim <- function(ndays, ndays_before=28,
+covidestim <- function(ndays, ndays_before=28, ninit_zeros=7,
                        chains=3, iter=1500, thin = 1, 
                        seed=42,
                        adapt_delta = 0.92, max_treedepth = 12,
-                       window.length = 5, weekend = FALSE) {
+                       window.length = 5) {
 
   att(is.numeric(ndays), ndays >= 1)
 
   defaultConfig(
     N_days = ndays,
     N_days_before = ndays_before,
-    weekend = weekend,
+    N_init_zeros = ninit_zeros,
     N_days_av = window.length
   ) -> config
 

@@ -133,29 +133,3 @@ test_that("bad `type` arguments don't validate to valid input objects", {
   expect_error(idth <- input_deaths(d_deaths,type = "CAT"))
 })
 
-
-test_that("Weekend effect is represented correctly internally", {
-  library(lubridate)
-  library(magrittr)
-
-  d_cases  <- example_nyc_data("cases")
-  ndays <- nrow(d_cases)
-
-  d_deaths <- example_nyc_data("deaths")
-
-  # Configure things as reported
-  expect_silent(icas <- input_cases(d_cases))
-  expect_silent(idth <- input_deaths(d_deaths))
-
-  # Everything should succeed
-  expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10, weekend = TRUE) + icas + idth
-  )
-
-  first_day <- d_cases$date[1]
-  first_week <- seq(first_day, first_day + days(6), by = '1 day')
-  first_week_days <- wday(first_week)
-  first_week_isweekend <- ifelse(first_week_days %in% c(7,1), 1, 0)
-
-  expect_equal(first_week_isweekend, cfg$config$is_weekend[11:17])
-})

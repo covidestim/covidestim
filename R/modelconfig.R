@@ -79,27 +79,6 @@ modelconfig_add.input <- function(rightside, leftside) {
   # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
 
-  # Update the is_weekend vector, IFF `weekend = TRUE` was passed
-  local({
-    first_date_Date <- as.Date(cfg$first_date, origin = '1970-01-01')
-    seq(
-      # First day in N_days_before
-      first_date_Date - lubridate::days(cfg$N_days_before), 
-      # Last day in N_days
-      first_date_Date + lubridate::days(cfg$N_days - 1), 
-      by = '1 day'
-    ) -> entire_period
-
-    days_of_week <- purrr::map_dbl(entire_period, lubridate::wday)
-
-    # In lubridate, by default, 7 and 1 are Saturday and Sunday,
-    # respectively
-    ifelse(days_of_week %in% c(7,1), 1, 0)
-  }) -> weekend_modifiers
-  
-  if (cfg$user_weekend_effect)
-    cfg$is_weekend <- weekend_modifiers
-
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
 
@@ -164,8 +143,9 @@ or removing your custom prior.
   # att_w(death_reporting_mean < N_days, glue(death_reporting_warning))
 }
 
-genData <- function(N_days, N_days_before = 28, 
-                    N_days_av = 5, weekend=FALSE) #new default value
+genData <- function(N_days, N_days_before = 28,
+                    N_init_zeros = 7,
+                    N_days_av = 5) #new default value
 {
 
   n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/4))
@@ -183,17 +163,17 @@ genData <- function(N_days, N_days_before = 28,
     #n days of data to model 
     N_days = as.integer(N_days),
 
-    #n day to model before start of data
+    #n days to model before start of data
     N_days_before = as.integer(N_days_before),
+    
+    #n days of zero cases and deaths to append to the start of the data series 
+    N_init_zeros = as.integer(N_init_zeros),
     
     #max delay to allow the model to consider. 60 is recommended. 
     Max_delay = 60, 
 
     # moving average for likelihood function 
     N_days_av = N_days_av, 
-
-    is_weekend = rep(0, N_days_before + N_days),
-    user_weekend_effect = weekend,
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day

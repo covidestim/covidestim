@@ -248,11 +248,6 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #' @param p_diag_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of
 #'   being diagnosed if severely ill. 
-#'   
-#' @param weekend_eff A two-element numeric vector containing \code{c(alpha,
-#'   beta)} parameters of a Beta distribution modeling the effect of weekends on
-#'   probability of diagnosis. Weekend effect is assumed to impact probability of 
-#'   diagnosis at symptomatic and severe disease states equally.    
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
@@ -260,23 +255,19 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #' @export
 priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
                              rr_diag_sym_vs_sev = c(2  , 2  ), # a/b
-                             p_diag_if_sev      = c(5  , 2  ), 
-                             weekend_eff        = c(2  , 2  )) {# a/b
+                             p_diag_if_sev      = c(5  , 2  )) {# a/b
 
   att(length(rr_diag_asy_vs_sym) == 2)
   att(length(rr_diag_sym_vs_sev) == 2)
   att(length(p_diag_if_sev) == 2)
-  att(length(weekend_eff) == 2)
   att(is_nonNegativeReal(rr_diag_asy_vs_sym))
   att(is_nonNegativeReal(rr_diag_sym_vs_sev))
   att(is_nonNegativeReal(p_diag_if_sev))
-  att(is_nonNegativeReal(weekend_eff))
 
   build_priors(
     rr_diag_asy_vs_sym, 
     rr_diag_sym_vs_sev,
     p_diag_if_sev,
-    weekend_eff,
     .postfix=c("_a", "_b"),
     .prefix = "pri_"
   ) -> ps
