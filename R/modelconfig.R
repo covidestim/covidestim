@@ -144,7 +144,6 @@ or removing your custom prior.
 }
 
 genData <- function(N_days, N_days_before = 28,
-                    N_init_zeros = 7,
                     N_days_av = 5) #new default value
 {
 
@@ -166,9 +165,6 @@ genData <- function(N_days, N_days_before = 28,
     #n days to model before start of data
     N_days_before = as.integer(N_days_before),
     
-    #n days of zero cases and deaths to append to the start of the data series 
-    N_init_zeros = as.integer(N_init_zeros),
-    
     #max delay to allow the model to consider. 60 is recommended. 
     Max_delay = 60, 
 
@@ -182,7 +178,11 @@ genData <- function(N_days, N_days_before = 28,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
-
+    
+    # Std deviation of penalty function for diagnosed but unreported 
+    # cases and deaths before start of the data
+    pri_cas_die_pre_sd = 0.5,
+    
     # Rt and new infections
     pri_log_new_inf_0_mu = 0,
     pri_log_new_inf_0_sd = 10,
