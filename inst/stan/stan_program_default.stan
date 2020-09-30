@@ -30,7 +30,10 @@ data {
   real<lower=0>          die_rep_delay_shap;
   real<lower=0>          die_rep_delay_rate;
   
-  /// control nobs
+  //// control nobs
+  // whether to assume zero cases and deaths during warm-up
+  int<lower = 0, upper = 1> pre_period_zero; 
+
   //  what data are included --  cases, deaths: 
   int<lower = 0, upper = 1> cas_yes; 
   int<lower = 0, upper = 1> die_yes; 
@@ -44,7 +47,6 @@ data {
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
   // for new infections
-  real                   pri_cas_die_pre_sd;
   real                   pri_log_new_inf_0_mu;
   real<lower=0>          pri_log_new_inf_0_sd;
   real                   pri_logRt_mu;   
@@ -438,15 +440,19 @@ model {
 // phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
-
-///// PENALTY ON EARLY CASES AND DEATHS
-  tmp_sum_cas_pre = sum(occur_cas[1:(1-N_days_before)]);
-  tmp_sum_die_pre = sum(occur_die[1:(1-N_days_before)]);
-  tmp_sum_cas_pre      ~ normal(0, pri_cas_die_pre_sd);
-  tmp_sum_die_pre      ~ normal(0, pri_cas_die_pre_sd);
-
     
 ///// LIKELIHOOD
+// Before data
+  if(pre_period_zero==1){
+    if(N_days_before>0){
+      tmp_sum_cas_pre = sum(occur_cas[1:N_days_before]);
+      tmp_sum_die_pre = sum(occur_die[1:N_days_before]);
+      target += neg_binomial_2_lpmf( 0 | tmp_sum_cas_pre + 0.0001, phi_cas);
+      target += neg_binomial_2_lpmf( 0 | tmp_sum_die_pre + 0.0001, phi_die);
+    }
+  }
+  
+// Observed data
   if(cas_yes==1){
     tmp_obs_cas = obs_cas[1];
     tmp_occur_cas = occur_cas[1 + N_days_before];

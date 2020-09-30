@@ -169,7 +169,10 @@ genData <- function(N_days, N_days_before = 28,
     Max_delay = 60, 
 
     # moving average for likelihood function 
-    N_days_av = N_days_av, 
+    N_days_av = N_days_av,
+    
+    # Whether to assume no reported cases and deats before the data (0 = no, 1 = yes) 
+    pre_period_zero = 1, 
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
@@ -178,10 +181,6 @@ genData <- function(N_days, N_days_before = 28,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
-    
-    # Std deviation of penalty function for diagnosed but unreported 
-    # cases and deaths before start of the data
-    pri_cas_die_pre_sd = 0.5,
     
     # Rt and new infections
     pri_log_new_inf_0_mu = 0,
