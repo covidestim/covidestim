@@ -6,6 +6,7 @@ data {
   
   int<lower=0>           obs_cas[N_days]; // vector of cases
   int<lower=0>           obs_die[N_days]; // vector of deaths
+  real<lower=0>          pop_size; // population size
  
   // terms for splines
   // spline parameters and bases
@@ -206,6 +207,7 @@ transformed parameters {
   vector[N_days_tot]      deriv1_log_new_inf;
   
   // Rt spline
+  vector[N_days_tot]      logRt0;
   vector[N_days_tot]      logRt;
   vector[N_days_tot]      Rt;
   vector[N_spl_par_rt-1]  deriv1_spl_par_rt;
@@ -285,13 +287,18 @@ transformed parameters {
 // NEW INCIDENT CASES
   
   // modeled with a spline
-  logRt = spl_basis_rt * spl_par_rt;
+  logRt0 = spl_basis_rt * spl_par_rt;
+  for(i in 1:N_days_tot) {
+    if(i==1){
+      logRt[i] = logRt0[i];
+    } else{
+      logRt[i] = logRt0[i] + log(1-sum(new_inf[1:(i-1)])/pop_size);
+    }
+    deriv1_log_new_inf[i] = logRt[i]/serial_i;
+    log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
+    new_inf[i] = exp(log_new_inf[i]) + inf_imported;
+  }
   Rt = exp(logRt); 
-  deriv1_log_new_inf = logRt/serial_i; 
-  
-  log_new_inf = cumulative_sum(deriv1_log_new_inf);
-  log_new_inf = log_new_inf - log_new_inf[N_days_before] + log_new_inf_0;
-  new_inf = exp(log_new_inf) + inf_imported;
   
   // second derivative
   deriv2_spl_par_rt[1:(N_spl_par_rt-2)] = spl_par_rt[2:(N_spl_par_rt-1)] * 2 - 

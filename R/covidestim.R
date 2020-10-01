@@ -32,6 +32,8 @@ NULL
 #'   modeled. This should always be set to the number of days in your input data.
 #' @param ndays_before A positive integer. How many days before the first day
 #'   of model data should be modeled?
+#' @param pop_size A positive real. What is the population in the geography 
+#' being modelled? This sets the max susceptible population
 #' @param seed A number. The random number generator seed for use in sampling.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to 
@@ -47,6 +49,7 @@ NULL
 #' @export
 covidestim <- function(ndays, 
                        ndays_before=28,
+                       pop_size=1e12,
                        chains=3, 
                        iter=1500, 
                        thin = 1, 
@@ -60,6 +63,7 @@ covidestim <- function(ndays,
   defaultConfig(
     N_days = ndays,
     N_days_before = ndays_before,
+    pop_size = pop_size,
     N_days_av = window.length
   ) -> config
 

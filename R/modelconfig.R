@@ -144,7 +144,7 @@ or removing your custom prior.
 }
 
 genData <- function(N_days, N_days_before = 28,
-                    N_days_av = 5) #new default value
+                    N_days_av = 5, pop_size = 1e12) #new default value
 {
 
   n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/4))
@@ -172,7 +172,10 @@ genData <- function(N_days, N_days_before = 28,
     N_days_av = N_days_av,
     
     # Whether to assume no reported cases and deats before the data (0 = no, 1 = yes) 
-    pre_period_zero = 1, 
+    pre_period_zero = 1,
+
+    # Add population size to constrain susceptible population, large default assumes no constraint
+    pop_size = pop_size, 
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
