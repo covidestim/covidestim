@@ -7,8 +7,7 @@
 priors_diagnosis(
   rr_diag_asy_vs_sym = c(2, 18),
   rr_diag_sym_vs_sev = c(2, 2),
-  p_diag_if_sev = c(5, 2),
-  weekend_eff = c(2, 2)
+  p_diag_if_sev = c(5, 2)
 )
 }
 \arguments{
@@ -20,11 +19,6 @@ infections.}
 \item{p_diag_if_sev}{A two-element numeric vector containing \code{c(alpha,
 beta)} parameters of a Beta distribution modeling the probability of
 being diagnosed if severely ill.}
-
-\item{weekend_eff}{A two-element numeric vector containing \code{c(alpha,
-beta)} parameters of a Beta distribution modeling the effect of weekends on
-probability of diagnosis. Weekend effect is assumed to impact probability of 
-diagnosis at symptomatic and severe disease states equally.}
 
 \item{rr_diag_sym_vs_asy}{A two-element numeric vector containing 
 \code{c(alpha, beta)} parameters of a Beta distribution modeling the rate 

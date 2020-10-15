@@ -5,9 +5,9 @@
 \title{Priors for transitions}
 \usage{
 priors_transitions(
-  p_sym_if_inf = c(44.9, 9.9),
-  p_sev_if_sym = c(11.9, 47.7),
-  p_die_if_sev = c(3, 97),
+  p_sym_if_inf = c(5.143, 3.536),
+  p_sev_if_sym = c(1.8854, 20.002),
+  p_die_if_sev = c(28.239, 162.3),
   p_die_if_inf = c(72.147, 10976)
 )
 }
