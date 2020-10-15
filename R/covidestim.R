@@ -85,6 +85,35 @@ covidestim <- function(ndays,
   structure(properties, class='covidestim')
 }
 
+#' Population estimates for US states and counties
+#'
+#' Returns 2019 census estimate of state or county population
+#'
+#' @param region A string with the state name, or the FIPS code
+#'
+#' @return State/county population as a numeric, or an error
+#'
+#' @examples
+#' get_pop('Connecticut')
+#' get_pop('09009')
+#'
+#' @export
+get_pop <- function(region) {
+  found <- dplyr::filter(pop_state, state == region)
+
+  if (nrow(found) == 0)
+    found <- dplyr::filter(pop_county, fips == region)
+
+  if (nrow(found) == 0)
+    stop(glue::glue("Could not find population data for region {region}!"))
+
+  if (nrow(found) > 1)
+    stop(glue::glue("Found more than set of population data for region {region}!"))
+
+  found$pop
+}
+
+
 #' @export
 run <- function(...) UseMethod('run')
 
