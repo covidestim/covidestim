@@ -103,7 +103,7 @@ print.inputs <- function(cfg, .tab = FALSE) {
   frmtr <- function(d) format(length(d), width = 4, justify = 'centre')
 
   status_cases <-
-    ifelse(is.null(cfg$obs_cas), '[ ❌ ]', glue('[{frmtr(cfg$obs_cas)}]'))
+    ifelse(is.null(cfg$obs_cas), '[ _ ]', glue('[{frmtr(cfg$obs_cas)}]'))
   status_deaths <-
     ifelse(is.null(cfg$obs_die), '[ ❌ ]', glue('[{frmtr(cfg$obs_die)}]'))
 
