@@ -144,11 +144,11 @@ or removing your custom prior.
 }
 
 genData <- function(N_days, N_days_before = 28,
-                    N_days_av = 5) #new default value
+                    N_days_av = 7) #new default value, previously 5
 {
 
-  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/4))
-  des_mat_rt <- splines::bs(1:(n_spl_par_rt*4), 
+  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/5)) #updated
+  des_mat_rt <- splines::bs(1:(n_spl_par_rt*5), 
                          df=n_spl_par_rt, degree=3, intercept=T)
   
   n_spl_par_dx <- max(4,ceiling((N_days + N_days_before)/21)) 

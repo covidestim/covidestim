@@ -53,7 +53,7 @@ covidestim <- function(ndays,
                        seed=42,
                        adapt_delta = 0.92, 
                        max_treedepth = 12,
-                       window.length = 5) {
+                       window.length = 7) { #update from 5
 
   att(is.numeric(ndays), ndays >= 1)
 
