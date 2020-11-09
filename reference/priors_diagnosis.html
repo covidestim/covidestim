@@ -142,11 +142,11 @@ diagnosis. Called with no arguments, the default values are returned." />
 diagnosis. Called with no arguments, the default values are returned.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>priors_diagnosis</span>(
-  <span class='kw'>p_diag_if_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>),
-  <span class='kw'>p_diag_if_sev</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.5</span>, <span class='fl'>1</span>),
-  <span class='kw'>weekend_eff</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>priors_diagnosis</span><span class='op'>(</span>
+  p_diag_if_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
+  p_diag_if_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.5</span>, <span class='fl'>1</span><span class='op'>)</span>,
+  weekend_eff <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,7 +183,8 @@ diagnosis at symptomatic and severe disease states equally.</p></td>
 is used for the probability of diagnosis if severely ill.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>cfg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span>(<span class='kw'>ndays</span> <span class='kw'>=</span> <span class='fl'>50</span>) + <span class='fu'>priors_diagnosis</span>(<span class='kw'>p_diag_if_sym</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>, <span class='fl'>2</span>))</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_diagnosis</span><span class='op'>(</span>p_diag_if_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -199,7 +200,7 @@ is used for the probability of diagnosis if severely ill.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

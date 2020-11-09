@@ -144,11 +144,11 @@ the infectious state. Called with no arguments, the default values are
 returned. The following arguments can be passed to create different priors:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>priors_progression</span>(
-  <span class='kw'>inf_prg_delay</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.202</span>, <span class='fl'>0.946</span>),
-  <span class='kw'>sym_prg_delay</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.147</span>, <span class='fl'>0.468</span>),
-  <span class='kw'>sev_prg_delay</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2.383</span>, <span class='fl'>0.27</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>priors_progression</span><span class='op'>(</span>
+  inf_prg_delay <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5.202</span>, <span class='fl'>0.946</span><span class='op'>)</span>,
+  sym_prg_delay <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5.147</span>, <span class='fl'>0.468</span><span class='op'>)</span>,
+  sev_prg_delay <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2.383</span>, <span class='fl'>0.27</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,33 +158,33 @@ returned. The following arguments can be passed to create different priors:</p>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(shape, scale)</a></code>
 parameters of a Gamma distribution modeling the time from infection to 
 sypmtom onset.</p>
-<p>Source for default value: Lauer SA, Grantz KH, Bi Q, Jones FK, Zheng Q, Meredith HR, Azman AS, Reich NG, Lessler J (2020).
+<p>Source for default value: Lauer SA, Grantz KH, Bi Q, Jones FK, Zheng Q, Meredith HR, Azman AS, Reich NG, Lessler J (2020-may).
 &#8220;The Incubation Period of Coronavirus Disease 2019 (COVID-19) From Publicly Reported Confirmed Cases: Estimation and Application.&#8221;
-<em>Annals of Internal Medicine</em>, <b>172</b>(9), 577--582.
-ISSN 0003-4819, 1539-3704, doi: <a href='https://doi.org/10.7326/M20-0504'>10.7326/M20-0504</a>
-, <a href='https://www.acpjournals.org/doi/10.7326/M20-0504'>https://www.acpjournals.org/doi/10.7326/M20-0504</a>.</p></td>
+<em>Annals of Internal Medicine</em>, <b>172</b>, 577--582.
+doi: <a href='https://doi.org/10.7326/M20-0504'>10.7326/M20-0504</a>
+.</p></td>
     </tr>
     <tr>
       <th>sym_prg_delay</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(shape, scale)</a></code>
 parameters of a Gamma distribution modeling the time from symptom onset to 
 severe disease.</p>
-<p>Source for default value: Zhou F, Yu T, Du R, Fan G, Liu Y, Liu Z, Xiang J, Wang Y, Song B, Gu X, Guan L, Wei Y, Li H, Wu X, Xu J, Tu S, Zhang Y, Chen H, Cao B (2020).
+<p>Source for default value: Zhou F, Yu T, Du R, Fan G, Liu Y, Liu Z, Xiang J, Wang Y, Song B, Gu X, Guan L, Wei Y, Li H, Wu X, Xu J, Tu S, Zhang Y, Chen H, Cao B (2020-mar).
 &#8220;Clinical course and risk factors for mortality of adult inpatients with COVID-19 in Wuhan, China: a retrospective cohort study.&#8221;
-<em>The Lancet</em>, <b>395</b>(10229), 1054--1062.
-ISSN 01406736, doi: <a href='https://doi.org/10.1016/S0140-6736(20)30566-3'>10.1016/S0140-6736(20)30566-3</a>
-, <a href='https://linkinghub.elsevier.com/retrieve/pii/S0140673620305663'>https://linkinghub.elsevier.com/retrieve/pii/S0140673620305663</a>.</p></td>
+<em>The Lancet</em>, <b>395</b>, 1054--1062.
+doi: <a href='https://doi.org/10.1016/S0140-6736(20)30566-3'>10.1016/S0140-6736(20)30566-3</a>
+.</p></td>
     </tr>
     <tr>
       <th>sev_prg_delay</th>
       <td><p>A two-element numeric vector containing
   <code><a href='https://rdrr.io/r/base/c.html'>c(shape, scale)</a></code> parameters of a Gamma distribution modeling the
   time from severe symptoms to death.</p>
-<p>Source for default value: Linton NM, Kobayashi T, Yang Y, Hayashi K, Akhmetzhanov AR, Jung S, Yuan B, Kinoshita R, Nishiura H (2020).
+<p>Source for default value: Linton NM, Kobayashi T, Yang Y, Hayashi K, Akhmetzhanov AR, Jung S, Yuan B, Kinoshita R, Nishiura H (2020-feb).
 &#8220;Incubation Period and Other Epidemiological Characteristics of 2019 Novel Coronavirus Infections with Right Truncation: A Statistical Analysis of Publicly Available Case Data.&#8221;
-<em>Journal of Clinical Medicine</em>, <b>9</b>(2), 538.
-ISSN 2077-0383, doi: <a href='https://doi.org/10.3390/jcm9020538'>10.3390/jcm9020538</a>
-, <a href='https://www.mdpi.com/2077-0383/9/2/538'>https://www.mdpi.com/2077-0383/9/2/538</a>.</p></td>
+<em>Journal of Clinical Medicine</em>, <b>9</b>.
+doi: <a href='https://doi.org/10.3390/jcm9020538'>10.3390/jcm9020538</a>
+.</p></td>
     </tr>
     </table>
 
@@ -193,7 +193,8 @@ ISSN 2077-0383, doi: <a href='https://doi.org/10.3390/jcm9020538'>10.3390/jcm902
     <p>An S3 object of class <code>priors</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>cfg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span>(<span class='kw'>ndays</span> <span class='kw'>=</span> <span class='fl'>50</span>) + <span class='fu'>priors_progression</span>(<span class='kw'>inf_prg_delay</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>))</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_progression</span><span class='op'>(</span>inf_prg_delay <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -209,7 +210,7 @@ ISSN 2077-0383, doi: <a href='https://doi.org/10.3390/jcm9020538'>10.3390/jcm902
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -141,10 +141,10 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for covidestim_result</span>
-<span class='fu'>RtEst</span>(<span class='no'>ccr</span>, <span class='kw'>window.length</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>mean.si</span> <span class='kw'>=</span> <span class='fl'>4.7</span>, <span class='kw'>std.si</span> <span class='kw'>=</span> <span class='fl'>2.9</span>)
+<span class='fu'>RtEst</span><span class='op'>(</span><span class='va'>ccr</span>, window.length <span class='op'>=</span> <span class='fl'>5</span>, mean.si <span class='op'>=</span> <span class='fl'>4.7</span>, std.si <span class='op'>=</span> <span class='fl'>2.9</span><span class='op'>)</span>
 
 <span class='co'># S3 method for covidestim_result</span>
-<span class='fu'>RtNaiveEstim</span>(<span class='no'>cc</span>, <span class='kw'>window.length</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>mean.si</span> <span class='kw'>=</span> <span class='fl'>4.7</span>, <span class='kw'>std.si</span> <span class='kw'>=</span> <span class='fl'>2.9</span>)</pre>
+<span class='fu'>RtNaiveEstim</span><span class='op'>(</span><span class='va'>cc</span>, window.length <span class='op'>=</span> <span class='fl'>5</span>, mean.si <span class='op'>=</span> <span class='fl'>4.7</span>, std.si <span class='op'>=</span> <span class='fl'>2.9</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -182,11 +182,11 @@ to 4.7 days.</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This code makes use of the <code>EpiEstim</code> package, described here:</p>
-<p>Cori A, Ferguson NM, Fraser C, Cauchemez S (2013).
+<p>Cori A, Ferguson NM, Fraser C, Cauchemez S (2013-nov).
 &#8220;A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics.&#8221;
-<em>American Journal of Epidemiology</em>, <b>178</b>(9), 1505--1512.
-ISSN 1476-6256, 0002-9262, doi: <a href='https://doi.org/10.1093/aje/kwt133'>10.1093/aje/kwt133</a>
-, <a href='https://academic.oup.com/aje/article-lookup/doi/10.1093/aje/kwt133'>https://academic.oup.com/aje/article-lookup/doi/10.1093/aje/kwt133</a>.</p>
+<em>American Journal of Epidemiology</em>, <b>178</b>, 1505--1512.
+doi: <a href='https://doi.org/10.1093/aje/kwt133'>10.1093/aje/kwt133</a>
+.</p>
 <p>The method used in <code>EpiEstim</code> is <code>"parametric_si"</code>, and a 5-day
 sliding window is used by default. <strong>Warning messages specifying that 
 you are <code>"estimating R too early"</code> are expected and should be ignored</strong>.</p>
@@ -206,7 +206,7 @@ you are <code>"estimating R too early"</code> are expected and should be ignored
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -148,20 +148,20 @@ data (see <code><a href='input_cases.html'>input_cases</a></code>, <code><a href
 be passed to <code>run</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>covidestim</span>(
-  <span class='no'>ndays</span>,
-  <span class='kw'>ndays_before</span> <span class='kw'>=</span> <span class='fl'>28</span>,
-  <span class='kw'>chains</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>1500</span>,
-  <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>rho_sym</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>rho_sev</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>42</span>,
-  <span class='kw'>adapt_delta</span> <span class='kw'>=</span> <span class='fl'>0.92</span>,
-  <span class='kw'>max_treedepth</span> <span class='kw'>=</span> <span class='fl'>12</span>,
-  <span class='kw'>window.length</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>weekend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>covidestim</span><span class='op'>(</span>
+  <span class='va'>ndays</span>,
+  ndays_before <span class='op'>=</span> <span class='fl'>28</span>,
+  chains <span class='op'>=</span> <span class='fl'>3</span>,
+  iter <span class='op'>=</span> <span class='fl'>1500</span>,
+  thin <span class='op'>=</span> <span class='fl'>1</span>,
+  rho_sym <span class='op'>=</span> <span class='fl'>1</span>,
+  rho_sev <span class='op'>=</span> <span class='fl'>0.5</span>,
+  seed <span class='op'>=</span> <span class='fl'>42</span>,
+  adapt_delta <span class='op'>=</span> <span class='fl'>0.92</span>,
+  max_treedepth <span class='op'>=</span> <span class='fl'>12</span>,
+  window.length <span class='op'>=</span> <span class='fl'>5</span>,
+  weekend <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -226,7 +226,8 @@ explicitly take this effect into account.</p></td>
   the presence or absence of input data.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>covidestim</span>(<span class='kw'>ndays</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>42</span>, <span class='kw'>weekend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Covidestim Configuration:
+    <pre class="examples"><div class='input'><span class='fu'>covidestim</span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span>, seed <span class='op'>=</span> <span class='fl'>42</span>, weekend <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Covidestim Configuration:
 #&gt; 
 #&gt; Seed:	42
 #&gt; Chains:	3
@@ -286,7 +287,7 @@ explicitly take this effect into account.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

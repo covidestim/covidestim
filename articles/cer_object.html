@@ -86,7 +86,8 @@
 
       
 
-      </header><script src="cer_object_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="cer_object_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="cer_object_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="cer_object_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Results Object</h1>
@@ -107,19 +108,20 @@
 <div id="overview" class="section level3">
 <h3 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h3>
-<p>Calling <code>run()</code> on a valid covidestim configuration will produce a S3 object of class <code>covidestim_result</code> containing the configuration used to run the model (“config”), the raw results (“result”), the extracted result as produced by <a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html"><code><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">rstan::extract()</a></code></a> (“extracted”), and the summarized results as produced by <a href="https://mc-stan.org/rstan/reference/stanfit-method-summary.html"><code>rstan::summary</code></a> (“summary”).</p>
+<p>Calling <code>run()</code> on a valid covidestim configuration will produce a S3 object of class <code>covidestim_result</code> containing the configuration used to run the model (“config”), the raw results (“result”), the extracted result as produced by <a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html"><code>rstan::extract()</code></a> (“extracted”), and the summarized results as produced by <a href="https://mc-stan.org/rstan/reference/stanfit-method-summary.html"><code>rstan::summary</code></a> (“summary”).</p>
 </div>
 <div id="result" class="section level3">
 <h3 class="hasAnchor">
 <a href="#result" class="anchor"></a>Result</h3>
-<p>Covidestim uses Bayesian inference to estiamte incident cases. The model is run using <a href="https://mc-stan.org/users/interfaces/rstan">rstan</a>, a package for the R programming language that allows for the estimation and analysis of Bayesian models with Stan. <code>result</code> is a stanfit object, the output of calling <a href="https://mc-stan.org/rstan/reference/stanfit-class.html"><code><a href="https://mc-stan.org/rstan/reference/stan.html">rstan::stan()</a></code></a>.</p>
-<p>We make use of the rstan functions <a href="https://mc-stan.org/rstan/reference/stanfit-method-summary.html"><code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code></a> and <a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html"><code>extract()</code></a> to pull model results of interest for easy visualization and analysis.</p>
+<p>Covidestim uses Bayesian inference to estiamte incident cases. The model is run using <a href="https://mc-stan.org/users/interfaces/rstan">rstan</a>, a package for the R programming language that allows for the estimation and analysis of Bayesian models with Stan. <code>result</code> is a stanfit object, the output of calling <a href="https://mc-stan.org/rstan/reference/stanfit-class.html"><code>rstan::stan()</code></a>.</p>
+<p>We make use of the rstan functions <a href="https://mc-stan.org/rstan/reference/stanfit-method-summary.html"><code>summary()</code></a> and <a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html"><code>extract()</code></a> to pull model results of interest for easy visualization and analysis.</p>
 </div>
 <div id="extracted" class="section level3">
 <h3 class="hasAnchor">
 <a href="#extracted" class="anchor"></a>Extracted</h3>
 <p><code>extracted</code> contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of samples from the paremeter. All three chains have been mixed.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">output</span><span class="kw">[[</span><span class="st">"extracted"</span>]])</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">output</span><span class="op">[[</span><span class="st">"extracted"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##                      Length Class  Mode   
 ## log_new_inf_0           900 -none- numeric
 ## deriv1_log_new_inf   117000 -none- numeric
@@ -164,10 +166,11 @@
 ## cumulative_incidence 117900 -none- numeric
 ## lp__                    900 -none- numeric</code></pre>
 <p>In this format, it’s possible to view the time series of estimates within a single iteration.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># a matrix of new infection point estimates for each timepoint, iteration</span>
-<span class="no">new_sym</span> <span class="kw">&lt;-</span> <span class="no">output</span><span class="kw">[[</span><span class="st">"extracted"</span>]]$<span class="no">new_sym</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># a matrix of new infection point estimates for each timepoint, iteration</span>
+<span class="va">new_sym</span> <span class="op">&lt;-</span> <span class="va">output</span><span class="op">[[</span><span class="st">"extracted"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">new_sym</span>
 <span class="co"># view first 8 iterations, first 5 days</span>
-<span class="no">new_sym</span>[<span class="fl">1</span>:<span class="fl">8</span>, <span class="fl">1</span>:<span class="fl">5</span>]</pre></body></html></div>
+<span class="va">new_sym</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##           
 ## iterations         [,1]        [,2]        [,3]       [,4]
 ##       [1,] 5.000831e-03 0.085774934 0.338419803 0.74767701
@@ -189,12 +192,13 @@
 ##       [7,] 2.24049591
 ##       [8,] 0.51045805</code></pre>
 <p>This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections over the first week of data.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># create a data frame with the final 7 days from the model </span>
-<span class="no">new_sym_df</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="no">new_sym</span>[,<span class="fl">29</span>:<span class="fl">35</span>])
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># create a data frame with the final 7 days from the model </span>
+<span class="va">new_sym_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">new_sym</span><span class="op">[</span>,<span class="fl">29</span><span class="op">:</span><span class="fl">35</span><span class="op">]</span><span class="op">)</span> 
 <span class="co"># compute the row average </span>
-<span class="no">new_sym_df</span>$<span class="no">avg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">new_sym_df</span>)/<span class="fl">7</span>
+<span class="va">new_sym_df</span><span class="op">$</span><span class="va">avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="va">new_sym_df</span><span class="op">)</span><span class="op">/</span><span class="fl">7</span>
 <span class="co"># calculate the mean and 95% uncertainty bounds</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">new_sym_df</span>$<span class="no">avg</span>, <span class="kw">probs</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.025</span>,  <span class="fl">0.5</span>, <span class="fl">0.975</span>))</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">new_sym_df</span><span class="op">$</span><span class="va">avg</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>,  <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##      2.5%       50%     97.5% 
 ##  66.93261 126.27501 368.72355</code></pre>
 <p><code>extracted</code> is generally useful for cases where it’s necessary to compute an average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals).</p>
@@ -203,7 +207,8 @@
 <h3 class="hasAnchor">
 <a href="#summary" class="anchor"></a>Summary</h3>
 <p><code>summary</code> contains the point estimate and uncertainty bounds for every parameter in the model. The number in brackets indicates the inex day of the estimate. <code>summary</code> also contains information about model fit, including the effective sample size and Rhat estimates.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">output</span><span class="kw">[[</span><span class="st">"summary"</span>]])</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">output</span><span class="op">[[</span><span class="st">"summary"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##                              mean     se_mean        sd       2.5%
 ## log_new_inf_0         -0.09407199 0.124892339 1.7422593 -3.4863638
 ## deriv1_log_new_inf[1]  0.09878696 0.007698155 0.1555521 -0.2177846
@@ -245,7 +250,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

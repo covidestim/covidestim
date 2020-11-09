@@ -86,7 +86,8 @@
 
       
 
-      </header><script src="covidestim_vignette_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="covidestim_vignette_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="covidestim_vignette_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="covidestim_vignette_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Covidestim Quick Guide</h1>
@@ -101,7 +102,8 @@
     
     
 <p><strong>This vignette is intended to guide users through running the covidestim model and accessing the model output.</strong></p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">covidestim</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://covidestim.org">covidestim</a></span><span class="op">)</span></code></pre></div>
 <div id="running-the-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-the-model" class="anchor"></a>Running the model</h2>
@@ -109,7 +111,8 @@
 <h3 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h3>
 <p>Will we demonstrate how to use the covidestim paackage using data from the <a href="https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts">Massachusetts Department of Public Health</a> Users can use case and/or death data with the model. Data on the fraction of tests with a positive results may also be used; we strongly recommend users smooth fraciton positive data using a moving average or spline. Each data type should be entered as its own dataframe with two columns: a column called ‘date’ and a column called ‘observation.’</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">df.cases</span>)
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">df.cases</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 6 x 2</span>
 <span class="co">#&gt;   date       observation</span>
 <span class="co">#&gt;   &lt;date&gt;           &lt;dbl&gt;</span>
@@ -118,13 +121,14 @@
 <span class="co">#&gt; 3 2020-03-03           1</span>
 <span class="co">#&gt; 4 2020-03-04           2</span>
 <span class="co">#&gt; 5 2020-03-05           8</span>
-<span class="co">#&gt; 6 2020-03-06          14</span></pre></body></html></div>
+<span class="co">#&gt; 6 2020-03-06          14</span></code></pre></div>
 </div>
 <div id="generate-a-model-configuration" class="section level3">
 <h3 class="hasAnchor">
 <a href="#generate-a-model-configuration" class="anchor"></a>Generate a model configuration</h3>
-<p>Inpute data and model run options are summarized into a covidestim configuration with the funciton call <a href="%5Ccode%7B?covidestim%7D"><code><a href="../reference/covidestim.html">covidestim()</a></code></a>. Users must specify the number of days of data in the input data. More information on data formating can be found <a href="%5Ccode%7B?input_cases%7D">here</a>. Calling <code><a href="../reference/covidestim.html">covidestim()</a></code> will produce a summary of model run conditions, priors, and data inputs.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="../reference/covidestim.html">covidestim</a></span>(<span class="kw">ndays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">df.cases</span>))
+<p>Inpute data and model run options are summarized into a covidestim configuration with the funciton call <a href="%5Ccode%7B?covidestim%7D"><code>covidestim()</code></a>. Users must specify the number of days of data in the input data. More information on data formating can be found <a href="%5Ccode%7B?input_cases%7D">here</a>. Calling <code><a href="../reference/covidestim.html">covidestim()</a></code> will produce a summary of model run conditions, priors, and data inputs.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df.cases</span><span class="op">)</span><span class="op">)</span> 
 <span class="co">#&gt; Covidestim Configuration:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Seed:    42</span>
@@ -169,15 +173,16 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  [ ❌ ]   Cases</span>
 <span class="co">#&gt;  [ ❌ ]   Deaths</span>
-<span class="co">#&gt;  [ ❌ ]   Fraction positive</span></pre></body></html></div>
-<p>Notice that what we input is <strong>not</strong> a valid model configuration because it does not contain data! Each dataframe must be added to the covidestim call using calls <a href="%5Ccode%7B?input_cases%7D"><code><a href="../reference/input_cases.html">input_cases()</a></code></a>, <a href="%5Ccode%7B?input_deaths%7D"><code><a href="../reference/input_cases.html">input_deaths()</a></code></a>, and <a href="%5Ccode%7B?input_fracpos%7D"><code><a href="../reference/input_cases.html">input_fracpos()</a></code></a>. Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.</p>
-<p>Because we use date-of-occurrence data, we choose to enable the ‘weekend effect.’ As individuals are less likely to be tested on Saturdays and Sundays, enabling the weekend effect allows the model to estimate a systematically lower probability of diagnosis on the weekend. This generally improves model fit to data when the data are by date-of-occurrence. For additional information about changing the base configuration of the model, see <a href="%5Ccode%7B?covidestim%7D"><code><a href="../reference/covidestim.html">covidestim()</a></code></a>.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">config1</span> <span class="kw">&lt;-</span>
-<span class="fu"><a href="../reference/covidestim.html">covidestim</a></span>(<span class="kw">ndays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">df.cases</span>), <span class="kw">weekend</span> <span class="kw">=</span> <span class="fl">TRUE</span>) +
-  <span class="fu"><a href="../reference/input_cases.html">input_cases</a></span>(<span class="no">df.cases</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"occurred"</span>) +
-  <span class="fu"><a href="../reference/input_cases.html">input_deaths</a></span>(<span class="no">df.cases</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"occurred"</span>) +
-  <span class="fu"><a href="../reference/input_cases.html">input_fracpos</a></span>(<span class="no">df.fracpos</span>)
-<span class="no">config1</span>
+<span class="co">#&gt;  [ ❌ ]   Fraction positive</span></code></pre></div>
+<p>Notice that what we input is <strong>not</strong> a valid model configuration because it does not contain data! Each dataframe must be added to the covidestim call using calls <a href="%5Ccode%7B?input_cases%7D"><code>input_cases()</code></a>, <a href="%5Ccode%7B?input_deaths%7D"><code>input_deaths()</code></a>, and <a href="%5Ccode%7B?input_fracpos%7D"><code>input_fracpos()</code></a>. Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.</p>
+<p>Because we use date-of-occurrence data, we choose to enable the ‘weekend effect.’ As individuals are less likely to be tested on Saturdays and Sundays, enabling the weekend effect allows the model to estimate a systematically lower probability of diagnosis on the weekend. This generally improves model fit to data when the data are by date-of-occurrence. For additional information about changing the base configuration of the model, see <a href="%5Ccode%7B?covidestim%7D"><code>covidestim()</code></a>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">config1</span> <span class="op">&lt;-</span>
+<span class="fu"><a href="../reference/covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df.cases</span><span class="op">)</span>, weekend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="../reference/input_cases.html">input_cases</a></span><span class="op">(</span><span class="va">df.cases</span>, type <span class="op">=</span> <span class="st">"occurred"</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="../reference/input_cases.html">input_deaths</a></span><span class="op">(</span><span class="va">df.cases</span>, type <span class="op">=</span> <span class="st">"occurred"</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="../reference/input_cases.html">input_fracpos</a></span><span class="op">(</span><span class="va">df.fracpos</span><span class="op">)</span>
+<span class="va">config1</span>
 <span class="co">#&gt; Covidestim Configuration:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Seed:    42</span>
@@ -222,13 +227,14 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  [ 103]  Cases</span>
 <span class="co">#&gt;  [ 103]  Deaths</span>
-<span class="co">#&gt;  [ 103]  Fraction positive</span></pre></body></html></div>
+<span class="co">#&gt;  [ 103]  Fraction positive</span></code></pre></div>
 </div>
 <div id="initializing-a-model-run" class="section level3">
 <h3 class="hasAnchor">
 <a href="#initializing-a-model-run" class="anchor"></a>Initializing a model run</h3>
 <p>Finally, the model is run with the call <a href="%5Ccode%7B?run%7D"><code>run</code></a>. Do not forget to assign the a name to the output of the run. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in RStudio, periodic status updates will appear in the console.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">output</span> <span class="kw">&lt;-</span> <span class="fu">run</span>(<span class="no">config1</span>, <span class="kw">cores</span> <span class="kw">=</span> <span class="kw pkg">parallel</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span>())</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span><span class="va">config1</span>, cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="accessing-model-output" class="section level2">
@@ -239,12 +245,15 @@
 <h3 class="hasAnchor">
 <a href="#summarizing-covidestim-output" class="anchor"></a>Summarizing covidestim output</h3>
 <p>A covidestim object can be easily converted to a summary data frame with the call <a href="%5Ccode%7B?summary%7D"><code>summary</code></a>. Each row of the data frame is a date. Each column of the data frame is a value of interest. Variables appened with .hi or .lo indicate the 0.975 and 0.025 quantiles, respectively. A data dictionary for summarized results can be found <a href="%5Ccode%7B?summary%7D">here</a>.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">output.summary</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">output</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">output.summary</span>[<span class="fl">40</span>:<span class="fl">45</span>, <span class="fl">1</span>:<span class="fl">5</span>])
-<span class="co">#&gt; Error in print(output.summary[40:45, 1:5]): object 'output.summary' not found</span></pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">output.summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">output.summary</span><span class="op">[</span><span class="fl">40</span><span class="op">:</span><span class="fl">45</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#&gt; Error in print(output.summary[40:45, 1:5]): object 'output.summary' not found</span></code></pre></div>
 <p>The posterior distributions of key time-invariant parameters can also be summarized with the call <a href="?code%7B?summaryEpi%7D"><code>summaryEpi</code></a></p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="kw pkg">covidestim</span><span class="kw ns">::</span><span class="fu"><a href="../reference/summaryEpi.html">summaryEpi</a></span>(<span class="no">output</span>)
-<span class="co">#&gt; Error in rstan::summary(ccr$result, pars = pars_of_interest, probs = c(0.025, : object 'output' not found</span></pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">covidestim</span><span class="fu">::</span><span class="fu"><a href="../reference/summaryEpi.html">summaryEpi</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span>
+<span class="co">#&gt; Error in rstan::summary(ccr$result, pars = pars_of_interest, probs = c(0.025, : object 'output' not found</span></code></pre></div>
 <p>Note that p_diag_if_sym (the probability a symptomatic case is diagnosed) and p_diag_if_sev (the probability that a severe case is diagnosed) are summarized without the adjustment for changing diagnostic coverage.</p>
 </div>
 </div>
@@ -252,24 +261,29 @@
 <h2 class="hasAnchor">
 <a href="#visualizing-model-output" class="anchor"></a>Visualizing model output</h2>
 <p>Model results can be visualized with a the call <a href="%5Ccode%7B?viz%7D"><code>viz</code></a>. Three figures will be produced:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">visual</span> <span class="kw">&lt;-</span> <span class="kw pkg">covidestim</span><span class="kw ns">::</span><span class="fu">viz</span>(<span class="no">output</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary.default</a></span>(<span class="no">visual</span>)
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">visual</span> <span class="op">&lt;-</span> <span class="fu">covidestim</span><span class="fu">::</span><span class="fu">viz</span><span class="op">(</span><span class="va">output</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary.default</a></span><span class="op">(</span><span class="va">visual</span><span class="op">)</span>
 <span class="co">#&gt;                    Length Class Mode</span>
 <span class="co">#&gt; observedVsFitted   9      gg    list</span>
 <span class="co">#&gt; infectionsAndCases 9      gg    list</span>
-<span class="co">#&gt; RtEstim            9      gg    list</span></pre></body></html></div>
+<span class="co">#&gt; RtEstim            9      gg    list</span></code></pre></div>
 <p>The figure ‘observedVsFitted’ plots the observed cases and deaths (the input data) against the modeled values for reported cases and deaths. In the plot bellow, note that the effect of weekends on detection and reporting can be clearly observed in both the input data and in the model output.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">visual</span>$<span class="no">observedVsFitted</span></pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">visual</span><span class="op">$</span><span class="va">observedVsFitted</span></code></pre></div>
 <div class="figure">
 <img src="figure/Rplot001.png" alt=""><p class="caption">Figure 1</p>
 </div>
 <p>The figure ‘infectionsAndCases’ plots reported cases against modeled ‘true’ new infections. The latter is what we estimate to be the complete, un-lagged time series of incident infections that would give rise to the trends we observe in the case and death data.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">visual</span>$<span class="no">infectionsAndCases</span></pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">visual</span><span class="op">$</span><span class="va">infectionsAndCases</span></code></pre></div>
 <div class="figure">
 <img src="figure/Rplot002.png" alt=""><p class="caption">Figure 2</p>
 </div>
 <p>Finlly, ‘RtEstim’ is the estimated effective reproduction number (Rt) based on the modeled time series of new infections. These estimates are produced using the <a href="https://cran.r-project.org/web/packages/EpiEstim/index.html">EpiEstim package for R</a>. We use a five-day moving average. Values are plotted on the middle day of the moving average (e.g. the Rt estimate for March 16 is the average Rt over the period March 14 - March 18).</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">visual</span>$<span class="no">RtEstim</span></pre></body></html></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">visual</span><span class="op">$</span><span class="va">RtEstim</span></code></pre></div>
 <div class="figure">
 <img src="figure/Rplot003.png" alt=""><p class="caption">Figure 3</p>
 </div>
@@ -291,7 +305,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
