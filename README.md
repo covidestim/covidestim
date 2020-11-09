@@ -40,5 +40,6 @@ result.graphs  <- viz(result)
 
 * [Read our preprint](https://www.medrxiv.org/content/10.1101/2020.06.17.20133983v1)
 * [Ask a question](mailto:marcus.russi@yale.edu?subject=covidestim)
+* [Use our Docker image](https://hub.docker.com/repository/registry-1.docker.io/covidestim/covidestim/tags) (`SplinesRt` tag)
 * [Open an issue](https://github.com/covidestim/covidestim/issues) (GitHub
   issues for bug reports, feature requests)
