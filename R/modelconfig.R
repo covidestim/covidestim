@@ -144,7 +144,7 @@ or removing your custom prior.
 }
 
 genData <- function(N_days, N_days_before = 28,
-                    N_days_av = 5) #new default value
+                    N_days_av = 7) #new default value
 {
 
   n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/4))
