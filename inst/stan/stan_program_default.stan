@@ -191,7 +191,7 @@ parameters {
 // probability of diagnosis at each illness state
   real<lower=0, upper=1>    rr_diag_asy_vs_sym; 
   real<lower=0, upper=1>    p_diag_if_sev;
-  vector<lower=0, upper=1>[N_spl_par_dx-1]  spl_par_sym_dx0;
+  vector<lower=0, upper=1>[N_spl_par_dx]  spl_par_sym_dx;
 
 // LIKELIHOOD 
 // phi terms for negative b ino imal likelihood function 
@@ -205,8 +205,7 @@ transformed parameters {
   vector[N_days_tot]      log_new_inf;
   vector[N_days_tot]      new_inf;
   vector[N_days_tot]      deriv1_log_new_inf;
-  vector<lower=0, upper=1>[N_spl_par_dx]  spl_par_sym_dx;
-  
+
   // Rt spline
   vector[N_days_tot]      logRt0;
   vector[N_days_tot]      logRt;
@@ -254,12 +253,6 @@ transformed parameters {
   real                phi_die;
 
 // DIAGNOSIS // 
-// First spline parameter calculated so that start of spline is flat  
-  spl_par_sym_dx[2:N_spl_par_dx] = spl_par_sym_dx0;
-  spl_par_sym_dx[1] = inv_logit((spl_basis_dx[2,2:N_spl_par_dx]-
-    spl_basis_dx[1,2:N_spl_par_dx]) * logit(spl_par_sym_dx0) / 
-    (spl_basis_dx[1,1]-spl_basis_dx[2,1]));
-    
 // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
   rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * logit(spl_par_sym_dx));
 // probability of diagnosis 
