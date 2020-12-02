@@ -144,15 +144,15 @@ or removing your custom prior.
 }
 
 genData <- function(N_days, N_days_before = 28,
-                    N_days_av = 5, pop_size = 1e12) #new default value
+                    N_days_av = 7, pop_size = 1e12) #new default value
 {
 
-  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/4))
-  des_mat_rt <- splines::bs(1:(n_spl_par_rt*4), 
+  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/5))
+  des_mat_rt <- splines::bs(1:(N_days + N_days_before), 
                          df=n_spl_par_rt, degree=3, intercept=T)
   
   n_spl_par_dx <- max(4,ceiling((N_days + N_days_before)/21)) 
-  des_mat_dx <- splines::bs(1:(n_spl_par_dx*21), 
+  des_mat_dx <- splines::bs(1:(N_days + N_days_before), 
                          df=n_spl_par_dx, degree=3, intercept=T) 
   
   # The first set of components of 'datList'
@@ -196,9 +196,9 @@ genData <- function(N_days, N_days_before = 28,
     pri_deriv2_spl_par_sd = 0.1, # penalizes changes in Rt curvature
     
     N_spl_par_rt = n_spl_par_rt, 
-    spl_basis_rt = as.matrix(as.data.frame(des_mat_rt))[1:(N_days + N_days_before),],
+    spl_basis_rt = as.matrix(as.data.frame(des_mat_rt)),
     N_spl_par_dx = n_spl_par_dx, 
-    spl_basis_dx = as.matrix(as.data.frame(des_mat_dx))[1:(N_days + N_days_before),],
+    spl_basis_dx = as.matrix(as.data.frame(des_mat_dx)),
 
     # indicates whether case or death data are being used 
     cas_yes = as.integer(1), 
