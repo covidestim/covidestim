@@ -139,7 +139,7 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),     # a/b 
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
                                p_die_if_sev = c(28.239, 162.30),         # a/b
-                               p_die_if_inf = c(72.147, 10976)) {  # a/b
+                               p_die_if_inf = c(15.929, 3814.8)) {  # a/b
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_sev_if_sym) == 2)
