@@ -10,7 +10,7 @@ ifrs <- local({
 
   ifr_state <- read_csv(
     'data-raw/ifr-data/ifr_state_date_OR_12-2-2020.csv',
-    col_types = cols(.default = col_number(), Date = col_date())
+    col_types = cols(.default = col_number(), date = col_date())
   )
 
   list(
