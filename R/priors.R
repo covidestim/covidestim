@@ -162,36 +162,6 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),     # a/b
   structure(ps, class='priors')
 }
 
-#' Estimated IFR priors for US counties and states
-#'
-#' Returns parameters of a gamma prior on the IFR, which is represented
-#' internally as the probability of dying as if infectied. Look in `data-raw/`
-#' for details on how this is generated.
-#'
-#' @param region A string with the state name, or the FIPS code
-#'
-#' @return A two-element numeric vector, intended to be used with
-#'   \code{\link{priors_transitions}} as the argument to \code{p_die_if_inf}.
-#'
-#' @examples
-#' priors_transitions(p_die_if_inf = get_ifr_prior('Connecticut'))
-#'
-#' @export
-get_ifr_prior <- function(region) {
-  found <- dplyr::filter(ifr_state, State == region)
-
-  if (nrow(found) == 0)
-    found <- dplyr::filter(ifr_county, fips == region)
-
-  if (nrow(found) == 0)
-    stop(glue::glue("Could not find IFR data for region {region}!"))
-
-  if (nrow(found) > 1)
-    stop(glue::glue("Found more than one IFR for region {region}!"))
-
-  c(found$ifr_par1, found$ifr_par2)
-}
-
 #' Fixed values on delay to progression
 #'
 #' This function returns a keyed list of values related to progression to
