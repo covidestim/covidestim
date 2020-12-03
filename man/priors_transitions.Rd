@@ -8,7 +8,7 @@ priors_transitions(
   p_sym_if_inf = c(5.143, 3.536),
   p_sev_if_sym = c(1.8854, 20.002),
   p_die_if_sev = c(28.239, 162.3),
-  p_die_if_inf = c(72.147, 10976)
+  p_die_if_inf = c(15.929, 3814.8)
 )
 }
 \arguments{
