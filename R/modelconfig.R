@@ -13,6 +13,58 @@ print.modelconfig <- function(cc) {
   print.inputs(cc$config, .tab = TRUE)
 }
 
+#' Estimated IFR ... for US counties and states
+#'
+#' DETAILS HERE. Look in `data-raw/` for details on how this is generated.
+#'
+#' @param region A string with the state name, or the FIPS code
+#'
+#' @return A data.frame with two variables: [date, value], where value is
+#'   the odds ratio on VALUE HERE for that particular day.
+#'
+#' @examples
+#' get_ifr_raw('Connecticut')
+#' get_ifr_raw('09009')
+get_ifr_raw <- function(region) {
+  found_state <- FALSE
+  region_is_county <- any(region %in% ifr_county$fips)
+  
+  # Branch for case when 'region' is a state
+  if (region %in% colnames(ifr_state))
+    found_state <- dplyr::select(ifr_state, date, value = all_of(region))
+  # Branch for case when 'region' is not a state and is probably a county
+  else if (region_is_county)
+    found_state <- local({
+      state_name <- dplyr::filter(ifr_county, fips == region)$state[[1]]
+
+      dplyr::select(ifr_state, date, value = all_of(state_name))
+    })
+  else
+    stop("`region` was neither a state name or a character FIPS code")
+
+  successful_state_find <- function(candidate)
+    !identical(candidate, FALSE) && ncol(candidate == 2)
+
+  if (!successful_state_find(found_state))
+    stop(glue::glue("Could not find state-level IFR data for region {region}!"))
+
+  if (!region_is_county)
+    return(found_state)
+
+  found_county <- dplyr::filter(ifr_county, fips == region)
+
+  # Check to be sure we found county IFR data
+  if (nrow(found_county) == 0)
+    stop(glue::glue("Could not find county-level IFR information for county {region}"))
+
+  # Multiply the enclosing state's `value` column by the `comorb_OR` scalar
+  mutate(found_state, value = value * found_county$comorb_OR)
+}
+
+get_ifr <- function(region, start_day, N_days_before) {
+
+}
+
 #' An overloaded addition operator, dispatched on the type of the lhs argument.
 #'
 #' Flips the order of the arguments and calls 'modelconfig_add' to enable type
