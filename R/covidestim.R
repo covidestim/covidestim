@@ -35,6 +35,8 @@ NULL
 #' @param pop_size A positive real. What is the population in the geography 
 #' being modelled? This sets the max susceptible population
 #' @param seed A number. The random number generator seed for use in sampling.
+#' @param region A string. The FIPS code (for U.S. counties) or state name
+#'   (e.g. \code{New York}) being modeled. Required.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to 
 #'   \code{\link{run}} to execute the model. This object can also be saved
@@ -56,7 +58,8 @@ covidestim <- function(ndays,
                        seed=42,
                        adapt_delta = 0.92, 
                        max_treedepth = 12,
-                       window.length = 5) {
+                       window.length = 5,
+                       region) {
 
   att(is.numeric(ndays), ndays >= 1)
 
@@ -64,7 +67,8 @@ covidestim <- function(ndays,
     N_days = ndays,
     N_days_before = ndays_before,
     pop_size = pop_size,
-    N_days_av = window.length
+    N_days_av = window.length,
+    region = region
   ) -> config
 
   # All user-specified config-related things must be specified above this line

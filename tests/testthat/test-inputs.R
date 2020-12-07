@@ -52,7 +52,7 @@ test_that("example data validates", {
   expect_silent(idth <- input_deaths(d_deaths))
 
   expect_silent(
-    covidestim(ndays = ndays, ndays_before = 10) +
+    covidestim(ndays = ndays, ndays_before = 10, region = 'New York') +
       icas + idth
   )
 })
@@ -74,22 +74,22 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10) + icas
+    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + icas
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10) + idth
+    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + idth
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10) + icas + idth
+    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + icas + idth
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10) + idth + icas
+    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + idth + icas
   )
 
   # You should be able to see the `*_rep` flags set now
@@ -98,7 +98,7 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10)
+    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York')
   )
 
   #############################################################################
@@ -115,7 +115,7 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10) + icas + idth
+    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + icas + idth
   )
 
   # You should be able to see the `*_rep` flags UNset now
