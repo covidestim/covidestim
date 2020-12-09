@@ -16,14 +16,14 @@ get_ifr_raw <- function(region) {
   region_is_county <- any(region %in% ifr_county$fips)
   
   # Branch for case when 'region' is a state
-  if (region %in% colnames(ifr_state))
-    found_state <- dplyr::select(ifr_state, date, value = all_of(region))
+  if (region %in% ifr_state$State)
+    found_state <- ifr_state$ifr_OR[ifr_state$State==region]
   # Branch for case when 'region' is not a state and is probably a county
   else if (region_is_county)
     found_state <- local({
-      state_name <- dplyr::filter(ifr_county, fips == region)$state[[1]]
+      state_name <- dplyr::filter(ifr_county, fips == region)$State[[1]]
 
-      dplyr::select(ifr_state, date, value = all_of(state_name))
+      ifr_state$ifr_OR[ifr_state$State==state_name]
     })
   else
     stop("`region` was neither a state name or a character FIPS code")
@@ -44,25 +44,7 @@ get_ifr_raw <- function(region) {
     stop(glue::glue("Could not find county-level IFR information for county {region}"))
 
   # Multiply the enclosing state's `value` column by the `comorb_OR` scalar
-  mutate(found_state, value = value * found_county$comorb_OR)
-}
-
-get_ifr <- function(region, start_date) {
-  all_data <- get_ifr_raw(region)
-
-  min_date <- min(all_data$date)
-  max_date <- max(all_data$date)
-
-  att(class(start_date) == 'Date')
-
-  if (!dplyr::between(start_date, min_date, max_date))
-    stop(
-      glue::glue(
-        "start_date was {start_date} but extent of IFR data is {min_date} - {max_date})"
-      )
-    )
-
-  dplyr::filter(all_data, date >= start_date)
+  mutate(found_state, value = value * found_county$ifr_OR)
 }
 
 gen_ifr_adjustments <- function(first_date, N_days_before, region) {
@@ -74,38 +56,30 @@ gen_ifr_adjustments <- function(first_date, N_days_before, region) {
   ymd <- lubridate::ymd
 
   ifr_adj_start <- first_date - 
-    lubridate::days(N_days_before) + # Burn-in period
-    lubridate::days(14)              # 14-days for deaths to start NEEDS BETTER DOCUMENTATION
+    lubridate::days(N_days_before)  # Burn-in period
+  
+  # time-invariant IFR adjustment accounting for state- and county-level
+  # factors, representing an odds-ratio applied to the national average IFR
+  ifr_adj_fixed <- get_ifr_raw(region) 
 
-  # IFR data, beginning at `ifr_adj_start` and ending on 2021-12-31, or the
-  # maximum date-value in the CSV files in `data-raw/ifr-data`.
-  #
-  # The cubed root of these data are taken to represent this adjustment
-  # being applied 3 times.
-  ifr_adj_df <- get_ifr(region, start_date = ifr_adj_start) %>%
-    mutate(value = value^(1/3))
+  # reduction in IFR over the course of 2020 due to improvements in care.
+  # Operationalized as 1 minus a Normal CDF, with max slope in June 1, 
+  # and sd = 45 days. Vector created from ifr_adj_start to end 2022.
+  ifr_adj_df <- tibble::tibble(
+    date  = seq.Date(ifr_adj_start, ymd('2022-12-31'), by = '1 day'),
+    value = 1 - pnorm(
+        ifr_adj_start : ymd("2022-12-31"),
+        ymd("2020-6-1"),
+        45
+      )
+  )
 
   ifr_adj <- dplyr::pull(ifr_adj_df, value)
 
-  # lower mortality due to improved care (assumes IFR 30% higher
-  # at start of pandemic)
-  ifr_adj2_df <- tibble::tibble(
-    date  = seq.Date(ymd('2020-01-01'), ymd('2021-12-31'), by = '1 day'),
-    value = 1 +
-      0.30 * (1 - pnorm(
-        ymd("2020-1-1") : ymd("2021-12-31"),
-        ymd("2020-6-1"),
-        45
-      ))               
-  ) %>% dplyr::inner_join(ifr_adj_df, by='date') %>%
-    transmute(date, value = value.x*value.y)
-
-  ifr_adj2 <- dplyr::pull(ifr_adj2_df, value)
-
   list(
-    ifr_adj   = ifr_adj,
-    ifr_adj2  = ifr_adj2,
-    N_ifr_adj = length(ifr_adj)
+    ifr_adj_fixed = ifr_adj_fixed,
+    ifr_adj       = ifr_adj,
+    N_ifr_adj     = length(ifr_adj)
   )
 }
 

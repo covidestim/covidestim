@@ -128,33 +128,47 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #'
 #' @param p_die_if_inf A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters of a Beta distribution modeling the probability of dying
-#'   if infected (e.g. the infection fatality rate). 
+#'   if infected (e.g. the infection fatality rate). This prior represents a 
+#'   national average value, which is adjusted for state and county-level 
+#'   factors, and to reflect higher fatality rates early in the epidemic.
 #'
-#'   Source for default value: \insertRef{basu_estimating_2020}{covidestim}
+#'   Source for default value: \insertRef{ODriscoll_Nature_2020}{covidestim}
+#'   
+#' @param ifr_decl_OR A two-element numeric vector containing \code{c(shape,
+#'   rate)} parameters of a Gamma distribution modeling the elevated IFR in early
+#'   2020, relative to the present. Default value represents an IFR 30% higher
+#'   in March of 2020, with 95% interval 10-50% higher.
+#'
+#'   Source for default value: Expert opinion
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
-priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),     # a/b 
+priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b 
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
-                               p_die_if_sev = c(28.239, 162.30),         # a/b
-                               p_die_if_inf = c(15.929, 3814.8)) {  # a/b
+                               p_die_if_sev = c(28.239, 162.30),    # a/b
+                               p_die_if_inf = ifr_prior,            # a/b
+                               ifr_decl_OR  = c(9.1357, 29.339)      # a/b this is actually a gamma distribution!!
+                               ) {                                 
 
   att(length(p_sym_if_inf) == 2)
   att(length(p_sev_if_sym) == 2)
   att(length(p_die_if_sev) == 2)
   att(length(p_die_if_inf) == 2)
+  att(length(ifr_decl_OR) == 2)
   att(is_nonNegativeReal(p_sym_if_inf))
   att(is_nonNegativeReal(p_sev_if_sym))
   att(is_nonNegativeReal(p_die_if_sev))
   att(is_nonNegativeReal(p_die_if_inf))
+  att(is_nonNegativeReal(ifr_decl_OR))
   
   build_priors(
     p_sym_if_inf,
     p_sev_if_sym,
     p_die_if_sev,
     p_die_if_inf,
+    ifr_decl_OR,
     .postfix=c("_a", "_b"),
     .prefix="pri_"
   ) -> ps

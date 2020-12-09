@@ -10,8 +10,10 @@ data {
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
-  vector<lower=0>[N_ifr_adj] ifr_adj2; // ifr_adjustment 2
- 
+  real<lower=0>          pri_ifr_decl_OR_a; 
+  real<lower=0>          pri_ifr_decl_OR_b;
+  real<lower=0>          ifr_adj_fixed;
+
   // terms for splines
   // spline parameters and bases
   int<lower=0>                              N_spl_par_rt;
@@ -186,6 +188,8 @@ parameters {
   real<lower=0, upper=1>    p_sym_if_inf;
   real<lower=0, upper=1>    p_sev_if_sym;
   real<lower=0, upper=1>    p_die_if_sev;
+  real<lower=0>             ifr_decl_OR;
+
   
 // DIANGOSIS
 // scaling factor for time to diagnosis
@@ -218,8 +222,6 @@ transformed parameters {
   vector[N_spl_par_rt-2]  deriv2_spl_par_rt;
   
   // transitions
-  vector[N_ifr_adj]      p_sym_if_inft;
-  vector[N_ifr_adj]      p_sev_if_symt;
   vector[N_ifr_adj]      p_die_if_sevt;
   
 // DIAGNOSIS AND REPORTING  
@@ -257,18 +259,12 @@ transformed parameters {
   vector[N_days_tot]  occur_die; 
   
 // LIKELIHOOD
-// phi terms for negative bino imal likelihood function 
+// phi terms for negative binomial likelihood function 
   real                phi_cas;
   real                phi_die;
   
   // NATURAL HISTORY CASCADE
-  p_sym_if_inft = p_sym_if_inf/(1-p_sym_if_inf) * ifr_adj;
-  p_sym_if_inft ./= (1+p_sym_if_inft);
-
-  p_sev_if_symt = p_sev_if_sym/(1-p_sev_if_sym) * ifr_adj;
-  p_sev_if_symt ./= (1+p_sev_if_symt);
-  
-  p_die_if_sevt = p_die_if_sev/(1-p_die_if_sev) * ifr_adj2;
+  p_die_if_sevt = p_die_if_sev/(1-p_die_if_sev) * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR);
   p_die_if_sevt ./= (1+p_die_if_sevt);
 
 // DIAGNOSIS // 
@@ -334,12 +330,12 @@ transformed parameters {
 
   for(i in 1:N_days_tot) {
     new_sym[i] = dot_product(new_inf[idx1[i]:i],
-      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i];
+      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inf;
   }
   
   for(i in 1:N_days_tot) {
     new_sev[i] = dot_product(new_sym[idx1[i]:i],
-      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_symt[i];
+      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_sym;
   }
   
   for(i in 1:N_days_tot) {
@@ -357,7 +353,7 @@ transformed parameters {
 // asymptomatic for the entire course of their infection. 
   for(i in 1:N_days_tot) {
     new_asy_dx[i] = dot_product(new_inf[idx1[i]:i] .* p_diag_if_asy[idx1[i]:i], 
-      asy_rec_delay_rv[idx2[i]:Max_delay]) * (1-p_sym_if_inft[i]);
+      asy_rec_delay_rv[idx2[i]:Max_delay]) * (1-p_sym_if_inf);
   }
   
 // diagnosed at symptomatic
@@ -374,7 +370,7 @@ transformed parameters {
 // at symptomatic eventually die 
   for(i in 1:N_days_tot) {
     dx_sym_sev[i] = dot_product(new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i],
-      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_symt[i];
+      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_sym;
   }
         
   for(i in 1:N_days_tot) {
@@ -453,6 +449,7 @@ model {
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
+  ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
   // overall infection fatality rate
   p_die_if_inf         ~ beta(pri_p_die_if_inf_a, pri_p_die_if_inf_b);
 // DIAGNOSIS    
