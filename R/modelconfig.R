@@ -103,9 +103,9 @@ modelconfig_add.input <- function(rightside, leftside) {
   )
 
   # Assign the results of the call to the `cfg` object
-  cfg$ifr_adj   = ifr_adjustments$ifr_adj
-  cfg$ifr_adj2  = ifr_adjustments$ifr_adj2
-  cfg$N_ifr_adj = ifr_adjustments$N_ifr_adj
+  cfg$ifr_adj       = ifr_adjustments$ifr_adj
+  cfg$ifr_adj_fixed = ifr_adjustments$ifr_adj_fixed
+  cfg$N_ifr_adj     = ifr_adjustments$N_ifr_adj
 
   structure(cfg, class = "modelconfig")
 }
