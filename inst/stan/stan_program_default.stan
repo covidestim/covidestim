@@ -164,6 +164,14 @@ for(i in 1:N_days_tot) {
       die_rep_delay_rate)
       - gamma_cdf(i-1.0, die_rep_delay_shap, die_rep_delay_rate);
   }
+  
+ // Make sure sum to 1
+  inf_prg_delay_rv = inf_prg_delay_rv/sum(inf_prg_delay_rv);
+  asy_rec_delay_rv = asy_rec_delay_rv/sum(asy_rec_delay_rv);
+  sym_prg_delay_rv = sym_prg_delay_rv/sum(sym_prg_delay_rv);
+  sev_prg_delay_rv = sev_prg_delay_rv/sum(sev_prg_delay_rv);
+  cas_rep_delay_rv = cas_rep_delay_rv/sum(cas_rep_delay_rv);
+  die_rep_delay_rv = die_rep_delay_rv/sum(die_rep_delay_rv);
 
 // Cumulative reporting probability
   for(i in 1:N_days_tot) {

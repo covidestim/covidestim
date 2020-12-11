@@ -172,8 +172,8 @@ genData <- function(N_days, N_days_before = 28,
     #n days to model before start of data
     N_days_before = as.integer(N_days_before),
     
-    #max delay to allow the model to consider. 60 is recommended. 
-    Max_delay = 60, 
+    #max delay to allow the model to consider. 30 is recommended. 
+    Max_delay = 30, 
 
     # moving average for likelihood function 
     N_days_av = N_days_av,
