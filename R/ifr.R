@@ -28,8 +28,7 @@ get_ifr_raw <- function(region) {
   else
     stop("`region` was neither a state name or a character FIPS code")
 
-  successful_state_find <- function(candidate)
-    !identical(candidate, FALSE) && ncol(candidate == 2)
+  successful_state_find <- function(candidate) is.numeric(candidate)
 
   if (!successful_state_find(found_state))
     stop(glue::glue("Could not find state-level IFR data for region {region}!"))
@@ -39,12 +38,15 @@ get_ifr_raw <- function(region) {
 
   found_county <- dplyr::filter(ifr_county, fips == region)
 
+  if (nrow(found_county) > 1)
+    stop(glue::glue("Expected `found_county` to be scalar, but matched more than 1 row"))
+
   # Check to be sure we found county IFR data
   if (nrow(found_county) == 0)
     stop(glue::glue("Could not find county-level IFR information for county {region}"))
 
   # Multiply the enclosing state's `value` column by the `comorb_OR` scalar
-  mutate(found_state, value = value * found_county$ifr_OR)
+  found_state * found_county$ifr_OR
 }
 
 gen_ifr_adjustments <- function(first_date, N_days_before, region) {
