@@ -46,6 +46,14 @@
 #'
 #'     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of the effective 
 #'     reproductive number (Rt), with 95\% CIs.
+#'     
+#'     \item \code{sero.positive}, \code{sero.positive.lo}, 
+#'     \code{sero.positive.hi}: Estimate of the number of individuals sero-
+#'     positive, with 95\% CIs.
+#'     
+#'     \item \code{pop.infectiousness}, \code{pop.infectiousness.lo}, 
+#'     \code{pop.infectiousness.hi}: Estimate of the relative level of viral 
+#'     shedding in the community, with 95\% CIs.
 #'
 #'     \item \code{index}
 #'   }
@@ -72,7 +80,9 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "new_die"              = "deaths",
     "new_die_dx"           = "deaths.diagnosed",
     "diag_cases"           = "symptomatic.diagnosed", 
-    "diag_all"             = "diagnoses"
+    "diag_all"             = "diagnoses",
+    "sero_positive"        = "sero.positive",
+    "pop_infectiousness"   = "pop.infectiousness",
   ) -> params
 
   # Used for renaming quantiles output by Stan

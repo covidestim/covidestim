@@ -13,6 +13,11 @@ data {
   real<lower=0>          pri_ifr_decl_OR_a; 
   real<lower=0>          pri_ifr_decl_OR_b;
   real<lower=0>          ifr_adj_fixed;
+  
+  real<lower=0>          infect_dist_rate;
+  real<lower=0>          infect_dist_shap;
+  real<lower=0>          seropos_dist_rate;
+  real<lower=0>          seropos_dist_shap;
 
   // terms for splines
   // spline parameters and bases
@@ -511,15 +516,56 @@ model {
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
-  // calculate cumulative incidence as the cumunlative sum of 
-  // 'true' incident cases
+  // calculate cumulative incidence + sero_positive + pop_infectiousness
+  int                 idx1b[N_days_tot];
+  int                 idx2b[N_days_tot];
   real                p_die_if_sym;
   vector[N_days_tot]  diag_cases;  
   vector[N_days_tot]  cumulative_incidence;  
+  vector[N_days_tot]  sero_positive;  
+  vector[N_days_tot]  pop_infectiousness;  
+  vector[Max_delay]   infect_dist_rv;
+  vector[500]         seropos_dist_rv;
+
+  // Indexes for convolutions (longer than max-delay)
+  for(i in 1:N_days_tot) {
+    if(i-500>0){
+      idx1b[i] = i-500+1;
+      idx2b[i] = 1;
+   } else {
+     idx1b[i] = 1;
+     idx2b[i] = 500-i+1;
+   }
+ }
   
+// cumulative incidence
   cumulative_incidence = cumulative_sum(new_inf); 
   p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
   diag_cases = new_sym_dx + new_sev_dx; 
-
+  
+   // vector to distribute infectiousness
+  for(i in 1:Max_delay) {
+    infect_dist_rv[1+Max_delay-i] = gamma_cdf(i+0.0, infect_dist_shap, 
+      infect_dist_rate) - gamma_cdf(i-1.0, infect_dist_shap, infect_dist_rate);
+  }
+  
+// vector to distribute infectiousness seropositives
+  for(i in 1:500) {
+    seropos_dist_rv[1+500-i] = 1.0 - gamma_cdf(i+0.0, seropos_dist_shap, 
+      seropos_dist_rate);
+  }
+  
+// infectiousness
+  for(i in 1:N_days_tot) {
+    pop_infectiousness[i] = dot_product(new_inf[idx1[i]:i],
+      infect_dist_rv[idx2[i]:Max_delay]);
+  }
+  
+  // sero-posotoves
+  for(i in 1:N_days_tot) {
+    sero_positive[i] = dot_product(new_inf[idx1b[i]:i],
+      seropos_dist_rv[idx2b[i]:500]);
+  }
+  
 }
 
