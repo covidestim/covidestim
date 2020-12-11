@@ -14,7 +14,8 @@ covidestim(
   seed = 42,
   adapt_delta = 0.92,
   max_treedepth = 12,
-  window.length = 5
+  window.length = 5,
+  region
 )
 }
 \arguments{
@@ -37,6 +38,9 @@ being modelled? This sets the max susceptible population}
 passed to \code{\link[rstan]{sampling}}.}
 
 \item{seed}{A number. The random number generator seed for use in sampling.}
+
+\item{region}{A string. The FIPS code (for U.S. counties) or state name
+(e.g. \code{New York}) being modeled. Required.}
 }
 \value{
 An S3 object of type \code{covidestim}. This can be passed to 
