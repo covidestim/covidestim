@@ -148,8 +148,8 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b 
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
                                p_die_if_sev = c(28.239, 162.30),    # a/b
-                               p_die_if_inf = ifr_prior,            # a/b
-                               ifr_decl_OR  = c(9.1357, 29.339)      # a/b this is actually a gamma distribution!!
+                               p_die_if_inf = c(15.915,3167.1),     # a/b
+                               ifr_decl_OR  = c(9.1357, 29.339)     # a/b this is actually a gamma distribution!!
                                ) {                                 
 
   att(length(p_sym_if_inf) == 2)
