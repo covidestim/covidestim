@@ -53,6 +53,14 @@ A \code{data.frame} with the following variables:
 
     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of the effective 
     reproductive number (Rt), with 95\% CIs.
+    
+    \item \code{sero.positive}, \code{sero.positive.lo}, 
+    \code{sero.positive.hi}: Estimate of the number of individuals sero-
+    positive, with 95\% CIs.
+    
+    \item \code{pop.infectiousness}, \code{pop.infectiousness.lo}, 
+    \code{pop.infectiousness.hi}: Estimate of the relative level of viral 
+    shedding in the community, with 95\% CIs.
 
     \item \code{index}
   }
