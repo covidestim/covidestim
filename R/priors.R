@@ -148,8 +148,8 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b 
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
                                p_die_if_sev = c(28.239, 162.30),    # a/b
-                               p_die_if_inf = ifr_prior,            # a/b
-                               ifr_decl_OR  = c(9.1357, 29.339)      # a/b this is actually a gamma distribution!!
+                               p_die_if_inf = c(15.915,3167.1),     # a/b
+                               ifr_decl_OR  = c(9.1357, 29.339)     # a/b this is actually a gamma distribution!!
                                ) {                                 
 
   att(length(p_sym_if_inf) == 2)
@@ -208,6 +208,14 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
 #'    \code{c(shape,rate)} parameters of a Gamma distribution modeling the 
 #'    serial interval, the average time between successive cases. 
 #' 
+#' @param infect_dist A two-element numeric vector containing 
+#'    \code{c(shape,rate)} parameters of a Gamma distribution modeling the 
+#'    changes of infectiousness, following initial infection.
+#'    
+#' @param seropos_dist A two-element numeric vector containing 
+#'    \code{c(shape,rate)} parameters of a Gamma distribution modeling the 
+#'    time to seroreversion, following initial infection. 
+#' 
 #' @return An S3 object of class \code{priors}
 #' @examples
 #' cfg <- covidestim(ndays = 50) + priors_progression(inf_prg_delay = c(4, 1))
@@ -215,27 +223,34 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
 priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
                                sym_prg_delay = c(1.624, 0.2175), # shap/rate 
                                sev_prg_delay = c(2.061, 0.2277),  # shap/rate
-                               asy_rec_delay = c(14   , 2     ),         # shap/rate 
-                               pri_serial_i  = c(129.1, 22.25 ) ) {   # shap/rate 
-  
+                               asy_rec_delay = c(14   , 2     ),  # shap/rate 
+                               pri_serial_i  = c(129.1, 22.25 ),  # shap/rate 
+                               infect_dist   = c(8    , 1.241 ),  # shap/rate 
+                               seropos_dist  = c(4.41 , 0.042 ) ) {   # shap/rate 
 
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)
   att(length(sev_prg_delay) == 2)
   att(length(asy_rec_delay) == 2)
   att(length(pri_serial_i) == 2)
+  att(length(infect_dist) == 2)
+  att(length(seropos_dist) == 2)
   att(is_nonNegativeReal(inf_prg_delay))
   att(is_nonNegativeReal(sym_prg_delay))
   att(is_nonNegativeReal(sev_prg_delay))
   att(is_nonNegativeReal(asy_rec_delay))
   att(is_nonNegativeReal(pri_serial_i))
-
+  att(is_nonNegativeReal(infect_dist))
+  att(is_nonNegativeReal(seropos_dist))
+  
   build_priors(
     inf_prg_delay,
     sym_prg_delay,
     sev_prg_delay,
     asy_rec_delay,
     pri_serial_i,
+    infect_dist,
+    seropos_dist,
     .postfix=c("_shap", "_rate")
   ) -> ps
 
