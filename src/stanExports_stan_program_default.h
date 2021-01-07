@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_stan_program_default");
-    reader.add_event(518, 516, "end", "model_stan_program_default");
+    reader.add_event(580, 578, "end", "model_stan_program_default");
     return reader;
 }
 #include <stan_meta_header.hpp>
@@ -46,6 +46,15 @@ private:
         std::vector<int> obs_cas;
         std::vector<int> obs_die;
         double pop_size;
+        int N_ifr_adj;
+        vector_d ifr_adj;
+        double pri_ifr_decl_OR_a;
+        double pri_ifr_decl_OR_b;
+        double ifr_adj_fixed;
+        double infect_dist_rate;
+        double infect_dist_shap;
+        double seropos_dist_rate;
+        double seropos_dist_shap;
         int N_spl_par_rt;
         matrix_d spl_basis_rt;
         int N_spl_par_dx;
@@ -194,14 +203,81 @@ public:
             pos__ = 0;
             pop_size = vals_r__[pos__++];
             check_greater_or_equal(function__, "pop_size", pop_size, 0);
+            current_statement_begin__ = 11;
+            context__.validate_dims("data initialization", "N_ifr_adj", "int", context__.to_vec());
+            N_ifr_adj = int(0);
+            vals_i__ = context__.vals_i("N_ifr_adj");
+            pos__ = 0;
+            N_ifr_adj = vals_i__[pos__++];
+            check_greater_or_equal(function__, "N_ifr_adj", N_ifr_adj, 0);
+            current_statement_begin__ = 12;
+            validate_non_negative_index("ifr_adj", "N_ifr_adj", N_ifr_adj);
+            context__.validate_dims("data initialization", "ifr_adj", "vector_d", context__.to_vec(N_ifr_adj));
+            ifr_adj = Eigen::Matrix<double, Eigen::Dynamic, 1>(N_ifr_adj);
+            vals_r__ = context__.vals_r("ifr_adj");
+            pos__ = 0;
+            size_t ifr_adj_j_1_max__ = N_ifr_adj;
+            for (size_t j_1__ = 0; j_1__ < ifr_adj_j_1_max__; ++j_1__) {
+                ifr_adj(j_1__) = vals_r__[pos__++];
+            }
+            check_greater_or_equal(function__, "ifr_adj", ifr_adj, 0);
             current_statement_begin__ = 13;
+            context__.validate_dims("data initialization", "pri_ifr_decl_OR_a", "double", context__.to_vec());
+            pri_ifr_decl_OR_a = double(0);
+            vals_r__ = context__.vals_r("pri_ifr_decl_OR_a");
+            pos__ = 0;
+            pri_ifr_decl_OR_a = vals_r__[pos__++];
+            check_greater_or_equal(function__, "pri_ifr_decl_OR_a", pri_ifr_decl_OR_a, 0);
+            current_statement_begin__ = 14;
+            context__.validate_dims("data initialization", "pri_ifr_decl_OR_b", "double", context__.to_vec());
+            pri_ifr_decl_OR_b = double(0);
+            vals_r__ = context__.vals_r("pri_ifr_decl_OR_b");
+            pos__ = 0;
+            pri_ifr_decl_OR_b = vals_r__[pos__++];
+            check_greater_or_equal(function__, "pri_ifr_decl_OR_b", pri_ifr_decl_OR_b, 0);
+            current_statement_begin__ = 15;
+            context__.validate_dims("data initialization", "ifr_adj_fixed", "double", context__.to_vec());
+            ifr_adj_fixed = double(0);
+            vals_r__ = context__.vals_r("ifr_adj_fixed");
+            pos__ = 0;
+            ifr_adj_fixed = vals_r__[pos__++];
+            check_greater_or_equal(function__, "ifr_adj_fixed", ifr_adj_fixed, 0);
+            current_statement_begin__ = 17;
+            context__.validate_dims("data initialization", "infect_dist_rate", "double", context__.to_vec());
+            infect_dist_rate = double(0);
+            vals_r__ = context__.vals_r("infect_dist_rate");
+            pos__ = 0;
+            infect_dist_rate = vals_r__[pos__++];
+            check_greater_or_equal(function__, "infect_dist_rate", infect_dist_rate, 0);
+            current_statement_begin__ = 18;
+            context__.validate_dims("data initialization", "infect_dist_shap", "double", context__.to_vec());
+            infect_dist_shap = double(0);
+            vals_r__ = context__.vals_r("infect_dist_shap");
+            pos__ = 0;
+            infect_dist_shap = vals_r__[pos__++];
+            check_greater_or_equal(function__, "infect_dist_shap", infect_dist_shap, 0);
+            current_statement_begin__ = 19;
+            context__.validate_dims("data initialization", "seropos_dist_rate", "double", context__.to_vec());
+            seropos_dist_rate = double(0);
+            vals_r__ = context__.vals_r("seropos_dist_rate");
+            pos__ = 0;
+            seropos_dist_rate = vals_r__[pos__++];
+            check_greater_or_equal(function__, "seropos_dist_rate", seropos_dist_rate, 0);
+            current_statement_begin__ = 20;
+            context__.validate_dims("data initialization", "seropos_dist_shap", "double", context__.to_vec());
+            seropos_dist_shap = double(0);
+            vals_r__ = context__.vals_r("seropos_dist_shap");
+            pos__ = 0;
+            seropos_dist_shap = vals_r__[pos__++];
+            check_greater_or_equal(function__, "seropos_dist_shap", seropos_dist_shap, 0);
+            current_statement_begin__ = 24;
             context__.validate_dims("data initialization", "N_spl_par_rt", "int", context__.to_vec());
             N_spl_par_rt = int(0);
             vals_i__ = context__.vals_i("N_spl_par_rt");
             pos__ = 0;
             N_spl_par_rt = vals_i__[pos__++];
             check_greater_or_equal(function__, "N_spl_par_rt", N_spl_par_rt, 0);
-            current_statement_begin__ = 14;
+            current_statement_begin__ = 25;
             validate_non_negative_index("spl_basis_rt", "(N_days + N_days_before)", (N_days + N_days_before));
             validate_non_negative_index("spl_basis_rt", "N_spl_par_rt", N_spl_par_rt);
             context__.validate_dims("data initialization", "spl_basis_rt", "matrix_d", context__.to_vec((N_days + N_days_before),N_spl_par_rt));
@@ -215,14 +291,14 @@ public:
                     spl_basis_rt(j_1__, j_2__) = vals_r__[pos__++];
                 }
             }
-            current_statement_begin__ = 15;
+            current_statement_begin__ = 26;
             context__.validate_dims("data initialization", "N_spl_par_dx", "int", context__.to_vec());
             N_spl_par_dx = int(0);
             vals_i__ = context__.vals_i("N_spl_par_dx");
             pos__ = 0;
             N_spl_par_dx = vals_i__[pos__++];
             check_greater_or_equal(function__, "N_spl_par_dx", N_spl_par_dx, 0);
-            current_statement_begin__ = 16;
+            current_statement_begin__ = 27;
             validate_non_negative_index("spl_basis_dx", "(N_days + N_days_before)", (N_days + N_days_before));
             validate_non_negative_index("spl_basis_dx", "N_spl_par_dx", N_spl_par_dx);
             context__.validate_dims("data initialization", "spl_basis_dx", "matrix_d", context__.to_vec((N_days + N_days_before),N_spl_par_dx));
@@ -236,91 +312,91 @@ public:
                     spl_basis_dx(j_1__, j_2__) = vals_r__[pos__++];
                 }
             }
-            current_statement_begin__ = 20;
+            current_statement_begin__ = 31;
             context__.validate_dims("data initialization", "inf_prg_delay_shap", "double", context__.to_vec());
             inf_prg_delay_shap = double(0);
             vals_r__ = context__.vals_r("inf_prg_delay_shap");
             pos__ = 0;
             inf_prg_delay_shap = vals_r__[pos__++];
             check_greater_or_equal(function__, "inf_prg_delay_shap", inf_prg_delay_shap, 0);
-            current_statement_begin__ = 21;
+            current_statement_begin__ = 32;
             context__.validate_dims("data initialization", "inf_prg_delay_rate", "double", context__.to_vec());
             inf_prg_delay_rate = double(0);
             vals_r__ = context__.vals_r("inf_prg_delay_rate");
             pos__ = 0;
             inf_prg_delay_rate = vals_r__[pos__++];
             check_greater_or_equal(function__, "inf_prg_delay_rate", inf_prg_delay_rate, 0);
-            current_statement_begin__ = 22;
+            current_statement_begin__ = 33;
             context__.validate_dims("data initialization", "asy_rec_delay_shap", "double", context__.to_vec());
             asy_rec_delay_shap = double(0);
             vals_r__ = context__.vals_r("asy_rec_delay_shap");
             pos__ = 0;
             asy_rec_delay_shap = vals_r__[pos__++];
             check_greater_or_equal(function__, "asy_rec_delay_shap", asy_rec_delay_shap, 0);
-            current_statement_begin__ = 23;
+            current_statement_begin__ = 34;
             context__.validate_dims("data initialization", "asy_rec_delay_rate", "double", context__.to_vec());
             asy_rec_delay_rate = double(0);
             vals_r__ = context__.vals_r("asy_rec_delay_rate");
             pos__ = 0;
             asy_rec_delay_rate = vals_r__[pos__++];
             check_greater_or_equal(function__, "asy_rec_delay_rate", asy_rec_delay_rate, 0);
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 35;
             context__.validate_dims("data initialization", "sym_prg_delay_shap", "double", context__.to_vec());
             sym_prg_delay_shap = double(0);
             vals_r__ = context__.vals_r("sym_prg_delay_shap");
             pos__ = 0;
             sym_prg_delay_shap = vals_r__[pos__++];
             check_greater_or_equal(function__, "sym_prg_delay_shap", sym_prg_delay_shap, 0);
-            current_statement_begin__ = 25;
+            current_statement_begin__ = 36;
             context__.validate_dims("data initialization", "sym_prg_delay_rate", "double", context__.to_vec());
             sym_prg_delay_rate = double(0);
             vals_r__ = context__.vals_r("sym_prg_delay_rate");
             pos__ = 0;
             sym_prg_delay_rate = vals_r__[pos__++];
             check_greater_or_equal(function__, "sym_prg_delay_rate", sym_prg_delay_rate, 0);
-            current_statement_begin__ = 26;
+            current_statement_begin__ = 37;
             context__.validate_dims("data initialization", "sev_prg_delay_shap", "double", context__.to_vec());
             sev_prg_delay_shap = double(0);
             vals_r__ = context__.vals_r("sev_prg_delay_shap");
             pos__ = 0;
             sev_prg_delay_shap = vals_r__[pos__++];
             check_greater_or_equal(function__, "sev_prg_delay_shap", sev_prg_delay_shap, 0);
-            current_statement_begin__ = 27;
+            current_statement_begin__ = 38;
             context__.validate_dims("data initialization", "sev_prg_delay_rate", "double", context__.to_vec());
             sev_prg_delay_rate = double(0);
             vals_r__ = context__.vals_r("sev_prg_delay_rate");
             pos__ = 0;
             sev_prg_delay_rate = vals_r__[pos__++];
             check_greater_or_equal(function__, "sev_prg_delay_rate", sev_prg_delay_rate, 0);
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 40;
             context__.validate_dims("data initialization", "cas_rep_delay_shap", "double", context__.to_vec());
             cas_rep_delay_shap = double(0);
             vals_r__ = context__.vals_r("cas_rep_delay_shap");
             pos__ = 0;
             cas_rep_delay_shap = vals_r__[pos__++];
             check_greater_or_equal(function__, "cas_rep_delay_shap", cas_rep_delay_shap, 0);
-            current_statement_begin__ = 30;
+            current_statement_begin__ = 41;
             context__.validate_dims("data initialization", "cas_rep_delay_rate", "double", context__.to_vec());
             cas_rep_delay_rate = double(0);
             vals_r__ = context__.vals_r("cas_rep_delay_rate");
             pos__ = 0;
             cas_rep_delay_rate = vals_r__[pos__++];
             check_greater_or_equal(function__, "cas_rep_delay_rate", cas_rep_delay_rate, 0);
-            current_statement_begin__ = 31;
+            current_statement_begin__ = 42;
             context__.validate_dims("data initialization", "die_rep_delay_shap", "double", context__.to_vec());
             die_rep_delay_shap = double(0);
             vals_r__ = context__.vals_r("die_rep_delay_shap");
             pos__ = 0;
             die_rep_delay_shap = vals_r__[pos__++];
             check_greater_or_equal(function__, "die_rep_delay_shap", die_rep_delay_shap, 0);
-            current_statement_begin__ = 32;
+            current_statement_begin__ = 43;
             context__.validate_dims("data initialization", "die_rep_delay_rate", "double", context__.to_vec());
             die_rep_delay_rate = double(0);
             vals_r__ = context__.vals_r("die_rep_delay_rate");
             pos__ = 0;
             die_rep_delay_rate = vals_r__[pos__++];
             check_greater_or_equal(function__, "die_rep_delay_rate", die_rep_delay_rate, 0);
-            current_statement_begin__ = 36;
+            current_statement_begin__ = 47;
             context__.validate_dims("data initialization", "pre_period_zero", "int", context__.to_vec());
             pre_period_zero = int(0);
             vals_i__ = context__.vals_i("pre_period_zero");
@@ -328,7 +404,7 @@ public:
             pre_period_zero = vals_i__[pos__++];
             check_greater_or_equal(function__, "pre_period_zero", pre_period_zero, 0);
             check_less_or_equal(function__, "pre_period_zero", pre_period_zero, 1);
-            current_statement_begin__ = 39;
+            current_statement_begin__ = 50;
             context__.validate_dims("data initialization", "cas_yes", "int", context__.to_vec());
             cas_yes = int(0);
             vals_i__ = context__.vals_i("cas_yes");
@@ -336,7 +412,7 @@ public:
             cas_yes = vals_i__[pos__++];
             check_greater_or_equal(function__, "cas_yes", cas_yes, 0);
             check_less_or_equal(function__, "cas_yes", cas_yes, 1);
-            current_statement_begin__ = 40;
+            current_statement_begin__ = 51;
             context__.validate_dims("data initialization", "die_yes", "int", context__.to_vec());
             die_yes = int(0);
             vals_i__ = context__.vals_i("die_yes");
@@ -344,7 +420,7 @@ public:
             die_yes = vals_i__[pos__++];
             check_greater_or_equal(function__, "die_yes", die_yes, 0);
             check_less_or_equal(function__, "die_yes", die_yes, 1);
-            current_statement_begin__ = 42;
+            current_statement_begin__ = 53;
             context__.validate_dims("data initialization", "obs_cas_rep", "int", context__.to_vec());
             obs_cas_rep = int(0);
             vals_i__ = context__.vals_i("obs_cas_rep");
@@ -352,7 +428,7 @@ public:
             obs_cas_rep = vals_i__[pos__++];
             check_greater_or_equal(function__, "obs_cas_rep", obs_cas_rep, 0);
             check_less_or_equal(function__, "obs_cas_rep", obs_cas_rep, 1);
-            current_statement_begin__ = 43;
+            current_statement_begin__ = 54;
             context__.validate_dims("data initialization", "obs_die_rep", "int", context__.to_vec());
             obs_die_rep = int(0);
             vals_i__ = context__.vals_i("obs_die_rep");
@@ -360,7 +436,7 @@ public:
             obs_die_rep = vals_i__[pos__++];
             check_greater_or_equal(function__, "obs_die_rep", obs_die_rep, 0);
             check_less_or_equal(function__, "obs_die_rep", obs_die_rep, 1);
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 57;
             context__.validate_dims("data initialization", "N_days_av", "int", context__.to_vec());
             N_days_av = int(0);
             vals_i__ = context__.vals_i("N_days_av");
@@ -368,193 +444,193 @@ public:
             N_days_av = vals_i__[pos__++];
             check_greater_or_equal(function__, "N_days_av", N_days_av, 1);
             check_less_or_equal(function__, "N_days_av", N_days_av, 10);
-            current_statement_begin__ = 51;
+            current_statement_begin__ = 62;
             context__.validate_dims("data initialization", "pri_log_new_inf_0_mu", "double", context__.to_vec());
             pri_log_new_inf_0_mu = double(0);
             vals_r__ = context__.vals_r("pri_log_new_inf_0_mu");
             pos__ = 0;
             pri_log_new_inf_0_mu = vals_r__[pos__++];
-            current_statement_begin__ = 52;
+            current_statement_begin__ = 63;
             context__.validate_dims("data initialization", "pri_log_new_inf_0_sd", "double", context__.to_vec());
             pri_log_new_inf_0_sd = double(0);
             vals_r__ = context__.vals_r("pri_log_new_inf_0_sd");
             pos__ = 0;
             pri_log_new_inf_0_sd = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_log_new_inf_0_sd", pri_log_new_inf_0_sd, 0);
-            current_statement_begin__ = 53;
+            current_statement_begin__ = 64;
             context__.validate_dims("data initialization", "pri_logRt_mu", "double", context__.to_vec());
             pri_logRt_mu = double(0);
             vals_r__ = context__.vals_r("pri_logRt_mu");
             pos__ = 0;
             pri_logRt_mu = vals_r__[pos__++];
-            current_statement_begin__ = 54;
+            current_statement_begin__ = 65;
             context__.validate_dims("data initialization", "pri_logRt_sd", "double", context__.to_vec());
             pri_logRt_sd = double(0);
             vals_r__ = context__.vals_r("pri_logRt_sd");
             pos__ = 0;
             pri_logRt_sd = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_logRt_sd", pri_logRt_sd, 0);
-            current_statement_begin__ = 55;
+            current_statement_begin__ = 66;
             context__.validate_dims("data initialization", "pri_serial_i_shap", "double", context__.to_vec());
             pri_serial_i_shap = double(0);
             vals_r__ = context__.vals_r("pri_serial_i_shap");
             pos__ = 0;
             pri_serial_i_shap = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_serial_i_shap", pri_serial_i_shap, 0);
-            current_statement_begin__ = 56;
+            current_statement_begin__ = 67;
             context__.validate_dims("data initialization", "pri_serial_i_rate", "double", context__.to_vec());
             pri_serial_i_rate = double(0);
             vals_r__ = context__.vals_r("pri_serial_i_rate");
             pos__ = 0;
             pri_serial_i_rate = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_serial_i_rate", pri_serial_i_rate, 0);
-            current_statement_begin__ = 57;
+            current_statement_begin__ = 68;
             context__.validate_dims("data initialization", "pri_inf_imported_mu", "double", context__.to_vec());
             pri_inf_imported_mu = double(0);
             vals_r__ = context__.vals_r("pri_inf_imported_mu");
             pos__ = 0;
             pri_inf_imported_mu = vals_r__[pos__++];
-            current_statement_begin__ = 58;
+            current_statement_begin__ = 69;
             context__.validate_dims("data initialization", "pri_inf_imported_sd", "double", context__.to_vec());
             pri_inf_imported_sd = double(0);
             vals_r__ = context__.vals_r("pri_inf_imported_sd");
             pos__ = 0;
             pri_inf_imported_sd = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_inf_imported_sd", pri_inf_imported_sd, 0);
-            current_statement_begin__ = 59;
+            current_statement_begin__ = 70;
             context__.validate_dims("data initialization", "pri_deriv1_spl_par_sd", "double", context__.to_vec());
             pri_deriv1_spl_par_sd = double(0);
             vals_r__ = context__.vals_r("pri_deriv1_spl_par_sd");
             pos__ = 0;
             pri_deriv1_spl_par_sd = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_deriv1_spl_par_sd", pri_deriv1_spl_par_sd, 0);
-            current_statement_begin__ = 60;
+            current_statement_begin__ = 71;
             context__.validate_dims("data initialization", "pri_deriv2_spl_par_sd", "double", context__.to_vec());
             pri_deriv2_spl_par_sd = double(0);
             vals_r__ = context__.vals_r("pri_deriv2_spl_par_sd");
             pos__ = 0;
             pri_deriv2_spl_par_sd = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_deriv2_spl_par_sd", pri_deriv2_spl_par_sd, 0);
-            current_statement_begin__ = 63;
+            current_statement_begin__ = 74;
             context__.validate_dims("data initialization", "pri_p_sym_if_inf_a", "double", context__.to_vec());
             pri_p_sym_if_inf_a = double(0);
             vals_r__ = context__.vals_r("pri_p_sym_if_inf_a");
             pos__ = 0;
             pri_p_sym_if_inf_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_sym_if_inf_a", pri_p_sym_if_inf_a, 0);
-            current_statement_begin__ = 64;
+            current_statement_begin__ = 75;
             context__.validate_dims("data initialization", "pri_p_sym_if_inf_b", "double", context__.to_vec());
             pri_p_sym_if_inf_b = double(0);
             vals_r__ = context__.vals_r("pri_p_sym_if_inf_b");
             pos__ = 0;
             pri_p_sym_if_inf_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_sym_if_inf_b", pri_p_sym_if_inf_b, 0);
-            current_statement_begin__ = 65;
+            current_statement_begin__ = 76;
             context__.validate_dims("data initialization", "pri_p_sev_if_sym_a", "double", context__.to_vec());
             pri_p_sev_if_sym_a = double(0);
             vals_r__ = context__.vals_r("pri_p_sev_if_sym_a");
             pos__ = 0;
             pri_p_sev_if_sym_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_sev_if_sym_a", pri_p_sev_if_sym_a, 0);
-            current_statement_begin__ = 66;
+            current_statement_begin__ = 77;
             context__.validate_dims("data initialization", "pri_p_sev_if_sym_b", "double", context__.to_vec());
             pri_p_sev_if_sym_b = double(0);
             vals_r__ = context__.vals_r("pri_p_sev_if_sym_b");
             pos__ = 0;
             pri_p_sev_if_sym_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_sev_if_sym_b", pri_p_sev_if_sym_b, 0);
-            current_statement_begin__ = 67;
+            current_statement_begin__ = 78;
             context__.validate_dims("data initialization", "pri_p_die_if_sev_a", "double", context__.to_vec());
             pri_p_die_if_sev_a = double(0);
             vals_r__ = context__.vals_r("pri_p_die_if_sev_a");
             pos__ = 0;
             pri_p_die_if_sev_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_die_if_sev_a", pri_p_die_if_sev_a, 0);
-            current_statement_begin__ = 68;
+            current_statement_begin__ = 79;
             context__.validate_dims("data initialization", "pri_p_die_if_sev_b", "double", context__.to_vec());
             pri_p_die_if_sev_b = double(0);
             vals_r__ = context__.vals_r("pri_p_die_if_sev_b");
             pos__ = 0;
             pri_p_die_if_sev_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_die_if_sev_b", pri_p_die_if_sev_b, 0);
-            current_statement_begin__ = 70;
+            current_statement_begin__ = 81;
             context__.validate_dims("data initialization", "pri_p_die_if_inf_a", "double", context__.to_vec());
             pri_p_die_if_inf_a = double(0);
             vals_r__ = context__.vals_r("pri_p_die_if_inf_a");
             pos__ = 0;
             pri_p_die_if_inf_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_die_if_inf_a", pri_p_die_if_inf_a, 0);
-            current_statement_begin__ = 71;
+            current_statement_begin__ = 82;
             context__.validate_dims("data initialization", "pri_p_die_if_inf_b", "double", context__.to_vec());
             pri_p_die_if_inf_b = double(0);
             vals_r__ = context__.vals_r("pri_p_die_if_inf_b");
             pos__ = 0;
             pri_p_die_if_inf_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_die_if_inf_b", pri_p_die_if_inf_b, 0);
-            current_statement_begin__ = 74;
+            current_statement_begin__ = 85;
             context__.validate_dims("data initialization", "pri_rr_diag_asy_vs_sym_a", "double", context__.to_vec());
             pri_rr_diag_asy_vs_sym_a = double(0);
             vals_r__ = context__.vals_r("pri_rr_diag_asy_vs_sym_a");
             pos__ = 0;
             pri_rr_diag_asy_vs_sym_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_rr_diag_asy_vs_sym_a", pri_rr_diag_asy_vs_sym_a, 0);
-            current_statement_begin__ = 75;
+            current_statement_begin__ = 86;
             context__.validate_dims("data initialization", "pri_rr_diag_asy_vs_sym_b", "double", context__.to_vec());
             pri_rr_diag_asy_vs_sym_b = double(0);
             vals_r__ = context__.vals_r("pri_rr_diag_asy_vs_sym_b");
             pos__ = 0;
             pri_rr_diag_asy_vs_sym_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_rr_diag_asy_vs_sym_b", pri_rr_diag_asy_vs_sym_b, 0);
-            current_statement_begin__ = 77;
+            current_statement_begin__ = 88;
             context__.validate_dims("data initialization", "pri_rr_diag_sym_vs_sev_a", "double", context__.to_vec());
             pri_rr_diag_sym_vs_sev_a = double(0);
             vals_r__ = context__.vals_r("pri_rr_diag_sym_vs_sev_a");
             pos__ = 0;
             pri_rr_diag_sym_vs_sev_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_rr_diag_sym_vs_sev_a", pri_rr_diag_sym_vs_sev_a, 0);
-            current_statement_begin__ = 78;
+            current_statement_begin__ = 89;
             context__.validate_dims("data initialization", "pri_rr_diag_sym_vs_sev_b", "double", context__.to_vec());
             pri_rr_diag_sym_vs_sev_b = double(0);
             vals_r__ = context__.vals_r("pri_rr_diag_sym_vs_sev_b");
             pos__ = 0;
             pri_rr_diag_sym_vs_sev_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_rr_diag_sym_vs_sev_b", pri_rr_diag_sym_vs_sev_b, 0);
-            current_statement_begin__ = 80;
+            current_statement_begin__ = 91;
             context__.validate_dims("data initialization", "pri_p_diag_if_sev_a", "double", context__.to_vec());
             pri_p_diag_if_sev_a = double(0);
             vals_r__ = context__.vals_r("pri_p_diag_if_sev_a");
             pos__ = 0;
             pri_p_diag_if_sev_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_diag_if_sev_a", pri_p_diag_if_sev_a, 0);
-            current_statement_begin__ = 81;
+            current_statement_begin__ = 92;
             context__.validate_dims("data initialization", "pri_p_diag_if_sev_b", "double", context__.to_vec());
             pri_p_diag_if_sev_b = double(0);
             vals_r__ = context__.vals_r("pri_p_diag_if_sev_b");
             pos__ = 0;
             pri_p_diag_if_sev_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "pri_p_diag_if_sev_b", pri_p_diag_if_sev_b, 0);
-            current_statement_begin__ = 84;
+            current_statement_begin__ = 95;
             context__.validate_dims("data initialization", "scale_dx_delay_sym_a", "double", context__.to_vec());
             scale_dx_delay_sym_a = double(0);
             vals_r__ = context__.vals_r("scale_dx_delay_sym_a");
             pos__ = 0;
             scale_dx_delay_sym_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "scale_dx_delay_sym_a", scale_dx_delay_sym_a, 0);
-            current_statement_begin__ = 85;
+            current_statement_begin__ = 96;
             context__.validate_dims("data initialization", "scale_dx_delay_sym_b", "double", context__.to_vec());
             scale_dx_delay_sym_b = double(0);
             vals_r__ = context__.vals_r("scale_dx_delay_sym_b");
             pos__ = 0;
             scale_dx_delay_sym_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "scale_dx_delay_sym_b", scale_dx_delay_sym_b, 0);
-            current_statement_begin__ = 86;
+            current_statement_begin__ = 97;
             context__.validate_dims("data initialization", "scale_dx_delay_sev_a", "double", context__.to_vec());
             scale_dx_delay_sev_a = double(0);
             vals_r__ = context__.vals_r("scale_dx_delay_sev_a");
             pos__ = 0;
             scale_dx_delay_sev_a = vals_r__[pos__++];
             check_greater_or_equal(function__, "scale_dx_delay_sev_a", scale_dx_delay_sev_a, 0);
-            current_statement_begin__ = 87;
+            current_statement_begin__ = 98;
             context__.validate_dims("data initialization", "scale_dx_delay_sev_b", "double", context__.to_vec());
             scale_dx_delay_sev_b = double(0);
             vals_r__ = context__.vals_r("scale_dx_delay_sev_b");
@@ -562,141 +638,153 @@ public:
             scale_dx_delay_sev_b = vals_r__[pos__++];
             check_greater_or_equal(function__, "scale_dx_delay_sev_b", scale_dx_delay_sev_b, 0);
             // initialize transformed data variables
-            current_statement_begin__ = 92;
+            current_statement_begin__ = 103;
             N_days_tot = int(0);
             stan::math::fill(N_days_tot, std::numeric_limits<int>::min());
-            current_statement_begin__ = 93;
+            current_statement_begin__ = 104;
             nda0 = int(0);
             stan::math::fill(nda0, std::numeric_limits<int>::min());
-            current_statement_begin__ = 94;
+            current_statement_begin__ = 105;
             validate_non_negative_index("idx1", "(N_days + N_days_before)", (N_days + N_days_before));
             idx1 = std::vector<int>((N_days + N_days_before), int(0));
             stan::math::fill(idx1, std::numeric_limits<int>::min());
-            current_statement_begin__ = 95;
+            current_statement_begin__ = 106;
             validate_non_negative_index("idx2", "(N_days + N_days_before)", (N_days + N_days_before));
             idx2 = std::vector<int>((N_days + N_days_before), int(0));
             stan::math::fill(idx2, std::numeric_limits<int>::min());
-            current_statement_begin__ = 98;
+            current_statement_begin__ = 109;
             validate_non_negative_index("inf_prg_delay_rv", "Max_delay", Max_delay);
             inf_prg_delay_rv = Eigen::Matrix<double, Eigen::Dynamic, 1>(Max_delay);
             stan::math::fill(inf_prg_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 99;
+            current_statement_begin__ = 110;
             validate_non_negative_index("asy_rec_delay_rv", "Max_delay", Max_delay);
             asy_rec_delay_rv = Eigen::Matrix<double, Eigen::Dynamic, 1>(Max_delay);
             stan::math::fill(asy_rec_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 100;
+            current_statement_begin__ = 111;
             validate_non_negative_index("sym_prg_delay_rv", "Max_delay", Max_delay);
             sym_prg_delay_rv = Eigen::Matrix<double, Eigen::Dynamic, 1>(Max_delay);
             stan::math::fill(sym_prg_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 101;
+            current_statement_begin__ = 112;
             validate_non_negative_index("sev_prg_delay_rv", "Max_delay", Max_delay);
             sev_prg_delay_rv = Eigen::Matrix<double, Eigen::Dynamic, 1>(Max_delay);
             stan::math::fill(sev_prg_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 103;
+            current_statement_begin__ = 114;
             validate_non_negative_index("cas_rep_delay_rv", "Max_delay", Max_delay);
             cas_rep_delay_rv = Eigen::Matrix<double, Eigen::Dynamic, 1>(Max_delay);
             stan::math::fill(cas_rep_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 104;
+            current_statement_begin__ = 115;
             validate_non_negative_index("die_rep_delay_rv", "Max_delay", Max_delay);
             die_rep_delay_rv = Eigen::Matrix<double, Eigen::Dynamic, 1>(Max_delay);
             stan::math::fill(die_rep_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 106;
+            current_statement_begin__ = 117;
             validate_non_negative_index("cas_cum_report_delay_rv", "(N_days + N_days_before)", (N_days + N_days_before));
             cas_cum_report_delay_rv = Eigen::Matrix<double, Eigen::Dynamic, 1>((N_days + N_days_before));
             stan::math::fill(cas_cum_report_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 107;
+            current_statement_begin__ = 118;
             validate_non_negative_index("die_cum_report_delay_rv", "(N_days + N_days_before)", (N_days + N_days_before));
             die_cum_report_delay_rv = Eigen::Matrix<double, Eigen::Dynamic, 1>((N_days + N_days_before));
             stan::math::fill(die_cum_report_delay_rv, DUMMY_VAR__);
             // execute transformed data statements
-            current_statement_begin__ = 110;
+            current_statement_begin__ = 121;
             stan::math::assign(nda0, (N_days_av - 1));
-            current_statement_begin__ = 114;
+            current_statement_begin__ = 125;
             stan::math::assign(N_days_tot, (N_days + N_days_before));
-            current_statement_begin__ = 117;
+            current_statement_begin__ = 128;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 118;
+                current_statement_begin__ = 129;
                 if (as_bool(logical_gt((i - Max_delay), 0))) {
-                    current_statement_begin__ = 119;
+                    current_statement_begin__ = 130;
                     stan::model::assign(idx1, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 ((i - Max_delay) + 1), 
                                 "assigning variable idx1");
-                    current_statement_begin__ = 120;
+                    current_statement_begin__ = 131;
                     stan::model::assign(idx2, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 1, 
                                 "assigning variable idx2");
                 } else {
-                    current_statement_begin__ = 122;
+                    current_statement_begin__ = 133;
                     stan::model::assign(idx1, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 1, 
                                 "assigning variable idx1");
-                    current_statement_begin__ = 123;
+                    current_statement_begin__ = 134;
                     stan::model::assign(idx2, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 ((Max_delay - i) + 1), 
                                 "assigning variable idx2");
                 }
             }
-            current_statement_begin__ = 129;
+            current_statement_begin__ = 140;
             for (int i = 1; i <= Max_delay; ++i) {
-                current_statement_begin__ = 130;
+                current_statement_begin__ = 141;
                 stan::model::assign(inf_prg_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), inf_prg_delay_shap, inf_prg_delay_rate) - gamma_cdf((i - 1.0), inf_prg_delay_shap, inf_prg_delay_rate)), 
                             "assigning variable inf_prg_delay_rv");
-                current_statement_begin__ = 133;
+                current_statement_begin__ = 144;
                 stan::model::assign(asy_rec_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), asy_rec_delay_shap, (asy_rec_delay_rate * 2)) - gamma_cdf((i - 1.0), asy_rec_delay_shap, (asy_rec_delay_rate * 2))), 
                             "assigning variable asy_rec_delay_rv");
-                current_statement_begin__ = 138;
+                current_statement_begin__ = 149;
                 stan::model::assign(sym_prg_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), sym_prg_delay_shap, sym_prg_delay_rate) - gamma_cdf((i - 1.0), sym_prg_delay_shap, sym_prg_delay_rate)), 
                             "assigning variable sym_prg_delay_rv");
-                current_statement_begin__ = 141;
+                current_statement_begin__ = 152;
                 stan::model::assign(sev_prg_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), sev_prg_delay_shap, sev_prg_delay_rate) - gamma_cdf((i - 1.0), sev_prg_delay_shap, sev_prg_delay_rate)), 
                             "assigning variable sev_prg_delay_rv");
             }
-            current_statement_begin__ = 148;
+            current_statement_begin__ = 159;
             for (int i = 1; i <= Max_delay; ++i) {
-                current_statement_begin__ = 149;
+                current_statement_begin__ = 160;
                 stan::model::assign(cas_rep_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), cas_rep_delay_shap, cas_rep_delay_rate) - gamma_cdf((i - 1.0), cas_rep_delay_shap, cas_rep_delay_rate)), 
                             "assigning variable cas_rep_delay_rv");
-                current_statement_begin__ = 152;
+                current_statement_begin__ = 163;
                 stan::model::assign(die_rep_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), die_rep_delay_shap, die_rep_delay_rate) - gamma_cdf((i - 1.0), die_rep_delay_shap, die_rep_delay_rate)), 
                             "assigning variable die_rep_delay_rv");
             }
-            current_statement_begin__ = 158;
+            current_statement_begin__ = 169;
+            stan::math::assign(inf_prg_delay_rv, divide(inf_prg_delay_rv, sum(inf_prg_delay_rv)));
+            current_statement_begin__ = 170;
+            stan::math::assign(asy_rec_delay_rv, divide(asy_rec_delay_rv, sum(asy_rec_delay_rv)));
+            current_statement_begin__ = 171;
+            stan::math::assign(sym_prg_delay_rv, divide(sym_prg_delay_rv, sum(sym_prg_delay_rv)));
+            current_statement_begin__ = 172;
+            stan::math::assign(sev_prg_delay_rv, divide(sev_prg_delay_rv, sum(sev_prg_delay_rv)));
+            current_statement_begin__ = 173;
+            stan::math::assign(cas_rep_delay_rv, divide(cas_rep_delay_rv, sum(cas_rep_delay_rv)));
+            current_statement_begin__ = 174;
+            stan::math::assign(die_rep_delay_rv, divide(die_rep_delay_rv, sum(die_rep_delay_rv)));
+            current_statement_begin__ = 177;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 159;
+                current_statement_begin__ = 178;
                 if (as_bool(logical_lt(i, Max_delay))) {
-                    current_statement_begin__ = 160;
+                    current_statement_begin__ = 179;
                     stan::model::assign(cas_cum_report_delay_rv, 
                                 stan::model::cons_list(stan::model::index_uni(((1 + N_days_tot) - i)), stan::model::nil_index_list()), 
                                 gamma_cdf((i + 0.0), cas_rep_delay_shap, cas_rep_delay_rate), 
                                 "assigning variable cas_cum_report_delay_rv");
-                    current_statement_begin__ = 162;
+                    current_statement_begin__ = 181;
                     stan::model::assign(die_cum_report_delay_rv, 
                                 stan::model::cons_list(stan::model::index_uni(((1 + N_days_tot) - i)), stan::model::nil_index_list()), 
                                 gamma_cdf((i + 0.0), die_rep_delay_shap, die_rep_delay_rate), 
                                 "assigning variable die_cum_report_delay_rv");
                 } else {
-                    current_statement_begin__ = 165;
+                    current_statement_begin__ = 184;
                     stan::model::assign(cas_cum_report_delay_rv, 
                                 stan::model::cons_list(stan::model::index_uni(((1 + N_days_tot) - i)), stan::model::nil_index_list()), 
                                 1.0, 
                                 "assigning variable cas_cum_report_delay_rv");
-                    current_statement_begin__ = 166;
+                    current_statement_begin__ = 185;
                     stan::model::assign(die_cum_report_delay_rv, 
                                 stan::model::cons_list(stan::model::index_uni(((1 + N_days_tot) - i)), stan::model::nil_index_list()), 
                                 1.0, 
@@ -707,37 +795,39 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 175;
+            current_statement_begin__ = 194;
             num_params_r__ += 1;
-            current_statement_begin__ = 176;
+            current_statement_begin__ = 195;
             num_params_r__ += 1;
-            current_statement_begin__ = 177;
+            current_statement_begin__ = 196;
             validate_non_negative_index("spl_par_rt", "N_spl_par_rt", N_spl_par_rt);
             num_params_r__ += N_spl_par_rt;
-            current_statement_begin__ = 178;
+            current_statement_begin__ = 197;
             num_params_r__ += 1;
-            current_statement_begin__ = 182;
+            current_statement_begin__ = 201;
             num_params_r__ += 1;
-            current_statement_begin__ = 183;
+            current_statement_begin__ = 202;
             num_params_r__ += 1;
-            current_statement_begin__ = 184;
+            current_statement_begin__ = 203;
             num_params_r__ += 1;
-            current_statement_begin__ = 188;
+            current_statement_begin__ = 204;
             num_params_r__ += 1;
-            current_statement_begin__ = 189;
+            current_statement_begin__ = 209;
             num_params_r__ += 1;
-            current_statement_begin__ = 190;
+            current_statement_begin__ = 210;
             num_params_r__ += 1;
-            current_statement_begin__ = 192;
+            current_statement_begin__ = 211;
             num_params_r__ += 1;
-            current_statement_begin__ = 193;
+            current_statement_begin__ = 213;
             num_params_r__ += 1;
-            current_statement_begin__ = 194;
-            validate_non_negative_index("spl_par_sym_dx0", "(N_spl_par_dx - 1)", (N_spl_par_dx - 1));
-            num_params_r__ += (N_spl_par_dx - 1);
-            current_statement_begin__ = 198;
+            current_statement_begin__ = 214;
             num_params_r__ += 1;
-            current_statement_begin__ = 199;
+            current_statement_begin__ = 215;
+            validate_non_negative_index("spl_par_sym_dx", "N_spl_par_dx", N_spl_par_dx);
+            num_params_r__ += N_spl_par_dx;
+            current_statement_begin__ = 219;
+            num_params_r__ += 1;
+            current_statement_begin__ = 220;
             num_params_r__ += 1;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -756,7 +846,7 @@ public:
         (void) pos__; // dummy call to supress warning
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
-        current_statement_begin__ = 175;
+        current_statement_begin__ = 194;
         if (!(context__.contains_r("log_new_inf_0")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable log_new_inf_0 missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("log_new_inf_0");
@@ -769,7 +859,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable log_new_inf_0: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 176;
+        current_statement_begin__ = 195;
         if (!(context__.contains_r("serial_i")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable serial_i missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("serial_i");
@@ -782,7 +872,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable serial_i: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 177;
+        current_statement_begin__ = 196;
         if (!(context__.contains_r("spl_par_rt")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable spl_par_rt missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("spl_par_rt");
@@ -799,7 +889,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable spl_par_rt: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 178;
+        current_statement_begin__ = 197;
         if (!(context__.contains_r("inf_imported")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable inf_imported missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("inf_imported");
@@ -812,7 +902,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable inf_imported: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 182;
+        current_statement_begin__ = 201;
         if (!(context__.contains_r("p_sym_if_inf")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable p_sym_if_inf missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("p_sym_if_inf");
@@ -825,7 +915,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable p_sym_if_inf: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 183;
+        current_statement_begin__ = 202;
         if (!(context__.contains_r("p_sev_if_sym")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable p_sev_if_sym missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("p_sev_if_sym");
@@ -838,7 +928,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable p_sev_if_sym: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 184;
+        current_statement_begin__ = 203;
         if (!(context__.contains_r("p_die_if_sev")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable p_die_if_sev missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("p_die_if_sev");
@@ -851,7 +941,20 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable p_die_if_sev: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 188;
+        current_statement_begin__ = 204;
+        if (!(context__.contains_r("ifr_decl_OR")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable ifr_decl_OR missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("ifr_decl_OR");
+        pos__ = 0U;
+        context__.validate_dims("parameter initialization", "ifr_decl_OR", "double", context__.to_vec());
+        double ifr_decl_OR(0);
+        ifr_decl_OR = vals_r__[pos__++];
+        try {
+            writer__.scalar_lb_unconstrain(0, ifr_decl_OR);
+        } catch (const std::exception& e) {
+            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable ifr_decl_OR: ") + e.what()), current_statement_begin__, prog_reader__());
+        }
+        current_statement_begin__ = 209;
         if (!(context__.contains_r("scale_dx_delay_asy")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable scale_dx_delay_asy missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("scale_dx_delay_asy");
@@ -864,7 +967,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable scale_dx_delay_asy: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 189;
+        current_statement_begin__ = 210;
         if (!(context__.contains_r("scale_dx_delay_sym")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable scale_dx_delay_sym missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("scale_dx_delay_sym");
@@ -877,7 +980,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable scale_dx_delay_sym: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 190;
+        current_statement_begin__ = 211;
         if (!(context__.contains_r("scale_dx_delay_sev")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable scale_dx_delay_sev missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("scale_dx_delay_sev");
@@ -890,7 +993,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable scale_dx_delay_sev: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 192;
+        current_statement_begin__ = 213;
         if (!(context__.contains_r("rr_diag_asy_vs_sym")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable rr_diag_asy_vs_sym missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("rr_diag_asy_vs_sym");
@@ -903,7 +1006,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable rr_diag_asy_vs_sym: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 193;
+        current_statement_begin__ = 214;
         if (!(context__.contains_r("p_diag_if_sev")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable p_diag_if_sev missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("p_diag_if_sev");
@@ -916,24 +1019,24 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable p_diag_if_sev: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 194;
-        if (!(context__.contains_r("spl_par_sym_dx0")))
-            stan::lang::rethrow_located(std::runtime_error(std::string("Variable spl_par_sym_dx0 missing")), current_statement_begin__, prog_reader__());
-        vals_r__ = context__.vals_r("spl_par_sym_dx0");
+        current_statement_begin__ = 215;
+        if (!(context__.contains_r("spl_par_sym_dx")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable spl_par_sym_dx missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("spl_par_sym_dx");
         pos__ = 0U;
-        validate_non_negative_index("spl_par_sym_dx0", "(N_spl_par_dx - 1)", (N_spl_par_dx - 1));
-        context__.validate_dims("parameter initialization", "spl_par_sym_dx0", "vector_d", context__.to_vec((N_spl_par_dx - 1)));
-        Eigen::Matrix<double, Eigen::Dynamic, 1> spl_par_sym_dx0((N_spl_par_dx - 1));
-        size_t spl_par_sym_dx0_j_1_max__ = (N_spl_par_dx - 1);
-        for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx0_j_1_max__; ++j_1__) {
-            spl_par_sym_dx0(j_1__) = vals_r__[pos__++];
+        validate_non_negative_index("spl_par_sym_dx", "N_spl_par_dx", N_spl_par_dx);
+        context__.validate_dims("parameter initialization", "spl_par_sym_dx", "vector_d", context__.to_vec(N_spl_par_dx));
+        Eigen::Matrix<double, Eigen::Dynamic, 1> spl_par_sym_dx(N_spl_par_dx);
+        size_t spl_par_sym_dx_j_1_max__ = N_spl_par_dx;
+        for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx_j_1_max__; ++j_1__) {
+            spl_par_sym_dx(j_1__) = vals_r__[pos__++];
         }
         try {
-            writer__.vector_lub_unconstrain(0, 1, spl_par_sym_dx0);
+            writer__.vector_lub_unconstrain(0, 1, spl_par_sym_dx);
         } catch (const std::exception& e) {
-            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable spl_par_sym_dx0: ") + e.what()), current_statement_begin__, prog_reader__());
+            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable spl_par_sym_dx: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 198;
+        current_statement_begin__ = 219;
         if (!(context__.contains_r("inv_sqrt_phi_c")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable inv_sqrt_phi_c missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("inv_sqrt_phi_c");
@@ -946,7 +1049,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable inv_sqrt_phi_c: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 199;
+        current_statement_begin__ = 220;
         if (!(context__.contains_r("inv_sqrt_phi_d")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable inv_sqrt_phi_d missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("inv_sqrt_phi_d");
@@ -984,105 +1087,112 @@ public:
         try {
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
-            current_statement_begin__ = 175;
+            current_statement_begin__ = 194;
             local_scalar_t__ log_new_inf_0;
             (void) log_new_inf_0;  // dummy to suppress unused var warning
             if (jacobian__)
                 log_new_inf_0 = in__.scalar_constrain(lp__);
             else
                 log_new_inf_0 = in__.scalar_constrain();
-            current_statement_begin__ = 176;
+            current_statement_begin__ = 195;
             local_scalar_t__ serial_i;
             (void) serial_i;  // dummy to suppress unused var warning
             if (jacobian__)
                 serial_i = in__.scalar_lb_constrain(0, lp__);
             else
                 serial_i = in__.scalar_lb_constrain(0);
-            current_statement_begin__ = 177;
+            current_statement_begin__ = 196;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> spl_par_rt;
             (void) spl_par_rt;  // dummy to suppress unused var warning
             if (jacobian__)
                 spl_par_rt = in__.vector_constrain(N_spl_par_rt, lp__);
             else
                 spl_par_rt = in__.vector_constrain(N_spl_par_rt);
-            current_statement_begin__ = 178;
+            current_statement_begin__ = 197;
             local_scalar_t__ inf_imported;
             (void) inf_imported;  // dummy to suppress unused var warning
             if (jacobian__)
                 inf_imported = in__.scalar_lb_constrain(0, lp__);
             else
                 inf_imported = in__.scalar_lb_constrain(0);
-            current_statement_begin__ = 182;
+            current_statement_begin__ = 201;
             local_scalar_t__ p_sym_if_inf;
             (void) p_sym_if_inf;  // dummy to suppress unused var warning
             if (jacobian__)
                 p_sym_if_inf = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 p_sym_if_inf = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 183;
+            current_statement_begin__ = 202;
             local_scalar_t__ p_sev_if_sym;
             (void) p_sev_if_sym;  // dummy to suppress unused var warning
             if (jacobian__)
                 p_sev_if_sym = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 p_sev_if_sym = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 184;
+            current_statement_begin__ = 203;
             local_scalar_t__ p_die_if_sev;
             (void) p_die_if_sev;  // dummy to suppress unused var warning
             if (jacobian__)
                 p_die_if_sev = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 p_die_if_sev = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 188;
+            current_statement_begin__ = 204;
+            local_scalar_t__ ifr_decl_OR;
+            (void) ifr_decl_OR;  // dummy to suppress unused var warning
+            if (jacobian__)
+                ifr_decl_OR = in__.scalar_lb_constrain(0, lp__);
+            else
+                ifr_decl_OR = in__.scalar_lb_constrain(0);
+            current_statement_begin__ = 209;
             local_scalar_t__ scale_dx_delay_asy;
             (void) scale_dx_delay_asy;  // dummy to suppress unused var warning
             if (jacobian__)
                 scale_dx_delay_asy = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 scale_dx_delay_asy = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 189;
+            current_statement_begin__ = 210;
             local_scalar_t__ scale_dx_delay_sym;
             (void) scale_dx_delay_sym;  // dummy to suppress unused var warning
             if (jacobian__)
                 scale_dx_delay_sym = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 scale_dx_delay_sym = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 190;
+            current_statement_begin__ = 211;
             local_scalar_t__ scale_dx_delay_sev;
             (void) scale_dx_delay_sev;  // dummy to suppress unused var warning
             if (jacobian__)
                 scale_dx_delay_sev = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 scale_dx_delay_sev = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 192;
+            current_statement_begin__ = 213;
             local_scalar_t__ rr_diag_asy_vs_sym;
             (void) rr_diag_asy_vs_sym;  // dummy to suppress unused var warning
             if (jacobian__)
                 rr_diag_asy_vs_sym = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 rr_diag_asy_vs_sym = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 193;
+            current_statement_begin__ = 214;
             local_scalar_t__ p_diag_if_sev;
             (void) p_diag_if_sev;  // dummy to suppress unused var warning
             if (jacobian__)
                 p_diag_if_sev = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 p_diag_if_sev = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 194;
-            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> spl_par_sym_dx0;
-            (void) spl_par_sym_dx0;  // dummy to suppress unused var warning
+            current_statement_begin__ = 215;
+            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> spl_par_sym_dx;
+            (void) spl_par_sym_dx;  // dummy to suppress unused var warning
             if (jacobian__)
-                spl_par_sym_dx0 = in__.vector_lub_constrain(0, 1, (N_spl_par_dx - 1), lp__);
+                spl_par_sym_dx = in__.vector_lub_constrain(0, 1, N_spl_par_dx, lp__);
             else
-                spl_par_sym_dx0 = in__.vector_lub_constrain(0, 1, (N_spl_par_dx - 1));
-            current_statement_begin__ = 198;
+                spl_par_sym_dx = in__.vector_lub_constrain(0, 1, N_spl_par_dx);
+            current_statement_begin__ = 219;
             local_scalar_t__ inv_sqrt_phi_c;
             (void) inv_sqrt_phi_c;  // dummy to suppress unused var warning
             if (jacobian__)
                 inv_sqrt_phi_c = in__.scalar_lb_constrain(0, lp__);
             else
                 inv_sqrt_phi_c = in__.scalar_lb_constrain(0);
-            current_statement_begin__ = 199;
+            current_statement_begin__ = 220;
             local_scalar_t__ inv_sqrt_phi_d;
             (void) inv_sqrt_phi_d;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1090,346 +1200,340 @@ public:
             else
                 inv_sqrt_phi_d = in__.scalar_lb_constrain(0);
             // transformed parameters
-            current_statement_begin__ = 205;
+            current_statement_begin__ = 226;
             validate_non_negative_index("log_new_inf", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> log_new_inf(N_days_tot);
             stan::math::initialize(log_new_inf, DUMMY_VAR__);
             stan::math::fill(log_new_inf, DUMMY_VAR__);
-            current_statement_begin__ = 206;
+            current_statement_begin__ = 227;
             validate_non_negative_index("new_inf", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> new_inf(N_days_tot);
             stan::math::initialize(new_inf, DUMMY_VAR__);
             stan::math::fill(new_inf, DUMMY_VAR__);
-            current_statement_begin__ = 207;
+            current_statement_begin__ = 228;
             validate_non_negative_index("deriv1_log_new_inf", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> deriv1_log_new_inf(N_days_tot);
             stan::math::initialize(deriv1_log_new_inf, DUMMY_VAR__);
             stan::math::fill(deriv1_log_new_inf, DUMMY_VAR__);
-            current_statement_begin__ = 208;
-            validate_non_negative_index("spl_par_sym_dx", "N_spl_par_dx", N_spl_par_dx);
-            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> spl_par_sym_dx(N_spl_par_dx);
-            stan::math::initialize(spl_par_sym_dx, DUMMY_VAR__);
-            stan::math::fill(spl_par_sym_dx, DUMMY_VAR__);
-            current_statement_begin__ = 211;
+            current_statement_begin__ = 231;
             validate_non_negative_index("logRt0", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> logRt0(N_days_tot);
             stan::math::initialize(logRt0, DUMMY_VAR__);
             stan::math::fill(logRt0, DUMMY_VAR__);
-            current_statement_begin__ = 212;
+            current_statement_begin__ = 232;
             validate_non_negative_index("logRt", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> logRt(N_days_tot);
             stan::math::initialize(logRt, DUMMY_VAR__);
             stan::math::fill(logRt, DUMMY_VAR__);
-            current_statement_begin__ = 213;
+            current_statement_begin__ = 233;
             validate_non_negative_index("Rt", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> Rt(N_days_tot);
             stan::math::initialize(Rt, DUMMY_VAR__);
             stan::math::fill(Rt, DUMMY_VAR__);
-            current_statement_begin__ = 214;
+            current_statement_begin__ = 234;
             validate_non_negative_index("deriv1_spl_par_rt", "(N_spl_par_rt - 1)", (N_spl_par_rt - 1));
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> deriv1_spl_par_rt((N_spl_par_rt - 1));
             stan::math::initialize(deriv1_spl_par_rt, DUMMY_VAR__);
             stan::math::fill(deriv1_spl_par_rt, DUMMY_VAR__);
-            current_statement_begin__ = 215;
+            current_statement_begin__ = 235;
             validate_non_negative_index("deriv2_spl_par_rt", "(N_spl_par_rt - 2)", (N_spl_par_rt - 2));
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> deriv2_spl_par_rt((N_spl_par_rt - 2));
             stan::math::initialize(deriv2_spl_par_rt, DUMMY_VAR__);
             stan::math::fill(deriv2_spl_par_rt, DUMMY_VAR__);
-            current_statement_begin__ = 219;
+            current_statement_begin__ = 238;
+            validate_non_negative_index("p_die_if_sevt", "N_ifr_adj", N_ifr_adj);
+            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> p_die_if_sevt(N_ifr_adj);
+            stan::math::initialize(p_die_if_sevt, DUMMY_VAR__);
+            stan::math::fill(p_die_if_sevt, DUMMY_VAR__);
+            current_statement_begin__ = 242;
             validate_non_negative_index("rr_diag_sym_vs_sev", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> rr_diag_sym_vs_sev(N_days_tot);
             stan::math::initialize(rr_diag_sym_vs_sev, DUMMY_VAR__);
             stan::math::fill(rr_diag_sym_vs_sev, DUMMY_VAR__);
-            current_statement_begin__ = 220;
+            current_statement_begin__ = 243;
             validate_non_negative_index("p_diag_if_asy", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> p_diag_if_asy(N_days_tot);
             stan::math::initialize(p_diag_if_asy, DUMMY_VAR__);
             stan::math::fill(p_diag_if_asy, DUMMY_VAR__);
-            current_statement_begin__ = 221;
+            current_statement_begin__ = 244;
             validate_non_negative_index("p_diag_if_sym", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> p_diag_if_sym(N_days_tot);
             stan::math::initialize(p_diag_if_sym, DUMMY_VAR__);
             stan::math::fill(p_diag_if_sym, DUMMY_VAR__);
-            current_statement_begin__ = 225;
+            current_statement_begin__ = 248;
             validate_non_negative_index("sym_diag_delay_rv", "Max_delay", Max_delay);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> sym_diag_delay_rv(Max_delay);
             stan::math::initialize(sym_diag_delay_rv, DUMMY_VAR__);
             stan::math::fill(sym_diag_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 226;
+            current_statement_begin__ = 249;
             validate_non_negative_index("sev_diag_delay_rv", "Max_delay", Max_delay);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> sev_diag_delay_rv(Max_delay);
             stan::math::initialize(sev_diag_delay_rv, DUMMY_VAR__);
             stan::math::fill(sev_diag_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 230;
+            current_statement_begin__ = 253;
             local_scalar_t__ p_die_if_inf;
             (void) p_die_if_inf;  // dummy to suppress unused var warning
             stan::math::initialize(p_die_if_inf, DUMMY_VAR__);
             stan::math::fill(p_die_if_inf, DUMMY_VAR__);
-            current_statement_begin__ = 232;
+            current_statement_begin__ = 255;
             validate_non_negative_index("new_sym", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> new_sym(N_days_tot);
             stan::math::initialize(new_sym, DUMMY_VAR__);
             stan::math::fill(new_sym, DUMMY_VAR__);
-            current_statement_begin__ = 233;
+            current_statement_begin__ = 256;
             validate_non_negative_index("new_sev", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> new_sev(N_days_tot);
             stan::math::initialize(new_sev, DUMMY_VAR__);
             stan::math::fill(new_sev, DUMMY_VAR__);
-            current_statement_begin__ = 234;
+            current_statement_begin__ = 257;
             validate_non_negative_index("new_die", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> new_die(N_days_tot);
             stan::math::initialize(new_die, DUMMY_VAR__);
             stan::math::fill(new_die, DUMMY_VAR__);
-            current_statement_begin__ = 236;
+            current_statement_begin__ = 259;
             validate_non_negative_index("new_asy_dx", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> new_asy_dx(N_days_tot);
             stan::math::initialize(new_asy_dx, DUMMY_VAR__);
             stan::math::fill(new_asy_dx, DUMMY_VAR__);
-            current_statement_begin__ = 237;
+            current_statement_begin__ = 260;
             validate_non_negative_index("new_sym_dx", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> new_sym_dx(N_days_tot);
             stan::math::initialize(new_sym_dx, DUMMY_VAR__);
             stan::math::fill(new_sym_dx, DUMMY_VAR__);
-            current_statement_begin__ = 238;
+            current_statement_begin__ = 261;
             validate_non_negative_index("new_sev_dx", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> new_sev_dx(N_days_tot);
             stan::math::initialize(new_sev_dx, DUMMY_VAR__);
             stan::math::fill(new_sev_dx, DUMMY_VAR__);
-            current_statement_begin__ = 240;
+            current_statement_begin__ = 263;
             validate_non_negative_index("dx_sym_sev", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> dx_sym_sev(N_days_tot);
             stan::math::initialize(dx_sym_sev, DUMMY_VAR__);
             stan::math::fill(dx_sym_sev, DUMMY_VAR__);
-            current_statement_begin__ = 241;
+            current_statement_begin__ = 264;
             validate_non_negative_index("dx_sym_die", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> dx_sym_die(N_days_tot);
             stan::math::initialize(dx_sym_die, DUMMY_VAR__);
             stan::math::fill(dx_sym_die, DUMMY_VAR__);
-            current_statement_begin__ = 242;
+            current_statement_begin__ = 265;
             validate_non_negative_index("dx_sev_die", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> dx_sev_die(N_days_tot);
             stan::math::initialize(dx_sev_die, DUMMY_VAR__);
             stan::math::fill(dx_sev_die, DUMMY_VAR__);
-            current_statement_begin__ = 244;
+            current_statement_begin__ = 267;
             validate_non_negative_index("diag_all", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> diag_all(N_days_tot);
             stan::math::initialize(diag_all, DUMMY_VAR__);
             stan::math::fill(diag_all, DUMMY_VAR__);
-            current_statement_begin__ = 245;
+            current_statement_begin__ = 268;
             validate_non_negative_index("new_die_dx", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> new_die_dx(N_days_tot);
             stan::math::initialize(new_die_dx, DUMMY_VAR__);
             stan::math::fill(new_die_dx, DUMMY_VAR__);
-            current_statement_begin__ = 248;
+            current_statement_begin__ = 271;
             validate_non_negative_index("occur_cas", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> occur_cas(N_days_tot);
             stan::math::initialize(occur_cas, DUMMY_VAR__);
             stan::math::fill(occur_cas, DUMMY_VAR__);
-            current_statement_begin__ = 249;
+            current_statement_begin__ = 272;
             validate_non_negative_index("occur_die", "N_days_tot", N_days_tot);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> occur_die(N_days_tot);
             stan::math::initialize(occur_die, DUMMY_VAR__);
             stan::math::fill(occur_die, DUMMY_VAR__);
-            current_statement_begin__ = 253;
+            current_statement_begin__ = 276;
             local_scalar_t__ phi_cas;
             (void) phi_cas;  // dummy to suppress unused var warning
             stan::math::initialize(phi_cas, DUMMY_VAR__);
             stan::math::fill(phi_cas, DUMMY_VAR__);
-            current_statement_begin__ = 254;
+            current_statement_begin__ = 277;
             local_scalar_t__ phi_die;
             (void) phi_die;  // dummy to suppress unused var warning
             stan::math::initialize(phi_die, DUMMY_VAR__);
             stan::math::fill(phi_die, DUMMY_VAR__);
             // transformed parameters block statements
-            current_statement_begin__ = 258;
-            stan::model::assign(spl_par_sym_dx, 
-                        stan::model::cons_list(stan::model::index_min_max(2, N_spl_par_dx), stan::model::nil_index_list()), 
-                        spl_par_sym_dx0, 
-                        "assigning variable spl_par_sym_dx");
-            current_statement_begin__ = 259;
-            stan::model::assign(spl_par_sym_dx, 
-                        stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list()), 
-                        inv_logit((multiply(subtract(stan::model::rvalue(spl_basis_dx, stan::model::cons_list(stan::model::index_uni(2), stan::model::cons_list(stan::model::index_min_max(2, N_spl_par_dx), stan::model::nil_index_list())), "spl_basis_dx"), stan::model::rvalue(spl_basis_dx, stan::model::cons_list(stan::model::index_uni(1), stan::model::cons_list(stan::model::index_min_max(2, N_spl_par_dx), stan::model::nil_index_list())), "spl_basis_dx")), logit(spl_par_sym_dx0)) / (get_base1(spl_basis_dx, 1, 1, "spl_basis_dx", 1) - get_base1(spl_basis_dx, 2, 1, "spl_basis_dx", 1)))), 
-                        "assigning variable spl_par_sym_dx");
-            current_statement_begin__ = 264;
+            current_statement_begin__ = 280;
+            stan::math::assign(p_die_if_sevt, multiply(((p_die_if_sev / (1 - p_die_if_sev)) * ifr_adj_fixed), add(1.0, multiply(ifr_adj, ifr_decl_OR))));
+            current_statement_begin__ = 281;
+            stan::math::assign(p_die_if_sevt, elt_divide(p_die_if_sevt, add(1, p_die_if_sevt)));
+            current_statement_begin__ = 285;
             stan::math::assign(rr_diag_sym_vs_sev, inv_logit(multiply(spl_basis_dx, logit(spl_par_sym_dx))));
-            current_statement_begin__ = 266;
+            current_statement_begin__ = 287;
             stan::math::assign(p_diag_if_sym, multiply(p_diag_if_sev, rr_diag_sym_vs_sev));
-            current_statement_begin__ = 267;
+            current_statement_begin__ = 288;
             stan::math::assign(p_diag_if_asy, multiply(p_diag_if_sym, rr_diag_asy_vs_sym));
-            current_statement_begin__ = 275;
+            current_statement_begin__ = 296;
             for (int i = 1; i <= Max_delay; ++i) {
-                current_statement_begin__ = 276;
+                current_statement_begin__ = 297;
                 stan::model::assign(sym_diag_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), sym_prg_delay_shap, (sym_prg_delay_rate / scale_dx_delay_sym)) - gamma_cdf((i - 1.0), sym_prg_delay_shap, (sym_prg_delay_rate / scale_dx_delay_sym))), 
                             "assigning variable sym_diag_delay_rv");
-                current_statement_begin__ = 280;
+                current_statement_begin__ = 301;
                 stan::model::assign(sev_diag_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), sev_prg_delay_shap, (sev_prg_delay_rate / scale_dx_delay_sev)) - gamma_cdf((i - 1.0), sev_prg_delay_shap, (sev_prg_delay_rate / scale_dx_delay_sev))), 
                             "assigning variable sev_diag_delay_rv");
             }
-            current_statement_begin__ = 290;
+            current_statement_begin__ = 311;
             stan::math::assign(p_die_if_inf, ((p_sym_if_inf * p_sev_if_sym) * p_die_if_sev));
-            current_statement_begin__ = 297;
+            current_statement_begin__ = 318;
             stan::math::assign(logRt0, multiply(spl_basis_rt, spl_par_rt));
-            current_statement_begin__ = 298;
+            current_statement_begin__ = 319;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 299;
+                current_statement_begin__ = 320;
                 if (as_bool(logical_eq(i, 1))) {
-                    current_statement_begin__ = 300;
+                    current_statement_begin__ = 321;
                     stan::model::assign(logRt, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 get_base1(logRt0, i, "logRt0", 1), 
                                 "assigning variable logRt");
                 } else {
-                    current_statement_begin__ = 302;
+                    current_statement_begin__ = 323;
                     stan::model::assign(logRt, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (get_base1(logRt0, i, "logRt0", 1) + stan::math::log((1 - (sum(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(1, (i - 1)), stan::model::nil_index_list()), "new_inf")) / pop_size)))), 
                                 "assigning variable logRt");
                 }
-                current_statement_begin__ = 304;
+                current_statement_begin__ = 325;
                 stan::model::assign(deriv1_log_new_inf, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (get_base1(logRt, i, "logRt", 1) / serial_i), 
                             "assigning variable deriv1_log_new_inf");
-                current_statement_begin__ = 305;
+                current_statement_begin__ = 326;
                 stan::model::assign(log_new_inf, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (sum(stan::model::rvalue(deriv1_log_new_inf, stan::model::cons_list(stan::model::index_min_max(1, i), stan::model::nil_index_list()), "deriv1_log_new_inf")) + log_new_inf_0), 
                             "assigning variable log_new_inf");
-                current_statement_begin__ = 306;
+                current_statement_begin__ = 327;
                 stan::model::assign(new_inf, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (stan::math::exp(get_base1(log_new_inf, i, "log_new_inf", 1)) + inf_imported), 
                             "assigning variable new_inf");
             }
-            current_statement_begin__ = 308;
+            current_statement_begin__ = 329;
             stan::math::assign(Rt, stan::math::exp(logRt));
-            current_statement_begin__ = 311;
+            current_statement_begin__ = 332;
             stan::model::assign(deriv2_spl_par_rt, 
                         stan::model::cons_list(stan::model::index_min_max(1, (N_spl_par_rt - 2)), stan::model::nil_index_list()), 
                         subtract(subtract(multiply(stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(2, (N_spl_par_rt - 1)), stan::model::nil_index_list()), "spl_par_rt"), 2), stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(1, (N_spl_par_rt - 2)), stan::model::nil_index_list()), "spl_par_rt")), stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(3, N_spl_par_rt), stan::model::nil_index_list()), "spl_par_rt")), 
                         "assigning variable deriv2_spl_par_rt");
-            current_statement_begin__ = 315;
+            current_statement_begin__ = 336;
             stan::model::assign(deriv1_spl_par_rt, 
                         stan::model::cons_list(stan::model::index_min_max(1, (N_spl_par_rt - 1)), stan::model::nil_index_list()), 
                         subtract(stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(2, N_spl_par_rt), stan::model::nil_index_list()), "spl_par_rt"), stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(1, (N_spl_par_rt - 1)), stan::model::nil_index_list()), "spl_par_rt")), 
                         "assigning variable deriv1_spl_par_rt");
-            current_statement_begin__ = 323;
+            current_statement_begin__ = 344;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 324;
+                current_statement_begin__ = 345;
                 stan::model::assign(new_sym, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_inf"), stan::model::rvalue(inf_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "inf_prg_delay_rv")) * p_sym_if_inf), 
                             "assigning variable new_sym");
             }
-            current_statement_begin__ = 328;
+            current_statement_begin__ = 349;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 329;
+                current_statement_begin__ = 350;
                 stan::model::assign(new_sev, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(stan::model::rvalue(new_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sym"), stan::model::rvalue(sym_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sym_prg_delay_rv")) * p_sev_if_sym), 
                             "assigning variable new_sev");
             }
-            current_statement_begin__ = 333;
+            current_statement_begin__ = 354;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 334;
+                current_statement_begin__ = 355;
                 stan::model::assign(new_die, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            (dot_product(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * p_die_if_sev), 
+                            (dot_product(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * get_base1(p_die_if_sevt, i, "p_die_if_sevt", 1)), 
                             "assigning variable new_die");
             }
-            current_statement_begin__ = 346;
+            current_statement_begin__ = 367;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 347;
+                current_statement_begin__ = 368;
                 stan::model::assign(new_asy_dx, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(elt_multiply(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_inf"), stan::model::rvalue(p_diag_if_asy, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "p_diag_if_asy")), stan::model::rvalue(asy_rec_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "asy_rec_delay_rv")) * (1 - p_sym_if_inf)), 
                             "assigning variable new_asy_dx");
             }
-            current_statement_begin__ = 355;
+            current_statement_begin__ = 376;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 356;
+                current_statement_begin__ = 377;
                 stan::model::assign(new_sym_dx, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             dot_product(elt_multiply(stan::model::rvalue(new_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sym"), stan::model::rvalue(p_diag_if_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "p_diag_if_sym")), stan::model::rvalue(sym_diag_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sym_diag_delay_rv")), 
                             "assigning variable new_sym_dx");
             }
-            current_statement_begin__ = 363;
+            current_statement_begin__ = 384;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 364;
+                current_statement_begin__ = 385;
                 stan::model::assign(dx_sym_sev, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(elt_multiply(stan::model::rvalue(new_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sym"), stan::model::rvalue(p_diag_if_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "p_diag_if_sym")), stan::model::rvalue(sym_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sym_prg_delay_rv")) * p_sev_if_sym), 
                             "assigning variable dx_sym_sev");
             }
-            current_statement_begin__ = 368;
+            current_statement_begin__ = 389;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 369;
+                current_statement_begin__ = 390;
                 stan::model::assign(dx_sym_die, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            (dot_product(stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev"), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * p_die_if_sev), 
+                            (dot_product(stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev"), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * get_base1(p_die_if_sevt, i, "p_die_if_sevt", 1)), 
                             "assigning variable dx_sym_die");
             }
-            current_statement_begin__ = 375;
+            current_statement_begin__ = 396;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 376;
+                current_statement_begin__ = 397;
                 stan::model::assign(new_sev_dx, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(subtract(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev")), stan::model::rvalue(sev_diag_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_diag_delay_rv")) * p_diag_if_sev), 
                             "assigning variable new_sev_dx");
             }
-            current_statement_begin__ = 382;
+            current_statement_begin__ = 403;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 383;
+                current_statement_begin__ = 404;
                 stan::model::assign(dx_sev_die, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            ((dot_product(subtract(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev")), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * p_diag_if_sev) * p_die_if_sev), 
+                            ((dot_product(subtract(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev")), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * p_diag_if_sev) * get_base1(p_die_if_sevt, i, "p_die_if_sevt", 1)), 
                             "assigning variable dx_sev_die");
             }
-            current_statement_begin__ = 388;
+            current_statement_begin__ = 409;
             stan::math::assign(diag_all, add(add(new_asy_dx, new_sym_dx), new_sev_dx));
-            current_statement_begin__ = 389;
+            current_statement_begin__ = 410;
             stan::math::assign(new_die_dx, add(dx_sym_die, dx_sev_die));
-            current_statement_begin__ = 397;
+            current_statement_begin__ = 418;
             if (as_bool(logical_eq(obs_cas_rep, 1))) {
-                current_statement_begin__ = 398;
+                current_statement_begin__ = 419;
                 for (int i = 1; i <= N_days_tot; ++i) {
-                    current_statement_begin__ = 399;
+                    current_statement_begin__ = 420;
                     stan::model::assign(occur_cas, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 dot_product(stan::model::rvalue(diag_all, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "diag_all"), stan::model::rvalue(cas_rep_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "cas_rep_delay_rv")), 
                                 "assigning variable occur_cas");
                 }
             } else {
-                current_statement_begin__ = 405;
+                current_statement_begin__ = 426;
                 stan::math::assign(occur_cas, elt_multiply(diag_all, cas_cum_report_delay_rv));
             }
-            current_statement_begin__ = 408;
+            current_statement_begin__ = 429;
             if (as_bool(logical_eq(obs_die_rep, 1))) {
-                current_statement_begin__ = 409;
+                current_statement_begin__ = 430;
                 for (int i = 1; i <= N_days_tot; ++i) {
-                    current_statement_begin__ = 410;
+                    current_statement_begin__ = 431;
                     stan::model::assign(occur_die, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 dot_product(stan::model::rvalue(new_die_dx, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_die_dx"), stan::model::rvalue(die_rep_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "die_rep_delay_rv")), 
                                 "assigning variable occur_die");
                 }
             } else {
-                current_statement_begin__ = 414;
+                current_statement_begin__ = 435;
                 stan::math::assign(occur_die, elt_multiply(new_die_dx, die_cum_report_delay_rv));
             }
-            current_statement_begin__ = 418;
+            current_statement_begin__ = 439;
             stan::math::assign(phi_cas, pow(inv_sqrt_phi_c, -(2)));
-            current_statement_begin__ = 419;
+            current_statement_begin__ = 440;
             stan::math::assign(phi_die, pow(inv_sqrt_phi_d, -(2)));
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 205;
+            current_statement_begin__ = 226;
             size_t log_new_inf_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < log_new_inf_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(log_new_inf(j_1__))) {
@@ -1438,7 +1542,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable log_new_inf: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 206;
+            current_statement_begin__ = 227;
             size_t new_inf_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_inf_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(new_inf(j_1__))) {
@@ -1447,7 +1551,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable new_inf: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 207;
+            current_statement_begin__ = 228;
             size_t deriv1_log_new_inf_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < deriv1_log_new_inf_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(deriv1_log_new_inf(j_1__))) {
@@ -1456,18 +1560,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable deriv1_log_new_inf: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 208;
-            size_t spl_par_sym_dx_j_1_max__ = N_spl_par_dx;
-            for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx_j_1_max__; ++j_1__) {
-                if (stan::math::is_uninitialized(spl_par_sym_dx(j_1__))) {
-                    std::stringstream msg__;
-                    msg__ << "Undefined transformed parameter: spl_par_sym_dx" << "(" << j_1__ << ")";
-                    stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable spl_par_sym_dx: ") + msg__.str()), current_statement_begin__, prog_reader__());
-                }
-            }
-            check_greater_or_equal(function__, "spl_par_sym_dx", spl_par_sym_dx, 0);
-            check_less_or_equal(function__, "spl_par_sym_dx", spl_par_sym_dx, 1);
-            current_statement_begin__ = 211;
+            current_statement_begin__ = 231;
             size_t logRt0_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < logRt0_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(logRt0(j_1__))) {
@@ -1476,7 +1569,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable logRt0: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 212;
+            current_statement_begin__ = 232;
             size_t logRt_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < logRt_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(logRt(j_1__))) {
@@ -1485,7 +1578,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable logRt: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 213;
+            current_statement_begin__ = 233;
             size_t Rt_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < Rt_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(Rt(j_1__))) {
@@ -1494,7 +1587,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable Rt: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 214;
+            current_statement_begin__ = 234;
             size_t deriv1_spl_par_rt_j_1_max__ = (N_spl_par_rt - 1);
             for (size_t j_1__ = 0; j_1__ < deriv1_spl_par_rt_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(deriv1_spl_par_rt(j_1__))) {
@@ -1503,7 +1596,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable deriv1_spl_par_rt: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 215;
+            current_statement_begin__ = 235;
             size_t deriv2_spl_par_rt_j_1_max__ = (N_spl_par_rt - 2);
             for (size_t j_1__ = 0; j_1__ < deriv2_spl_par_rt_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(deriv2_spl_par_rt(j_1__))) {
@@ -1512,7 +1605,16 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable deriv2_spl_par_rt: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 219;
+            current_statement_begin__ = 238;
+            size_t p_die_if_sevt_j_1_max__ = N_ifr_adj;
+            for (size_t j_1__ = 0; j_1__ < p_die_if_sevt_j_1_max__; ++j_1__) {
+                if (stan::math::is_uninitialized(p_die_if_sevt(j_1__))) {
+                    std::stringstream msg__;
+                    msg__ << "Undefined transformed parameter: p_die_if_sevt" << "(" << j_1__ << ")";
+                    stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_die_if_sevt: ") + msg__.str()), current_statement_begin__, prog_reader__());
+                }
+            }
+            current_statement_begin__ = 242;
             size_t rr_diag_sym_vs_sev_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < rr_diag_sym_vs_sev_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(rr_diag_sym_vs_sev(j_1__))) {
@@ -1521,7 +1623,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable rr_diag_sym_vs_sev: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 220;
+            current_statement_begin__ = 243;
             size_t p_diag_if_asy_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < p_diag_if_asy_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(p_diag_if_asy(j_1__))) {
@@ -1530,7 +1632,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_diag_if_asy: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 221;
+            current_statement_begin__ = 244;
             size_t p_diag_if_sym_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < p_diag_if_sym_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(p_diag_if_sym(j_1__))) {
@@ -1539,7 +1641,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_diag_if_sym: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 225;
+            current_statement_begin__ = 248;
             size_t sym_diag_delay_rv_j_1_max__ = Max_delay;
             for (size_t j_1__ = 0; j_1__ < sym_diag_delay_rv_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(sym_diag_delay_rv(j_1__))) {
@@ -1548,7 +1650,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable sym_diag_delay_rv: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 226;
+            current_statement_begin__ = 249;
             size_t sev_diag_delay_rv_j_1_max__ = Max_delay;
             for (size_t j_1__ = 0; j_1__ < sev_diag_delay_rv_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(sev_diag_delay_rv(j_1__))) {
@@ -1557,13 +1659,13 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable sev_diag_delay_rv: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 230;
+            current_statement_begin__ = 253;
             if (stan::math::is_uninitialized(p_die_if_inf)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: p_die_if_inf";
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_die_if_inf: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
-            current_statement_begin__ = 232;
+            current_statement_begin__ = 255;
             size_t new_sym_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_sym_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(new_sym(j_1__))) {
@@ -1572,7 +1674,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable new_sym: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 233;
+            current_statement_begin__ = 256;
             size_t new_sev_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_sev_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(new_sev(j_1__))) {
@@ -1581,7 +1683,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable new_sev: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 234;
+            current_statement_begin__ = 257;
             size_t new_die_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_die_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(new_die(j_1__))) {
@@ -1590,7 +1692,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable new_die: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 236;
+            current_statement_begin__ = 259;
             size_t new_asy_dx_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_asy_dx_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(new_asy_dx(j_1__))) {
@@ -1599,7 +1701,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable new_asy_dx: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 237;
+            current_statement_begin__ = 260;
             size_t new_sym_dx_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_sym_dx_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(new_sym_dx(j_1__))) {
@@ -1608,7 +1710,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable new_sym_dx: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 238;
+            current_statement_begin__ = 261;
             size_t new_sev_dx_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_sev_dx_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(new_sev_dx(j_1__))) {
@@ -1617,7 +1719,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable new_sev_dx: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 240;
+            current_statement_begin__ = 263;
             size_t dx_sym_sev_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < dx_sym_sev_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(dx_sym_sev(j_1__))) {
@@ -1626,7 +1728,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable dx_sym_sev: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 241;
+            current_statement_begin__ = 264;
             size_t dx_sym_die_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < dx_sym_die_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(dx_sym_die(j_1__))) {
@@ -1635,7 +1737,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable dx_sym_die: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 242;
+            current_statement_begin__ = 265;
             size_t dx_sev_die_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < dx_sev_die_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(dx_sev_die(j_1__))) {
@@ -1644,7 +1746,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable dx_sev_die: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 244;
+            current_statement_begin__ = 267;
             size_t diag_all_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < diag_all_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(diag_all(j_1__))) {
@@ -1653,7 +1755,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable diag_all: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 245;
+            current_statement_begin__ = 268;
             size_t new_die_dx_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < new_die_dx_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(new_die_dx(j_1__))) {
@@ -1662,7 +1764,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable new_die_dx: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 248;
+            current_statement_begin__ = 271;
             size_t occur_cas_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < occur_cas_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(occur_cas(j_1__))) {
@@ -1671,7 +1773,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable occur_cas: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 249;
+            current_statement_begin__ = 272;
             size_t occur_die_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < occur_die_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(occur_die(j_1__))) {
@@ -1680,13 +1782,13 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable occur_die: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 253;
+            current_statement_begin__ = 276;
             if (stan::math::is_uninitialized(phi_cas)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: phi_cas";
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable phi_cas: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
-            current_statement_begin__ = 254;
+            current_statement_begin__ = 277;
             if (stan::math::is_uninitialized(phi_die)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: phi_die";
@@ -1694,130 +1796,132 @@ public:
             }
             // model body
             {
-            current_statement_begin__ = 425;
+            current_statement_begin__ = 446;
             int tmp_obs_cas(0);
             (void) tmp_obs_cas;  // dummy to suppress unused var warning
             stan::math::fill(tmp_obs_cas, std::numeric_limits<int>::min());
-            current_statement_begin__ = 426;
+            current_statement_begin__ = 447;
             local_scalar_t__ tmp_occur_cas(DUMMY_VAR__);
             (void) tmp_occur_cas;  // dummy to suppress unused var warning
             stan::math::initialize(tmp_occur_cas, DUMMY_VAR__);
             stan::math::fill(tmp_occur_cas, DUMMY_VAR__);
-            current_statement_begin__ = 427;
+            current_statement_begin__ = 448;
             int tmp_obs_die(0);
             (void) tmp_obs_die;  // dummy to suppress unused var warning
             stan::math::fill(tmp_obs_die, std::numeric_limits<int>::min());
-            current_statement_begin__ = 428;
+            current_statement_begin__ = 449;
             local_scalar_t__ tmp_occur_die(DUMMY_VAR__);
             (void) tmp_occur_die;  // dummy to suppress unused var warning
             stan::math::initialize(tmp_occur_die, DUMMY_VAR__);
             stan::math::fill(tmp_occur_die, DUMMY_VAR__);
-            current_statement_begin__ = 429;
+            current_statement_begin__ = 450;
             local_scalar_t__ tmp_sum_die_pre(DUMMY_VAR__);
             (void) tmp_sum_die_pre;  // dummy to suppress unused var warning
             stan::math::initialize(tmp_sum_die_pre, DUMMY_VAR__);
             stan::math::fill(tmp_sum_die_pre, DUMMY_VAR__);
-            current_statement_begin__ = 430;
+            current_statement_begin__ = 451;
             local_scalar_t__ tmp_sum_cas_pre(DUMMY_VAR__);
             (void) tmp_sum_cas_pre;  // dummy to suppress unused var warning
             stan::math::initialize(tmp_sum_cas_pre, DUMMY_VAR__);
             stan::math::fill(tmp_sum_cas_pre, DUMMY_VAR__);
-            current_statement_begin__ = 433;
+            current_statement_begin__ = 454;
             lp_accum__.add(normal_log<propto__>(log_new_inf_0, pri_log_new_inf_0_mu, pri_log_new_inf_0_sd));
-            current_statement_begin__ = 434;
-            lp_accum__.add(normal_log<propto__>(spl_par_rt, pri_logRt_mu, pri_logRt_sd));
-            current_statement_begin__ = 435;
-            lp_accum__.add(gamma_log<propto__>(serial_i, pri_serial_i_shap, pri_serial_i_rate));
-            current_statement_begin__ = 436;
-            lp_accum__.add(normal_log<propto__>(deriv1_spl_par_rt, 0, pri_deriv1_spl_par_sd));
-            current_statement_begin__ = 437;
-            lp_accum__.add(normal_log<propto__>(deriv2_spl_par_rt, 0, pri_deriv2_spl_par_sd));
-            current_statement_begin__ = 438;
-            lp_accum__.add(normal_log<propto__>(inf_imported, pri_inf_imported_mu, pri_inf_imported_sd));
-            current_statement_begin__ = 441;
-            lp_accum__.add(beta_log<propto__>(p_sym_if_inf, pri_p_sym_if_inf_a, pri_p_sym_if_inf_b));
-            current_statement_begin__ = 442;
-            lp_accum__.add(beta_log<propto__>(p_sev_if_sym, pri_p_sev_if_sym_a, pri_p_sev_if_sym_b));
-            current_statement_begin__ = 443;
-            lp_accum__.add(beta_log<propto__>(p_die_if_sev, pri_p_die_if_sev_a, pri_p_die_if_sev_b));
-            current_statement_begin__ = 445;
-            lp_accum__.add(beta_log<propto__>(p_die_if_inf, pri_p_die_if_inf_a, pri_p_die_if_inf_b));
-            current_statement_begin__ = 448;
-            lp_accum__.add(beta_log<propto__>(rr_diag_asy_vs_sym, pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b));
-            current_statement_begin__ = 449;
-            lp_accum__.add(beta_log<propto__>(spl_par_sym_dx, pri_rr_diag_sym_vs_sev_a, pri_rr_diag_sym_vs_sev_b));
-            current_statement_begin__ = 450;
-            lp_accum__.add(beta_log<propto__>(p_diag_if_sev, pri_p_diag_if_sev_a, pri_p_diag_if_sev_b));
-            current_statement_begin__ = 452;
-            lp_accum__.add(beta_log<propto__>(scale_dx_delay_sym, scale_dx_delay_sym_a, scale_dx_delay_sym_b));
-            current_statement_begin__ = 453;
-            lp_accum__.add(beta_log<propto__>(scale_dx_delay_sev, scale_dx_delay_sev_a, scale_dx_delay_sev_b));
             current_statement_begin__ = 455;
-            lp_accum__.add(normal_log<propto__>(inv_sqrt_phi_c, 0, 1));
+            lp_accum__.add(normal_log<propto__>(spl_par_rt, pri_logRt_mu, pri_logRt_sd));
             current_statement_begin__ = 456;
+            lp_accum__.add(gamma_log<propto__>(serial_i, pri_serial_i_shap, pri_serial_i_rate));
+            current_statement_begin__ = 457;
+            lp_accum__.add(normal_log<propto__>(deriv1_spl_par_rt, 0, pri_deriv1_spl_par_sd));
+            current_statement_begin__ = 458;
+            lp_accum__.add(normal_log<propto__>(deriv2_spl_par_rt, 0, pri_deriv2_spl_par_sd));
+            current_statement_begin__ = 459;
+            lp_accum__.add(normal_log<propto__>(inf_imported, pri_inf_imported_mu, pri_inf_imported_sd));
+            current_statement_begin__ = 462;
+            lp_accum__.add(beta_log<propto__>(p_sym_if_inf, pri_p_sym_if_inf_a, pri_p_sym_if_inf_b));
+            current_statement_begin__ = 463;
+            lp_accum__.add(beta_log<propto__>(p_sev_if_sym, pri_p_sev_if_sym_a, pri_p_sev_if_sym_b));
+            current_statement_begin__ = 464;
+            lp_accum__.add(beta_log<propto__>(p_die_if_sev, pri_p_die_if_sev_a, pri_p_die_if_sev_b));
+            current_statement_begin__ = 465;
+            lp_accum__.add(gamma_log<propto__>(ifr_decl_OR, pri_ifr_decl_OR_a, pri_ifr_decl_OR_b));
+            current_statement_begin__ = 467;
+            lp_accum__.add(beta_log<propto__>(p_die_if_inf, pri_p_die_if_inf_a, pri_p_die_if_inf_b));
+            current_statement_begin__ = 470;
+            lp_accum__.add(beta_log<propto__>(rr_diag_asy_vs_sym, pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b));
+            current_statement_begin__ = 471;
+            lp_accum__.add(beta_log<propto__>(spl_par_sym_dx, pri_rr_diag_sym_vs_sev_a, pri_rr_diag_sym_vs_sev_b));
+            current_statement_begin__ = 472;
+            lp_accum__.add(beta_log<propto__>(p_diag_if_sev, pri_p_diag_if_sev_a, pri_p_diag_if_sev_b));
+            current_statement_begin__ = 474;
+            lp_accum__.add(beta_log<propto__>(scale_dx_delay_sym, scale_dx_delay_sym_a, scale_dx_delay_sym_b));
+            current_statement_begin__ = 475;
+            lp_accum__.add(beta_log<propto__>(scale_dx_delay_sev, scale_dx_delay_sev_a, scale_dx_delay_sev_b));
+            current_statement_begin__ = 477;
+            lp_accum__.add(normal_log<propto__>(inv_sqrt_phi_c, 0, 1));
+            current_statement_begin__ = 478;
             lp_accum__.add(normal_log<propto__>(inv_sqrt_phi_d, 0, 1));
-            current_statement_begin__ = 460;
+            current_statement_begin__ = 482;
             if (as_bool(logical_eq(pre_period_zero, 1))) {
-                current_statement_begin__ = 461;
+                current_statement_begin__ = 483;
                 if (as_bool(logical_gt(N_days_before, 0))) {
-                    current_statement_begin__ = 462;
+                    current_statement_begin__ = 484;
                     stan::math::assign(tmp_sum_cas_pre, sum(stan::model::rvalue(occur_cas, stan::model::cons_list(stan::model::index_min_max(1, N_days_before), stan::model::nil_index_list()), "occur_cas")));
-                    current_statement_begin__ = 463;
+                    current_statement_begin__ = 485;
                     stan::math::assign(tmp_sum_die_pre, sum(stan::model::rvalue(occur_die, stan::model::cons_list(stan::model::index_min_max(1, N_days_before), stan::model::nil_index_list()), "occur_die")));
-                    current_statement_begin__ = 464;
+                    current_statement_begin__ = 486;
                     lp_accum__.add(neg_binomial_2_log(0, (tmp_sum_cas_pre + 0.0001), phi_cas));
-                    current_statement_begin__ = 465;
+                    current_statement_begin__ = 487;
                     lp_accum__.add(neg_binomial_2_log(0, (tmp_sum_die_pre + 0.0001), phi_die));
                 }
             }
-            current_statement_begin__ = 470;
+            current_statement_begin__ = 492;
             if (as_bool(logical_eq(cas_yes, 1))) {
-                current_statement_begin__ = 471;
+                current_statement_begin__ = 493;
                 stan::math::assign(tmp_obs_cas, get_base1(obs_cas, 1, "obs_cas", 1));
-                current_statement_begin__ = 472;
+                current_statement_begin__ = 494;
                 stan::math::assign(tmp_occur_cas, get_base1(occur_cas, (1 + N_days_before), "occur_cas", 1));
-                current_statement_begin__ = 473;
+                current_statement_begin__ = 495;
                 for (int i = 1; i <= N_days; ++i) {
-                    current_statement_begin__ = 474;
+                    current_statement_begin__ = 496;
                     lp_accum__.add((neg_binomial_2_log(tmp_obs_cas, tmp_occur_cas, phi_cas) / N_days_av));
-                    current_statement_begin__ = 476;
+                    current_statement_begin__ = 498;
                     if (as_bool(logical_gt(i, nda0))) {
-                        current_statement_begin__ = 477;
+                        current_statement_begin__ = 499;
                         stan::math::assign(tmp_obs_cas, (tmp_obs_cas - get_base1(obs_cas, (i - nda0), "obs_cas", 1)));
-                        current_statement_begin__ = 478;
+                        current_statement_begin__ = 500;
                         stan::math::assign(tmp_occur_cas, (tmp_occur_cas - get_base1(occur_cas, ((i + N_days_before) - nda0), "occur_cas", 1)));
                     }
-                    current_statement_begin__ = 480;
+                    current_statement_begin__ = 502;
                     if (as_bool(logical_lt(i, N_days))) {
-                        current_statement_begin__ = 481;
+                        current_statement_begin__ = 503;
                         stan::math::assign(tmp_obs_cas, (tmp_obs_cas + get_base1(obs_cas, (i + 1), "obs_cas", 1)));
-                        current_statement_begin__ = 482;
+                        current_statement_begin__ = 504;
                         stan::math::assign(tmp_occur_cas, (tmp_occur_cas + get_base1(occur_cas, ((i + N_days_before) + 1), "occur_cas", 1)));
                     }
                 }
             }
-            current_statement_begin__ = 486;
+            current_statement_begin__ = 508;
             if (as_bool(logical_eq(die_yes, 1))) {
-                current_statement_begin__ = 487;
+                current_statement_begin__ = 509;
                 stan::math::assign(tmp_obs_die, get_base1(obs_die, 1, "obs_die", 1));
-                current_statement_begin__ = 488;
+                current_statement_begin__ = 510;
                 stan::math::assign(tmp_occur_die, get_base1(occur_die, (1 + N_days_before), "occur_die", 1));
-                current_statement_begin__ = 489;
+                current_statement_begin__ = 511;
                 for (int i = 1; i <= N_days; ++i) {
-                    current_statement_begin__ = 490;
+                    current_statement_begin__ = 512;
                     lp_accum__.add((neg_binomial_2_log(tmp_obs_die, tmp_occur_die, phi_die) / N_days_av));
-                    current_statement_begin__ = 492;
+                    current_statement_begin__ = 514;
                     if (as_bool(logical_gt(i, nda0))) {
-                        current_statement_begin__ = 493;
+                        current_statement_begin__ = 515;
                         stan::math::assign(tmp_obs_die, (tmp_obs_die - get_base1(obs_die, (i - nda0), "obs_die", 1)));
-                        current_statement_begin__ = 494;
+                        current_statement_begin__ = 516;
                         stan::math::assign(tmp_occur_die, (tmp_occur_die - get_base1(occur_die, ((i + N_days_before) - nda0), "occur_die", 1)));
                     }
-                    current_statement_begin__ = 496;
+                    current_statement_begin__ = 518;
                     if (as_bool(logical_lt(i, N_days))) {
-                        current_statement_begin__ = 497;
+                        current_statement_begin__ = 519;
                         stan::math::assign(tmp_obs_die, (tmp_obs_die + get_base1(obs_die, (i + 1), "obs_die", 1)));
-                        current_statement_begin__ = 498;
+                        current_statement_begin__ = 520;
                         stan::math::assign(tmp_occur_die, (tmp_occur_die + get_base1(occur_die, ((i + N_days_before) + 1), "occur_die", 1)));
                     }
                 }
@@ -1850,23 +1954,24 @@ public:
         names__.push_back("p_sym_if_inf");
         names__.push_back("p_sev_if_sym");
         names__.push_back("p_die_if_sev");
+        names__.push_back("ifr_decl_OR");
         names__.push_back("scale_dx_delay_asy");
         names__.push_back("scale_dx_delay_sym");
         names__.push_back("scale_dx_delay_sev");
         names__.push_back("rr_diag_asy_vs_sym");
         names__.push_back("p_diag_if_sev");
-        names__.push_back("spl_par_sym_dx0");
+        names__.push_back("spl_par_sym_dx");
         names__.push_back("inv_sqrt_phi_c");
         names__.push_back("inv_sqrt_phi_d");
         names__.push_back("log_new_inf");
         names__.push_back("new_inf");
         names__.push_back("deriv1_log_new_inf");
-        names__.push_back("spl_par_sym_dx");
         names__.push_back("logRt0");
         names__.push_back("logRt");
         names__.push_back("Rt");
         names__.push_back("deriv1_spl_par_rt");
         names__.push_back("deriv2_spl_par_rt");
+        names__.push_back("p_die_if_sevt");
         names__.push_back("rr_diag_sym_vs_sev");
         names__.push_back("p_diag_if_asy");
         names__.push_back("p_diag_if_sym");
@@ -1888,9 +1993,15 @@ public:
         names__.push_back("occur_die");
         names__.push_back("phi_cas");
         names__.push_back("phi_die");
+        names__.push_back("idx1b");
+        names__.push_back("idx2b");
         names__.push_back("p_die_if_sym");
         names__.push_back("diag_cases");
         names__.push_back("cumulative_incidence");
+        names__.push_back("sero_positive");
+        names__.push_back("pop_infectiousness");
+        names__.push_back("infect_dist_rv");
+        names__.push_back("seropos_dist_rv");
     }
     void get_dims(std::vector<std::vector<size_t> >& dimss__) const {
         dimss__.resize(0);
@@ -1921,23 +2032,22 @@ public:
         dims__.resize(0);
         dimss__.push_back(dims__);
         dims__.resize(0);
-        dims__.push_back((N_spl_par_dx - 1));
-        dimss__.push_back(dims__);
-        dims__.resize(0);
-        dimss__.push_back(dims__);
-        dims__.resize(0);
-        dimss__.push_back(dims__);
-        dims__.resize(0);
-        dims__.push_back(N_days_tot);
-        dimss__.push_back(dims__);
-        dims__.resize(0);
-        dims__.push_back(N_days_tot);
-        dimss__.push_back(dims__);
-        dims__.resize(0);
-        dims__.push_back(N_days_tot);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(N_spl_par_dx);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N_days_tot);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N_days_tot);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N_days_tot);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(N_days_tot);
@@ -1955,6 +2065,9 @@ public:
         dims__.push_back((N_spl_par_rt - 2));
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dims__.push_back(N_ifr_adj);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dims__.push_back(N_days_tot);
         dimss__.push_back(dims__);
         dims__.resize(0);
@@ -2015,12 +2128,30 @@ public:
         dims__.resize(0);
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dims__.push_back(N_days_tot);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N_days_tot);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(N_days_tot);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(N_days_tot);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N_days_tot);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N_days_tot);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(Max_delay);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(500);
         dimss__.push_back(dims__);
     }
     template <typename RNG>
@@ -2054,6 +2185,8 @@ public:
         vars__.push_back(p_sev_if_sym);
         double p_die_if_sev = in__.scalar_lub_constrain(0, 1);
         vars__.push_back(p_die_if_sev);
+        double ifr_decl_OR = in__.scalar_lb_constrain(0);
+        vars__.push_back(ifr_decl_OR);
         double scale_dx_delay_asy = in__.scalar_lub_constrain(0, 1);
         vars__.push_back(scale_dx_delay_asy);
         double scale_dx_delay_sym = in__.scalar_lub_constrain(0, 1);
@@ -2064,10 +2197,10 @@ public:
         vars__.push_back(rr_diag_asy_vs_sym);
         double p_diag_if_sev = in__.scalar_lub_constrain(0, 1);
         vars__.push_back(p_diag_if_sev);
-        Eigen::Matrix<double, Eigen::Dynamic, 1> spl_par_sym_dx0 = in__.vector_lub_constrain(0, 1, (N_spl_par_dx - 1));
-        size_t spl_par_sym_dx0_j_1_max__ = (N_spl_par_dx - 1);
-        for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx0_j_1_max__; ++j_1__) {
-            vars__.push_back(spl_par_sym_dx0(j_1__));
+        Eigen::Matrix<double, Eigen::Dynamic, 1> spl_par_sym_dx = in__.vector_lub_constrain(0, 1, N_spl_par_dx);
+        size_t spl_par_sym_dx_j_1_max__ = N_spl_par_dx;
+        for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx_j_1_max__; ++j_1__) {
+            vars__.push_back(spl_par_sym_dx(j_1__));
         }
         double inv_sqrt_phi_c = in__.scalar_lb_constrain(0);
         vars__.push_back(inv_sqrt_phi_c);
@@ -2081,349 +2214,340 @@ public:
         if (!include_tparams__ && !include_gqs__) return;
         try {
             // declare and define transformed parameters
-            current_statement_begin__ = 205;
+            current_statement_begin__ = 226;
             validate_non_negative_index("log_new_inf", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> log_new_inf(N_days_tot);
             stan::math::initialize(log_new_inf, DUMMY_VAR__);
             stan::math::fill(log_new_inf, DUMMY_VAR__);
-            current_statement_begin__ = 206;
+            current_statement_begin__ = 227;
             validate_non_negative_index("new_inf", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> new_inf(N_days_tot);
             stan::math::initialize(new_inf, DUMMY_VAR__);
             stan::math::fill(new_inf, DUMMY_VAR__);
-            current_statement_begin__ = 207;
+            current_statement_begin__ = 228;
             validate_non_negative_index("deriv1_log_new_inf", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> deriv1_log_new_inf(N_days_tot);
             stan::math::initialize(deriv1_log_new_inf, DUMMY_VAR__);
             stan::math::fill(deriv1_log_new_inf, DUMMY_VAR__);
-            current_statement_begin__ = 208;
-            validate_non_negative_index("spl_par_sym_dx", "N_spl_par_dx", N_spl_par_dx);
-            Eigen::Matrix<double, Eigen::Dynamic, 1> spl_par_sym_dx(N_spl_par_dx);
-            stan::math::initialize(spl_par_sym_dx, DUMMY_VAR__);
-            stan::math::fill(spl_par_sym_dx, DUMMY_VAR__);
-            current_statement_begin__ = 211;
+            current_statement_begin__ = 231;
             validate_non_negative_index("logRt0", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> logRt0(N_days_tot);
             stan::math::initialize(logRt0, DUMMY_VAR__);
             stan::math::fill(logRt0, DUMMY_VAR__);
-            current_statement_begin__ = 212;
+            current_statement_begin__ = 232;
             validate_non_negative_index("logRt", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> logRt(N_days_tot);
             stan::math::initialize(logRt, DUMMY_VAR__);
             stan::math::fill(logRt, DUMMY_VAR__);
-            current_statement_begin__ = 213;
+            current_statement_begin__ = 233;
             validate_non_negative_index("Rt", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> Rt(N_days_tot);
             stan::math::initialize(Rt, DUMMY_VAR__);
             stan::math::fill(Rt, DUMMY_VAR__);
-            current_statement_begin__ = 214;
+            current_statement_begin__ = 234;
             validate_non_negative_index("deriv1_spl_par_rt", "(N_spl_par_rt - 1)", (N_spl_par_rt - 1));
             Eigen::Matrix<double, Eigen::Dynamic, 1> deriv1_spl_par_rt((N_spl_par_rt - 1));
             stan::math::initialize(deriv1_spl_par_rt, DUMMY_VAR__);
             stan::math::fill(deriv1_spl_par_rt, DUMMY_VAR__);
-            current_statement_begin__ = 215;
+            current_statement_begin__ = 235;
             validate_non_negative_index("deriv2_spl_par_rt", "(N_spl_par_rt - 2)", (N_spl_par_rt - 2));
             Eigen::Matrix<double, Eigen::Dynamic, 1> deriv2_spl_par_rt((N_spl_par_rt - 2));
             stan::math::initialize(deriv2_spl_par_rt, DUMMY_VAR__);
             stan::math::fill(deriv2_spl_par_rt, DUMMY_VAR__);
-            current_statement_begin__ = 219;
+            current_statement_begin__ = 238;
+            validate_non_negative_index("p_die_if_sevt", "N_ifr_adj", N_ifr_adj);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> p_die_if_sevt(N_ifr_adj);
+            stan::math::initialize(p_die_if_sevt, DUMMY_VAR__);
+            stan::math::fill(p_die_if_sevt, DUMMY_VAR__);
+            current_statement_begin__ = 242;
             validate_non_negative_index("rr_diag_sym_vs_sev", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> rr_diag_sym_vs_sev(N_days_tot);
             stan::math::initialize(rr_diag_sym_vs_sev, DUMMY_VAR__);
             stan::math::fill(rr_diag_sym_vs_sev, DUMMY_VAR__);
-            current_statement_begin__ = 220;
+            current_statement_begin__ = 243;
             validate_non_negative_index("p_diag_if_asy", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> p_diag_if_asy(N_days_tot);
             stan::math::initialize(p_diag_if_asy, DUMMY_VAR__);
             stan::math::fill(p_diag_if_asy, DUMMY_VAR__);
-            current_statement_begin__ = 221;
+            current_statement_begin__ = 244;
             validate_non_negative_index("p_diag_if_sym", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> p_diag_if_sym(N_days_tot);
             stan::math::initialize(p_diag_if_sym, DUMMY_VAR__);
             stan::math::fill(p_diag_if_sym, DUMMY_VAR__);
-            current_statement_begin__ = 225;
+            current_statement_begin__ = 248;
             validate_non_negative_index("sym_diag_delay_rv", "Max_delay", Max_delay);
             Eigen::Matrix<double, Eigen::Dynamic, 1> sym_diag_delay_rv(Max_delay);
             stan::math::initialize(sym_diag_delay_rv, DUMMY_VAR__);
             stan::math::fill(sym_diag_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 226;
+            current_statement_begin__ = 249;
             validate_non_negative_index("sev_diag_delay_rv", "Max_delay", Max_delay);
             Eigen::Matrix<double, Eigen::Dynamic, 1> sev_diag_delay_rv(Max_delay);
             stan::math::initialize(sev_diag_delay_rv, DUMMY_VAR__);
             stan::math::fill(sev_diag_delay_rv, DUMMY_VAR__);
-            current_statement_begin__ = 230;
+            current_statement_begin__ = 253;
             double p_die_if_inf;
             (void) p_die_if_inf;  // dummy to suppress unused var warning
             stan::math::initialize(p_die_if_inf, DUMMY_VAR__);
             stan::math::fill(p_die_if_inf, DUMMY_VAR__);
-            current_statement_begin__ = 232;
+            current_statement_begin__ = 255;
             validate_non_negative_index("new_sym", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> new_sym(N_days_tot);
             stan::math::initialize(new_sym, DUMMY_VAR__);
             stan::math::fill(new_sym, DUMMY_VAR__);
-            current_statement_begin__ = 233;
+            current_statement_begin__ = 256;
             validate_non_negative_index("new_sev", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> new_sev(N_days_tot);
             stan::math::initialize(new_sev, DUMMY_VAR__);
             stan::math::fill(new_sev, DUMMY_VAR__);
-            current_statement_begin__ = 234;
+            current_statement_begin__ = 257;
             validate_non_negative_index("new_die", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> new_die(N_days_tot);
             stan::math::initialize(new_die, DUMMY_VAR__);
             stan::math::fill(new_die, DUMMY_VAR__);
-            current_statement_begin__ = 236;
+            current_statement_begin__ = 259;
             validate_non_negative_index("new_asy_dx", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> new_asy_dx(N_days_tot);
             stan::math::initialize(new_asy_dx, DUMMY_VAR__);
             stan::math::fill(new_asy_dx, DUMMY_VAR__);
-            current_statement_begin__ = 237;
+            current_statement_begin__ = 260;
             validate_non_negative_index("new_sym_dx", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> new_sym_dx(N_days_tot);
             stan::math::initialize(new_sym_dx, DUMMY_VAR__);
             stan::math::fill(new_sym_dx, DUMMY_VAR__);
-            current_statement_begin__ = 238;
+            current_statement_begin__ = 261;
             validate_non_negative_index("new_sev_dx", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> new_sev_dx(N_days_tot);
             stan::math::initialize(new_sev_dx, DUMMY_VAR__);
             stan::math::fill(new_sev_dx, DUMMY_VAR__);
-            current_statement_begin__ = 240;
+            current_statement_begin__ = 263;
             validate_non_negative_index("dx_sym_sev", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> dx_sym_sev(N_days_tot);
             stan::math::initialize(dx_sym_sev, DUMMY_VAR__);
             stan::math::fill(dx_sym_sev, DUMMY_VAR__);
-            current_statement_begin__ = 241;
+            current_statement_begin__ = 264;
             validate_non_negative_index("dx_sym_die", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> dx_sym_die(N_days_tot);
             stan::math::initialize(dx_sym_die, DUMMY_VAR__);
             stan::math::fill(dx_sym_die, DUMMY_VAR__);
-            current_statement_begin__ = 242;
+            current_statement_begin__ = 265;
             validate_non_negative_index("dx_sev_die", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> dx_sev_die(N_days_tot);
             stan::math::initialize(dx_sev_die, DUMMY_VAR__);
             stan::math::fill(dx_sev_die, DUMMY_VAR__);
-            current_statement_begin__ = 244;
+            current_statement_begin__ = 267;
             validate_non_negative_index("diag_all", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> diag_all(N_days_tot);
             stan::math::initialize(diag_all, DUMMY_VAR__);
             stan::math::fill(diag_all, DUMMY_VAR__);
-            current_statement_begin__ = 245;
+            current_statement_begin__ = 268;
             validate_non_negative_index("new_die_dx", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> new_die_dx(N_days_tot);
             stan::math::initialize(new_die_dx, DUMMY_VAR__);
             stan::math::fill(new_die_dx, DUMMY_VAR__);
-            current_statement_begin__ = 248;
+            current_statement_begin__ = 271;
             validate_non_negative_index("occur_cas", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> occur_cas(N_days_tot);
             stan::math::initialize(occur_cas, DUMMY_VAR__);
             stan::math::fill(occur_cas, DUMMY_VAR__);
-            current_statement_begin__ = 249;
+            current_statement_begin__ = 272;
             validate_non_negative_index("occur_die", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> occur_die(N_days_tot);
             stan::math::initialize(occur_die, DUMMY_VAR__);
             stan::math::fill(occur_die, DUMMY_VAR__);
-            current_statement_begin__ = 253;
+            current_statement_begin__ = 276;
             double phi_cas;
             (void) phi_cas;  // dummy to suppress unused var warning
             stan::math::initialize(phi_cas, DUMMY_VAR__);
             stan::math::fill(phi_cas, DUMMY_VAR__);
-            current_statement_begin__ = 254;
+            current_statement_begin__ = 277;
             double phi_die;
             (void) phi_die;  // dummy to suppress unused var warning
             stan::math::initialize(phi_die, DUMMY_VAR__);
             stan::math::fill(phi_die, DUMMY_VAR__);
             // do transformed parameters statements
-            current_statement_begin__ = 258;
-            stan::model::assign(spl_par_sym_dx, 
-                        stan::model::cons_list(stan::model::index_min_max(2, N_spl_par_dx), stan::model::nil_index_list()), 
-                        spl_par_sym_dx0, 
-                        "assigning variable spl_par_sym_dx");
-            current_statement_begin__ = 259;
-            stan::model::assign(spl_par_sym_dx, 
-                        stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list()), 
-                        inv_logit((multiply(subtract(stan::model::rvalue(spl_basis_dx, stan::model::cons_list(stan::model::index_uni(2), stan::model::cons_list(stan::model::index_min_max(2, N_spl_par_dx), stan::model::nil_index_list())), "spl_basis_dx"), stan::model::rvalue(spl_basis_dx, stan::model::cons_list(stan::model::index_uni(1), stan::model::cons_list(stan::model::index_min_max(2, N_spl_par_dx), stan::model::nil_index_list())), "spl_basis_dx")), logit(spl_par_sym_dx0)) / (get_base1(spl_basis_dx, 1, 1, "spl_basis_dx", 1) - get_base1(spl_basis_dx, 2, 1, "spl_basis_dx", 1)))), 
-                        "assigning variable spl_par_sym_dx");
-            current_statement_begin__ = 264;
+            current_statement_begin__ = 280;
+            stan::math::assign(p_die_if_sevt, multiply(((p_die_if_sev / (1 - p_die_if_sev)) * ifr_adj_fixed), add(1.0, multiply(ifr_adj, ifr_decl_OR))));
+            current_statement_begin__ = 281;
+            stan::math::assign(p_die_if_sevt, elt_divide(p_die_if_sevt, add(1, p_die_if_sevt)));
+            current_statement_begin__ = 285;
             stan::math::assign(rr_diag_sym_vs_sev, inv_logit(multiply(spl_basis_dx, logit(spl_par_sym_dx))));
-            current_statement_begin__ = 266;
+            current_statement_begin__ = 287;
             stan::math::assign(p_diag_if_sym, multiply(p_diag_if_sev, rr_diag_sym_vs_sev));
-            current_statement_begin__ = 267;
+            current_statement_begin__ = 288;
             stan::math::assign(p_diag_if_asy, multiply(p_diag_if_sym, rr_diag_asy_vs_sym));
-            current_statement_begin__ = 275;
+            current_statement_begin__ = 296;
             for (int i = 1; i <= Max_delay; ++i) {
-                current_statement_begin__ = 276;
+                current_statement_begin__ = 297;
                 stan::model::assign(sym_diag_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), sym_prg_delay_shap, (sym_prg_delay_rate / scale_dx_delay_sym)) - gamma_cdf((i - 1.0), sym_prg_delay_shap, (sym_prg_delay_rate / scale_dx_delay_sym))), 
                             "assigning variable sym_diag_delay_rv");
-                current_statement_begin__ = 280;
+                current_statement_begin__ = 301;
                 stan::model::assign(sev_diag_delay_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), sev_prg_delay_shap, (sev_prg_delay_rate / scale_dx_delay_sev)) - gamma_cdf((i - 1.0), sev_prg_delay_shap, (sev_prg_delay_rate / scale_dx_delay_sev))), 
                             "assigning variable sev_diag_delay_rv");
             }
-            current_statement_begin__ = 290;
+            current_statement_begin__ = 311;
             stan::math::assign(p_die_if_inf, ((p_sym_if_inf * p_sev_if_sym) * p_die_if_sev));
-            current_statement_begin__ = 297;
+            current_statement_begin__ = 318;
             stan::math::assign(logRt0, multiply(spl_basis_rt, spl_par_rt));
-            current_statement_begin__ = 298;
+            current_statement_begin__ = 319;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 299;
+                current_statement_begin__ = 320;
                 if (as_bool(logical_eq(i, 1))) {
-                    current_statement_begin__ = 300;
+                    current_statement_begin__ = 321;
                     stan::model::assign(logRt, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 get_base1(logRt0, i, "logRt0", 1), 
                                 "assigning variable logRt");
                 } else {
-                    current_statement_begin__ = 302;
+                    current_statement_begin__ = 323;
                     stan::model::assign(logRt, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (get_base1(logRt0, i, "logRt0", 1) + stan::math::log((1 - (sum(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(1, (i - 1)), stan::model::nil_index_list()), "new_inf")) / pop_size)))), 
                                 "assigning variable logRt");
                 }
-                current_statement_begin__ = 304;
+                current_statement_begin__ = 325;
                 stan::model::assign(deriv1_log_new_inf, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (get_base1(logRt, i, "logRt", 1) / serial_i), 
                             "assigning variable deriv1_log_new_inf");
-                current_statement_begin__ = 305;
+                current_statement_begin__ = 326;
                 stan::model::assign(log_new_inf, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (sum(stan::model::rvalue(deriv1_log_new_inf, stan::model::cons_list(stan::model::index_min_max(1, i), stan::model::nil_index_list()), "deriv1_log_new_inf")) + log_new_inf_0), 
                             "assigning variable log_new_inf");
-                current_statement_begin__ = 306;
+                current_statement_begin__ = 327;
                 stan::model::assign(new_inf, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (stan::math::exp(get_base1(log_new_inf, i, "log_new_inf", 1)) + inf_imported), 
                             "assigning variable new_inf");
             }
-            current_statement_begin__ = 308;
+            current_statement_begin__ = 329;
             stan::math::assign(Rt, stan::math::exp(logRt));
-            current_statement_begin__ = 311;
+            current_statement_begin__ = 332;
             stan::model::assign(deriv2_spl_par_rt, 
                         stan::model::cons_list(stan::model::index_min_max(1, (N_spl_par_rt - 2)), stan::model::nil_index_list()), 
                         subtract(subtract(multiply(stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(2, (N_spl_par_rt - 1)), stan::model::nil_index_list()), "spl_par_rt"), 2), stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(1, (N_spl_par_rt - 2)), stan::model::nil_index_list()), "spl_par_rt")), stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(3, N_spl_par_rt), stan::model::nil_index_list()), "spl_par_rt")), 
                         "assigning variable deriv2_spl_par_rt");
-            current_statement_begin__ = 315;
+            current_statement_begin__ = 336;
             stan::model::assign(deriv1_spl_par_rt, 
                         stan::model::cons_list(stan::model::index_min_max(1, (N_spl_par_rt - 1)), stan::model::nil_index_list()), 
                         subtract(stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(2, N_spl_par_rt), stan::model::nil_index_list()), "spl_par_rt"), stan::model::rvalue(spl_par_rt, stan::model::cons_list(stan::model::index_min_max(1, (N_spl_par_rt - 1)), stan::model::nil_index_list()), "spl_par_rt")), 
                         "assigning variable deriv1_spl_par_rt");
-            current_statement_begin__ = 323;
+            current_statement_begin__ = 344;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 324;
+                current_statement_begin__ = 345;
                 stan::model::assign(new_sym, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_inf"), stan::model::rvalue(inf_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "inf_prg_delay_rv")) * p_sym_if_inf), 
                             "assigning variable new_sym");
             }
-            current_statement_begin__ = 328;
+            current_statement_begin__ = 349;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 329;
+                current_statement_begin__ = 350;
                 stan::model::assign(new_sev, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(stan::model::rvalue(new_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sym"), stan::model::rvalue(sym_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sym_prg_delay_rv")) * p_sev_if_sym), 
                             "assigning variable new_sev");
             }
-            current_statement_begin__ = 333;
+            current_statement_begin__ = 354;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 334;
+                current_statement_begin__ = 355;
                 stan::model::assign(new_die, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            (dot_product(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * p_die_if_sev), 
+                            (dot_product(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * get_base1(p_die_if_sevt, i, "p_die_if_sevt", 1)), 
                             "assigning variable new_die");
             }
-            current_statement_begin__ = 346;
+            current_statement_begin__ = 367;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 347;
+                current_statement_begin__ = 368;
                 stan::model::assign(new_asy_dx, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(elt_multiply(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_inf"), stan::model::rvalue(p_diag_if_asy, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "p_diag_if_asy")), stan::model::rvalue(asy_rec_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "asy_rec_delay_rv")) * (1 - p_sym_if_inf)), 
                             "assigning variable new_asy_dx");
             }
-            current_statement_begin__ = 355;
+            current_statement_begin__ = 376;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 356;
+                current_statement_begin__ = 377;
                 stan::model::assign(new_sym_dx, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             dot_product(elt_multiply(stan::model::rvalue(new_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sym"), stan::model::rvalue(p_diag_if_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "p_diag_if_sym")), stan::model::rvalue(sym_diag_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sym_diag_delay_rv")), 
                             "assigning variable new_sym_dx");
             }
-            current_statement_begin__ = 363;
+            current_statement_begin__ = 384;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 364;
+                current_statement_begin__ = 385;
                 stan::model::assign(dx_sym_sev, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(elt_multiply(stan::model::rvalue(new_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sym"), stan::model::rvalue(p_diag_if_sym, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "p_diag_if_sym")), stan::model::rvalue(sym_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sym_prg_delay_rv")) * p_sev_if_sym), 
                             "assigning variable dx_sym_sev");
             }
-            current_statement_begin__ = 368;
+            current_statement_begin__ = 389;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 369;
+                current_statement_begin__ = 390;
                 stan::model::assign(dx_sym_die, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            (dot_product(stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev"), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * p_die_if_sev), 
+                            (dot_product(stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev"), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * get_base1(p_die_if_sevt, i, "p_die_if_sevt", 1)), 
                             "assigning variable dx_sym_die");
             }
-            current_statement_begin__ = 375;
+            current_statement_begin__ = 396;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 376;
+                current_statement_begin__ = 397;
                 stan::model::assign(new_sev_dx, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (dot_product(subtract(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev")), stan::model::rvalue(sev_diag_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_diag_delay_rv")) * p_diag_if_sev), 
                             "assigning variable new_sev_dx");
             }
-            current_statement_begin__ = 382;
+            current_statement_begin__ = 403;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 383;
+                current_statement_begin__ = 404;
                 stan::model::assign(dx_sev_die, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            ((dot_product(subtract(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev")), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * p_diag_if_sev) * p_die_if_sev), 
+                            ((dot_product(subtract(stan::model::rvalue(new_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_sev"), stan::model::rvalue(dx_sym_sev, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "dx_sym_sev")), stan::model::rvalue(sev_prg_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "sev_prg_delay_rv")) * p_diag_if_sev) * get_base1(p_die_if_sevt, i, "p_die_if_sevt", 1)), 
                             "assigning variable dx_sev_die");
             }
-            current_statement_begin__ = 388;
+            current_statement_begin__ = 409;
             stan::math::assign(diag_all, add(add(new_asy_dx, new_sym_dx), new_sev_dx));
-            current_statement_begin__ = 389;
+            current_statement_begin__ = 410;
             stan::math::assign(new_die_dx, add(dx_sym_die, dx_sev_die));
-            current_statement_begin__ = 397;
+            current_statement_begin__ = 418;
             if (as_bool(logical_eq(obs_cas_rep, 1))) {
-                current_statement_begin__ = 398;
+                current_statement_begin__ = 419;
                 for (int i = 1; i <= N_days_tot; ++i) {
-                    current_statement_begin__ = 399;
+                    current_statement_begin__ = 420;
                     stan::model::assign(occur_cas, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 dot_product(stan::model::rvalue(diag_all, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "diag_all"), stan::model::rvalue(cas_rep_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "cas_rep_delay_rv")), 
                                 "assigning variable occur_cas");
                 }
             } else {
-                current_statement_begin__ = 405;
+                current_statement_begin__ = 426;
                 stan::math::assign(occur_cas, elt_multiply(diag_all, cas_cum_report_delay_rv));
             }
-            current_statement_begin__ = 408;
+            current_statement_begin__ = 429;
             if (as_bool(logical_eq(obs_die_rep, 1))) {
-                current_statement_begin__ = 409;
+                current_statement_begin__ = 430;
                 for (int i = 1; i <= N_days_tot; ++i) {
-                    current_statement_begin__ = 410;
+                    current_statement_begin__ = 431;
                     stan::model::assign(occur_die, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 dot_product(stan::model::rvalue(new_die_dx, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_die_dx"), stan::model::rvalue(die_rep_delay_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "die_rep_delay_rv")), 
                                 "assigning variable occur_die");
                 }
             } else {
-                current_statement_begin__ = 414;
+                current_statement_begin__ = 435;
                 stan::math::assign(occur_die, elt_multiply(new_die_dx, die_cum_report_delay_rv));
             }
-            current_statement_begin__ = 418;
+            current_statement_begin__ = 439;
             stan::math::assign(phi_cas, pow(inv_sqrt_phi_c, -(2)));
-            current_statement_begin__ = 419;
+            current_statement_begin__ = 440;
             stan::math::assign(phi_die, pow(inv_sqrt_phi_d, -(2)));
             if (!include_gqs__ && !include_tparams__) return;
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 208;
-            check_greater_or_equal(function__, "spl_par_sym_dx", spl_par_sym_dx, 0);
-            check_less_or_equal(function__, "spl_par_sym_dx", spl_par_sym_dx, 1);
             // write transformed parameters
             if (include_tparams__) {
                 size_t log_new_inf_j_1_max__ = N_days_tot;
@@ -2437,10 +2561,6 @@ public:
                 size_t deriv1_log_new_inf_j_1_max__ = N_days_tot;
                 for (size_t j_1__ = 0; j_1__ < deriv1_log_new_inf_j_1_max__; ++j_1__) {
                     vars__.push_back(deriv1_log_new_inf(j_1__));
-                }
-                size_t spl_par_sym_dx_j_1_max__ = N_spl_par_dx;
-                for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx_j_1_max__; ++j_1__) {
-                    vars__.push_back(spl_par_sym_dx(j_1__));
                 }
                 size_t logRt0_j_1_max__ = N_days_tot;
                 for (size_t j_1__ = 0; j_1__ < logRt0_j_1_max__; ++j_1__) {
@@ -2461,6 +2581,10 @@ public:
                 size_t deriv2_spl_par_rt_j_1_max__ = (N_spl_par_rt - 2);
                 for (size_t j_1__ = 0; j_1__ < deriv2_spl_par_rt_j_1_max__; ++j_1__) {
                     vars__.push_back(deriv2_spl_par_rt(j_1__));
+                }
+                size_t p_die_if_sevt_j_1_max__ = N_ifr_adj;
+                for (size_t j_1__ = 0; j_1__ < p_die_if_sevt_j_1_max__; ++j_1__) {
+                    vars__.push_back(p_die_if_sevt(j_1__));
                 }
                 size_t rr_diag_sym_vs_sev_j_1_max__ = N_days_tot;
                 for (size_t j_1__ = 0; j_1__ < rr_diag_sym_vs_sev_j_1_max__; ++j_1__) {
@@ -2540,40 +2664,157 @@ public:
             }
             if (!include_gqs__) return;
             // declare and define generated quantities
-            current_statement_begin__ = 507;
+            current_statement_begin__ = 528;
+            validate_non_negative_index("idx1b", "N_days_tot", N_days_tot);
+            std::vector<int> idx1b(N_days_tot, int(0));
+            stan::math::fill(idx1b, std::numeric_limits<int>::min());
+            current_statement_begin__ = 529;
+            validate_non_negative_index("idx2b", "N_days_tot", N_days_tot);
+            std::vector<int> idx2b(N_days_tot, int(0));
+            stan::math::fill(idx2b, std::numeric_limits<int>::min());
+            current_statement_begin__ = 530;
             double p_die_if_sym;
             (void) p_die_if_sym;  // dummy to suppress unused var warning
             stan::math::initialize(p_die_if_sym, DUMMY_VAR__);
             stan::math::fill(p_die_if_sym, DUMMY_VAR__);
-            current_statement_begin__ = 508;
+            current_statement_begin__ = 531;
             validate_non_negative_index("diag_cases", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> diag_cases(N_days_tot);
             stan::math::initialize(diag_cases, DUMMY_VAR__);
             stan::math::fill(diag_cases, DUMMY_VAR__);
-            current_statement_begin__ = 509;
+            current_statement_begin__ = 532;
             validate_non_negative_index("cumulative_incidence", "N_days_tot", N_days_tot);
             Eigen::Matrix<double, Eigen::Dynamic, 1> cumulative_incidence(N_days_tot);
             stan::math::initialize(cumulative_incidence, DUMMY_VAR__);
             stan::math::fill(cumulative_incidence, DUMMY_VAR__);
+            current_statement_begin__ = 533;
+            validate_non_negative_index("sero_positive", "N_days_tot", N_days_tot);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> sero_positive(N_days_tot);
+            stan::math::initialize(sero_positive, DUMMY_VAR__);
+            stan::math::fill(sero_positive, DUMMY_VAR__);
+            current_statement_begin__ = 534;
+            validate_non_negative_index("pop_infectiousness", "N_days_tot", N_days_tot);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> pop_infectiousness(N_days_tot);
+            stan::math::initialize(pop_infectiousness, DUMMY_VAR__);
+            stan::math::fill(pop_infectiousness, DUMMY_VAR__);
+            current_statement_begin__ = 535;
+            validate_non_negative_index("infect_dist_rv", "Max_delay", Max_delay);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> infect_dist_rv(Max_delay);
+            stan::math::initialize(infect_dist_rv, DUMMY_VAR__);
+            stan::math::fill(infect_dist_rv, DUMMY_VAR__);
+            current_statement_begin__ = 536;
+            validate_non_negative_index("seropos_dist_rv", "500", 500);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> seropos_dist_rv(500);
+            stan::math::initialize(seropos_dist_rv, DUMMY_VAR__);
+            stan::math::fill(seropos_dist_rv, DUMMY_VAR__);
             // generated quantities statements
-            current_statement_begin__ = 511;
+            current_statement_begin__ = 539;
+            for (int i = 1; i <= N_days_tot; ++i) {
+                current_statement_begin__ = 540;
+                if (as_bool(logical_gt((i - 500), 0))) {
+                    current_statement_begin__ = 541;
+                    stan::model::assign(idx1b, 
+                                stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
+                                ((i - 500) + 1), 
+                                "assigning variable idx1b");
+                    current_statement_begin__ = 542;
+                    stan::model::assign(idx2b, 
+                                stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
+                                1, 
+                                "assigning variable idx2b");
+                } else {
+                    current_statement_begin__ = 544;
+                    stan::model::assign(idx1b, 
+                                stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
+                                1, 
+                                "assigning variable idx1b");
+                    current_statement_begin__ = 545;
+                    stan::model::assign(idx2b, 
+                                stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
+                                ((500 - i) + 1), 
+                                "assigning variable idx2b");
+                }
+            }
+            current_statement_begin__ = 550;
             stan::math::assign(cumulative_incidence, cumulative_sum(new_inf));
-            current_statement_begin__ = 512;
+            current_statement_begin__ = 551;
             stan::math::assign(p_die_if_sym, (p_die_if_sev * p_sev_if_sym));
-            current_statement_begin__ = 513;
+            current_statement_begin__ = 552;
             stan::math::assign(diag_cases, add(new_sym_dx, new_sev_dx));
+            current_statement_begin__ = 555;
+            for (int i = 1; i <= Max_delay; ++i) {
+                current_statement_begin__ = 556;
+                stan::model::assign(infect_dist_rv, 
+                            stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
+                            (gamma_cdf((i + 0.0), infect_dist_shap, infect_dist_rate) - gamma_cdf((i - 1.0), infect_dist_shap, infect_dist_rate)), 
+                            "assigning variable infect_dist_rv");
+            }
+            current_statement_begin__ = 561;
+            for (int i = 1; i <= 500; ++i) {
+                current_statement_begin__ = 562;
+                stan::model::assign(seropos_dist_rv, 
+                            stan::model::cons_list(stan::model::index_uni(((1 + 500) - i)), stan::model::nil_index_list()), 
+                            (1.0 - gamma_cdf((i + 0.0), seropos_dist_shap, seropos_dist_rate)), 
+                            "assigning variable seropos_dist_rv");
+            }
+            current_statement_begin__ = 567;
+            for (int i = 1; i <= N_days_tot; ++i) {
+                current_statement_begin__ = 568;
+                stan::model::assign(pop_infectiousness, 
+                            stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
+                            dot_product(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_inf"), stan::model::rvalue(infect_dist_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "infect_dist_rv")), 
+                            "assigning variable pop_infectiousness");
+            }
+            current_statement_begin__ = 573;
+            for (int i = 1; i <= N_days_tot; ++i) {
+                current_statement_begin__ = 574;
+                stan::model::assign(sero_positive, 
+                            stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
+                            dot_product(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1b, i, "idx1b", 1), i), stan::model::nil_index_list()), "new_inf"), stan::model::rvalue(seropos_dist_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2b, i, "idx2b", 1), 500), stan::model::nil_index_list()), "seropos_dist_rv")), 
+                            "assigning variable sero_positive");
+            }
             // validate, write generated quantities
-            current_statement_begin__ = 507;
+            current_statement_begin__ = 528;
+            size_t idx1b_k_0_max__ = N_days_tot;
+            for (size_t k_0__ = 0; k_0__ < idx1b_k_0_max__; ++k_0__) {
+                vars__.push_back(idx1b[k_0__]);
+            }
+            current_statement_begin__ = 529;
+            size_t idx2b_k_0_max__ = N_days_tot;
+            for (size_t k_0__ = 0; k_0__ < idx2b_k_0_max__; ++k_0__) {
+                vars__.push_back(idx2b[k_0__]);
+            }
+            current_statement_begin__ = 530;
             vars__.push_back(p_die_if_sym);
-            current_statement_begin__ = 508;
+            current_statement_begin__ = 531;
             size_t diag_cases_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < diag_cases_j_1_max__; ++j_1__) {
                 vars__.push_back(diag_cases(j_1__));
             }
-            current_statement_begin__ = 509;
+            current_statement_begin__ = 532;
             size_t cumulative_incidence_j_1_max__ = N_days_tot;
             for (size_t j_1__ = 0; j_1__ < cumulative_incidence_j_1_max__; ++j_1__) {
                 vars__.push_back(cumulative_incidence(j_1__));
+            }
+            current_statement_begin__ = 533;
+            size_t sero_positive_j_1_max__ = N_days_tot;
+            for (size_t j_1__ = 0; j_1__ < sero_positive_j_1_max__; ++j_1__) {
+                vars__.push_back(sero_positive(j_1__));
+            }
+            current_statement_begin__ = 534;
+            size_t pop_infectiousness_j_1_max__ = N_days_tot;
+            for (size_t j_1__ = 0; j_1__ < pop_infectiousness_j_1_max__; ++j_1__) {
+                vars__.push_back(pop_infectiousness(j_1__));
+            }
+            current_statement_begin__ = 535;
+            size_t infect_dist_rv_j_1_max__ = Max_delay;
+            for (size_t j_1__ = 0; j_1__ < infect_dist_rv_j_1_max__; ++j_1__) {
+                vars__.push_back(infect_dist_rv(j_1__));
+            }
+            current_statement_begin__ = 536;
+            size_t seropos_dist_rv_j_1_max__ = 500;
+            for (size_t j_1__ = 0; j_1__ < seropos_dist_rv_j_1_max__; ++j_1__) {
+                vars__.push_back(seropos_dist_rv(j_1__));
             }
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -2630,6 +2871,9 @@ public:
         param_name_stream__ << "p_die_if_sev";
         param_names__.push_back(param_name_stream__.str());
         param_name_stream__.str(std::string());
+        param_name_stream__ << "ifr_decl_OR";
+        param_names__.push_back(param_name_stream__.str());
+        param_name_stream__.str(std::string());
         param_name_stream__ << "scale_dx_delay_asy";
         param_names__.push_back(param_name_stream__.str());
         param_name_stream__.str(std::string());
@@ -2644,10 +2888,10 @@ public:
         param_name_stream__.str(std::string());
         param_name_stream__ << "p_diag_if_sev";
         param_names__.push_back(param_name_stream__.str());
-        size_t spl_par_sym_dx0_j_1_max__ = (N_spl_par_dx - 1);
-        for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx0_j_1_max__; ++j_1__) {
+        size_t spl_par_sym_dx_j_1_max__ = N_spl_par_dx;
+        for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx_j_1_max__; ++j_1__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "spl_par_sym_dx0" << '.' << j_1__ + 1;
+            param_name_stream__ << "spl_par_sym_dx" << '.' << j_1__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
         param_name_stream__.str(std::string());
@@ -2674,12 +2918,6 @@ public:
             for (size_t j_1__ = 0; j_1__ < deriv1_log_new_inf_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
                 param_name_stream__ << "deriv1_log_new_inf" << '.' << j_1__ + 1;
-                param_names__.push_back(param_name_stream__.str());
-            }
-            size_t spl_par_sym_dx_j_1_max__ = N_spl_par_dx;
-            for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx_j_1_max__; ++j_1__) {
-                param_name_stream__.str(std::string());
-                param_name_stream__ << "spl_par_sym_dx" << '.' << j_1__ + 1;
                 param_names__.push_back(param_name_stream__.str());
             }
             size_t logRt0_j_1_max__ = N_days_tot;
@@ -2710,6 +2948,12 @@ public:
             for (size_t j_1__ = 0; j_1__ < deriv2_spl_par_rt_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
                 param_name_stream__ << "deriv2_spl_par_rt" << '.' << j_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
+            size_t p_die_if_sevt_j_1_max__ = N_ifr_adj;
+            for (size_t j_1__ = 0; j_1__ < p_die_if_sevt_j_1_max__; ++j_1__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "p_die_if_sevt" << '.' << j_1__ + 1;
                 param_names__.push_back(param_name_stream__.str());
             }
             size_t rr_diag_sym_vs_sev_j_1_max__ = N_days_tot;
@@ -2831,6 +3075,18 @@ public:
             param_names__.push_back(param_name_stream__.str());
         }
         if (!include_gqs__) return;
+        size_t idx1b_k_0_max__ = N_days_tot;
+        for (size_t k_0__ = 0; k_0__ < idx1b_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "idx1b" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t idx2b_k_0_max__ = N_days_tot;
+        for (size_t k_0__ = 0; k_0__ < idx2b_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "idx2b" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
         param_name_stream__.str(std::string());
         param_name_stream__ << "p_die_if_sym";
         param_names__.push_back(param_name_stream__.str());
@@ -2844,6 +3100,30 @@ public:
         for (size_t j_1__ = 0; j_1__ < cumulative_incidence_j_1_max__; ++j_1__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "cumulative_incidence" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t sero_positive_j_1_max__ = N_days_tot;
+        for (size_t j_1__ = 0; j_1__ < sero_positive_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "sero_positive" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t pop_infectiousness_j_1_max__ = N_days_tot;
+        for (size_t j_1__ = 0; j_1__ < pop_infectiousness_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "pop_infectiousness" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t infect_dist_rv_j_1_max__ = Max_delay;
+        for (size_t j_1__ = 0; j_1__ < infect_dist_rv_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "infect_dist_rv" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t seropos_dist_rv_j_1_max__ = 500;
+        for (size_t j_1__ = 0; j_1__ < seropos_dist_rv_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "seropos_dist_rv" << '.' << j_1__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
     }
@@ -2876,6 +3156,9 @@ public:
         param_name_stream__ << "p_die_if_sev";
         param_names__.push_back(param_name_stream__.str());
         param_name_stream__.str(std::string());
+        param_name_stream__ << "ifr_decl_OR";
+        param_names__.push_back(param_name_stream__.str());
+        param_name_stream__.str(std::string());
         param_name_stream__ << "scale_dx_delay_asy";
         param_names__.push_back(param_name_stream__.str());
         param_name_stream__.str(std::string());
@@ -2890,10 +3173,10 @@ public:
         param_name_stream__.str(std::string());
         param_name_stream__ << "p_diag_if_sev";
         param_names__.push_back(param_name_stream__.str());
-        size_t spl_par_sym_dx0_j_1_max__ = (N_spl_par_dx - 1);
-        for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx0_j_1_max__; ++j_1__) {
+        size_t spl_par_sym_dx_j_1_max__ = N_spl_par_dx;
+        for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx_j_1_max__; ++j_1__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "spl_par_sym_dx0" << '.' << j_1__ + 1;
+            param_name_stream__ << "spl_par_sym_dx" << '.' << j_1__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
         param_name_stream__.str(std::string());
@@ -2920,12 +3203,6 @@ public:
             for (size_t j_1__ = 0; j_1__ < deriv1_log_new_inf_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
                 param_name_stream__ << "deriv1_log_new_inf" << '.' << j_1__ + 1;
-                param_names__.push_back(param_name_stream__.str());
-            }
-            size_t spl_par_sym_dx_j_1_max__ = N_spl_par_dx;
-            for (size_t j_1__ = 0; j_1__ < spl_par_sym_dx_j_1_max__; ++j_1__) {
-                param_name_stream__.str(std::string());
-                param_name_stream__ << "spl_par_sym_dx" << '.' << j_1__ + 1;
                 param_names__.push_back(param_name_stream__.str());
             }
             size_t logRt0_j_1_max__ = N_days_tot;
@@ -2956,6 +3233,12 @@ public:
             for (size_t j_1__ = 0; j_1__ < deriv2_spl_par_rt_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
                 param_name_stream__ << "deriv2_spl_par_rt" << '.' << j_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
+            size_t p_die_if_sevt_j_1_max__ = N_ifr_adj;
+            for (size_t j_1__ = 0; j_1__ < p_die_if_sevt_j_1_max__; ++j_1__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "p_die_if_sevt" << '.' << j_1__ + 1;
                 param_names__.push_back(param_name_stream__.str());
             }
             size_t rr_diag_sym_vs_sev_j_1_max__ = N_days_tot;
@@ -3077,6 +3360,18 @@ public:
             param_names__.push_back(param_name_stream__.str());
         }
         if (!include_gqs__) return;
+        size_t idx1b_k_0_max__ = N_days_tot;
+        for (size_t k_0__ = 0; k_0__ < idx1b_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "idx1b" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t idx2b_k_0_max__ = N_days_tot;
+        for (size_t k_0__ = 0; k_0__ < idx2b_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "idx2b" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
         param_name_stream__.str(std::string());
         param_name_stream__ << "p_die_if_sym";
         param_names__.push_back(param_name_stream__.str());
@@ -3090,6 +3385,30 @@ public:
         for (size_t j_1__ = 0; j_1__ < cumulative_incidence_j_1_max__; ++j_1__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "cumulative_incidence" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t sero_positive_j_1_max__ = N_days_tot;
+        for (size_t j_1__ = 0; j_1__ < sero_positive_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "sero_positive" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t pop_infectiousness_j_1_max__ = N_days_tot;
+        for (size_t j_1__ = 0; j_1__ < pop_infectiousness_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "pop_infectiousness" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t infect_dist_rv_j_1_max__ = Max_delay;
+        for (size_t j_1__ = 0; j_1__ < infect_dist_rv_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "infect_dist_rv" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t seropos_dist_rv_j_1_max__ = 500;
+        for (size_t j_1__ = 0; j_1__ < seropos_dist_rv_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "seropos_dist_rv" << '.' << j_1__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
     }

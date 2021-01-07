@@ -26,6 +26,8 @@ Imports:
     parallel,
     plyr,
     purrr,
+    furrr,
+    future,
     Rcpp (>= 1.0.4.6),
     RcppParallel (>= 5.0.1),
     Rdpack,

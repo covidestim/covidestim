@@ -179,6 +179,83 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 }
 
 #' @export
+runOptimizer <- function(cc, cores = parallel::detectCores(), ...) {
+  
+  # Require that case and death data be entered
+  if (is.null(cc$config$obs_cas))
+    stop("Case data was not entered. See `?input_cases`.")
+  
+  if (is.null(cc$config$obs_die))
+    stop("Deaths data was not entered. See `?input_deaths`.")
+  
+  tries   <- 50 # could make this a function argument, but hard-coding for now
+  iter    <- 2000
+
+  # Set the RNG seed to the seed specified in the `covidestim_config` object.
+  # Then, use that seed to create `tries` random integers, each of which will
+  # be used as the seed value for an instance of `rstan::optimizing`.
+  set.seed(cc$seed);
+  seeds <- sample.int(.Machine$integer.max, tries)
+
+  runOptimizerWithSeed <- function(seed, i) {
+    startTime <- Sys.time()
+
+    rstan::optimizing(
+      object    = stanmodels$stan_program_default,
+      data      = structure(cc$config, class="modelconfig"),
+      algorithm = "BFGS",
+      seed      = seed,
+      iter      = iter,
+      as_vector = FALSE
+      # Not passing ... here because that could accidentally pass the `cores`
+      # argument, which is accepted by `rstan::sampling` but not by 
+      # `rstan::optimizing`.
+    ) -> result
+
+    endTime <- Sys.time()
+
+    message(glue::glue(
+      'Finished itertion {i} in {dt} with exit code {ec}',
+      dt = prettyunits::pretty_dt(endTime - startTime),
+      ec = result$return_code
+    ));
+
+    result
+  }
+
+  future::plan(future::multisession, workers = cores)
+
+  results  <- furrr::future_imap(seeds, runOptimizerWithSeed)
+  opt_vals <- purrr::map_dbl(results, 'value') 
+
+  successful_results <- purrr::keep(results, ~.$return_code == 0)
+
+  result <- successful_results[which(opt_vals == max(opt_vals))][1]
+
+  # Values can be equal unless they are infinite
+
+  c(
+    "new_inf",
+    "Rt",
+    "occur_cas",
+    "occur_die",
+    "cumulative_incidence",
+    "new_sym",
+    "new_sev",
+    "new_die",
+    "new_die_dx",
+    "diag_cases",
+    "diag_all",
+    "sero_positive",
+    "pop_infectiousness"
+  ) -> essential_vars
+
+  result
+
+  # return(result$par[essential_vars])
+}
+
+#' @export
 "+.covidestim" <- function(a, b) {
   # 'a' is covidestim, 'b' should be priors or input
   covidestim_add(b, a)
@@ -220,109 +297,4 @@ ndays:\t{cc$config$N_days}
   cat(substituted_string)
 
   print.modelconfig(cc)
-}
-
-#' @export
-covidcast_register <- function() {
-  run.covidcast                 <<- run.covidestim
-  viz.covidcast_result          <<- viz.covidestim_result
-  summary.covidcast_result      <<- summary.covidestim_result
-}
-
-#' @export
-run.covidestim_opt <- function(cc, ...) {
-  
-  # Require that case and death data be entered
-  if (is.null(cc$config$obs_cas))
-    stop("Case data was not entered. See `?input_cases`.")
-  
-  if (is.null(cc$config$obs_die))
-    stop("Deaths data was not entered. See `?input_deaths`.")
-  
-  tries   <- 5 # could make this a function argument, but hard-coding for now
-  result0 <- list()
-  opt_val <- NA
-  
-  for(i in 1:tries){
-    rstan::optimizing(
-      object    = stanmodels$stan_program_default,
-      data      = structure(cc$config, class="modelconfig"),
-      algorithm = "BFGS",
-      seed      = cc$seed + i,
-      iter      = 2000,
-      ...
-    ) -> result0[[i]]
-    opt_val[i] <-  result0[[i]]$value
-  }
-  
-  res <- result0[[which(opt_val==max(opt_val,na.rm=T))[1]]]$par
-  nam <- names(res)
-    
-  opt <- list()
-  opt[["new_inf"]] <- t(res[grepl( "new_inf", nam, fixed = T) & 
-                              !grepl( "_new_inf", nam, fixed = T)])
-  opt[["Rt"]] <- t(res[grepl( "Rt", nam, fixed = T) & !grepl( "logRt", nam, 
-                                                              fixed = T)])
-  opt[["occur_cas"]] <- t(res[grepl( "occur_cas", nam, fixed = T)])
-  opt[["occur_die"]] <- t(res[grepl( "occur_die", nam, fixed = T)])
-  opt[["cumulative_incidence"]] <- t(res[grepl( "cumulative_incidence", nam, 
-                                                fixed = T)])
-  opt[["new_sym"]] <- t(res[grepl( "new_sym", nam, fixed = T) & 
-                              !grepl( "new_sym_", nam, fixed = T)])
-  opt[["new_sev"]] <- t(res[grepl( "new_sev", nam, fixed = T) & 
-                              !grepl( "new_sev_", nam, fixed = T)])
-  opt[["new_die"]] <- t(res[grepl( "new_die", nam, fixed = T) & 
-                              !grepl( "new_die_", nam, fixed = T)])
-  opt[["new_die_dx"]] <- t(res[grepl( "new_die_dx", nam, fixed = T)])
-  opt[["diag_cases"]] <- t(res[grepl( "diag_cases", nam, fixed = T)]) 
-  opt[["diag_all"]] <- t(res[grepl( "diag_all", nam, fixed = T)])
-  opt[["sero_positive"]] <- t(res[grepl( "sero_positive", nam, fixed = T)])
-  opt[["pop_infectiousness"]] <- t(res[grepl( "pop_infectiousness", nam, 
-                                              fixed = T)])
-  
-  # opt[["log_new_inf_0"]] <- res[grepl( "log_new_inf_0", nam, fixed = T)] 
-  # opt[["serial_i"]] <- res[grepl( "serial_i", nam, fixed = T)] 
-  # opt[["spl_par_rt"]] <- t(res[grepl( "spl_par_rt", nam, fixed = T) & 
-  #                        !grepl( "_spl_par_rt", nam, fixed = T)]) 
-  # opt[["inf_imported"]] <- res[grepl( "inf_imported", nam, fixed = T)] 
-  # opt[["p_sym_if_inf"]] <- res[grepl( "p_sym_if_inf", nam, fixed = T) & 
-  #                          !grepl( "p_sym_if_inft", nam, fixed = T)] 
-  # opt[["p_sev_if_sym"]] <- res[grepl( "p_sev_if_sym", nam, fixed = T) & 
-  #                          !grepl( "p_sev_if_symt", nam, fixed = T)] 
-  # opt[["p_die_if_sev"]] <- res[grepl( "p_die_if_sev", nam, fixed = T) & 
-  #                          !grepl( "p_die_if_sevt", nam, fixed = T)] 
-  # opt[["scale_dx_delay_asy"]] <- res[grepl( "scale_dx_delay_asy", nam, 
-  #                                fixed = T)] 
-  # opt[["scale_dx_delay_sym"]] <- res[grepl( "scale_dx_delay_sym", nam, 
-  #                                fixed = T)] 
-  # opt[["scale_dx_delay_sev"]] <- res[grepl( "scale_dx_delay_sev", nam, 
-  #                                fixed = T)] 
-  # opt[["rr_diag_asy_vs_sym"]] <- res[grepl( "rr_diag_asy_vs_sym", nam, 
-  #                                fixed = T)]
-  # opt[["p_diag_if_sev"]] <- res[grepl( "p_diag_if_sev", nam, fixed = T)] 
-  # opt[["inv_sqrt_phi_c"]] <- res[grepl( "inv_sqrt_phi_c", nam, fixed = T) ] 
-  # opt[["inv_sqrt_phi_d"]] <- res[grepl( "inv_sqrt_phi_d", nam, fixed = T) ] 
-  # opt[["ifr_decl_OR"]] <- res[grepl( "ifr_decl_OR", nam, fixed = T) ] 
-  # opt[["spl_par_sym_dx"]] <- t(res[grepl( "spl_par_sym_dx", nam, fixed = T) & 
-  #                            !grepl( "spl_par_sym_dx0", nam, fixed = T)])
-  # opt[["deriv1_log_new_inf"]] <- t(res[grepl( "deriv1_log_new_inf", nam, 
-  #                                fixed = T)])
-  # opt[["p_die_if_inf"]] <- res[grepl( "p_die_if_inf", nam, fixed = T)] 
-  # opt[["rr_diag_sym_vs_sev"]] <- t(res[grepl( "rr_diag_sym_vs_sev", nam, 
-  #                                fixed = T)])
-  # opt[["rr_diag_asy_vs_sym"]] <- res[grepl( "rr_diag_asy_vs_sym", nam, 
-  #                                fixed = T)] 
-  # opt[["new_asy_dx"]] <- t(res[grepl( "new_asy_dx", nam, fixed = T)])
-  # opt[["new_sym_dx"]] <- t(res[grepl( "new_sym_dx", nam, fixed = T)])
-  # opt[["new_sev_dx"]] <- t(res[grepl( "new_sev_dx", nam, fixed = T)])
-  # opt[["phi_cas"]] <- res[grepl( "phi_cas", nam, fixed = T)] 
-  # opt[["phi_die"]] <- res[grepl( "phi_die", nam, fixed = T)] 
-  # opt[["logRt0"]] <- t(res[grepl( "logRt0", nam, fixed = T)])
-
-  structure(
-    list(result    = opt,
-         extracted = rstan::extract(result),
-         config    = cc$config),
-         class     = 'covidestim_result'
-  )
 }

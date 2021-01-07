@@ -82,7 +82,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "diag_cases"           = "symptomatic.diagnosed", 
     "diag_all"             = "diagnoses",
     "sero_positive"        = "sero.positive",
-    "pop_infectiousness"   = "pop.infectiousness",
+    "pop_infectiousness"   = "pop.infectiousness"
   ) -> params
 
   # Used for renaming quantiles output by Stan
