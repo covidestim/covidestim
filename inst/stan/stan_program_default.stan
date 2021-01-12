@@ -65,8 +65,6 @@ data {
   real<lower=0>          pri_logRt_sd;   
   real<lower=0>          pri_serial_i_shap; 
   real<lower=0>          pri_serial_i_rate; 
-  real                   pri_inf_imported_mu; 
-  real<lower=0>          pri_inf_imported_sd;
   real<lower=0>          pri_deriv1_spl_par_sd;
   real<lower=0>          pri_deriv2_spl_par_sd;
   
@@ -194,7 +192,6 @@ parameters {
   real                    log_new_inf_0; // starting intercept
   real<lower=0>           serial_i; // serial interval
   vector[N_spl_par_rt]    spl_par_rt;
-  real<lower=0>           inf_imported; // imported cases
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -226,6 +223,7 @@ transformed parameters {
   vector[N_days_tot]      log_new_inf;
   vector[N_days_tot]      new_inf;
   vector[N_days_tot]      deriv1_log_new_inf;
+  real                    pop_uninf;
 
   // Rt spline
   vector[N_days_tot]      logRt0;
@@ -316,16 +314,21 @@ transformed parameters {
   
   // modeled with a spline
   logRt0 = spl_basis_rt * spl_par_rt;
+  pop_uninf = pop_size;
   for(i in 1:N_days_tot) {
     if(i==1){
       logRt[i] = logRt0[i];
     } else{
-      logRt[i] = logRt0[i] + log(1-sum(new_inf[1:(i-1)])/pop_size);
+      logRt[i] = logRt0[i] + log(pop_uninf/pop_size);
     }
     deriv1_log_new_inf[i] = logRt[i]/serial_i;
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
-    new_inf[i] = exp(log_new_inf[i]) + inf_imported;
+    new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
+    pop_uninf -= new_inf[i];
   }
+  
+  
+  
   Rt = exp(logRt); 
   
   // second derivative
@@ -456,7 +459,6 @@ model {
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
   deriv2_spl_par_rt     ~ normal(0, pri_deriv2_spl_par_sd);
-  inf_imported          ~ normal(pri_inf_imported_mu, pri_inf_imported_sd); 
   // DISEASE PROGRESSION
   // probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
