@@ -179,7 +179,12 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 }
 
 #' @export
-runOptimizer <- function(cc, cores = parallel::detectCores(), ...) {
+runOptimizer <- function(cc,
+                         cores   = parallel::detectCores(),
+                         tries   = 50,
+                         iter    = 2000,
+                         timeout = 60,
+                         ...) {
   
   # Require that case and death data be entered
   if (is.null(cc$config$obs_cas))
@@ -188,9 +193,6 @@ runOptimizer <- function(cc, cores = parallel::detectCores(), ...) {
   if (is.null(cc$config$obs_die))
     stop("Deaths data was not entered. See `?input_deaths`.")
   
-  tries   <- 50 # could make this a function argument, but hard-coding for now
-  iter    <- 2000
-
   # Set the RNG seed to the seed specified in the `covidestim_config` object.
   # Then, use that seed to create `tries` random integers, each of which will
   # be used as the seed value for an instance of `rstan::optimizing`.
@@ -206,16 +208,14 @@ runOptimizer <- function(cc, cores = parallel::detectCores(), ...) {
       algorithm = "BFGS",
       seed      = seed,
       iter      = iter,
-      as_vector = FALSE
-      # Not passing ... here because that could accidentally pass the `cores`
-      # argument, which is accepted by `rstan::sampling` but not by 
-      # `rstan::optimizing`.
+      as_vector = FALSE,
+      ...
     ) -> result
 
     endTime <- Sys.time()
 
     message(glue::glue(
-      'Finished itertion {i} in {dt} with exit code {ec}',
+      'Finished try #{i} in {dt} with exit code {ec}',
       dt = prettyunits::pretty_dt(endTime - startTime),
       ec = result$return_code
     ));
@@ -223,16 +223,58 @@ runOptimizer <- function(cc, cores = parallel::detectCores(), ...) {
     result
   }
 
-  future::plan(future::multisession, workers = cores)
+  # This function will return NULL when there is a timeout
+  runOptimizerWithSeedInTime <- function(timeout, ...)
+    tryCatch(
+      R.utils::withTimeout(runOptimizerWithSeed(...), timeout = timeout),
+      error = function(c) {
+        message(glue::glue(
+          'Abandoned try #{i} due to timeout',
+          i = list(...)[[2]]
+        ))
 
-  results  <- furrr::future_imap(seeds, runOptimizerWithSeed)
-  opt_vals <- purrr::map_dbl(results, 'value') 
+        NULL
+      }
+    )
 
-  successful_results <- purrr::keep(results, ~.$return_code == 0)
+  # Set up multicore execution for the `furrr::future_imap` call
+  # if (cores > 1)
+  #   future::plan(future::multisession, workers = cores)
 
-  result <- successful_results[which(opt_vals == max(opt_vals))][1]
+  # results  <- furrr::future_imap(
+  #   seeds,
+  #   runOptimizerWithSeedInTime,
+  #   timeout = timeout
+  # )
 
-  # Values can be equal unless they are infinite
+  results  <- purrr::imap(
+    seeds,
+    runOptimizerWithSeedInTime,
+    timeout = timeout
+  )
+
+  # if (cores > 1)
+  #   future::plan(future::sequential)
+
+  # Return code of 0 indicates success.
+  successful_results <-
+    purrr::discard(results, is.null) %>% # Removes timed-out runs
+    purrr::keep(., ~.$return_code == 0)  # Removes >0 return-val runs
+
+  opt_vals <- purrr::map_dbl(successful_results, 'value') 
+
+  # In theory the log posterior could be infinite, which wouldn't be valid
+  # but would technically be the maximum value. Throw an error in this case.
+  if (is.infinite(max(opt_vals)))
+    stop(glue::glue(
+      'The value of the log posterior was infinite for these runs:\n{runs}',
+      runs = which(is.infinite(opt_vals) & opt_vals > 0)
+    ))
+
+  # Let's call the first successful result which has `opt_val` equal to the
+  # maximum `opt_val` the "result." Note that it's unlikely that there will
+  # be more that one trajectory with the same `opt_val`.
+  result <- successful_results[which(opt_vals == max(opt_vals))][[1]]
 
   c(
     "new_inf",
@@ -250,9 +292,7 @@ runOptimizer <- function(cc, cores = parallel::detectCores(), ...) {
     "pop_infectiousness"
   ) -> essential_vars
 
-  result
-
-  # return(result$par[essential_vars])
+  return(result$par[essential_vars])
 }
 
 #' @export

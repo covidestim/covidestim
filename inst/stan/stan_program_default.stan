@@ -326,6 +326,23 @@ transformed parameters {
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
     new_inf[i] = exp(log_new_inf[i]) + inf_imported;
   }
+
+
+  print("logRt0:");
+  print(logRt0);
+  print("deriv1_log_new_inf:");
+  print(deriv1_log_new_inf);
+  print("serial_i:");
+  print(serial_i);
+  print("log_new_inf_0:");
+  print(log_new_inf_0);
+  print("log_new_inf:");
+  print(log_new_inf);
+  print("new_inf:");
+  print(new_inf);
+  print("logRt:");
+  print(logRt);
+
   Rt = exp(logRt); 
   
   // second derivative
@@ -406,6 +423,12 @@ transformed parameters {
   }
 
 // TOTAL DIAGNOSED CASES AND DEATHS //
+// print("new_asy_dx:");
+// print(new_asy_dx);
+// print("new_sym_dx:");
+// print(new_sym_dx);
+// print("new_sev_dx:");
+// print(new_sev_dx);
 diag_all = new_asy_dx + new_sym_dx + new_sev_dx;
 new_die_dx = dx_sym_die + dx_sev_die;
 
@@ -483,6 +506,9 @@ model {
     if(N_days_before>0){
       tmp_sum_cas_pre = sum(occur_cas[1:N_days_before]);
       tmp_sum_die_pre = sum(occur_die[1:N_days_before]);
+      print("occur_cas:");
+      print(occur_cas);
+      // First problem line!
       target += neg_binomial_2_lpmf( 0 | tmp_sum_cas_pre + 0.0001, phi_cas);
       target += neg_binomial_2_lpmf( 0 | tmp_sum_die_pre + 0.0001, phi_die);
     }
@@ -493,6 +519,7 @@ model {
     tmp_obs_cas = obs_cas[1];
     tmp_occur_cas = occur_cas[1 + N_days_before];
     for(i in 1:N_days) {
+      // Second problem line!
       target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/
         N_days_av;
       if(i>nda0){
