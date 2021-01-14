@@ -58,7 +58,7 @@ covidestim <- function(ndays,
                        seed=42,
                        adapt_delta = 0.92, 
                        max_treedepth = 12,
-                       window.length = 7,
+                       window.length = 5,
                        region) {
 
   att(is.numeric(ndays), ndays >= 1)
@@ -179,6 +179,130 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 }
 
 #' @export
+runOptimizer <- function(cc,
+                         cores   = parallel::detectCores(),
+                         tries   = 50,
+                         iter    = 2000,
+                         timeout = 60,
+                         ...) {
+  
+  # Require that case and death data be entered
+  if (is.null(cc$config$obs_cas))
+    stop("Case data was not entered. See `?input_cases`.")
+  
+  if (is.null(cc$config$obs_die))
+    stop("Deaths data was not entered. See `?input_deaths`.")
+  
+  # Set the RNG seed to the seed specified in the `covidestim_config` object.
+  # Then, use that seed to create `tries` random integers, each of which will
+  # be used as the seed value for an instance of `rstan::optimizing`.
+  set.seed(cc$seed);
+  seeds <- sample.int(.Machine$integer.max, tries)
+
+  runOptimizerWithSeed <- function(seed, i) {
+    startTime <- Sys.time()
+
+    rstan::optimizing(
+      object    = stanmodels$stan_program_default,
+      data      = structure(cc$config, class="modelconfig"),
+      algorithm = "BFGS",
+      seed      = seed,
+      iter      = iter,
+      as_vector = FALSE,
+      ...
+    ) -> result
+
+    endTime <- Sys.time()
+
+    message(glue::glue(
+      'Finished try #{i} in {dt} with exit code {ec}',
+      dt = prettyunits::pretty_dt(endTime - startTime),
+      ec = result$return_code
+    ));
+
+    result
+  }
+
+  # This function will return NULL when there is a timeout
+  runOptimizerWithSeedInTime <- function(timeout, ...)
+    tryCatch(
+      R.utils::withTimeout(runOptimizerWithSeed(...), timeout = timeout),
+      error = function(c) {
+        message(glue::glue(
+          'Abandoned try #{i} due to timeout',
+          i = list(...)[[2]]
+        ))
+
+        NULL
+      }
+    )
+
+  # By default, use a sequential mapping function
+  map_fun <- purrr::imap
+
+  # Set up multicore execution for the `furrr::future_imap` call
+  # Replace the mapping function with a parallel mapping function
+  if (cores > 1) {
+    future::plan(future::multisession, workers = cores)
+    map_fun <- furrr::future_imap
+  }
+
+  # Run the optimizer on all the different seeds
+  results <- map_fun(
+    seeds,
+    runOptimizerWithSeedInTime,
+    timeout = timeout
+  )
+
+  # Change the execution plan back to sequential
+  if (cores > 1)
+    future::plan(future::sequential)
+
+  # Return code of 0 indicates success for `rstan::optimizing`.
+  successful_results <-
+    purrr::discard(results, is.null) %>% # Removes timed-out runs
+    purrr::keep(., ~.$return_code == 0)  # Removes >0 return-val runs
+
+  # Extract the mode of the posterior from the results that didn't time out
+  # and didn't return an error code of 70
+  opt_vals <- purrr::map_dbl(successful_results, 'value') 
+
+  # In theory the log posterior could be infinite, which wouldn't be valid
+  # but would technically be the maximum value. Throw an error in this case.
+  if (is.infinite(max(opt_vals)))
+    stop(glue::glue(
+      'The value of the log posterior was infinite for these runs:\n{runs}',
+      runs = which(is.infinite(opt_vals) & opt_vals > 0)
+    ))
+
+  # Let's call the first successful result which has `opt_val` equal to the
+  # maximum `opt_val` the "result." Note that it's unlikely that there will
+  # be more that one trajectory with the same `opt_val`.
+  result <- successful_results[which(opt_vals == max(opt_vals))][[1]]
+
+  c(
+    "new_inf",
+    "Rt",
+    "occur_cas",
+    "occur_die",
+    "cumulative_incidence",
+    "new_sym",
+    "new_sev",
+    "new_die",
+    "new_die_dx",
+    "diag_cases",
+    "diag_all",
+    "sero_positive",
+    "pop_infectiousness"
+  ) -> essential_vars
+
+  list(
+    result   = result$par[essential_vars],
+    opt_vals = opt_vals
+  )
+}
+
+#' @export
 "+.covidestim" <- function(a, b) {
   # 'a' is covidestim, 'b' should be priors or input
   covidestim_add(b, a)
@@ -220,11 +344,4 @@ ndays:\t{cc$config$N_days}
   cat(substituted_string)
 
   print.modelconfig(cc)
-}
-
-#' @export
-covidcast_register <- function() {
-  run.covidcast                 <<- run.covidestim
-  viz.covidcast_result          <<- viz.covidestim_result
-  summary.covidcast_result      <<- summary.covidestim_result
 }
