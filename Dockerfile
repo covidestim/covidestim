@@ -21,8 +21,10 @@ COPY --chown=rstudio . /tmp/covidestim-install/
 # Enable O3 compilation
 RUN Rscript /tmp/covidestim-install/O3-enable.R 
 
+RUN r -e "remotes::install_deps('/tmp/covidestim-install', quick=T)"
+
 # Now install covidestim
-RUN r -e "devtools::install('/tmp/covidestim-install')" \
-      && rm -rf /tmp/covidestim-install
+RUN r -e "devtools::install('/tmp/covidestim-install', quick=T, build=T)" \
+  && rm -rf /tmp/covidestim-install
 
 CMD ["R"]
