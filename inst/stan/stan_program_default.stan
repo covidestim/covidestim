@@ -190,7 +190,7 @@ parameters {
   
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
-  real<lower=0>           serial_i; // serial interval
+  real<lower=3, upper=11>           serial_i; // serial interval
   vector[N_spl_par_rt]    spl_par_rt;
 
 // DISEASE PROGRESSION
@@ -325,9 +325,29 @@ transformed parameters {
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
     new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
     pop_uninf -= new_inf[i];
+    if (pop_uninf < 1) {
+      // print("WARNING pop_uninf preliminary value was ", pop_uninf);
+      pop_uninf = 1;
+    }
   }
   
   
+  // print("logRt0:");
+  // print(logRt0);
+  // print("deriv1_log_new_inf:");
+  // print(deriv1_log_new_inf);
+  // print("serial_i:");
+  // print(serial_i);
+  // print("log_new_inf_0:");
+  // print(log_new_inf_0);
+  // print("log_new_inf:");
+  // print(log_new_inf);
+  // print("new_inf:");
+  // print(new_inf);
+  // print("pop_uninf:");
+  // print(pop_uninf);
+  // print("logRt:");
+  // print(logRt);
   
   Rt = exp(logRt); 
   
@@ -442,6 +462,13 @@ new_die_dx = dx_sym_die + dx_sev_die;
 phi_cas = pow(inv_sqrt_phi_c, -2);
 phi_die = pow(inv_sqrt_phi_d, -2);
 
+// These are precision params for neg_binomial_2_lpmf, and must be >0. However,
+// lower bound on `inv_sqrt_phi_[cd]` is 0.
+if (phi_cas == 0)
+  phi_cas = 0.0000000001;
+if (phi_die == 0)
+  phi_die = 0.0000000001;
+
 }
 ///////////////////////////////////////////////////////////  
 model {
@@ -485,18 +512,33 @@ model {
     if(N_days_before>0){
       tmp_sum_cas_pre = sum(occur_cas[1:N_days_before]);
       tmp_sum_die_pre = sum(occur_die[1:N_days_before]);
-      target += neg_binomial_2_lpmf( 0 | tmp_sum_cas_pre + 0.0001, phi_cas);
-      target += neg_binomial_2_lpmf( 0 | tmp_sum_die_pre + 0.0001, phi_die);
+
+      if (tmp_sum_cas_pre <= 0) // Account for floating point error
+        tmp_sum_cas_pre = 0.0000000001;
+      if (tmp_sum_die_pre <= 0) // Account for floating point error
+        tmp_sum_die_pre = 0.0000000001;
+
+      target += neg_binomial_2_lpmf( 0 | tmp_sum_cas_pre, phi_cas);
+      target += neg_binomial_2_lpmf( 0 | tmp_sum_die_pre, phi_die);
     }
   }
   
 // Observed data
-  if(cas_yes==1){
+  if (cas_yes == 1) {
     tmp_obs_cas = obs_cas[1];
     tmp_occur_cas = occur_cas[1 + N_days_before];
+
     for(i in 1:N_days) {
-      target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/
-        N_days_av;
+
+      if (tmp_occur_cas <= 0) // Account for floating point error
+        tmp_occur_cas = 0.000000001;
+      
+      // Don't add to `target` unless we have `N_days_av` of data accumulated
+      // in `tmp_occur_cas`
+      if (i >= N_days_av)
+        target += neg_binomial_2_lpmf(tmp_obs_cas | tmp_occur_cas, phi_cas)/
+          N_days_av;
+
       if(i>nda0){
         tmp_obs_cas   -= obs_cas[i - nda0];
         tmp_occur_cas -= occur_cas[i + N_days_before - nda0];
@@ -507,12 +549,23 @@ model {
       }
     }
   }
-  if(die_yes==1){
+
+  if (die_yes == 1){
+
     tmp_obs_die = obs_die[1];
     tmp_occur_die = occur_die[1 + N_days_before];
+
     for(i in 1:N_days) {
-      target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/
-        N_days_av;
+
+      if (tmp_occur_die <= 0) // Account for floating point error
+        tmp_occur_die = 0.000000001;
+
+      // Don't add to `target` unless we have `N_days_av` of data accumulated
+      // in `tmp_occur_die`
+      if (i >= N_days_av)
+        target += neg_binomial_2_lpmf(tmp_obs_die | tmp_occur_die, phi_die)/
+          N_days_av;
+
       if(i>nda0){  
         tmp_obs_die   -= obs_die[i - nda0];
         tmp_occur_die -= occur_die[i + N_days_before - nda0];

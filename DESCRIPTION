@@ -38,7 +38,8 @@ Imports:
     stats,
     stringr,
     tibble,
-    tidyr
+    tidyr,
+    R.utils
 Suggests: 
     testthat,
     grDevices,
