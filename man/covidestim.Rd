@@ -14,7 +14,7 @@ covidestim(
   seed = 42,
   adapt_delta = 0.92,
   max_treedepth = 12,
-  window.length = 5,
+  window.length = 7,
   region
 )
 }
