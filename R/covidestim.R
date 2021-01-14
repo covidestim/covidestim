@@ -237,30 +237,34 @@ runOptimizer <- function(cc,
       }
     )
 
+  # By default, use a sequential mapping function
+  map_fun <- purrr::imap
+
   # Set up multicore execution for the `furrr::future_imap` call
-  # if (cores > 1)
-  #   future::plan(future::multisession, workers = cores)
+  # Replace the mapping function with a parallel mapping function
+  if (cores > 1) {
+    future::plan(future::multisession, workers = cores)
+    map_fun <- furrr::future_imap
+  }
 
-  # results  <- furrr::future_imap(
-  #   seeds,
-  #   runOptimizerWithSeedInTime,
-  #   timeout = timeout
-  # )
-
-  results  <- purrr::imap(
+  # Run the optimizer on all the different seeds
+  results <- map_fun(
     seeds,
     runOptimizerWithSeedInTime,
     timeout = timeout
   )
 
-  # if (cores > 1)
-  #   future::plan(future::sequential)
+  # Change the execution plan back to sequential
+  if (cores > 1)
+    future::plan(future::sequential)
 
-  # Return code of 0 indicates success.
+  # Return code of 0 indicates success for `rstan::optimizing`.
   successful_results <-
     purrr::discard(results, is.null) %>% # Removes timed-out runs
     purrr::keep(., ~.$return_code == 0)  # Removes >0 return-val runs
 
+  # Extract the mode of the posterior from the results that didn't time out
+  # and didn't return an error code of 70
   opt_vals <- purrr::map_dbl(successful_results, 'value') 
 
   # In theory the log posterior could be infinite, which wouldn't be valid
@@ -292,7 +296,10 @@ runOptimizer <- function(cc,
     "pop_infectiousness"
   ) -> essential_vars
 
-  return(result$par[essential_vars])
+  list(
+    result   = result$par[essential_vars],
+    opt_vals = opt_vals
+  )
 }
 
 #' @export
