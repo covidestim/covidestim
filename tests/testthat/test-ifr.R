@@ -11,8 +11,8 @@ test_that("bad regions don't work", {
 })
 
 test_that("good regions do work", {
-  expect_length(get_ifr_raw('Connecticut'), 2)
-  expect_length(get_ifr_raw('09009'), 2)
+  expect_length(get_ifr_raw('Connecticut'), 1)
+  expect_length(get_ifr_raw('09009'), 1)
 })
 
 # test_that("start_date functions as expected", {
