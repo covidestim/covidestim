@@ -173,7 +173,8 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
     list(result    = result,
          summary   = rstan::summary(result)$summary,
          extracted = rstan::extract(result),
-         config    = cc$config),
+         config    = cc$config,
+         flags     = ""),
     class='covidestim_result'
   )
 }
@@ -296,9 +297,12 @@ runOptimizer <- function(cc,
     "pop_infectiousness"
   ) -> essential_vars
 
-  list(
-    result   = result$par[essential_vars],
-    opt_vals = opt_vals
+  structure(
+    list(result   = result$par[essential_vars],
+         opt_vals = opt_vals,
+         config   = cc$config,
+         flags    = "optimizer"),
+    class='covidestim_result'
   )
 }
 

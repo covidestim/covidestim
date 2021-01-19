@@ -68,6 +68,9 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   ndays_total  <- ndays_before + ndays
   start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
 
+  # Dates an index and converts it to a date
+  toDate <- function(idx) start_date + lubridate::days(idx - 1 - ndays_before)
+
   # Mappings between names in Stan and variable names in the output `df`
   c(
     "new_inf"              = "infections",
@@ -84,6 +87,9 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "sero_positive"        = "sero.positive",
     "pop_infectiousness"   = "pop.infectiousness"
   ) -> params
+
+  if ("optimizer" %in% ccr$flags)
+    return(summaryOptimizer(ccr, toDate, params, start_date))
 
   # Used for renaming quantiles output by Stan
   quantile_names <- c("2.5%" = ".lo", "50%" = "", "97.5%" = ".hi")
@@ -107,9 +113,6 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   # These are the variables that are going to be selected from the melted
   # representation created above
   vars_of_interest <- c("variable", "date", names(quantile_names))
-
-  # Dates an index and converts it to a date
-  toDate <- function(idx) start_date + lubridate::days(idx - 1 - ndays_before)
 
   # Join the melted representation to the array indices that have been split
   # into their name:idx components
@@ -213,3 +216,35 @@ summaryEpi <- function(ccr) {
   result
 }
 
+summaryOptimizer <- function(ccr, toDate, params, start_date) {
+
+  # Optimizer results don't have confidence intervals - however, to maintain
+  # parity with the "default" version of the summary function (where the
+  # sampler produces the results that are being processed), we need to have
+  # NA-valued confidence intervals. This also makes sharing a DB table with
+  # sampler-generated results much easier. The next few lines create the
+  # neccessary "*.lo" and "*.hi" NA-valued columns
+  params.lo <- paste0(params, ".lo")
+  params.hi <- paste0(params, ".hi")
+
+  nullParams <- as.list(rep(NA, 2*length(params))) %>%
+    stats::setNames(c(params.lo, params.hi))
+
+  # ccr$result is a list keyed on Stan param name, each value is a numeric
+  # vector of equal length.
+  tibble::as_tibble(ccr$result) %>%
+    # Convert to result naming-scheme provided by `summary()`
+    dplyr::rename_with(~params[.]) %>%
+    # Add empty conf. interval variables
+    dplyr::bind_cols(nullParams) %>%
+    # Sort result columns in alphabetical order to maintain parity with
+    # original `summary` implementation
+    dplyr::select(order(colnames(.))) %>%
+    # Add dates and data.available column
+    dplyr::mutate(
+      date = toDate(1:dplyr::n()),
+      data.available = date >= start_date
+    ) %>%
+    # Maintain parity with order in original `summary` implementation
+    dplyr::select(date, everything(), data.available)
+}
