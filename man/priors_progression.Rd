@@ -5,29 +5,49 @@
 \title{Fixed values on delay to progression}
 \usage{
 priors_progression(
-  inf_prg_delay = c(5.202, 0.946),
-  sym_prg_delay = c(5.147, 0.468),
-  sev_prg_delay = c(2.383, 0.27)
+  inf_prg_delay = c(3.413, 0.6051),
+  sym_prg_delay = c(1.624, 0.2175),
+  sev_prg_delay = c(2.061, 0.2277),
+  asy_rec_delay = c(14, 2),
+  pri_serial_i = c(129.1, 22.25),
+  infect_dist = c(8, 1.241),
+  seropos_dist = c(4.41, 0.042)
 )
 }
 \arguments{
-\item{inf_prg_delay}{A two-element numeric vector containing \code{c(shape, scale)}
+\item{inf_prg_delay}{A two-element numeric vector containing \code{c(shape, rate)}
 parameters of a Gamma distribution modeling the time from infection to 
 sypmtom onset. 
 
 Source for default value: \insertRef{lauer_incubation_2020}{covidestim}}
 
-\item{sym_prg_delay}{A two-element numeric vector containing \code{c(shape, scale)}
+\item{sym_prg_delay}{A two-element numeric vector containing \code{c(shape, rate)}
 parameters of a Gamma distribution modeling the time from symptom onset to 
 severe disease. 
 
 Source for default value: \insertRef{zhou_clinical_2020}{covidestim}}
 
 \item{sev_prg_delay}{A two-element numeric vector containing
-  \code{c(shape, scale)} parameters of a Gamma distribution modeling the
+  \code{c(shape, rate)} parameters of a Gamma distribution modeling the
   time from severe symptoms to death. 
-
+  
 Source for default value: \insertRef{linton_incubation_2020}{covidestim}}
+
+\item{asy_rec_delay}{A two-element numeric vector containing 
+\code{c(shape,rate)} parameters of a Gamma distribution modeling the  
+time from infection to recovery without symptom development.}
+
+\item{pri_serial_i}{A two-element numeric vector containing 
+\code{c(shape,rate)} parameters of a Gamma distribution modeling the 
+serial interval, the average time between successive cases.}
+
+\item{infect_dist}{A two-element numeric vector containing 
+\code{c(shape,rate)} parameters of a Gamma distribution modeling the 
+changes of infectiousness, following initial infection.}
+
+\item{seropos_dist}{A two-element numeric vector containing 
+\code{c(shape,rate)} parameters of a Gamma distribution modeling the 
+time to seroreversion, following initial infection.}
 }
 \value{
 An S3 object of class \code{priors}

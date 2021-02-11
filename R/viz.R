@@ -22,23 +22,15 @@ viz <- function(...) UseMethod('viz')
 #'     compared to reported/observed cases.
 #' }
 #'
-#' If \code{include.RtEstim == TRUE}:
-#'
-#' \itemize{
-#'   \item \code{RtEstim} A \code{ggplot} object of estimated Rt
-#'   \item \code{RtEstimNaive} A \code{ggplot} object of Rt estimated
-#'     \strong{purely} from input data
-#' }
-#'
 #' @seealso \code{\link{summary.covidestim_result}} for more details on the
 #'   quantities being plotted
 #'
 #' @export
-viz.covidestim_result <- function(ccr, include.RtEstim = TRUE, renderPDF = FALSE) {
+viz.covidestim_result <- function(ccr, renderPDF = FALSE) {
 
   # Prep all the intermediate representations of the data that are ultimately
   # used to plot everything
-  run_summary <- summary(ccr, include.RtEstim = include.RtEstim)
+  run_summary <- summary(ccr)
 
   first_date <- as.Date(ccr$config$first_date, origin = '1970-01-01')
   ndays      <- ccr$config$N_days
@@ -56,14 +48,6 @@ viz.covidestim_result <- function(ccr, include.RtEstim = TRUE, renderPDF = FALSE
     observedVsFitted = viz_observed_and_fitted(run_summary, input_data),
     infectionsAndCases = viz_all_cases_to_data(run_summary, input_data)
   ) -> result
-
-  if (include.RtEstim)
-    result <- append(result,
-      list(
-        RtEstim      = viz_RtEstim(run_summary)#,
-        #RtEstimNaive = viz_RtEstimNaive(run_summary)
-      )
-    )
 
   if (!identical(renderPDF, FALSE))
     ggsave(file = renderPDF, width = 8.5, height = 11) 
@@ -99,38 +83,6 @@ viz_RtEstim <- function(run_summary) {
       )
     )
 }
-#
-#viz_RtEstimNaive <- function(run_summary) {
-#
-#  ggplot2::ggplot(run_summary, aes(x = date)) +
-#    geom_hline(
-#      yintercept = 1,
-#      color = "red",
-#      size = 0.5,
-#      show.legend = FALSE
-#    ) +
-#    geom_line(aes(y = NaiveRt), na.rm = TRUE) + 
-#    geom_ribbon(aes(y = NaiveRt, ymin=NaiveRt.lo, ymax=NaiveRt.hi), alpha=0.3,
-#                na.rm = TRUE) +
-#    scale_x_date(date_breaks = '1 week',
-#                 date_labels = "%b %d",
-#                 minor_breaks = NULL,
-#                 limits = c(min(run_summary$date), NA)) +
-#    scale_y_log10(breaks = c(seq(0.5, 1.5, 0.1), 1, 2, 3, 4, 5),
-#                  minor_breaks = NULL) +
-#    coord_cartesian(ylim = c(0, 8)) +
-#    labs(
-#      x = NULL,
-#      y = "Rt", 
-#      title = "Naive Effective Reproduction Number Estimate"
-#    ) +
-#    theme_linedraw() +
-#    theme(
-#      axis.text.x = element_text(
-#        size = rel(3/4), angle = 45, hjust = 1, vjust = 1
-#      )
-#    )
-#}
 
 #' @import ggplot2
 viz_observed_and_fitted <- function(run_summary, input_data) {

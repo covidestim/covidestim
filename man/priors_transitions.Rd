@@ -5,10 +5,11 @@
 \title{Priors for transitions}
 \usage{
 priors_transitions(
-  p_sym_if_inf = c(44.9, 9.9),
-  p_sev_if_sym = c(11.9, 47.7),
-  p_die_if_sev = c(3, 97),
-  p_die_if_sym = c(1.12, 85.1)
+  p_sym_if_inf = c(5.143, 3.536),
+  p_sev_if_sym = c(1.8854, 20.002),
+  p_die_if_sev = c(28.239, 162.3),
+  p_die_if_inf = c(15.915, 3167.1),
+  ifr_decl_OR = c(9.1357, 29.339)
 )
 }
 \arguments{
@@ -41,11 +42,20 @@ priors_transitions(
 
   Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}}
 
-\item{p_die_if_sym}{A two-element numeric vector containing \code{c(alpha,
+\item{p_die_if_inf}{A two-element numeric vector containing \code{c(alpha,
   beta)} parameters of a Beta distribution modeling the probability of dying
-  if symptomatic. 
+  if infected (e.g. the infection fatality rate). This prior represents a 
+  national average value, which is adjusted for state and county-level 
+  factors, and to reflect higher fatality rates early in the epidemic.
 
-  Source for default value: \insertRef{basu_estimating_2020}{covidestim}}
+  Source for default value: \insertRef{ODriscoll_Nature_2020}{covidestim}}
+
+\item{ifr_decl_OR}{A two-element numeric vector containing \code{c(shape,
+  rate)} parameters of a Gamma distribution modeling the elevated IFR in early
+  2020, relative to the present. Default value represents an IFR 30% higher
+  in March of 2020, with 95% interval 10-50% higher.
+
+  Source for default value: Expert opinion}
 }
 \value{
 An S3 object of class \code{priors}

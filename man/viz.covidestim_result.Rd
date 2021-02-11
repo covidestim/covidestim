@@ -4,7 +4,7 @@
 \alias{viz.covidestim_result}
 \title{Visualize results of Covidestim}
 \usage{
-\method{viz}{covidestim_result}(ccr, include.RtEstim = TRUE, renderPDF = FALSE)
+\method{viz}{covidestim_result}(ccr, renderPDF = FALSE)
 }
 \arguments{
 \item{ccr}{The result of calling \code{\link{run}}. An object of class
@@ -23,14 +23,6 @@ A list with the following keys:
     fit of the model to that data.
   \item \code{infectionsAndCases} A \code{ggplot} of estimated daily infections,
     compared to reported/observed cases.
-}
-
-If \code{include.RtEstim == TRUE}:
-
-\itemize{
-  \item \code{RtEstim} A \code{ggplot} object of estimated Rt
-  \item \code{RtEstimNaive} A \code{ggplot} object of Rt estimated
-    \strong{purely} from input data
 }
 }
 \description{

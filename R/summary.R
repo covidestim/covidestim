@@ -8,8 +8,6 @@
 #'   elements of variables which do not have values for this "before" period
 #'   will be represented as \code{NA}.
 #'
-#' @param include.RtEstim A logical scalar. Include Rt estimates in output?
-#'   Will add ~1 minute to runtime.
 #'
 #' @param index A logical scalar. If \code{TRUE}, will include a variable
 #'   \code{index} in the output, with range \code{1:(ndays_before + ndays)}.
@@ -46,19 +44,23 @@
 #'     \item \code{data.available}: \code{TRUE/FALSE} for whether input data
 #'       was available on that particular day.
 #'
-#'     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of Rt, with 95\%
-#'       CIs. See \code{\link{RtEst}}.
-#'
-#'     \item \code{NaiveRt}, \code{NaiveRt.lo}, \code{NaiveRt.hi}: Naive
-#'       estimate of Rt, with 95% CIs. See \code{\link{RtNaiveEstim}}.
+#'     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of the effective 
+#'     reproductive number (Rt), with 95\% CIs.
+#'     
+#'     \item \code{sero.positive}, \code{sero.positive.lo}, 
+#'     \code{sero.positive.hi}: Estimate of the number of individuals sero-
+#'     positive, with 95\% CIs.
+#'     
+#'     \item \code{pop.infectiousness}, \code{pop.infectiousness.lo}, 
+#'     \code{pop.infectiousness.hi}: Estimate of the relative level of viral 
+#'     shedding in the community, with 95\% CIs.
 #'
 #'     \item \code{index}
 #'   }
 #'
 #' @export
 #' @importFrom magrittr %>%
-summary.covidestim_result <- function(ccr, include.before = TRUE, 
-                                     include.RtEstim = TRUE, index = FALSE) {
+summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE) {
 
   # Used for dealing with indices and dates
   ndays        <- ccr$config$N_days
@@ -66,9 +68,13 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
   ndays_total  <- ndays_before + ndays
   start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
 
+  # Dates an index and converts it to a date
+  toDate <- function(idx) start_date + lubridate::days(idx - 1 - ndays_before)
+
   # Mappings between names in Stan and variable names in the output `df`
   c(
     "new_inf"              = "infections",
+    "Rt"                   = "Rt",
     "occur_cas"            = "cases.fitted",
     "occur_die"            = "deaths.fitted",
     "cumulative_incidence" = "cum.incidence",
@@ -76,8 +82,14 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
     "new_sev"              = "severe",
     "new_die"              = "deaths",
     "new_die_dx"           = "deaths.diagnosed",
-    "diag_all"             = "diagnoses"
+    "diag_cases"           = "symptomatic.diagnosed", 
+    "diag_all"             = "diagnoses",
+    "sero_positive"        = "sero.positive",
+    "pop_infectiousness"   = "pop.infectiousness"
   ) -> params
+
+  if ("optimizer" %in% ccr$flags)
+    return(summaryOptimizer(ccr, toDate, params, start_date))
 
   # Used for renaming quantiles output by Stan
   quantile_names <- c("2.5%" = ".lo", "50%" = "", "97.5%" = ".hi")
@@ -101,9 +113,6 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
   # These are the variables that are going to be selected from the melted
   # representation created above
   vars_of_interest <- c("variable", "date", names(quantile_names))
-
-  # Dates an index and converts it to a date
-  toDate <- function(idx) start_date + lubridate::days(idx - 1 - ndays_before)
 
   # Join the melted representation to the array indices that have been split
   # into their name:idx components
@@ -131,19 +140,6 @@ summary.covidestim_result <- function(ccr, include.before = TRUE,
 
   d <- stan_extracts
 
-  # Join in Rt estimates if requested
-  if (include.RtEstim) {
-    Rt   <- RtEst(ccr)
-    Rt_n <- RtNaiveEstim(ccr)
-    d <- dplyr::left_join(d, Rt, by = "date")
-    d <- dplyr::left_join(d, Rt_n, by = "date")
-  }
-
-  # Column-bind high-density interval CI's for cumulative incidence
-  # First, remove the traditionally-calculated lo and hi estimates
-  d <- dplyr::select(d, -cum.incidence.lo, -cum.incidence.hi)
-  d <- dplyr::bind_cols(d, cum_inc_hdi(ccr))
-
 
   if (index == TRUE)
     d <- dplyr::bind_cols(d, list(index = 1:ndays_total))
@@ -169,40 +165,6 @@ split_array_indexing <- function(elnames) {
   captured$index <- as.numeric(captured$index)
 
   captured
-}
-
-hdi <- function(x) {
-  # order samples
-  x <- x[order(x)]
-
-  # calc samples in XX% interval. lets say XX = 95
-  N <- length(x)
-  n <- N*0.95
-
-  # find index for min
-  xx <- NULL
-  for(i in 1:(N-n)) xx[i] <- diff(x[c(0,n)+i])
-
-  xx_min <- which(xx==min(xx))
-
-  # calc intervals
-  hd_interval <- x[c(0,n)+xx_min]             
-
-  list(lo = hd_interval[1], hi = hd_interval[2])
-}
-
-cum_inc_hdi <- function(ccr) {
-  samples <- ccr$extracted$cumulative_incidence
-
-  ndays        <- ccr$config$N_days
-  ndays_before <- ccr$config$N_days_before
-  ndays_total  <- ndays_before + ndays
-
-  start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
-
-  purrr::map_dfr(1:ndays_total, ~hdi(samples[, .])) %>%
-    dplyr::rename(cum.incidence.lo = lo,
-                  cum.incidence.hi = hi)
 }
 
 #' Summarize internal parameters of a Covidestim run
@@ -254,3 +216,35 @@ summaryEpi <- function(ccr) {
   result
 }
 
+summaryOptimizer <- function(ccr, toDate, params, start_date) {
+
+  # Optimizer results don't have confidence intervals - however, to maintain
+  # parity with the "default" version of the summary function (where the
+  # sampler produces the results that are being processed), we need to have
+  # NA-valued confidence intervals. This also makes sharing a DB table with
+  # sampler-generated results much easier. The next few lines create the
+  # neccessary "*.lo" and "*.hi" NA-valued columns
+  params.lo <- paste0(params, ".lo")
+  params.hi <- paste0(params, ".hi")
+
+  nullParams <- as.list(rep(NA, 2*length(params))) %>%
+    stats::setNames(c(params.lo, params.hi))
+
+  # ccr$result is a list keyed on Stan param name, each value is a numeric
+  # vector of equal length.
+  tibble::as_tibble(ccr$result) %>%
+    # Convert to result naming-scheme provided by `summary()`
+    dplyr::rename_with(~params[.]) %>%
+    # Add empty conf. interval variables
+    dplyr::bind_cols(nullParams) %>%
+    # Sort result columns in alphabetical order to maintain parity with
+    # original `summary` implementation
+    dplyr::select(order(colnames(.))) %>%
+    # Add dates and data.available column
+    dplyr::mutate(
+      date = toDate(1:dplyr::n()),
+      data.available = date >= start_date
+    ) %>%
+    # Maintain parity with order in original `summary` implementation
+    dplyr::select(date, everything(), data.available)
+}

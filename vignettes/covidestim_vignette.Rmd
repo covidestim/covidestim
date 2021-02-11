@@ -1,5 +1,5 @@
 ---
-title: "Covidestim Quick Guide"
+title: "Using Covidestim"
 author: "Melanie H. Chitwood, Marcus Russi" 
 output: rmarkdown::html_vignette
 vignette: >

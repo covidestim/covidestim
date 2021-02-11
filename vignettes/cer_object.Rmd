@@ -3,7 +3,7 @@ title: "Results Object"
 author: "Melanie H. Chitwood, Marcus Russi" 
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using Covidestim}
+  %\VignetteIndexEntry{Results Object}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,10 +12,7 @@ vignette: >
 *This guide is intended to describe the various result objects contained in the object produced by the call `covidestim::run()`
 
 ### Overview
-
 Calling `run()` on a valid covidestim configuration will produce a S3 object of class `covidestim_result` containing the configuration used to run the model ("config"), the raw results ("result"), the extracted result as produced by [`rstan::extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) ("extracted"), and the summarized results as produced by [`rstan::summary`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) ("summary"). 
-
-
 
 ### Result
 Covidestim uses Bayesian inference to estiamte incident cases. The model is run using [rstan](https://mc-stan.org/users/interfaces/rstan), a package for the R programming language that allows for the estimation and analysis of Bayesian models with Stan. `result` is a stanfit object, the output of calling [`rstan::stan()`](https://mc-stan.org/rstan/reference/stanfit-class.html). 
@@ -24,7 +21,6 @@ We make use of the rstan functions [`summary()`](https://mc-stan.org/rstan/refer
 
 ### Extracted
 `extracted` contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of samples from the paremeter. All three chains have been mixed. 
-
 
 ```r
 summary(output[["extracted"]])

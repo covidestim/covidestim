@@ -19,13 +19,12 @@ NULL
 #'
 #' \code{covidestim} returns a base configuration of the model with the default
 #' set of priors, and no input data. This configuration, after adding input
-#' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, and
-#' \code{\link{input_fracpos}}), represents a valid model configuration that can
-#' be passed to \code{\link{run}}.
+#' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, represents 
+#' a valid model configuration that can be passed to \code{\link{run}}.
 #'
-#' @param chains The number of chains to use during MCMC, as passed to
+#' @param chains The number of chains to use during sampling, as passed to
 #'   \code{\link[rstan]{sampling}}.
-#' @param iter The number of iterations to run during MCMC, as passed to
+#' @param iter The number of iterations to run during sampling, as passed to
 #'   \code{\link[rstan]{sampling}}.
 #' @param thin A positive integer to specify period for saving samples, as
 #'   passed to \code{\link[rstan]{sampling}}. 
@@ -33,17 +32,11 @@ NULL
 #'   modeled. This should always be set to the number of days in your input data.
 #' @param ndays_before A positive integer. How many days before the first day
 #'   of model data should be modeled?
-#' @param rho_sym A number in \code{(0, 1]}. Modulates the strength of 
-#'   the relationship between the fraction of positive tests and the 
-#'   probability of diagnosis for symptomatic, but not severely ill, cases. 
-#' @param rho_sev A number in \code{(0, 1]}. Modulates the strength of 
-#'   the relationship between the fraction of positive tests and the 
-#'   probability of diagnosis for severely ill cases. 
+#' @param pop_size A positive real. What is the population in the geography 
+#' being modelled? This sets the max susceptible population
 #' @param seed A number. The random number generator seed for use in sampling.
-#' @param weekend A logical scalar. Many regions see decreased testing volumes
-#'   during the weekend. If this is a feature of your data, you may want to
-#'   experiment with \code{weekend = TRUE}, which will cause the model to
-#'   explicitly take this effect into account.
+#' @param region A string. The FIPS code (for U.S. counties) or state name
+#'   (e.g. \code{New York}) being modeled. Required.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to 
 #'   \code{\link{run}} to execute the model. This object can also be saved
@@ -53,24 +46,29 @@ NULL
 #'   the presence or absence of input data.
 #'
 #' @examples
-#' covidestim(ndays = 50, seed = 42, weekend = TRUE)
+#' covidestim(ndays = 50, seed = 42)
 #' @importFrom magrittr %>%
 #' @export
-covidestim <- function(ndays, ndays_before=28,
-                       chains=3, iter=1500, thin = 1, 
-                       rho_sym = 1, rho_sev = 0.5, seed=42,
-                       adapt_delta = 0.92, max_treedepth = 12,
-                       window.length = 5, weekend = FALSE) {
+covidestim <- function(ndays, 
+                       ndays_before=28,
+                       pop_size=1e12,
+                       chains=3, 
+                       iter=1500, 
+                       thin = 1, 
+                       seed=42,
+                       adapt_delta = 0.92, 
+                       max_treedepth = 12,
+                       window.length = 7,
+                       region) {
 
   att(is.numeric(ndays), ndays >= 1)
 
   defaultConfig(
     N_days = ndays,
     N_days_before = ndays_before,
-    rho_sym = rho_sym, 
-    rho_sev = rho_sev,
-    weekend = weekend,
-    N_days_av = window.length
+    pop_size = pop_size,
+    N_days_av = window.length,
+    region = region
   ) -> config
 
   # All user-specified config-related things must be specified above this line
@@ -90,6 +88,35 @@ covidestim <- function(ndays, ndays_before=28,
 
   structure(properties, class='covidestim')
 }
+
+#' Population estimates for US states and counties
+#'
+#' Returns 2019 census estimate of state or county population
+#'
+#' @param region A string with the state name, or the FIPS code
+#'
+#' @return State/county population as a numeric, or an error
+#'
+#' @examples
+#' get_pop('Connecticut')
+#' get_pop('09009')
+#'
+#' @export
+get_pop <- function(region) {
+  found <- dplyr::filter(pop_state, state == region)
+
+  if (nrow(found) == 0)
+    found <- dplyr::filter(pop_county, fips == region)
+
+  if (nrow(found) == 0)
+    stop(glue::glue("Could not find population data for region {region}!"))
+
+  if (nrow(found) > 1)
+    stop(glue::glue("Found more than set of population data for region {region}!"))
+
+  found$pop
+}
+
 
 #' @export
 run <- function(...) UseMethod('run')
@@ -146,7 +173,135 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
     list(result    = result,
          summary   = rstan::summary(result)$summary,
          extracted = rstan::extract(result),
-         config    = cc$config),
+         config    = cc$config,
+         flags     = ""),
+    class='covidestim_result'
+  )
+}
+
+#' @export
+runOptimizer <- function(cc,
+                         cores   = parallel::detectCores(),
+                         tries   = 50,
+                         iter    = 2000,
+                         timeout = 60,
+                         ...) {
+  
+  # Require that case and death data be entered
+  if (is.null(cc$config$obs_cas))
+    stop("Case data was not entered. See `?input_cases`.")
+  
+  if (is.null(cc$config$obs_die))
+    stop("Deaths data was not entered. See `?input_deaths`.")
+  
+  # Set the RNG seed to the seed specified in the `covidestim_config` object.
+  # Then, use that seed to create `tries` random integers, each of which will
+  # be used as the seed value for an instance of `rstan::optimizing`.
+  set.seed(cc$seed);
+  seeds <- sample.int(.Machine$integer.max, tries)
+
+  runOptimizerWithSeed <- function(seed, i) {
+    startTime <- Sys.time()
+
+    rstan::optimizing(
+      object    = stanmodels$stan_program_default,
+      data      = structure(cc$config, class="modelconfig"),
+      algorithm = "BFGS",
+      seed      = seed,
+      iter      = iter,
+      as_vector = FALSE,
+      ...
+    ) -> result
+
+    endTime <- Sys.time()
+
+    message(glue::glue(
+      'Finished try #{i} in {dt} with exit code {ec}',
+      dt = prettyunits::pretty_dt(endTime - startTime),
+      ec = result$return_code
+    ));
+
+    result
+  }
+
+  # This function will return NULL when there is a timeout
+  runOptimizerWithSeedInTime <- function(timeout, ...)
+    tryCatch(
+      R.utils::withTimeout(runOptimizerWithSeed(...), timeout = timeout),
+      error = function(c) {
+        message(glue::glue(
+          'Abandoned try #{i} due to timeout',
+          i = list(...)[[2]]
+        ))
+
+        NULL
+      }
+    )
+
+  # By default, use a sequential mapping function
+  map_fun <- purrr::imap
+
+  # Set up multicore execution for the `furrr::future_imap` call
+  # Replace the mapping function with a parallel mapping function
+  if (cores > 1) {
+    future::plan(future::multisession, workers = cores)
+    map_fun <- furrr::future_imap
+  }
+
+  # Run the optimizer on all the different seeds
+  results <- map_fun(
+    seeds,
+    runOptimizerWithSeedInTime,
+    timeout = timeout
+  )
+
+  # Change the execution plan back to sequential
+  if (cores > 1)
+    future::plan(future::sequential)
+
+  # Return code of 0 indicates success for `rstan::optimizing`.
+  successful_results <-
+    purrr::discard(results, is.null) %>% # Removes timed-out runs
+    purrr::keep(., ~.$return_code == 0)  # Removes >0 return-val runs
+
+  # Extract the mode of the posterior from the results that didn't time out
+  # and didn't return an error code of 70
+  opt_vals <- purrr::map_dbl(successful_results, 'value') 
+
+  # In theory the log posterior could be infinite, which wouldn't be valid
+  # but would technically be the maximum value. Throw an error in this case.
+  if (is.infinite(max(opt_vals)))
+    stop(glue::glue(
+      'The value of the log posterior was infinite for these runs:\n{runs}',
+      runs = which(is.infinite(opt_vals) & opt_vals > 0)
+    ))
+
+  # Let's call the first successful result which has `opt_val` equal to the
+  # maximum `opt_val` the "result." Note that it's unlikely that there will
+  # be more that one trajectory with the same `opt_val`.
+  result <- successful_results[which(opt_vals == max(opt_vals))][[1]]
+
+  c(
+    "new_inf",
+    "Rt",
+    "occur_cas",
+    "occur_die",
+    "cumulative_incidence",
+    "new_sym",
+    "new_sev",
+    "new_die",
+    "new_die_dx",
+    "diag_cases",
+    "diag_all",
+    "sero_positive",
+    "pop_infectiousness"
+  ) -> essential_vars
+
+  structure(
+    list(result   = result$par[essential_vars],
+         opt_vals = opt_vals,
+         config   = cc$config,
+         flags    = "optimizer"),
     class='covidestim_result'
   )
 }
@@ -193,13 +348,4 @@ ndays:\t{cc$config$N_days}
   cat(substituted_string)
 
   print.modelconfig(cc)
-}
-
-#' @export
-covidcast_register <- function() {
-  run.covidcast                 <<- run.covidestim
-  viz.covidcast_result          <<- viz.covidestim_result
-  summary.covidcast_result      <<- summary.covidestim_result
-  RtEst.covidcast_result        <<- RtEst.covidestim_result
-  RtNaiveEstim.covidcast_result <<- RtNaiveEstim.covidestim_result
 }

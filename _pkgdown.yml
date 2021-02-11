@@ -18,12 +18,12 @@ reference:
 - contents:
   - starts_with("priors")
   - starts_with("pri_")
+  - get_ifr_prior
 
 - title: Results
 - contents:
   - summary.covidestim_result
   - starts_with("viz")
-  - RtEst.covidestim_result
 
 - title: Example data
   desc: Covidestim provides an example NYC dataset to try running the model with.

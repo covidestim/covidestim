@@ -19,3 +19,5 @@ inst/doc
 vignettes/output_data.RData
 doc
 Meta
+*.tar.gz
+*.Rproj

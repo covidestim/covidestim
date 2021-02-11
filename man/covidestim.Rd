@@ -7,16 +7,15 @@
 covidestim(
   ndays,
   ndays_before = 28,
+  pop_size = 1e+12,
   chains = 3,
   iter = 1500,
   thin = 1,
-  rho_sym = 1,
-  rho_sev = 0.5,
   seed = 42,
   adapt_delta = 0.92,
   max_treedepth = 12,
-  window.length = 5,
-  weekend = FALSE
+  window.length = 7,
+  region
 )
 }
 \arguments{
@@ -26,29 +25,22 @@ modeled. This should always be set to the number of days in your input data.}
 \item{ndays_before}{A positive integer. How many days before the first day
 of model data should be modeled?}
 
-\item{chains}{The number of chains to use during MCMC, as passed to
+\item{pop_size}{A positive real. What is the population in the geography 
+being modelled? This sets the max susceptible population}
+
+\item{chains}{The number of chains to use during sampling, as passed to
 \code{\link[rstan]{sampling}}.}
 
-\item{iter}{The number of iterations to run during MCMC, as passed to
+\item{iter}{The number of iterations to run during sampling, as passed to
 \code{\link[rstan]{sampling}}.}
 
 \item{thin}{A positive integer to specify period for saving samples, as
 passed to \code{\link[rstan]{sampling}}.}
 
-\item{rho_sym}{A number in \code{(0, 1]}. Modulates the strength of 
-the relationship between the fraction of positive tests and the 
-probability of diagnosis for symptomatic, but not severely ill, cases.}
-
-\item{rho_sev}{A number in \code{(0, 1]}. Modulates the strength of 
-the relationship between the fraction of positive tests and the 
-probability of diagnosis for severely ill cases.}
-
 \item{seed}{A number. The random number generator seed for use in sampling.}
 
-\item{weekend}{A logical scalar. Many regions see decreased testing volumes
-during the weekend. If this is a feature of your data, you may want to
-experiment with \code{weekend = TRUE}, which will cause the model to
-explicitly take this effect into account.}
+\item{region}{A string. The FIPS code (for U.S. counties) or state name
+(e.g. \code{New York}) being modeled. Required.}
 }
 \value{
 An S3 object of type \code{covidestim}. This can be passed to 
@@ -61,10 +53,9 @@ An S3 object of type \code{covidestim}. This can be passed to
 \description{
 \code{covidestim} returns a base configuration of the model with the default
 set of priors, and no input data. This configuration, after adding input
-data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, and
-\code{\link{input_fracpos}}), represents a valid model configuration that can
-be passed to \code{\link{run}}.
+data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, represents 
+a valid model configuration that can be passed to \code{\link{run}}.
 }
 \examples{
-covidestim(ndays = 50, seed = 42, weekend = TRUE)
+covidestim(ndays = 50, seed = 42)
 }
