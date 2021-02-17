@@ -297,8 +297,16 @@ runOptimizer <- function(cc,
     "pop_infectiousness"
   ) -> essential_vars
 
+  c(
+    "p_diag_if_sym",
+    "p_diag_if_asy",
+    "p_diag_if_sev"
+  ) -> extraParams
+
+
   structure(
-    list(result   = result$par[essential_vars],
+    list(result   = result$par[c(essential_vars, extraParams)],
+         resultRaw= result,
          opt_vals = opt_vals,
          config   = cc$config,
          flags    = "optimizer"),
