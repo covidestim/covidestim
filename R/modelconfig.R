@@ -165,9 +165,9 @@ genData <- function(N_days, N_days_before = 28,
     # These next three variables are NULLed because they aren't defined here.
     # They get defined when an input_*() is added, because it's there that
     # we first see what the user's first day of data is.
-    ifr_adj   = NULL,
-    ifr_adj2  = NULL,
-    N_ifr_adj = NULL,
+    ifr_adj       = NULL,
+    ifr_adj_fixed = NULL,
+    N_ifr_adj     = NULL,
 
     #n days to model before start of data
     N_days_before = as.integer(N_days_before),

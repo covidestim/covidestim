@@ -1,6 +1,7 @@
 #' The 'covidestim' package.
 #'
-#' @description A DESCRIPTION OF THE PACKAGE
+#' @description Real-time estimates of the true size and trajectory of local
+#'   COVID-19 epidemics.
 #'
 #' @docType package
 #' @name covidestim-package
@@ -15,47 +16,66 @@
 #'
 NULL
 
-#' Configure a Covidestim run on a set of data and priors
+#' Configure a Covidestim run on a set of priors and input data
 #'
 #' \code{covidestim} returns a base configuration of the model with the default
 #' set of priors, and no input data. This configuration, after adding input
-#' data (see \code{\link{input_cases}}, \code{\link{input_deaths}}, represents 
-#' a valid model configuration that can be passed to \code{\link{run}}.
+#' data (see \code{\link{input_cases}}, \code{\link{input_deaths}},
+#' \code{priors_*}), represents a valid model configuration that can be passed
+#' to \code{\link{run}} (for MCMC) or \code{\link{runOptimizer}} (for BFGS).
 #'
-#' @param chains The number of chains to use during sampling, as passed to
+#' @param chains The number of chains to use during MCMC sampling, as passed to
 #'   \code{\link[rstan]{sampling}}.
-#' @param iter The number of iterations to run during sampling, as passed to
-#'   \code{\link[rstan]{sampling}}.
+#' @param iter The number of iterations to run during MCMC sampling, as passed
+#'   to \code{\link[rstan]{sampling}}.
 #' @param thin A positive integer to specify period for saving samples, as
-#'   passed to \code{\link[rstan]{sampling}}. 
+#'   passed to \code{\link[rstan]{sampling}}. Modify this only if you intend
+#'   to inspect raw iterations data returned by \code{\link[rstan]{sampling}}.
 #' @param ndays A positive integer. The number of days of input data being
-#'   modeled. This should always be set to the number of days in your input data.
+#'   modeled. This should always be set to the number of days in your input
+#'   data.
 #' @param ndays_before A positive integer. How many days before the first day
-#'   of model data should be modeled?
-#' @param pop_size A positive real. What is the population in the geography 
-#' being modelled? This sets the max susceptible population
-#' @param seed A number. The random number generator seed for use in sampling.
+#'   of model data should be modeled? A higher number will produce estimates
+#'   that go farther back in time, however, those estimates will contain more
+#'   and more uncertainty.
+#' @param pop_size A positive integer What is the population in the geography 
+#'   being modelled? This sets the max susceptible population and becomes
+#'   important as the population ever infected approaches the population size.
+#' @param seed A number. The random number generator seed for use in MCMC
+#'   sampling or in BFGS.
 #' @param region A string. The FIPS code (for U.S. counties) or state name
 #'   (e.g. \code{New York}) being modeled. Required.
 #'
-#' @return An S3 object of type \code{covidestim}. This can be passed to 
-#'   \code{\link{run}} to execute the model. This object can also be saved
-#'   to disk using \code{\link[base]{saveRDS}} to enable reproducibility across
-#'   platforms or sessions. The \code{print} method is overloaded to return
-#'   to the user a summary of the configuration, including prior values and 
-#'   the presence or absence of input data.
+#' @return An S3 object of type \code{covidestim}. This can be passed to
+#' \code{\link{run}} or \code{\link{runOptimizer}} to execute the model, as
+#' long as input data has been added (using the addition operator, see
+#' example). This object can also be saved to disk using
+#' \code{\link[base]{saveRDS}} to enable reproducibility across platforms or
+#' sessions. However, note that Stan runs are only reproducible under very
+#' specific conditions due to Stan's multi-language architecture. The
+#' \code{print} method is overloaded to return to the user a summary of the
+#' configuration, including prior values and the presence or absence of input
+#' data.
+#'
+#' @seealso \url{https://mc-stan.org/docs/2_18/reference-manual/reproducibility-chapter.html}
 #'
 #' @examples
-#' covidestim(ndays = 50, seed = 42)
+#' # Note that this configuration is improper as it uses New York City
+#' # case/death data, but uses Manhattan's FIPS code and population size.
+#' # (for demonstration purposes only!)
+#' covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
+#'   input_cases(example_nyc_data('cases')) +
+#'   input_deaths(example_nyc_data('deaths'))
+#'
 #' @importFrom magrittr %>%
 #' @export
 covidestim <- function(ndays, 
-                       ndays_before=28,
-                       pop_size=1e12,
-                       chains=3, 
-                       iter=1500, 
+                       ndays_before = 28,
+                       pop_size = 1e12,
+                       chains = 3, 
+                       iter = 1500, 
                        thin = 1, 
-                       seed=42,
+                       seed = 42,
                        adapt_delta = 0.92, 
                        max_treedepth = 12,
                        window.length = 7,
@@ -91,7 +111,7 @@ covidestim <- function(ndays,
 
 #' Population estimates for US states and counties
 #'
-#' Returns 2019 census estimate of state or county population
+#' Returns 2019 census estimate of state or county population.
 #'
 #' @param region A string with the state name, or the FIPS code
 #'
@@ -121,13 +141,14 @@ get_pop <- function(region) {
 #' @export
 run <- function(...) UseMethod('run')
 
-#' Run the Covidestim model
+#' Run the Covidestim model using MCMC
 #'
 #' Calling \code{run()} with a \code{\link{covidestim}} object executes the
 #' model and returns a result. \code{run} will attempt to run on as
 #' many cores as appear to be available on the host machine, through calling
 #' \code{\link[parallel]{detectCores}}. Model runtimes will range anywhere from
-#' 5-120 minutes.
+#' 20 minutes to 12 hours, with the cumulative number of cases appearing to be
+#' a strong correlate to longer runtime.
 #'
 #' When running in an interactive/TTY environment (like Rstudio, Radian, or the
 #' R terminal), progress messages from \code{rstan} will be displayed,
@@ -137,12 +158,26 @@ run <- function(...) UseMethod('run')
 #'
 #' @param cc A valid \code{\link{covidestim}} configuration
 #' @param cores A number. How many cores to use to execute runs.
-#' @param ... Extra arguments to be passed to \code{\link[rstan]{sampling}}
+#' @param ... Extra arguments, passed on to \code{\link[rstan]{sampling}}
 #'
 #' @return A S3 object of class \code{covidestim_result} containing the
-#'   configuration used to run the model, the raw results, the extracted
+#'   configuration used to run the model, the raw Stan results, the extracted
 #'   result as produced by \code{\link[rstan]{extract}}, and the summarized
 #'   results as produced by \code{\link[rstan]{extract}}.
+#'
+#' @seealso \code{\link{runOptimizer}}
+#'
+#' @examples
+#' # Note that this configuration is improper as it uses New York City
+#' # case/death data, but uses Manhattan's FIPS code and population size.
+#' # (for demonstration purposes only!)
+#' cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
+#'   input_cases(example_nyc_data('cases')) +
+#'   input_deaths(example_nyc_data('deaths'))
+#' 
+#' \dontrun{
+#' result <- run(cfg, cores = 2)
+#' }
 #'
 #' @export
 run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
@@ -179,10 +214,46 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
   )
 }
 
+#' Run the Covidedstim model using BFGS
+#'
+#' In addition to MCMC, you can fit the model using the BFGS algorithm. This
+#' algorithm tries to maximize the mode of the posterior; it runs much faster
+#' than MCMC, but won't return any confidence intervals. On \url{covidestim.org},
+#' BFGS is used to produce estimates for counties, and as a fallback when MCMC
+#' fails to produce a timely and/or converged fit for state data. Runtimes
+#' scale linearly to the value of \code{tries/cores}, but are generally in the
+#' 30s-10min range. The exact same underlying model is used.
+#'
+#' The BFGS algorithm is run \code{tries} times using \code{tries} different
+#' seeds derived from \code{cc$seed}. Once all runs complete, the run with the
+#' highest value of the log-posterior is selected and returned. BFGS
+#' occasionally gets stuck; these runs are flagged and discarded before the
+#' ranking begins.
+#'
+#' @param cc A valid \code{\link{covidestim}} configuration
+#' @param cores A number. How many cores to use to execute runs. Multicore
+#'   execution is less important for \code{runOptimizer} than it is for
+#'   \code{\link{run}}.
+#' @param tries The number of times to run the BFGS algorithm.
+#' @param iter Passed to \code{\link[rstan]{optimizing}}.
+#' @param timeout How long to let each run go for before killing it. Default 60s.
+#'
+#' @examples
+#' # Note that this configuration is improper as it uses New York City
+#' # case/death data, but uses Manhattan's FIPS code and population size.
+#' # (for demonstration purposes only!)
+#' cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
+#'   input_cases(example_nyc_data('cases')) +
+#'   input_deaths(example_nyc_data('deaths'))
+#' 
+#' \dontrun{
+#' result <- runOptimizer(cfg, cores = 2)
+#' }
+#'
 #' @export
 runOptimizer <- function(cc,
                          cores   = parallel::detectCores(),
-                         tries   = 50,
+                         tries   = 10,
                          iter    = 2000,
                          timeout = 60,
                          ...) {
@@ -209,7 +280,7 @@ runOptimizer <- function(cc,
       algorithm = "BFGS",
       seed      = seed,
       iter      = iter,
-      as_vector = FALSE,
+      as_vector = FALSE, # Otherwise you get a sloppy list structure
       ...
     ) -> result
 
@@ -316,7 +387,6 @@ covidestim_add <- function(rightside, leftside) UseMethod('covidestim_add')
 
 #' When adding priors, we want to be sure that a new 'modelconfig' object is
 #' created, in order to check these priors
-#' @importFrom glue glue
 covidestim_add.priors <- function(rightside, leftside) {
   newConfig       <- structure(leftside$config, class="modelconfig") + rightside
   leftside$config <- newConfig
