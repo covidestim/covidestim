@@ -10,7 +10,7 @@ att_w <- function(assertion, msg) {
 
 # Combines 'defaults' and 'args' together. If 'args'==list(), it is stripped
 # from the result. Any duplicate keys are resolved by selecting the last key
-# specified. The result has class 'modelconfig'
+# specified.
 splice_class <- function(defaults, args, class)
   structure(
     rlang::dots_list(

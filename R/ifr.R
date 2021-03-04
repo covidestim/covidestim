@@ -1,4 +1,4 @@
-#' Estimated IFR ... for US counties and states
+#' Estimated IFR for US counties and states
 #'
 #' DETAILS HERE. Look in `data-raw/` for details on how this is generated.
 #'
@@ -6,7 +6,7 @@
 #'
 #' @return A data.frame with two variables: [date, value], where value is
 #'   the odds ratio on VALUE HERE for that particular day. If \code{region}
-#'   is specified incorrectly, an error will be thrown
+#'   is specified incorrectly, an error will be thrown.
 #'
 #' @examples
 #' get_ifr_raw('Connecticut')
@@ -26,7 +26,7 @@ get_ifr_raw <- function(region) {
       ifr_state$ifr_OR[ifr_state$State==state_name]
     })
   else
-    stop("`region` was neither a state name or a character FIPS code")
+    stop("`region` was neither a US state name or a character FIPS code")
 
   successful_state_find <- function(candidate) is.numeric(candidate)
 

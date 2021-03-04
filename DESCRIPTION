@@ -10,8 +10,15 @@ Authors@R:
              role = c("aut"),
              email = "melanie.chitwood@yale.edu",
              comment = c(ORCID = "0000-0002-9289-5694")))
-Description: What the package does (one paragraph).
-URL: http://covidestim.org, https://github.com/covidestim
+Description: covidestim is a Bayesian nowcasting approach that explicitly
+  accounts for reporting delays and secular changes in case ascertainment to
+  generate real-time estimates of COVID-19 epidemiology on the basis of reported
+  cases and deaths. Using this approach, we can estimate time trends in
+  infections, symptomatic cases, and deaths for all 50 US states and the District
+  of Columbia from early-March 2020 through the present. The covidestim package
+  contains all you need to reproduce our work, but it’s really targeted at users
+  who want to try running our model on their own state- or county-level data.
+URL: https://covidestim.org, https://github.com/covidestim, https://pkg.covidestim.org
 BugReports: https://github.com/covidestim/covidestim/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -45,7 +52,7 @@ Suggests:
     grDevices,
     knitr,
     rmarkdown
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 RdMacros: Rdpack
 Depends: 
     R (>= 3.4.0)
