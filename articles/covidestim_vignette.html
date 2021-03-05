@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Covidestim Quick Guide • covidestim</title>
+<title>Using Covidestim • covidestim</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Covidestim Quick Guide">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Using Covidestim">
 <meta property="og:description" content="covidestim">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -64,7 +64,7 @@
       <a href="../articles/cer_object.html">Results Object</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Covidestim Quick Guide</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
   </ul>
 </li>
@@ -72,7 +72,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/covidestim/covidestim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -86,11 +86,10 @@
 
       
 
-      </header><script src="covidestim_vignette_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="covidestim_vignette_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="covidestim_vignette_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="covidestim_vignette_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Covidestim Quick Guide</h1>
+      <h1 data-toc-skip>Using Covidestim</h1>
                         <h4 class="author">Melanie H. Chitwood, Marcus Russi</h4>
             
       
@@ -181,7 +180,7 @@
 <span class="fu"><a href="../reference/covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df.cases</span><span class="op">)</span>, weekend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="../reference/input_cases.html">input_cases</a></span><span class="op">(</span><span class="va">df.cases</span>, type <span class="op">=</span> <span class="st">"occurred"</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="../reference/input_cases.html">input_deaths</a></span><span class="op">(</span><span class="va">df.cases</span>, type <span class="op">=</span> <span class="st">"occurred"</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="../reference/input_cases.html">input_fracpos</a></span><span class="op">(</span><span class="va">df.fracpos</span><span class="op">)</span>
+  <span class="fu">input_fracpos</span><span class="op">(</span><span class="va">df.fracpos</span><span class="op">)</span>
 <span class="va">config1</span>
 <span class="co">#&gt; Covidestim Configuration:</span>
 <span class="co">#&gt; </span>

@@ -90,7 +90,7 @@ returned. All parameters must be non-negative real numbers." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -108,7 +108,7 @@ returned. All parameters must be non-negative real numbers." />
       <a href="../articles/cer_object.html">Results Object</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Covidestim Quick Guide</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
   </ul>
 </li>
@@ -116,7 +116,7 @@ returned. All parameters must be non-negative real numbers." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/covidestim/covidestim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -145,10 +145,11 @@ returned. All parameters must be non-negative real numbers.</p>
     </div>
 
     <pre class="usage"><span class='fu'>priors_transitions</span><span class='op'>(</span>
-  p_sym_if_inf <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>44.9</span>, <span class='fl'>9.9</span><span class='op'>)</span>,
-  p_sev_if_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>11.9</span>, <span class='fl'>47.7</span><span class='op'>)</span>,
-  p_die_if_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>97</span><span class='op'>)</span>,
-  p_die_if_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.12</span>, <span class='fl'>85.1</span><span class='op'>)</span>
+  p_sym_if_inf <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5.143</span>, <span class='fl'>3.536</span><span class='op'>)</span>,
+  p_sev_if_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.8854</span>, <span class='fl'>20.002</span><span class='op'>)</span>,
+  p_die_if_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>28.239</span>, <span class='fl'>162.3</span><span class='op'>)</span>,
+  p_die_if_inf <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>15.915</span>, <span class='fl'>3167.1</span><span class='op'>)</span>,
+  ifr_decl_OR <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>9.1357</span>, <span class='fl'>29.339</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -161,21 +162,21 @@ returned. All parameters must be non-negative real numbers.</p>
   symptomatic if infectious.</p>
 <p>Sources for default value:</p>  
 <p></p><ul>
-<li><p>Byambasuren O, Cardona M, Bell K, Clark J, McLaws M, Glasziou P (2020-may).
+<li><p>Byambasuren O, Cardona M, Bell K, Clark J, McLaws M, Glasziou P (2020).
 &#8220;Estimating the extent of asymptomatic COVID-19 and its potential for community transmission: systematic review and meta-analysis.&#8221;
 Infectious Diseases (except HIV/AIDS).
 doi: <a href='https://doi.org/10.1101/2020.05.10.20097543'>10.1101/2020.05.10.20097543</a>
-.</p></li>
-<li><p>Mizumoto K, Kagaya K, Zarebski A, Chowell G (2020-mar).
+, <a href='http://medrxiv.org/lookup/doi/10.1101/2020.05.10.20097543'>http://medrxiv.org/lookup/doi/10.1101/2020.05.10.20097543</a>.</p></li>
+<li><p>Mizumoto K, Kagaya K, Zarebski A, Chowell G (2020).
 &#8220;Estimating the asymptomatic proportion of coronavirus disease 2019 (COVID-19) cases on board the Diamond Princess cruise ship, Yokohama, Japan, 2020.&#8221;
-<em>Eurosurveillance</em>, <b>25</b>.
-doi: <a href='https://doi.org/10.2807/1560-7917.ES.2020.25.10.2000180'>10.2807/1560-7917.ES.2020.25.10.2000180</a>
-.</p></li>
-<li><p>Nishiura H, Kobayashi T, Miyama T, Suzuki A, Jung S, Hayashi K, Kinoshita R, Yang Y, Yuan B, Akhmetzhanov AR, Linton NM (2020-may).
+<em>Eurosurveillance</em>, <b>25</b>(10).
+ISSN 1560-7917, doi: <a href='https://doi.org/10.2807/1560-7917.ES.2020.25.10.2000180'>10.2807/1560-7917.ES.2020.25.10.2000180</a>
+, <a href='https://www.eurosurveillance.org/content/10.2807/1560-7917.ES.2020.25.10.2000180'>https://www.eurosurveillance.org/content/10.2807/1560-7917.ES.2020.25.10.2000180</a>.</p></li>
+<li><p>Nishiura H, Kobayashi T, Miyama T, Suzuki A, Jung S, Hayashi K, Kinoshita R, Yang Y, Yuan B, Akhmetzhanov AR, Linton NM (2020).
 &#8220;Estimation of the asymptomatic ratio of novel coronavirus infections (COVID-19).&#8221;
 <em>International Journal of Infectious Diseases</em>, <b>94</b>, 154--155.
-doi: <a href='https://doi.org/10.1016/j.ijid.2020.03.020'>10.1016/j.ijid.2020.03.020</a>
-.</p></li>
+ISSN 12019712, doi: <a href='https://doi.org/10.1016/j.ijid.2020.03.020'>10.1016/j.ijid.2020.03.020</a>
+, <a href='https://linkinghub.elsevier.com/retrieve/pii/S1201971220301399'>https://linkinghub.elsevier.com/retrieve/pii/S1201971220301399</a>.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -185,16 +186,16 @@ doi: <a href='https://doi.org/10.1016/j.ijid.2020.03.020'>10.1016/j.ijid.2020.03
   severe if symptomatic.</p>
 <p>Sources for default value:</p>
 <p></p><ul>
-<li><p>CDC COVID-19 Response Team, Bialek S, Boundy E, Bowen V, Chow N, Cohn A, Dowling N, Ellington S, Gierke R, Hall A, MacNeil J, Patel P, Peacock G, Pilishvili T, Razzaghi H, Reed N, Ritchey M, Sauber-Schatz E (2020-mar).
+<li><p>CDC COVID-19 Response Team, Bialek S, Boundy E, Bowen V, Chow N, Cohn A, Dowling N, Ellington S, Gierke R, Hall A, MacNeil J, Patel P, Peacock G, Pilishvili T, Razzaghi H, Reed N, Ritchey M, Sauber-Schatz E (2020).
 &#8220;Severe Outcomes Among Patients with Coronavirus Disease 2019 (COVID-19) — United States, February 12–March 16, 2020.&#8221;
-<em>MMWR. Morbidity and Mortality Weekly Report</em>, <b>69</b>, 343--346.
-doi: <a href='https://doi.org/10.15585/mmwr.mm6912e2'>10.15585/mmwr.mm6912e2</a>
-.</p></li>
-<li><p>Verity R, Okell LC, Dorigatti I, Winskill P, Whittaker C, Imai N, Cuomo-Dannenburg G, Thompson H, Walker PGT, Fu H, Dighe A, Griffin JT, Baguelin M, Bhatia S, Boonyasiri A, Cori A, Cucunubá Z, FitzJohn R, Gaythorpe K, Green W, Hamlet A, Hinsley W, Laydon D, Nedjati-Gilani G, Riley S, van Elsland S, Volz E, Wang H, Wang Y, Xi X, Donnelly CA, Ghani AC, Ferguson NM (2020-jun).
+<em>MMWR. Morbidity and Mortality Weekly Report</em>, <b>69</b>(12), 343--346.
+ISSN 0149-2195, 1545-861X, doi: <a href='https://doi.org/10.15585/mmwr.mm6912e2'>10.15585/mmwr.mm6912e2</a>
+, <a href='http://www.cdc.gov/mmwr/volumes/69/wr/mm6912e2.htm?s_cid=mm6912e2_w'>http://www.cdc.gov/mmwr/volumes/69/wr/mm6912e2.htm?s_cid=mm6912e2_w</a>.</p></li>
+<li><p>Verity R, Okell LC, Dorigatti I, Winskill P, Whittaker C, Imai N, Cuomo-Dannenburg G, Thompson H, Walker PGT, Fu H, Dighe A, Griffin JT, Baguelin M, Bhatia S, Boonyasiri A, Cori A, Cucunubá Z, FitzJohn R, Gaythorpe K, Green W, Hamlet A, Hinsley W, Laydon D, Nedjati-Gilani G, Riley S, van Elsland S, Volz E, Wang H, Wang Y, Xi X, Donnelly CA, Ghani AC, Ferguson NM (2020).
 &#8220;Estimates of the severity of coronavirus disease 2019: a model-based analysis.&#8221;
-<em>The Lancet Infectious Diseases</em>, <b>20</b>, 669--677.
-doi: <a href='https://doi.org/10.1016/S1473-3099(20)30243-7'>10.1016/S1473-3099(20)30243-7</a>
-.</p></li>
+<em>The Lancet Infectious Diseases</em>, <b>20</b>(6), 669--677.
+ISSN 14733099, doi: <a href='https://doi.org/10.1016/S1473-3099(20)30243-7'>10.1016/S1473-3099(20)30243-7</a>
+, <a href='https://linkinghub.elsevier.com/retrieve/pii/S1473309920302437'>https://linkinghub.elsevier.com/retrieve/pii/S1473309920302437</a>.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -202,22 +203,30 @@ doi: <a href='https://doi.org/10.1016/S1473-3099(20)30243-7'>10.1016/S1473-3099(
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
   beta)</a></code> parameters of a Beta distribution modeling the probability of dying
   if severely ill.</p>
-<p>Source for default value: CDC COVID-19 Response Team, Bialek S, Boundy E, Bowen V, Chow N, Cohn A, Dowling N, Ellington S, Gierke R, Hall A, MacNeil J, Patel P, Peacock G, Pilishvili T, Razzaghi H, Reed N, Ritchey M, Sauber-Schatz E (2020-mar).
+<p>Source for default value: CDC COVID-19 Response Team, Bialek S, Boundy E, Bowen V, Chow N, Cohn A, Dowling N, Ellington S, Gierke R, Hall A, MacNeil J, Patel P, Peacock G, Pilishvili T, Razzaghi H, Reed N, Ritchey M, Sauber-Schatz E (2020).
 &#8220;Severe Outcomes Among Patients with Coronavirus Disease 2019 (COVID-19) — United States, February 12–March 16, 2020.&#8221;
-<em>MMWR. Morbidity and Mortality Weekly Report</em>, <b>69</b>, 343--346.
-doi: <a href='https://doi.org/10.15585/mmwr.mm6912e2'>10.15585/mmwr.mm6912e2</a>
-.</p></td>
+<em>MMWR. Morbidity and Mortality Weekly Report</em>, <b>69</b>(12), 343--346.
+ISSN 0149-2195, 1545-861X, doi: <a href='https://doi.org/10.15585/mmwr.mm6912e2'>10.15585/mmwr.mm6912e2</a>
+, <a href='http://www.cdc.gov/mmwr/volumes/69/wr/mm6912e2.htm?s_cid=mm6912e2_w'>http://www.cdc.gov/mmwr/volumes/69/wr/mm6912e2.htm?s_cid=mm6912e2_w</a>.</p></td>
     </tr>
     <tr>
-      <th>p_die_if_sym</th>
+      <th>p_die_if_inf</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
   beta)</a></code> parameters of a Beta distribution modeling the probability of dying
-  if symptomatic.</p>
-<p>Source for default value: Basu A (2020-may).
-&#8220;Estimating The Infection Fatality Rate Among Symptomatic COVID-19 Cases In The United States: Study estimates the COVID-19 infection fatality rate at the US county level.&#8221;
-<em>Health Affairs</em>.
-doi: <a href='https://doi.org/10.1377/hlthaff.2020.00455'>10.1377/hlthaff.2020.00455</a>
-.</p></td>
+  if infected (e.g. the infection fatality rate). This prior represents a 
+  national average value, which is adjusted for state and county-level 
+  factors, and to reflect higher fatality rates early in the epidemic.</p>
+<p>Source for default value: Adummy A (2021).
+&#8220;Not avalable.&#8221;
+Failed to insert reference with key = ODriscoll_Nature_2020 from package = 'covidestim'. Possible cause --- missing or misspelled key.</p></td>
+    </tr>
+    <tr>
+      <th>ifr_decl_OR</th>
+      <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(shape,
+  rate)</a></code> parameters of a Gamma distribution modeling the elevated IFR in early
+  2020, relative to the present. Default value represents an IFR 30<!-- % higher -->
+  in March of 2020, with 95<!-- % interval 10-50% higher. --></p>
+<p>Source for default value: Expert opinion</p></td>
     </tr>
     </table>
 
@@ -227,7 +236,7 @@ doi: <a href='https://doi.org/10.1377/hlthaff.2020.00455'>10.1377/hlthaff.2020.0
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_transitions</span><span class='op'>(</span>p_sym_if_inf <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in defaultConfig(N_days = ndays, N_days_before = ndays_before, pop_size = pop_size,     N_days_av = window.length, region = region): argument "region" is missing, with no default</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

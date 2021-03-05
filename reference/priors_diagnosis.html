@@ -89,7 +89,7 @@ diagnosis. Called with no arguments, the default values are returned." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -107,7 +107,7 @@ diagnosis. Called with no arguments, the default values are returned." />
       <a href="../articles/cer_object.html">Results Object</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Covidestim Quick Guide</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
   </ul>
 </li>
@@ -115,7 +115,7 @@ diagnosis. Called with no arguments, the default values are returned." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/covidestim/covidestim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -143,21 +143,20 @@ diagnosis. Called with no arguments, the default values are returned.</p>
     </div>
 
     <pre class="usage"><span class='fu'>priors_diagnosis</span><span class='op'>(</span>
-  p_diag_if_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
-  p_diag_if_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.5</span>, <span class='fl'>1</span><span class='op'>)</span>,
-  weekend_eff <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>
+  rr_diag_asy_vs_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>18</span><span class='op'>)</span>,
+  rr_diag_sym_vs_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
+  p_diag_if_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>2</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>p_diag_if_sym</th>
-      <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
-beta)</a></code> parameters of a Beta distribution modeling the probability of
-diagnosed if symptomatic. The mean of this distribution should be less
-the mean of the distribution parameterized by <code>p_diag_if_sev</code>.
-Otherwise, a warning will be displayed.</p></td>
+      <th>rr_diag_asy_vs_sym</th>
+      <td><p>A two-element numeric vector containing 
+<code><a href='https://rdrr.io/r/base/c.html'>c(alpha, beta)</a></code> parameters of a Beta distribution modeling the rate 
+ratio of diagnosis among asymptomatic vs symptomatic, but not severe, 
+infections.</p></td>
     </tr>
     <tr>
       <th>p_diag_if_sev</th>
@@ -166,11 +165,10 @@ beta)</a></code> parameters of a Beta distribution modeling the probability of
 being diagnosed if severely ill.</p></td>
     </tr>
     <tr>
-      <th>weekend_eff</th>
-      <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
-beta)</a></code> parameters of a Beta distribution modeling the effect of weekends on
-probability of diagnosis. Weekend effect is assumed to impact probability of 
-diagnosis at symptomatic and severe disease states equally.</p></td>
+      <th>rr_diag_sym_vs_asy</th>
+      <td><p>A two-element numeric vector containing 
+<code><a href='https://rdrr.io/r/base/c.html'>c(alpha, beta)</a></code> parameters of a Beta distribution modeling the rate 
+ratio of diagnosis at the symptomatic vs severe stage of infection.</p></td>
     </tr>
     </table>
 
@@ -184,7 +182,7 @@ is used for the probability of diagnosis if severely ill.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_diagnosis</span><span class='op'>(</span>p_diag_if_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in defaultConfig(N_days = ndays, N_days_before = ndays_before, pop_size = pop_size,     N_days_av = window.length, region = region): argument "region" is missing, with no default</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -49,9 +49,8 @@
 <meta property="og:title" content="Configure a Covidestim run on a set of data and priors — covidestim" />
 <meta property="og:description" content="covidestim returns a base configuration of the model with the default
 set of priors, and no input data. This configuration, after adding input
-data (see input_cases, input_deaths, and
-input_fracpos), represents a valid model configuration that can
-be passed to run." />
+data (see input_cases, input_deaths, represents 
+a valid model configuration that can be passed to run." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -92,7 +91,7 @@ be passed to run." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -110,7 +109,7 @@ be passed to run." />
       <a href="../articles/cer_object.html">Results Object</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Covidestim Quick Guide</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
   </ul>
 </li>
@@ -118,7 +117,7 @@ be passed to run." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/covidestim/covidestim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -143,24 +142,22 @@ be passed to run." />
     <div class="ref-description">
     <p><code>covidestim</code> returns a base configuration of the model with the default
 set of priors, and no input data. This configuration, after adding input
-data (see <code><a href='input_cases.html'>input_cases</a></code>, <code><a href='input_cases.html'>input_deaths</a></code>, and
-<code><a href='input_cases.html'>input_fracpos</a></code>), represents a valid model configuration that can
-be passed to <code>run</code>.</p>
+data (see <code><a href='input_cases.html'>input_cases</a></code>, <code><a href='input_cases.html'>input_deaths</a></code>, represents 
+a valid model configuration that can be passed to <code>run</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>covidestim</span><span class='op'>(</span>
   <span class='va'>ndays</span>,
   ndays_before <span class='op'>=</span> <span class='fl'>28</span>,
+  pop_size <span class='op'>=</span> <span class='fl'>1e+12</span>,
   chains <span class='op'>=</span> <span class='fl'>3</span>,
   iter <span class='op'>=</span> <span class='fl'>1500</span>,
   thin <span class='op'>=</span> <span class='fl'>1</span>,
-  rho_sym <span class='op'>=</span> <span class='fl'>1</span>,
-  rho_sev <span class='op'>=</span> <span class='fl'>0.5</span>,
   seed <span class='op'>=</span> <span class='fl'>42</span>,
   adapt_delta <span class='op'>=</span> <span class='fl'>0.92</span>,
   max_treedepth <span class='op'>=</span> <span class='fl'>12</span>,
-  window.length <span class='op'>=</span> <span class='fl'>5</span>,
-  weekend <span class='op'>=</span> <span class='cn'>FALSE</span>
+  window.length <span class='op'>=</span> <span class='fl'>7</span>,
+  <span class='va'>region</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -177,13 +174,18 @@ modeled. This should always be set to the number of days in your input data.</p>
 of model data should be modeled?</p></td>
     </tr>
     <tr>
+      <th>pop_size</th>
+      <td><p>A positive real. What is the population in the geography 
+being modelled? This sets the max susceptible population</p></td>
+    </tr>
+    <tr>
       <th>chains</th>
-      <td><p>The number of chains to use during MCMC, as passed to
+      <td><p>The number of chains to use during sampling, as passed to
 <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
     </tr>
     <tr>
       <th>iter</th>
-      <td><p>The number of iterations to run during MCMC, as passed to
+      <td><p>The number of iterations to run during sampling, as passed to
 <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
     </tr>
     <tr>
@@ -192,27 +194,13 @@ of model data should be modeled?</p></td>
 passed to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
     </tr>
     <tr>
-      <th>rho_sym</th>
-      <td><p>A number in <code>(0, 1]</code>. Modulates the strength of 
-the relationship between the fraction of positive tests and the 
-probability of diagnosis for symptomatic, but not severely ill, cases.</p></td>
-    </tr>
-    <tr>
-      <th>rho_sev</th>
-      <td><p>A number in <code>(0, 1]</code>. Modulates the strength of 
-the relationship between the fraction of positive tests and the 
-probability of diagnosis for severely ill cases.</p></td>
-    </tr>
-    <tr>
       <th>seed</th>
       <td><p>A number. The random number generator seed for use in sampling.</p></td>
     </tr>
     <tr>
-      <th>weekend</th>
-      <td><p>A logical scalar. Many regions see decreased testing volumes
-during the weekend. If this is a feature of your data, you may want to
-experiment with <code>weekend = TRUE</code>, which will cause the model to
-explicitly take this effect into account.</p></td>
+      <th>region</th>
+      <td><p>A string. The FIPS code (for U.S. counties) or state name
+(e.g. <code>New York</code>) being modeled. Required.</p></td>
     </tr>
     </table>
 
@@ -226,52 +214,8 @@ explicitly take this effect into account.</p></td>
   the presence or absence of input data.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>covidestim</span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span>, seed <span class='op'>=</span> <span class='fl'>42</span>, weekend <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Covidestim Configuration:
-#&gt; 
-#&gt; Seed:	42
-#&gt; Chains:	3
-#&gt; Iterations:	1500
-#&gt; Warmup runs:	1200
-#&gt; Priors: Valid
-#&gt; ndays:	50
-#&gt; 
-#&gt; Priors:
-#&gt; 
-#&gt; 	log_new_inf_0_mu	0
-#&gt; 	log_new_inf_0_sd	10
-#&gt; 	deriv1_log_new_inf_sd	0.5
-#&gt; 	deriv2_log_new_inf_sd	0.05
-#&gt; 	p_sym_if_inf	[alpha]	44.9
-#&gt; 	p_sym_if_inf	[beta]	9.9
-#&gt; 	p_sev_if_sym	[alpha]	11.9
-#&gt; 	p_sev_if_sym	[beta]	47.7
-#&gt; 	p_die_if_sev	[alpha]	3
-#&gt; 	p_die_if_sev	[beta]	97
-#&gt; 	p_die_if_sym	[alpha]	1.12
-#&gt; 	p_die_if_sym	[beta]	85.1
-#&gt; 	inf_prg_delay	[shape]	5.202
-#&gt; 	inf_prg_delay	[rate]	0.946
-#&gt; 	sym_prg_delay	[shape]	5.147
-#&gt; 	sym_prg_delay	[rate]	0.468
-#&gt; 	sev_prg_delay	[shape]	2.383
-#&gt; 	sev_prg_delay	[rate]	0.27
-#&gt; 	cas_rep_delay_shp	[alpha]	2.2
-#&gt; 	cas_rep_delay_shp	[beta]	1
-#&gt; 	die_rep_delay_shp	[alpha]	2.2
-#&gt; 	die_rep_delay_shp	[beta]	1
-#&gt; 	p_diag_if_sym	[alpha]	2
-#&gt; 	p_diag_if_sym	[beta]	2
-#&gt; 	p_diag_if_sev	[alpha]	1.5
-#&gt; 	p_diag_if_sev	[beta]	1
-#&gt; 	weekend_eff	[alpha]	2
-#&gt; 	weekend_eff	[beta]	2
-#&gt; 
-#&gt; Inputs:
-#&gt; 
-#&gt; 	[ _ ]	Cases
-#&gt; 	[ _ ]	Deaths
-#&gt; 	[ _ ]	Fraction positive</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>covidestim</span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span>, seed <span class='op'>=</span> <span class='fl'>42</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in defaultConfig(N_days = ndays, N_days_before = ndays_before, pop_size = pop_size,     N_days_av = window.length, region = region): argument "region" is missing, with no default</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

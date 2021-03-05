@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,7 @@
       <a href="../articles/cer_object.html">Results Object</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Covidestim Quick Guide</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
   </ul>
 </li>
@@ -114,7 +114,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/covidestim/covidestim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -141,7 +141,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for covidestim_result</span>
-<span class='fu'>viz</span><span class='op'>(</span><span class='va'>ccr</span>, include.RtEstim <span class='op'>=</span> <span class='cn'>TRUE</span>, renderPDF <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+<span class='fu'>viz</span><span class='op'>(</span><span class='va'>ccr</span>, renderPDF <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,13 +168,6 @@ returned.</p></td>
     fit of the model to that data.</p></li>
 <li><p><code>infectionsAndCases</code> A <code>ggplot</code> of estimated daily infections,
     compared to reported/observed cases.</p></li>
-</ul>
-
-<p>If <code>include.RtEstim == TRUE</code>:</p>
-<ul>
-<li><p><code>RtEstim</code> A <code>ggplot</code> object of estimated Rt</p></li>
-<li><p><code>RtEstimNaive</code> A <code>ggplot</code> object of Rt estimated
-    <strong>purely</strong> from input data</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Priors on reporting delays — priors_diagnosis_delays_scale • covidestim</title>
+<title>Priors on diagnostic delays — priors_diagnosis_delays_scale • covidestim</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,10 +46,10 @@
 
 
 
-<meta property="og:title" content="Priors on reporting delays — priors_diagnosis_delays_scale" />
-<meta property="og:description" content="This function returns a keyed list of priors related to delays in reporting
-of cases, hospitalizations, and deaths.  Called with no arguments, the
-default values are returned." />
+<meta property="og:title" content="Priors on diagnostic delays — priors_diagnosis_delays_scale" />
+<meta property="og:description" content="This function returns a keyed list of priors related to delays in diagnosing
+of cases and deaths.  Called with no arguments, the default values are 
+returned." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -90,7 +90,7 @@ default values are returned." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -108,7 +108,7 @@ default values are returned." />
       <a href="../articles/cer_object.html">Results Object</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Covidestim Quick Guide</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
   </ul>
 </li>
@@ -116,7 +116,7 @@ default values are returned." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/covidestim/covidestim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -133,15 +133,15 @@ default values are returned." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Priors on reporting delays</h1>
+    <h1>Priors on diagnostic delays</h1>
     <small class="dont-index">Source: <a href='https://github.com/covidestim/covidestim/blob/master/R/priors.R'><code>R/priors.R</code></a></small>
     <div class="hidden name"><code>priors_diagnosis_delays_scale.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function returns a keyed list of priors related to delays in reporting
-of cases, hospitalizations, and deaths.  Called with no arguments, the
-default values are returned.</p>
+    <p>This function returns a keyed list of priors related to delays in diagnosing
+of cases and deaths.  Called with no arguments, the default values are 
+returned.</p>
     </div>
 
     <pre class="usage"><span class='fu'>priors_diagnosis_delays_scale</span><span class='op'>(</span>dx_delay_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>, dx_delay_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></pre>
@@ -174,7 +174,7 @@ the severe disease state, scaled by this factor.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_diagnosis_delays_scale</span><span class='op'>(</span>dx_delay_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in defaultConfig(N_days = ndays, N_days_before = ndays_before, pop_size = pop_size,     N_days_av = window.length, region = region): argument "region" is missing, with no default</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

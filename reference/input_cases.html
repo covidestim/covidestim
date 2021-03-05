@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,7 @@
       <a href="../articles/cer_object.html">Results Object</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Covidestim Quick Guide</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
   </ul>
 </li>
@@ -114,7 +114,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/covidestim/covidestim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -142,9 +142,7 @@
 
     <pre class="usage"><span class='fu'>input_cases</span><span class='op'>(</span><span class='va'>data</span>, type <span class='op'>=</span> <span class='st'>"reported"</span><span class='op'>)</span>
 
-<span class='fu'>input_deaths</span><span class='op'>(</span><span class='va'>data</span>, type <span class='op'>=</span> <span class='st'>"reported"</span><span class='op'>)</span>
-
-<span class='fu'>input_fracpos</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span></pre>
+<span class='fu'>input_deaths</span><span class='op'>(</span><span class='va'>data</span>, type <span class='op'>=</span> <span class='st'>"reported"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,59 +168,35 @@
 </ul>
 
 <p><code>"occurred"</code> applies to the following situations:</p><ul>
-<li><p>Data where counts represent the number of of cases or deaths that
+<li><p>Data where counts represent the number of cases or deaths that
       actually occured on that day. For case data, this would be the day a 
       test was administered or the date of symptom onset. For deaths, this 
       would be the day an individual died. Note that, if the deaths data 
-      represented the day an individual's death was first reported as a 
+      represent the day an individual's death was first reported as a 
       SARS-Cov-2-related death, that data should be passed with 
       <code>type = "reported"</code>, instead.</p></li>
-</ul></td>
+</ul>
+
+
+<p>#' @rdname input_cases</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>There are three types of observational data that can be used with Covidestim:</p>
+    <p>There are two types of observational data that can be used with Covidestim:</p>
 <ul>
 <li><p>Case data, detailing the number of new cases each day</p></li>
 <li><p>Death data, detailing the number of confirmed Covid-19 deaths each
   day</p></li>
-<li><p>Testing data, detailing the fraction of positive tests for each day
-  of data.</p></li>
 </ul>
 
 <p>All input data to Covidestim is expected to be a
 <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></code> of two variables. One variable, <code>date</code>
 must be a vector of type <code><a href='https://rdrr.io/r/base/DateTimeClasses.html'>POSIXct</a></code> or
 <code><a href='https://rdrr.io/r/base/Dates.html'>Date</a></code>. The second column, <code>observations</code> will be a
-non-negative numeric vector, except in the case of testing data, where the
-column must be a numeric vector between <code>[0,1]</code>.</p>
-<p>Fraction positve data should represent, for a given day, the number of
-positive test results reported that day, over the total number of test
-results received that day. Note that the model tends to perform poorly on
-fraction positive data that contains dramatic jumps. With highly variable 
-data, we recommened users smooth the fraction positive data with a moving 
-average,for example by using the function <code>sma</code>. Reasons 
-for this variation, as they have manifested in publicly available datasets, 
-have included:</p>
-<ul>
-<li><p><strong>Dumping of test results</strong>: Some states have a tendency to dump 
-    batches of results on particular days.</p></li>
-<li><p><strong>Accumulation of test results reported over the weekend</strong>: Many 
-    states have lower reporting volume over the weekend, creating an unstable
-    fraction positive quantity as the sample size increases and decreases
-    dramatically.</p></li>
-<li><p><strong>Reclassification of results</strong>: Some states have retroactively changed
-    test results, or removed test results entirely, and these changes may 
-    manifest on a single day, rather than being applied to all previous
-    days affected by the change.</p></li>
-<li><p><strong>Antibody tests</strong>: Some states have been pooling antibody tests with
-    viral tests, as reported in <a href='https://www.theatlantic.com/health/archive/2020/05/cdc-and-states-are-misreporting-covid-19-test-data-pennsylvania-georgia-texas/611935/'>The Atlantic</a>, and are now
-    removing that pooling from their data.</p></li>
-</ul>
-
-<p>Missing values in cases and deaths data should be represented as <code>0</code>.
+non-negative numeric vector.</p>
+<p>Missing values in cases and deaths data should be imputed before running the model.
 The date range of all sets of data passed to <code><a href='covidestim.html'>covidestim</a></code> must be
 equivalent, with one observation each day, and no gaps in the data.
 Assertions attempt to enforce this specification.</p>
