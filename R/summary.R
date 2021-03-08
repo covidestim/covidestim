@@ -91,7 +91,9 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   c(
     "p_diag_if_sym"        = "p_diag_if_sym",
     "p_diag_if_asy"        = "p_diag_if_asy",
-    "p_diag_if_sev"        = "p_diag_if_sev"
+    "p_diag_if_sev"        = "p_diag_if_sev",
+    "p_sym_if_inf"         = "p_sym_if_inf",
+    "p_sev_if_sym"         = "p_sev_if_sym"
   ) -> extraParams
 
   if ("optimizer" %in% ccr$flags)
