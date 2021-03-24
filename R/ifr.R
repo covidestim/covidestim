@@ -71,8 +71,8 @@ gen_ifr_adjustments <- function(first_date, N_days_before, region) {
     date  = seq.Date(ifr_adj_start, ymd('2022-12-31'), by = '1 day'),
     value = 1 - pnorm(
         ifr_adj_start : ymd("2022-12-31"),
-        ymd("2020-6-1"),
-        45
+        ymd("2020-5-1"),
+        21
       )
   )
 
