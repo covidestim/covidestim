@@ -22,19 +22,11 @@ NULL
 #' set of priors, and no input data. This configuration, after adding input
 #' data (see \code{\link{input_cases}}, \code{\link{input_deaths}},
 #' \code{priors_*}), represents a valid model configuration that can be passed
-<<<<<<< HEAD
 #' to \code{\link{run}} (for NUTS) or \code{\link{runOptimizer}} (for BFGS).
 #'
 #' @param chains The number of chains to use during NUTS sampling, as passed to
 #'   \code{\link[rstan]{sampling}}.
 #' @param iter The number of iterations to run during NUTS sampling, as passed
-=======
-#' to \code{\link{run}} (for MCMC) or \code{\link{runOptimizer}} (for BFGS).
-#'
-#' @param chains The number of chains to use during MCMC sampling, as passed to
-#'   \code{\link[rstan]{sampling}}.
-#' @param iter The number of iterations to run during MCMC sampling, as passed
->>>>>>> f895686b8e312865472d455b40d97ecfdf17e087
 #'   to \code{\link[rstan]{sampling}}.
 #' @param thin A positive integer to specify period for saving samples, as
 #'   passed to \code{\link[rstan]{sampling}}. Modify this only if you intend
@@ -49,11 +41,7 @@ NULL
 #' @param pop_size A positive integer What is the population in the geography 
 #'   being modelled? This sets the max susceptible population and becomes
 #'   important as the population ever infected approaches the population size.
-<<<<<<< HEAD
 #' @param seed A number. The random number generator seed for use in NUTS
-=======
-#' @param seed A number. The random number generator seed for use in MCMC
->>>>>>> f895686b8e312865472d455b40d97ecfdf17e087
 #'   sampling or in BFGS.
 #' @param region A string. The FIPS code (for U.S. counties) or state name
 #'   (e.g. \code{New York}) being modeled. Required.
@@ -153,21 +141,13 @@ get_pop <- function(region) {
 #' @export
 run <- function(...) UseMethod('run')
 
-<<<<<<< HEAD
 #' Run the Covidestim model using NUTS
-=======
-#' Run the Covidestim model using MCMC
->>>>>>> f895686b8e312865472d455b40d97ecfdf17e087
 #'
 #' Calling \code{run()} with a \code{\link{covidestim}} object executes the
 #' model and returns a result. \code{run} will attempt to run on as
 #' many cores as appear to be available on the host machine, through calling
 #' \code{\link[parallel]{detectCores}}. Model runtimes will range anywhere from
-<<<<<<< HEAD
 #' 30 minutes to 12 hours, with the cumulative number of cases appearing to be
-=======
-#' 20 minutes to 12 hours, with the cumulative number of cases appearing to be
->>>>>>> f895686b8e312865472d455b40d97ecfdf17e087
 #' a strong correlate to longer runtime.
 #'
 #' When running in an interactive/TTY environment (like Rstudio, Radian, or the
@@ -202,11 +182,7 @@ run <- function(...) UseMethod('run')
 #'
 #' @examples
 #' # Note that this configuration is improper as it uses New York City
-<<<<<<< HEAD
 #' # case/death data, but uses Manhattan's FIPS code ('36061') and population size.
-=======
-#' # case/death data, but uses Manhattan's FIPS code and population size.
->>>>>>> f895686b8e312865472d455b40d97ecfdf17e087
 #' # (for demonstration purposes only!)
 #' cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
 #'   input_cases(example_nyc_data('cases')) +
@@ -251,7 +227,6 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
   )
 }
 
-<<<<<<< HEAD
 #' Run the Covidestim model using BFGS
 #'
 #' In addition to NUTS sampling, you can fit the model using the BFGS algorithm.
@@ -267,17 +242,6 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 #' | ---      | ---         |      |       |             |
 #' | `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
 #' | `runOptimizer()` | BFGS | No, `*.(lo|hi) == NA` | ~1-3min | Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally)
-=======
-#' Run the Covidedstim model using BFGS
-#'
-#' In addition to MCMC, you can fit the model using the BFGS algorithm. This
-#' algorithm tries to maximize the mode of the posterior; it runs much faster
-#' than MCMC, but won't return any confidence intervals. On \url{covidestim.org},
-#' BFGS is used to produce estimates for counties, and as a fallback when MCMC
-#' fails to produce a timely and/or converged fit for state data. Runtimes
-#' scale linearly to the value of \code{tries/cores}, but are generally in the
-#' 30s-10min range. The exact same underlying model is used.
->>>>>>> f895686b8e312865472d455b40d97ecfdf17e087
 #'
 #' The BFGS algorithm is run \code{tries} times using \code{tries} different
 #' seeds derived from \code{cc$seed}. Once all runs complete, the run with the
@@ -295,11 +259,7 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 #'
 #' @examples
 #' # Note that this configuration is improper as it uses New York City
-<<<<<<< HEAD
 #' # case/death data, but uses Manhattan's FIPS code ('36061') and population size.
-=======
-#' # case/death data, but uses Manhattan's FIPS code and population size.
->>>>>>> f895686b8e312865472d455b40d97ecfdf17e087
 #' # (for demonstration purposes only!)
 #' cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
 #'   input_cases(example_nyc_data('cases')) +
