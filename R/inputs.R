@@ -69,7 +69,7 @@ reformat_dates <- function(vec) vec
 #' All input data to Covidestim is expected to be a
 #' \code{\link[base]{data.frame}} of two variables. One variable, \code{date}
 #' must be a vector of type \code{\link[base]{POSIXct}} or
-#' \code{\link[base]{Date}}. The second column, \code{observations} will be a
+#' \code{\link[base]{Date}}. The second column, \code{observations} must be a
 #' non-negative numeric vector.
 #'
 #' Missing values in cases and deaths data should be imputed before running the model.
@@ -97,14 +97,12 @@ reformat_dates <- function(vec) vec
 #'   \code{"occurred"} applies to the following situations:
 #'   \itemize{
 #'     \item Data where counts represent the number of cases or deaths that
-#'       actually occured on that day. For case data, this would be the day a 
-#'       test was administered or the date of symptom onset. For deaths, this 
-#'       would be the day an individual died. Note that, if the deaths data 
-#'       represent the day an individual's death was first reported as a 
-#'       SARS-Cov-2-related death, that data should be passed with 
-#'       \code{type = "reported"}, instead.
+#'       actually occured on that day. For case data, this would be the day a
+#'       test was administered. For deaths, this would be the day an individual
+#'       died. Note that, if the deaths data represent the day an individual's
+#'       death was first reported as a SARS-Cov-2-related death, that data
+#'       should be passed with \code{type = "reported"}, instead.
 #'   }
-#'
 #'
 #'#' @rdname input_cases
 #' @export

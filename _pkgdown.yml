@@ -3,10 +3,12 @@ reference:
 - title: Model execution
 - contents:
   - run.covidestim
+  - runOptimizer
 
 - title: Model configuration
 - contents:
   - covidestim
+  - get_pop
 
 - subtitle: Model configuration — Data
   desc: Covidestim expects three data sources to be present - case data, death data, and hospitalization data. These functions allow adding these data sources to the model configuration.
@@ -18,7 +20,6 @@ reference:
 - contents:
   - starts_with("priors")
   - starts_with("pri_")
-  - get_ifr_prior
 
 - title: Results
 - contents:

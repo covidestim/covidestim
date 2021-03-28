@@ -22,11 +22,11 @@ NULL
 #' set of priors, and no input data. This configuration, after adding input
 #' data (see \code{\link{input_cases}}, \code{\link{input_deaths}},
 #' \code{priors_*}), represents a valid model configuration that can be passed
-#' to \code{\link{run}} (for MCMC) or \code{\link{runOptimizer}} (for BFGS).
+#' to \code{\link{run}} (for NUTS) or \code{\link{runOptimizer}} (for BFGS).
 #'
-#' @param chains The number of chains to use during MCMC sampling, as passed to
+#' @param chains The number of chains to use during NUTS sampling, as passed to
 #'   \code{\link[rstan]{sampling}}.
-#' @param iter The number of iterations to run during MCMC sampling, as passed
+#' @param iter The number of iterations to run during NUTS sampling, as passed
 #'   to \code{\link[rstan]{sampling}}.
 #' @param thin A positive integer to specify period for saving samples, as
 #'   passed to \code{\link[rstan]{sampling}}. Modify this only if you intend
@@ -41,7 +41,7 @@ NULL
 #' @param pop_size A positive integer What is the population in the geography 
 #'   being modelled? This sets the max susceptible population and becomes
 #'   important as the population ever infected approaches the population size.
-#' @param seed A number. The random number generator seed for use in MCMC
+#' @param seed A number. The random number generator seed for use in NUTS
 #'   sampling or in BFGS.
 #' @param region A string. The FIPS code (for U.S. counties) or state name
 #'   (e.g. \code{New York}) being modeled. Required.
@@ -141,13 +141,13 @@ get_pop <- function(region) {
 #' @export
 run <- function(...) UseMethod('run')
 
-#' Run the Covidestim model using MCMC
+#' Run the Covidestim model using NUTS
 #'
 #' Calling \code{run()} with a \code{\link{covidestim}} object executes the
 #' model and returns a result. \code{run} will attempt to run on as
 #' many cores as appear to be available on the host machine, through calling
 #' \code{\link[parallel]{detectCores}}. Model runtimes will range anywhere from
-#' 20 minutes to 12 hours, with the cumulative number of cases appearing to be
+#' 30 minutes to 12 hours, with the cumulative number of cases appearing to be
 #' a strong correlate to longer runtime.
 #'
 #' When running in an interactive/TTY environment (like Rstudio, Radian, or the
@@ -155,6 +155,19 @@ run <- function(...) UseMethod('run')
 #' indicatng how many iterations each chain has completed. When running in
 #' other environments, for instance on a cluster, \code{rstan} will produce 
 #' no output until the end of sampling.
+#'
+#' The sampler may return warnings upon completion. In general, "treedepth" and
+#' "divergent transitions" are the most serious. Use caution when interpreting
+#' results which were accompanied by these messages. See [mc-stan.org](https://mc-stan.org/misc/warnings.html) for
+#' a detailed guide to Stan's most common warning messages.
+#'
+#' A second method for fitting the model, using the BFGS algorithm, is available
+#' as [runOptimizer]. It is significantly faster, but lacks CI's.
+#'
+#' | Function | Method used | CI's | Speed | Termination |
+#' | ---      | ---         |      |       |             |
+#' | `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
+#' | `runOptimizer()` | BFGS | No, `*.(lo|hi) == NA` | ~1-3min | Potentially with nonzero exit status (rare)
 #'
 #' @param cc A valid \code{\link{covidestim}} configuration
 #' @param cores A number. How many cores to use to execute runs.
@@ -169,7 +182,7 @@ run <- function(...) UseMethod('run')
 #'
 #' @examples
 #' # Note that this configuration is improper as it uses New York City
-#' # case/death data, but uses Manhattan's FIPS code and population size.
+#' # case/death data, but uses Manhattan's FIPS code ('36061') and population size.
 #' # (for demonstration purposes only!)
 #' cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
 #'   input_cases(example_nyc_data('cases')) +
@@ -214,15 +227,21 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
   )
 }
 
-#' Run the Covidedstim model using BFGS
+#' Run the Covidestim model using BFGS
 #'
-#' In addition to MCMC, you can fit the model using the BFGS algorithm. This
-#' algorithm tries to maximize the mode of the posterior; it runs much faster
-#' than MCMC, but won't return any confidence intervals. On \url{covidestim.org},
-#' BFGS is used to produce estimates for counties, and as a fallback when MCMC
-#' fails to produce a timely and/or converged fit for state data. Runtimes
-#' scale linearly to the value of \code{tries/cores}, but are generally in the
-#' 30s-10min range. The exact same underlying model is used.
+#' In addition to NUTS sampling, you can fit the model using the BFGS algorithm.
+#' This algorithm tries to maximize the mode of the posterior; it runs much
+#' faster than NUTS, but won't return any confidence intervals. On
+#' \url{covidestim.org}, BFGS is used to produce estimates for counties, and as
+#' a fallback when NUTS fails to produce a timely and/or converged fit for state
+#' data. Runtimes scale linearly to the value of \code{tries/cores}, but are
+#' generally in the 30s-10min range. The same underlying model is used. Details
+#' on the BFGS algorithm can be found on [Wikipedia](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm).
+#'
+#' | Function | Method used | CI's | Speed | Termination |
+#' | ---      | ---         |      |       |             |
+#' | `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
+#' | `runOptimizer()` | BFGS | No, `*.(lo|hi) == NA` | ~1-3min | Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally)
 #'
 #' The BFGS algorithm is run \code{tries} times using \code{tries} different
 #' seeds derived from \code{cc$seed}. Once all runs complete, the run with the
@@ -240,7 +259,7 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 #'
 #' @examples
 #' # Note that this configuration is improper as it uses New York City
-#' # case/death data, but uses Manhattan's FIPS code and population size.
+#' # case/death data, but uses Manhattan's FIPS code ('36061') and population size.
 #' # (for demonstration purposes only!)
 #' cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
 #'   input_cases(example_nyc_data('cases')) +
@@ -312,8 +331,9 @@ runOptimizer <- function(cc,
   # By default, use a sequential mapping function
   map_fun <- purrr::imap
 
-  # Set up multicore execution for the `furrr::future_imap` call
-  # Replace the mapping function with a parallel mapping function
+  # Set up multicore execution for the `furrr::future_imap` call.
+  # Replace the mapping function with a parallel mapping function that has the
+  # same functional form, but executes in parallel.
   if (cores > 1) {
     future::plan(future::multisession, workers = cores)
     map_fun <- furrr::future_imap
@@ -330,7 +350,8 @@ runOptimizer <- function(cc,
   if (cores > 1)
     future::plan(future::sequential)
 
-  # Return code of 0 indicates success for `rstan::optimizing`.
+  # Return code of 0 indicates success for `rstan::optimizing`. This is just
+  # a standard UNIX return code b/c `rstan::optimizing` calls into CmdStan.
   successful_results <-
     purrr::discard(results, is.null) %>% # Removes timed-out runs
     purrr::keep(., ~.$return_code == 0)  # Removes >0 return-val runs
@@ -339,17 +360,20 @@ runOptimizer <- function(cc,
   # and didn't return an error code of 70
   opt_vals <- purrr::map_dbl(successful_results, 'value') 
 
-  # In theory the log posterior could be infinite, which wouldn't be valid
-  # but would technically be the maximum value. Throw an error in this case.
+  # In theory the log posterior could be infinite (likely, -Infinity), which
+  # wouldn't be valid but would technically be the maximum value. Throw an
+  # error in this case.
   if (is.infinite(max(opt_vals)))
     stop(glue::glue(
       'The value of the log posterior was infinite for these runs:\n{runs}',
       runs = which(is.infinite(opt_vals) & opt_vals > 0)
     ))
 
-  # Let's call the first successful result which has `opt_val` equal to the
-  # maximum `opt_val` the "result." Note that it's unlikely that there will
-  # be more that one trajectory with the same `opt_val`.
+  # The first successful result which has `opt_val` equal to the maximum
+  # `opt_val` is the result that will be returned too the user. Note that it's
+  # unlikely that there will be more that one trajectory with the same
+  # `opt_val`. However, if this is the case, the first of these results will
+  # be returned
   result <- successful_results[which(opt_vals == max(opt_vals))][[1]]
 
   c(

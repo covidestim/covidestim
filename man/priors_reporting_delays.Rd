@@ -8,16 +8,16 @@ priors_reporting_delays(cas_rep_delay = c(2.2, 1), die_rep_delay = c(2.2, 1))
 }
 \arguments{
 \item{cas_rep_delay}{A two-element numeric vector containing the mean shape
-and rate for a gamma distribution describing delay in case reporting. Shape
-and rate are parameterized with a lognormal prior where the log of the input 
-value is the median and the variance is 0.5. Based on average delay reported
-in Santa Clara County, CA on 8 April 2020.}
+and rate for a gamma distribution describing the delay (in days) in case
+reporting.  Shape and rate are parameterized with a lognormal prior where
+the log of the input value is the median and the variance is 0.5. Based on
+average delay reported in Santa Clara County, CA on 8 April 2020.}
 
 \item{die_rep_delay}{A two-element numeric vector containing the mean shape
-and rate for a gamma distribution describing delay in death reporting. Shape
-and rate are parameterized with a lognormal prior where the log of the input 
-value is the median and the variance is 0.5. Based on average delay reported
-in Santa Clara County, CA on 8 April 2020.}
+and rate for a gamma distribution describing delay (in days) in death
+reporting.  Shape and rate are parameterized with a lognormal prior where
+the log of the input value is the median and the variance is 0.5. Based on
+average delay reported in Santa Clara County, CA on 8 April 2020.}
 }
 \value{
 An S3 object of class 'priors'
@@ -25,8 +25,17 @@ An S3 object of class 'priors'
 \description{
 This function returns a keyed list of mean values for the gamma distribution 
 of delays related reporting of cases and deaths.  Called with no arguments, 
-the default values are returned.
+the default values are returned. Custom hyperpriors can be specified by
+passing values for the parameters specified below. The return value of this
+function must be added to a \code{covidestim} object using the additon
+operator (see examples).
 }
 \examples{
-cfg <- covidestim(ndays = 50) + priors_reporting_delays(cas_rep_delay = c(0.5, 0.1))
+# If you believe that cases are generally reported one day after the date of
+# the test:
+cfg <- covidestim(ndays = 120, region = '09009', pop_size=get_pop('09009')) +
+  priors_reporting_delays(
+    cas_rep_delay = c(2.7, 3), # Mean = ~1 day
+    die_rep_delay = c(2.7, 3)  # Mean = ~1 day
+  )
 }

@@ -20,3 +20,11 @@ A number representing the shape or rate parameter
 Using a method of moments approach, converts a sample with a specified
 mean and variance to a parameterization of a gamma distribution
 }
+\details{
+Implemented as:
+
+\code{
+  pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]
+  pri_gamma_rate  <- function(mv) mv[1]/mv[2]
+}
+}

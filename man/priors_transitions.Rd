@@ -14,8 +14,8 @@ priors_transitions(
 }
 \arguments{
 \item{p_sym_if_inf}{A two-element numeric vector containing \code{c(alpha,
-  beta)} parameters of a Beta distribution modeling the probability of being
-  symptomatic if infectious. 
+  beta)} parameters/hyperpriors of a Beta distribution modeling the
+  probability of becoming symptomatic if infectious.
 
   Sources for default value: 
   
@@ -26,8 +26,10 @@ priors_transitions(
   }}
 
 \item{p_sev_if_sym}{A two-element numeric vector containing \code{c(alpha,
-  beta)} parameters of a Beta distribution modeling the probability of
-  severe if symptomatic. 
+  beta)} parameters/hyperpriors of a Beta distribution modeling the
+  probability of transitioning into the "severe" health state if
+  symptomatic. "Severe" disease is defined as disease that would likely
+  require hospitalization.
 
   Sources for default value: 
 
@@ -37,23 +39,25 @@ priors_transitions(
   }}
 
 \item{p_die_if_sev}{A two-element numeric vector containing \code{c(alpha,
-  beta)} parameters of a Beta distribution modeling the probability of dying
-  if severely ill. 
+  beta)} parameters/hyperpriors of a Beta distribution modeling the
+  probability of dying if in the "severe" health state.
 
   Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}}
 
 \item{p_die_if_inf}{A two-element numeric vector containing \code{c(alpha,
-  beta)} parameters of a Beta distribution modeling the probability of dying
-  if infected (e.g. the infection fatality rate). This prior represents a 
-  national average value, which is adjusted for state and county-level 
-  factors, and to reflect higher fatality rates early in the epidemic.
+  beta)} parameters/hyperpriors of a Beta distribution modeling the
+  probability of dying if infected (e.g. the infection fatality rate). This
+  prior represents a national average value, which is later adjusted for
+  state and county-level factors, and to reflect higher fatality rates early
+  in the epidemic.
 
   Source for default value: \insertRef{ODriscoll_Nature_2020}{covidestim}}
 
 \item{ifr_decl_OR}{A two-element numeric vector containing \code{c(shape,
-  rate)} parameters of a Gamma distribution modeling the elevated IFR in early
-  2020, relative to the present. Default value represents an IFR 30% higher
-  in March of 2020, with 95% interval 10-50% higher.
+  rate)} parameters/hyperpriors of a Gamma distribution modeling the
+  elevated IFR in early 2020, relative to the present. Default value
+  represents an IFR 30% higher in March of 2020, with 95% interval 10-50%
+  higher.
 
   Source for default value: Expert opinion}
 }
@@ -63,7 +67,10 @@ An S3 object of class \code{priors}
 \description{
 This function returns a keyed list of priors related to progression to
 various health states. Called with no arguments, the default values are
-returned. All parameters must be non-negative real numbers.
+returned. Custom hyperpriors can be specified by passing values for the
+parameters specified below. All parameters must be non-negative real
+numbers. The return value of this function must be added to a
+\code{covidestim} object using the additon operator (see examples).
 }
 \examples{
 cfg <- covidestim(ndays = 50) + priors_transitions(p_sym_if_inf = c(0.5, 0.2))

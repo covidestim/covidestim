@@ -16,38 +16,45 @@ priors_progression(
 }
 \arguments{
 \item{inf_prg_delay}{A two-element numeric vector containing \code{c(shape, rate)}
-parameters of a Gamma distribution modeling the time from infection to 
-sypmtom onset. 
+parameters/hyperpriors of a Gamma distribution modeling the time from
+infection to sypmtom onset. 
 
 Source for default value: \insertRef{lauer_incubation_2020}{covidestim}}
 
 \item{sym_prg_delay}{A two-element numeric vector containing \code{c(shape, rate)}
-parameters of a Gamma distribution modeling the time from symptom onset to 
-severe disease. 
+  parameters/hyperpriors of a Gamma distribution modeling the time (in
+  number of days) from symptom onset to severe disease. 
 
 Source for default value: \insertRef{zhou_clinical_2020}{covidestim}}
 
 \item{sev_prg_delay}{A two-element numeric vector containing
-  \code{c(shape, rate)} parameters of a Gamma distribution modeling the
-  time from severe symptoms to death. 
+  \code{c(shape, rate)} parameters/hyperpriors of a Gamma distribution
+  modeling the time (in number of days) from onset of severe symptoms to
+  death. 
   
 Source for default value: \insertRef{linton_incubation_2020}{covidestim}}
 
 \item{asy_rec_delay}{A two-element numeric vector containing 
-\code{c(shape,rate)} parameters of a Gamma distribution modeling the  
-time from infection to recovery without symptom development.}
+\code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
+modeling the time (in number of days) from infection to recovery for
+individuals who never develop symptoms.}
 
 \item{pri_serial_i}{A two-element numeric vector containing 
-\code{c(shape,rate)} parameters of a Gamma distribution modeling the 
-serial interval, the average time between successive cases.}
+\code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
+modeling the serial interval, the average time (in number of days)
+between successive cases.}
 
 \item{infect_dist}{A two-element numeric vector containing 
-\code{c(shape,rate)} parameters of a Gamma distribution modeling the 
-changes of infectiousness, following initial infection.}
+\code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the 
+changes of infectiousness, following initial infection. The PDF of this
+distribution can be thought of as describing how infectious an individual
+is, as a function of time (in days).}
 
 \item{seropos_dist}{A two-element numeric vector containing 
-\code{c(shape,rate)} parameters of a Gamma distribution modeling the 
-time to seroreversion, following initial infection.}
+\code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the 
+time (in days) to seroreversion, following initial infection. We do not
+recommend modifying this value, as it is an experimental feature, and not
+used in the core model.}
 }
 \value{
 An S3 object of class \code{priors}
@@ -55,7 +62,10 @@ An S3 object of class \code{priors}
 \description{
 This function returns a keyed list of values related to progression to
 the infectious state. Called with no arguments, the default values are
-returned. The following arguments can be passed to create different priors:
+returned. Custom hyperpriors can be specified by passing values for the
+parameters specified below. The return value of this function must be added
+to a \code{covidestim} object using the additon operator (see examples). The
+following arguments can be passed to create different priors:
 }
 \examples{
 cfg <- covidestim(ndays = 50) + priors_progression(inf_prg_delay = c(4, 1))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/covidestim.R
 \name{run.covidestim}
 \alias{run.covidestim}
-\title{Run the Covidestim model}
+\title{Run the Covidestim model using NUTS}
 \usage{
 \method{run}{covidestim}(cc, cores = parallel::detectCores(), ...)
 }
@@ -11,11 +11,11 @@
 
 \item{cores}{A number. How many cores to use to execute runs.}
 
-\item{...}{Extra arguments to be passed to \code{\link[rstan]{sampling}}}
+\item{...}{Extra arguments, passed on to \code{\link[rstan]{sampling}}}
 }
 \value{
 A S3 object of class \code{covidestim_result} containing the
-  configuration used to run the model, the raw results, the extracted
+  configuration used to run the model, the raw Stan results, the extracted
   result as produced by \code{\link[rstan]{extract}}, and the summarized
   results as produced by \code{\link[rstan]{extract}}.
 }
@@ -24,7 +24,8 @@ Calling \code{run()} with a \code{\link{covidestim}} object executes the
 model and returns a result. \code{run} will attempt to run on as
 many cores as appear to be available on the host machine, through calling
 \code{\link[parallel]{detectCores}}. Model runtimes will range anywhere from
-5-120 minutes.
+30 minutes to 12 hours, with the cumulative number of cases appearing to be
+a strong correlate to longer runtime.
 }
 \details{
 When running in an interactive/TTY environment (like Rstudio, Radian, or the
@@ -32,4 +33,33 @@ R terminal), progress messages from \code{rstan} will be displayed,
 indicatng how many iterations each chain has completed. When running in
 other environments, for instance on a cluster, \code{rstan} will produce 
 no output until the end of sampling.
+
+The sampler may return warnings upon completion. In general, "treedepth" and
+"divergent transitions" are the most serious. Use caution when interpreting
+results which were accompanied by these messages. See [mc-stan.org](https://mc-stan.org/misc/warnings.html) for
+a detailed guide to Stan's most common warning messages.
+
+A second method for fitting the model, using the BFGS algorithm, is available
+as [runOptimizer]. It is significantly faster, but lacks CI's.
+
+| Function | Method used | CI's | Speed | Termination |
+| ---      | ---         |      |       |             |
+| `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
+| `runOptimizer()` | BFGS | No, `*.(lo|hi) == NA` | ~1-3min | Potentially with nonzero exit status (rare)
+}
+\examples{
+# Note that this configuration is improper as it uses New York City
+# case/death data, but uses Manhattan's FIPS code ('36061') and population size.
+# (for demonstration purposes only!)
+cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
+  input_cases(example_nyc_data('cases')) +
+  input_deaths(example_nyc_data('deaths'))
+
+\dontrun{
+result <- run(cfg, cores = 2)
+}
+
+}
+\seealso{
+\code{\link{runOptimizer}}
 }

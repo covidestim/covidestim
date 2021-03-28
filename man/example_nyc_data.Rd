@@ -14,7 +14,7 @@ A tibble with two variables: \code{date}, a vector of \code{Date}
   objects, and \code{observation}, a vector of doubles.
 }
 \description{
-Returns a \code{\link[tibble]{tibble}} of NYC case anddeath
+Returns a \code{\link[tibble]{tibble}} of NYC case and death
 data from March 2nd, 2020 to April 15, 2020. Only one type of data will be
 returned at a time.
 }

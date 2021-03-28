@@ -13,7 +13,7 @@ get_pop(region)
 State/county population as a numeric, or an error
 }
 \description{
-Returns 2019 census estimate of state or county population
+Returns 2019 census estimate of state or county population.
 }
 \examples{
 get_pop('Connecticut')

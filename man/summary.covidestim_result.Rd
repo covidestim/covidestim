@@ -36,17 +36,20 @@ A \code{data.frame} with the following variables:
       data.
 
     \item \code{deaths}, \code{deaths.lo}, \code{deaths.hi}: Median and 95\%
-      interval around estimated deaths/day.
+      interval around estimated deaths/day, by date of death.
 
     \item \code{infections}, \code{infections.lo}, \code{infections.hi}:
-      Median and 95\% interval around estimated infections/day.
+      Median and 95\% interval around estimated infections/day, by date of
+      infection.
 
     \item \code{severe}, \code{severe.lo}, \code{severe.hi}: Median and 95\%
-       interval around "severe" estimate.
+       interval around the number of individuals who transitioned into the
+       "severe" health state on a particular day. The "severe" state is
+       defined as disease that would merit hospitalization.
 
     \item \code{symptomatic}, \code{symptomatic.lo}, \code{symptomatic.hi}:
-       Median and 95\% interval around estimate of quantity of individuals
-       symtomatic on a particular day.
+       Median and 95\% interval around the estimate of the quantity of
+       individuals who became symtomatic on a particular day.
 
     \item \code{data.available}: \code{TRUE/FALSE} for whether input data
       was available on that particular day.
@@ -55,16 +58,16 @@ A \code{data.frame} with the following variables:
     reproductive number (Rt), with 95\% CIs.
     
     \item \code{sero.positive}, \code{sero.positive.lo}, 
-    \code{sero.positive.hi}: Estimate of the number of individuals sero-
-    positive, with 95\% CIs.
+    \code{sero.positive.hi}: Estimate of the number of seropositive
+    individuals, with 95\% CIs.
     
     \item \code{pop.infectiousness}, \code{pop.infectiousness.lo}, 
     \code{pop.infectiousness.hi}: Estimate of the relative level of viral 
     shedding in the community, with 95\% CIs.
-
-    \item \code{index}
   }
 }
 \description{
-Summarize a Covidestim run
+Returns a `data.frame` summarizing a Covidestim model run. Note that if 
+[runOptimizer] is used, all \code{*.(lo|hi)} variables will be \code{NA}-valued,
+because BFGS does not generate confidence intervals.
 }

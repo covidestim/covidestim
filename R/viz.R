@@ -1,9 +1,9 @@
 #' @export
 viz <- function(...) UseMethod('viz')
 
-#' Visualize results of Covidestim
+#' Visualize results of a Covidestim run
 #'
-#' Returns several graphs of Covidestim input and estimates
+#' Returns two graphs of Covidestim input and estimates
 #'
 #' @param ccr The result of calling \code{\link{run}}. An object of class
 #'   \code{covidestim_result}.
