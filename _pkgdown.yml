@@ -1,25 +1,49 @@
 destination: docs
 reference:
-- title: Model execution
-- contents:
-  - run.covidestim
-  - runOptimizer
-
 - title: Model configuration
 - contents:
   - covidestim
   - get_pop
 
-- subtitle: Model configuration — Data
-  desc: Covidestim expects three data sources to be present - case data, death data, and hospitalization data. These functions allow adding these data sources to the model configuration.
+- subtitle: Input data
+  desc: Covidestim expects two data sources to be present - case data, and death data. These functions allow adding these data sources to the model configuration.
 - contents:
   - starts_with("input")
 
-- subtitle: Model configuration — Priors
-  desc: These functions allow customization of model priors. By default, Covidestim comes with a complete set of priors. However, these functions make it possible to override the default parameterizations of the prior distributions, within certain constraints.
+- subtitle: Custom priors
+  desc: |
+    These functions allow customization of model priors. By default, Covidestim comes with a complete set of priors, which have been tailed for estimation of U.S. counties and states. However, these functions make it possible to override the default parameterizations of the prior distributions, within certain constraints. This allows you to conduct exploratory modeling of other geographies, or test the effect of different priors on estimates.
+    
+    | **Function** | **Associated priors** | **Type** | **Description** |
+    | ---: | --- | --- | --- |
+    | **`priors_diagnosis()`**:              | `rr_diag_asy_vs_sym` | Beta(α,β) | Rate ratio of diagnosis, asymptomatic vs. symptomatic,non-severe |
+    |                                        | `rr_diag_sym_vs_sev` | Beta(α,β) | RR diagnosis, symptomatic vs. severe |
+    |                                        | `p_diag_if_sev`      | Beta(α,β) | `P(diagnosed | severe)` |
+    | **`priors_diagnosis_delays_scale()`**: | `dx_delay_sym` | Beta(α,β) | Time to diagnosis as fraction of time spent symptomatic |
+    |                                        | `dx_delay_sev` | Beta(α,β) | Time to diagnosis as fraction of time spent severe |
+    | **`priors_progression()`**:            | `inf_prg_delay`| Gamma(α,β) | `T(infection → symptoms)` |
+    |                                        | `sym_prg_delay`| Gamma(α,β) | `T(symptoms → severe)` |
+    |                                        | `sev_prg_delay`| Gamma(α,β) | `T(severe → dead)` |
+    |                                        | `asy_rec_delay`| Gamma(α,β) | `T(infection → recovery)`, asymptomatics |
+    |                                        | `pri_serial_i` | Gamma(α,β) | Serial interval | 
+    |                                        | `infect_dist`  | Gamma(α,β) | Change in infectiousness |
+    |                                        | `seropos_dist` | Gamma(α,β) | Change in seropositivity |
+    | **`priors_reporting_delays()`**:       | `cas_rep_delay` | Gamma(α,β) | `T(test → report)` |
+    |                                        | `die_rep_delay` | Gamma(α,β) | `T(death → report)` |
+    | **`priors_transitions()`**:            | `p_sym_if_inf` | Beta(α,β) | `P(symptoms | infected)` |
+    |                                        | `p_sev_if_sym` | Beta(α,β) | `P(severe | symptoms)` |
+    |                                        | `p_die_if_sev` | Beta(α,β) | `P(die | severe)` |
+    |                                        | `p_die_if_inf` | Beta(α,β) | `P(die | infection)` (IFR) |
+    |                                        | `ifr_decl_OR`  | Gamma(α,β) | ~IFR decline |
+
 - contents:
-  - starts_with("priors")
-  - starts_with("pri_")
+  #- starts_with("priors")
+  - starts_with("gamma_")
+
+- title: Model execution
+- contents:
+  - run.covidestim
+  - runOptimizer.covidestim
 
 - title: Results
 - contents:

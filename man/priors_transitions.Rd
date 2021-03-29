@@ -70,8 +70,8 @@ various health states. Called with no arguments, the default values are
 returned. Custom hyperpriors can be specified by passing values for the
 parameters specified below. All parameters must be non-negative real
 numbers. The return value of this function must be added to a
-\code{covidestim} object using the additon operator (see examples).
+\code{covidestim} object using the addition operator (see examples).
 }
 \examples{
-cfg <- covidestim(ndays = 50) + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
+cfg <- covidestim(ndays = 50, region = 'New York') + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 }

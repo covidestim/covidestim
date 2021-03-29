@@ -7,7 +7,7 @@
 example_nyc_data(type = "cases")
 }
 \arguments{
-\item{type}{A string. One of \code{"cases"} or  \code{"deaths"}.}
+\item{type}{A string: \code{"cases"} or \code{"deaths"}}
 }
 \value{
 A tibble with two variables: \code{date}, a vector of \code{Date}
@@ -15,6 +15,17 @@ objects, and \code{observation}, a vector of doubles.
 }
 \description{
 Returns a \code{\link[tibble]{tibble}} of NYC case and death
-data from March 2nd, 2020 to April 15, 2020. Only one type of data will be
+data from February 29, 2020 to June 27, 2020. Only one type of data will be
 returned at a time.
+}
+\examples{
+
+cfg <- covidestim(ndays = 120, region = 'New York') +
+  input_cases(example_nyc_data('cases')) +
+  input_deaths(example_nyc_data('deaths'))
+
+\dontrun{
+  result <- run(cfg)
+}
+
 }

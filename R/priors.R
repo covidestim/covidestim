@@ -7,18 +7,19 @@
 #'
 #' \code{
 #'   pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]
+#'
 #'   pri_gamma_rate  <- function(mv) mv[1]/mv[2]
 #' }
 #'
-#' @param mv A two-element numeric vector, where \code{[1]} represents mean
-#'   and \code{[2]} represents variance.
+#' @param mv A two-element numeric vector \code{c(mean, variance)}
 #'
 #' @return A number representing the shape or rate parameter
 #' @export
-pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]
+gamma_shape <- function(mv) (mv[1]^2)/mv[2]
 
 #' @rdname pri_gamma_shape
-pri_gamma_rate  <- function(mv) mv[1]/mv[2]
+#' @export
+gamma_rate  <- function(mv) mv[1]/mv[2]
 
 # A list with arbitrary values, of class 'priors'
 priors <- function(...) structure(list(...), class='priors')
@@ -107,7 +108,7 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' returned. Custom hyperpriors can be specified by passing values for the
 #' parameters specified below. All parameters must be non-negative real
 #' numbers. The return value of this function must be added to a
-#' \code{covidestim} object using the additon operator (see examples).
+#' \code{covidestim} object using the addition operator (see examples).
 #'
 #' @param p_sym_if_inf A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters/hyperpriors of a Beta distribution modeling the
@@ -159,7 +160,7 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
-#' cfg <- covidestim(ndays = 50) + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
+#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
 priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b 
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
@@ -194,11 +195,11 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
 
 #' Fixed values on delay to progression
 #'
-#' This function returns a keyed list of values related to progression to
+#' This function returns a keyed list of priors related to progression to
 #' the infectious state. Called with no arguments, the default values are
 #' returned. Custom hyperpriors can be specified by passing values for the
 #' parameters specified below. The return value of this function must be added
-#' to a \code{covidestim} object using the additon operator (see examples). The
+#' to a \code{covidestim} object using the addition operator (see examples). The
 #' following arguments can be passed to create different priors:
 #'
 #' @param inf_prg_delay A two-element numeric vector containing \code{c(shape, rate)}
@@ -244,7 +245,7 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
 #' 
 #' @return An S3 object of class \code{priors}
 #' @examples
-#' cfg <- covidestim(ndays = 50) + priors_progression(inf_prg_delay = c(4, 1))
+#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_progression(inf_prg_delay = c(4, 1))
 #' @export
 priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
                                sym_prg_delay = c(1.624, 0.2175), # shap/rate 
@@ -289,7 +290,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #' diagnosis. Called with no arguments, the default values are returned. Custom
 #' hyperpriors can be specified by passing values for the parameters specified
 #' below. The return value of this function must be added to a
-#' \code{covidestim} object using the additon operator (see examples).
+#' \code{covidestim} object using the addition operator (see examples).
 #'
 #' Boundary avoiding priors are used by default; a weakly informative prior
 #' is used for the probability of diagnosis if severely ill. 
@@ -297,12 +298,17 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #' @param rr_diag_asy_vs_sym A two-element numeric vector containing 
 #'   \code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution
 #'   modeling the rate ratio of diagnosis among asymptomatic versus symptomatic,
-#'   but non-"severe" infections. 
+#'   but non-"severe" infections.
+#'
+#'   Lowering the mean of this prior would reflect a belief that even fewer
+#'   asymptomatic indivivduals are diagnosed than currently assumed.
 #'   
-#' @param rr_diag_sym_vs_asy A two-element numeric vector containing 
+#'   
+#' @param rr_diag_sym_vs_sev A two-element numeric vector containing 
 #'   \code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution
 #'   modeling the rate ratio of diagnosis at the symptomatic vs severe stage of
 #'   infection. 
+#'   
 #'   
 #' @param p_diag_if_sev A two-element numeric vector containing \code{c(alpha,
 #'   beta)} parameters/hyperpriors of a Beta distribution modeling the
@@ -310,7 +316,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(ndays = 50) + priors_diagnosis(p_diag_if_sev = c(2, 2))
+#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis(p_diag_if_sev = c(2, 2))
 #' @export
 priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
                              rr_diag_sym_vs_sev = c(2  , 2  ), # a/b
@@ -340,7 +346,7 @@ priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
 #' of delays related reporting of cases and deaths.  Called with no arguments, 
 #' the default values are returned. Custom hyperpriors can be specified by
 #' passing values for the parameters specified below. The return value of this
-#' function must be added to a \code{covidestim} object using the additon
+#' function must be added to a \code{covidestim} object using the addition
 #' operator (see examples).     
 #'
 #' @param cas_rep_delay A two-element numeric vector containing the mean shape
@@ -358,7 +364,7 @@ priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
 #' @return An S3 object of class 'priors'
 #' @examples
 #' # If you believe that cases are generally reported one day after the date of
-#' # the test:
+#' # the test, and deaths one day after the event:
 #' cfg <- covidestim(ndays = 120, region = '09009', pop_size=get_pop('09009')) +
 #'   priors_reporting_delays(
 #'     cas_rep_delay = c(2.7, 3), # Mean = ~1 day
@@ -388,32 +394,34 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
 #' of cases and deaths.  Called with no arguments, the default values are 
 #' returned. Custom hyperpriors can be specified by passing values for the
 #' parameters specified below. The return value of this function must be added
-#' to a \code{covidestim} object using the additon operator (see examples).          
+#' to a \code{covidestim} object using the addition operator (see examples).          
 #'
 #' Boundary avoiding priors are used by default. 
 #' 
 #' @param dx_delay_sym A two element vector containing the \code{c(alpha,beta)} 
 #'   parameters/hyperpriors of a Beta distribution modeling a scaling factor.
-#'   Delay to diagnosis for symptomatic cases is modeled as the fraction of
-#'   time in the symptomatic disease state, scaled by this factor. For
-#'   instance, if `dx_delay_sym` is specified to have `E[dx_delay_sym] = 1/2`,
-#'   this implies an assumption that individuals will be diagnosed roughly
-#'   halfway through the course of their symptomatic disease state - or in
-#'   other words, progress to diagnosis at twice the rate at which they
+#'   Delay to diagnosis for symptomatic cases is modeled as the _fraction of
+#'   time in the symptomatic disease state_, scaled by this factor.
+#'
+#'   For instance, if `dx_delay_sym` is specified to have `E[dx_delay_sym] =
+#'   1/2`, this implies an assumption that individuals will be diagnosed
+#'   roughly halfway through the course of their symptomatic disease state - or
+#'   in other words, progress to diagnosis at twice the rate at which they
 #'   progress to severe infection, following transition into the symptomatic
 #'   disease state.
 #'
 #' @param dx_delay_sev A two element vector containing the \code{c(alpha,beta)} 
-#'   parameters/hyperpriors of a Beta distribution modeling a scaleing factor.
-#'   Delay to diagnosis for severe cases is modeled as the fraction of time in
-#'   the severe disease state, scaled by this factor. Similarly to above,
-#'   a scaling factor of `E[dx_delay_sev]=0.5` implies that individuals get 
-#'   diagnosed, on average, halfway through time spent in the severe disease 
-#'   state.
+#'   parameters/hyperpriors of a Beta distribution modeling a scaling factor.
+#'   Delay to diagnosis for severe cases is modeled as the _fraction of time in
+#'   the severe disease state_, scaled by this factor.
+#'
+#'   Similarly to above, a scaling factor with `E[x] = 0.5` implies that
+#'   individuals get diagnosed, on average, halfway through time spent in the
+#'   severe disease state.
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(ndays = 50) + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
+#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
 #' @export
 priors_diagnosis_delays_scale <- function(dx_delay_sym = c(2,2),
                                           dx_delay_sev = c(2,2)) {

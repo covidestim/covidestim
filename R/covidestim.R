@@ -22,7 +22,8 @@ NULL
 #' set of priors, and no input data. This configuration, after adding input
 #' data (see \code{\link{input_cases}}, \code{\link{input_deaths}},
 #' \code{priors_*}), represents a valid model configuration that can be passed
-#' to \code{\link{run}} (for NUTS) or \code{\link{runOptimizer}} (for BFGS).
+#' to \code{\link{run.covidestim}} (for NUTS) or
+#' \code{\link{runOptimizer.covidestim}} (for BFGS).
 #'
 #' @param chains The number of chains to use during NUTS sampling, as passed to
 #'   \code{\link[rstan]{sampling}}.
@@ -47,7 +48,7 @@ NULL
 #'   (e.g. \code{New York}) being modeled. Required.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to
-#' \code{\link{run}} or \code{\link{runOptimizer}} to execute the model, as
+#' \code{\link{run.covidestim}} or \code{\link{runOptimizer.covidestim}} to execute the model, as
 #' long as input data has been added (using the addition operator, see
 #' example). This object can also be saved to disk using
 #' \code{\link[base]{saveRDS}} to enable reproducibility across platforms or
@@ -167,18 +168,18 @@ run <- function(...) UseMethod('run')
 #' | **Function** | **Method** | **CI's** | **Speed** | **Termination** |
 #' | ---      | ---         | ---  | ---   | ---         |
 #' | `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
-#' | `runOptimizer()` | BFGS | No, \code{*.(lo|hi) == NA} | ~1-3min | Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally)
+#' | `runOptimizer()` | BFGS | No | ~1-3min | Potentially with nonzero exit status (lack of convergence), or timeout (rare, gracefully handled internally)
 #'
 #' @param cc A valid \code{\link{covidestim}} configuration
 #' @param cores A number. How many cores to use to execute runs.
 #' @param ... Extra arguments, passed on to \code{\link[rstan]{sampling}}
 #'
-#' @return A S3 object of class \code{covidestim_result} containing the
+#' @return An S3 object of class \code{covidestim_result} containing the
 #'   configuration used to run the model, the raw Stan results, the extracted
 #'   result as produced by \code{\link[rstan]{extract}}, and the summarized
 #'   results as produced by \code{\link[rstan]{extract}}.
 #'
-#' @seealso \code{\link{runOptimizer}}
+#' @seealso [runOptimizer.covidestim]
 #'
 #' @examples
 #' # Note that this configuration is improper as it uses New York City
@@ -227,6 +228,9 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
   )
 }
 
+#' @export
+runOptimizer <- function(...) UseMethod('runOptimizer')
+
 #' Run the Covidestim model using BFGS
 #'
 #' In addition to NUTS sampling, you can fit the model using the BFGS algorithm.
@@ -244,12 +248,12 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 #' ranking begins.
 #'
 #' A second method for fitting the model, using the NUTS algorithm, is available
-#' as [run.covidestim]. It provides CI's, but is significantly slower.
+#' as [run]. It provides CI's, but is significantly slower.
 #'
 #' | **Function** | **Method** | **CI's** | **Speed** | **Termination** |
 #' | ---      | ---         | ---  | ---   | ---         |
 #' | `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
-#' | `runOptimizer()` | BFGS | No, \code{*.(lo|hi) == NA} | ~1-3min | Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally)
+#' | `runOptimizer()` | BFGS | No | ~1-3min | Potentially with nonzero exit status (lack of convergence), or timeout (rare, gracefully handled internally)
 #'
 #' @param cc A valid \code{\link{covidestim}} configuration
 #' @param cores A number. How many cores to use to execute runs. Multicore
@@ -259,6 +263,10 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 #' @param iter Passed to \code{\link[rstan]{optimizing}}.
 #' @param timeout How long to let each run go for before killing it, in seconds.
 #' @param ... Arguments forwarded to \code{\link[rstan]{optimizing}}.
+#'
+#' @return An S3 object of class \code{covidestim_result}
+#'
+#' @seealso [run.covidestim]
 #'
 #' @examples
 #' # Note that this configuration is improper as it uses New York City
@@ -273,12 +281,12 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 #' }
 #'
 #' @export
-runOptimizer <- function(cc,
-                         cores   = parallel::detectCores(),
-                         tries   = 10,
-                         iter    = 2000,
-                         timeout = 60,
-                         ...) {
+runOptimizer.covidestim <- function(cc,
+                                    cores   = parallel::detectCores(),
+                                    tries   = 10,
+                                    iter    = 2000,
+                                    timeout = 60,
+                                    ...) {
   
   # Require that case and death data be entered
   if (is.null(cc$config$obs_cas))

@@ -27,12 +27,12 @@ This function returns a keyed list of mean values for the gamma distribution
 of delays related reporting of cases and deaths.  Called with no arguments,
 the default values are returned. Custom hyperpriors can be specified by
 passing values for the parameters specified below. The return value of this
-function must be added to a \code{covidestim} object using the additon
+function must be added to a \code{covidestim} object using the addition
 operator (see examples).
 }
 \examples{
 # If you believe that cases are generally reported one day after the date of
-# the test:
+# the test, and deaths one day after the event:
 cfg <- covidestim(ndays = 120, region = '09009', pop_size=get_pop('09009')) +
   priors_reporting_delays(
     cas_rep_delay = c(2.7, 3), # Mean = ~1 day

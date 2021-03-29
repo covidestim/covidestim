@@ -14,16 +14,19 @@ priors_diagnosis(
 \item{rr_diag_asy_vs_sym}{A two-element numeric vector containing
 \code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution
 modeling the rate ratio of diagnosis among asymptomatic versus symptomatic,
-but non-"severe" infections.}
+but non-"severe" infections.
+
+Lowering the mean of this prior would reflect a belief that even fewer
+asymptomatic indivivduals are diagnosed than currently assumed.}
+
+\item{rr_diag_sym_vs_sev}{A two-element numeric vector containing
+\code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution
+modeling the rate ratio of diagnosis at the symptomatic vs severe stage of
+infection.}
 
 \item{p_diag_if_sev}{A two-element numeric vector containing \code{c(alpha,
   beta)} parameters/hyperpriors of a Beta distribution modeling the
 probability of being diagnosed if severely ill.}
-
-\item{rr_diag_sym_vs_asy}{A two-element numeric vector containing
-\code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution
-modeling the rate ratio of diagnosis at the symptomatic vs severe stage of
-infection.}
 }
 \value{
 An S3 object of class 'priors'
@@ -33,12 +36,12 @@ This function returns a keyed list of priors related to probability of
 diagnosis. Called with no arguments, the default values are returned. Custom
 hyperpriors can be specified by passing values for the parameters specified
 below. The return value of this function must be added to a
-\code{covidestim} object using the additon operator (see examples).
+\code{covidestim} object using the addition operator (see examples).
 }
 \details{
 Boundary avoiding priors are used by default; a weakly informative prior
 is used for the probability of diagnosis if severely ill.
 }
 \examples{
-cfg <- covidestim(ndays = 50) + priors_diagnosis(p_diag_if_sev = c(2, 2))
+cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis(p_diag_if_sev = c(2, 2))
 }

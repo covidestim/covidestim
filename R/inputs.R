@@ -67,9 +67,9 @@ reformat_dates <- function(vec) vec
 #' }
 #'
 #' All input data to Covidestim is expected to be a
-#' \code{\link[base]{data.frame}} of two variables. One variable, \code{date}
+#' \code{\link[base]{data.frame}} of two variables. One variable, \code{date},
 #' must be a vector of type \code{\link[base]{POSIXct}} or
-#' \code{\link[base]{Date}}. The second column, \code{observations} must be a
+#' \code{\link[base]{Date}}. The second column, \code{observations}, must be a
 #' non-negative numeric vector.
 #'
 #' Missing values in cases and deaths data should be imputed before running the model.
@@ -104,7 +104,7 @@ reformat_dates <- function(vec) vec
 #'       should be passed with \code{type = "reported"}, instead.
 #'   }
 #'
-#'#' @rdname input_cases
+#' @rdname input_cases
 #' @export
 input_cases <- function(data, type = "reported") {
   validate_input(data, type)

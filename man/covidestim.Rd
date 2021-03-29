@@ -50,7 +50,7 @@ sampling or in BFGS.}
 }
 \value{
 An S3 object of type \code{covidestim}. This can be passed to
-\code{\link{run}} or \code{\link{runOptimizer}} to execute the model, as
+\code{\link{run.covidestim}} or \code{\link{runOptimizer.covidestim}} to execute the model, as
 long as input data has been added (using the addition operator, see
 example). This object can also be saved to disk using
 \code{\link[base]{saveRDS}} to enable reproducibility across platforms or
@@ -65,7 +65,8 @@ data.
 set of priors, and no input data. This configuration, after adding input
 data (see \code{\link{input_cases}}, \code{\link{input_deaths}},
 \code{priors_*}), represents a valid model configuration that can be passed
-to \code{\link{run}} (for NUTS) or \code{\link{runOptimizer}} (for BFGS).
+to \code{\link{run.covidestim}} (for NUTS) or
+\code{\link{runOptimizer.covidestim}} (for BFGS).
 }
 \examples{
 # Note that this configuration is improper as it uses New York City

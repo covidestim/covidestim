@@ -7,219 +7,127 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-**This vignette is intended to guide users through running the covidestim model and 
-accessing the model output.**
 
+This vignette demonstrates running the model on NYC data and viewing the result.
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
-
-```r
+```{r setup}
 library(covidestim)
 ```
 
 ## Running the model 
 ### Data
-Will we demonstrate how to use the covidestim paackage using data from the [Massachusetts Department of Public Health](https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts) 
-Users can use case and/or death data with the model. Data on the fraction of tests with a positive results may also be used; we strongly recommend users smooth fraciton positive data using a moving average or spline. Each data type should be entered as its own dataframe with two columns: a column called 'date' and a column called 'observation.' 
 
+We will demonstrate how to use the covidestim package using data from the early
+NYC epidemic that the package makes available through the `example_nyc_data()`
+function.
 
+Users can use case and/or death data with the model. Each data type should be
+entered as its own dataframe with two columns: `date` and `observation`.
 
-```r
-head(df.cases)
-#> # A tibble: 6 x 2
-#>   date       observation
-#>   <date>           <dbl>
-#> 1 2020-03-01           1
-#> 2 2020-03-02           0
-#> 3 2020-03-03           1
-#> 4 2020-03-04           2
-#> 5 2020-03-05           8
-#> 6 2020-03-06          14
+```{r}
+head(example_nyc_data('cases'))
+head(example_nyc_data('deaths'))
 ```
+
 ### Generate a model configuration 
-Inpute data and model run options are summarized into a covidestim configuration with the funciton call [`covidestim()`](\code{?covidestim}). Users must specify the number of days of data in the input data. More information on data formating can be found [here](\code{?input_cases}). Calling `covidestim()` will produce a summary of model run conditions, priors, and data inputs. 
 
-```r
-covidestim(ndays = nrow(df.cases)) 
-#> Covidestim Configuration:
-#> 
-#> Seed:	42
-#> Chains:	3
-#> Iterations:	1500
-#> Warmup runs:	1200
-#> Priors: Valid
-#> ndays:	103
-#> 
-#> Priors:
-#> 
-#> 	log_new_inf_0_mu	0
-#> 	log_new_inf_0_sd	10
-#> 	deriv1_log_new_inf_sd	0.5
-#> 	deriv2_log_new_inf_sd	0.05
-#> 	p_sym_if_inf	[alpha]	44.9
-#> 	p_sym_if_inf	[beta]	9.9
-#> 	p_sev_if_sym	[alpha]	11.9
-#> 	p_sev_if_sym	[beta]	47.7
-#> 	p_die_if_sev	[alpha]	3
-#> 	p_die_if_sev	[beta]	97
-#> 	p_die_if_sym	[alpha]	1.12
-#> 	p_die_if_sym	[beta]	85.1
-#> 	inf_prg_delay	[shape]	5.202
-#> 	inf_prg_delay	[rate]	0.946
-#> 	sym_prg_delay	[shape]	5.147
-#> 	sym_prg_delay	[rate]	0.468
-#> 	sev_prg_delay	[shape]	2.383
-#> 	sev_prg_delay	[rate]	0.27
-#> 	cas_rep_delay_shp	[alpha]	2.2
-#> 	cas_rep_delay_shp	[beta]	1
-#> 	die_rep_delay_shp	[alpha]	2.2
-#> 	die_rep_delay_shp	[beta]	1
-#> 	p_diag_if_sym	[alpha]	2
-#> 	p_diag_if_sym	[beta]	2
-#> 	p_diag_if_sev	[alpha]	1.5
-#> 	p_diag_if_sev	[beta]	1
-#> 	weekend_eff	[alpha]	2
-#> 	weekend_eff	[beta]	2
-#> 
-#> Inputs:
-#> 
-#> 	[ ❌ ]	Cases
-#> 	[ ❌ ]	Deaths
-#> 	[ ❌ ]	Fraction positive
-```
-Notice that what we input is **not** a valid model configuration because it does not contain data! Each dataframe must be added to the covidestim call using calls [`input_cases()`](\code{?input_cases}),  [`input_deaths()`](\code{?input_deaths}), and [`input_fracpos()`](\code{?input_fracpos}). Whether the data are by date-of-occurrence (e.g date of test specimen collection, date of death) or by date-of-report (e.g. daily updates to cumulative case and death counts) must be noted.   
-  
-Because we use date-of-occurrence data, we choose to enable the 'weekend effect.' As individuals are less likely to be tested on Saturdays and Sundays, enabling the weekend effect allows the model to estimate a systematically lower probability of diagnosis on the weekend. This generally improves model fit to data when the data are by date-of-occurrence. 
-For additional information about changing the base configuration of the model, see [`covidestim()`](\code{?covidestim}). 
+Input data and model run options are summarized into a covidestim configuration with the function call `?covidestim`. Users must specify the number of days of data in the input data. More information on data input can be accessed at `?input_cases` and `?input_deaths`. Printing the result of `covidestim()` will produce a summary of model run conditions, priors, and data inputs. 
 
-```r
-config1 <-
-covidestim(ndays = nrow(df.cases), weekend = TRUE) +
-  input_cases(df.cases, type = "occurred") + 
-  input_deaths(df.cases, type = "occurred") + 
-  input_fracpos(df.fracpos)
-config1
-#> Covidestim Configuration:
-#> 
-#> Seed:	42
-#> Chains:	3
-#> Iterations:	1500
-#> Warmup runs:	1200
-#> Priors: Valid
-#> ndays:	103
-#> 
-#> Priors:
-#> 
-#> 	log_new_inf_0_mu	0
-#> 	log_new_inf_0_sd	10
-#> 	deriv1_log_new_inf_sd	0.5
-#> 	deriv2_log_new_inf_sd	0.05
-#> 	p_sym_if_inf	[alpha]	44.9
-#> 	p_sym_if_inf	[beta]	9.9
-#> 	p_sev_if_sym	[alpha]	11.9
-#> 	p_sev_if_sym	[beta]	47.7
-#> 	p_die_if_sev	[alpha]	3
-#> 	p_die_if_sev	[beta]	97
-#> 	p_die_if_sym	[alpha]	1.12
-#> 	p_die_if_sym	[beta]	85.1
-#> 	inf_prg_delay	[shape]	5.202
-#> 	inf_prg_delay	[rate]	0.946
-#> 	sym_prg_delay	[shape]	5.147
-#> 	sym_prg_delay	[rate]	0.468
-#> 	sev_prg_delay	[shape]	2.383
-#> 	sev_prg_delay	[rate]	0.27
-#> 	cas_rep_delay_shp	[alpha]	2.2
-#> 	cas_rep_delay_shp	[beta]	1
-#> 	die_rep_delay_shp	[alpha]	2.2
-#> 	die_rep_delay_shp	[beta]	1
-#> 	p_diag_if_sym	[alpha]	2
-#> 	p_diag_if_sym	[beta]	2
-#> 	p_diag_if_sev	[alpha]	1.5
-#> 	p_diag_if_sev	[beta]	1
-#> 	weekend_eff	[alpha]	2
-#> 	weekend_eff	[beta]	2
-#> 
-#> Inputs:
-#> 
-#> 	[ 103]	Cases
-#> 	[ 103]	Deaths
-#> 	[ 103]	Fraction positive
+Input data and model configuration options are rolled up into a model configuration object as follows:
+
+```{r}
+cases  <- example_nyc_data('cases')
+deaths <- example_nyc_data('deaths')
+
+cfg <- covidestim(ndays = nrow(cases), region = 'New York') +
+  input_cases(cases) +
+  input_deaths(deaths)
+
+print(cfg)
 ```
+
+There are a few possible variations on this:
+
+1. Custom priors can be set by adding them, just as `input_cases()` and
+   `input_deaths()` were added.
+
+2. A population size can be set, to make the model aware of an upper bound on
+   how many individuals could be infected.
+
+3. `input_cases()` and `input_deaths()` can accept a second parameter, `type`, to
+   specify if the data is organized by date-of-report, or date-of-event.
+
+If you set custom priors, be sure to check the output of `print(cfg)` to see
+that your prior is present in the configuration.
+
 ### Initializing a model run
-Finally, the model is run with the call [`run`](\code{?run}). Do not forget to assign the a name to the output of the run. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in RStudio, periodic status updates will appear in the console. 
 
-```r
-output <- run(config1, cores = parallel::detectCores())
+Finally, the model is run with the function `?run.covidestim`. Don't forget to
+assign the a name to the output of the run - you could lose it!. Runtimes vary
+depending on the size and quality of the data, and may take over an hour. If
+you are running the model in an interactive environment like RStudio, periodic
+status updates will appear in the console. Here, we will use the BFGS algorithm
+to quickly produce a result, as NUTS, the method used by `run()`, takes longer.
+
+```{r}
+result <- runOptimizer(cfg)
 ```
+
+Typically, BFGS will occasionally fail to converge. This is what causes the
+non-zero return codes. `runOptimizer.covidestim()` will automatically exclude these, and 
+select the BFGS run that maximizes the posterior.
 
 ## Accessing model output 
-Calling `run()` on a valid covidestim configuration will produce a S3 object of class `covidestim_result`. Here, we describe the summary functions in covidestim to view model results. In the vignette [Acessing Covidestim Results Object](https://www.covidestim.org/articles/covidestim_vignette.html) we describe the various items within `covidestim_result`.  
+
+Calling `run()` or `runOptimizer()` on a valid covidestim configuration will
+produce an S3 object of class `covidestim_result`. Here, we describe the summary
+functions in covidestim to view model results. In the vignette `vignette("results")`,
+we describe the various objects within `covidestim_result`. However, most users
+will likely find that the `summary.covidestim_result()` function provides all the information
+they need.
 
 ### Summarizing covidestim output
-A covidestim object can be easily converted to a summary data frame with the call [`summary`](\code{?summary}). Each row of the data frame is a date. Each column of the data frame is a value of interest. Variables appened with .hi or .lo indicate the 0.975 and 0.025 quantiles, respectively. A data dictionary for summarized results can be found [here](\code{?summary}). 
 
+A covidestim object can be easily converted to a summary data frame with the
+`?summary.covidestim_result` function. Each row of the data frame is a date. Each
+column of the data frame is a value of interest. Variables appened with .hi or
+.lo indicate the 0.975 and 0.025 quantiles, respectively.
 
-```r
-output.summary <- summary(output)
+```{r}
+result.summary <- summary(result)
+print(result.summary[40:45, 1:5])
 ```
-
-```r
-print(output.summary[40:45, 1:5])
-#> Error in print(output.summary[40:45, 1:5]): object 'output.summary' not found
-```
-
-The posterior distributions of key time-invariant parameters can also be summarized with the call [`summaryEpi`](\?code{?summaryEpi})
-
-
-```r
-covidestim::summaryEpi(output)
-#> Error in rstan::summary(ccr$result, pars = pars_of_interest, probs = c(0.025, : object 'output' not found
-```
-Note that p_diag_if_sym (the probability a symptomatic case is diagnosed) and p_diag_if_sev (the probability that a severe case is diagnosed) are summarized without the adjustment for changing diagnostic coverage. 
 
 ## Visualizing model output
-Model results can be visualized with a the call [`viz`](\code{?viz}). Three figures will be produced: 
 
+Model results can be visualized with `?viz`. Two figures will be produced.
 
-```r
-visual <- covidestim::viz(output)
+```{r}
+plots <- viz(result)
 ```
 
-```r
-summary.default(visual)
-#>                    Length Class Mode
-#> observedVsFitted   9      gg    list
-#> infectionsAndCases 9      gg    list
-#> RtEstim            9      gg    list
+The figure 'observedVsFitted' plots the observed cases and deaths (the input
+data) against the modeled values for reported cases and deaths. Because `runOptimzier.covidestim_result()`
+does not have CI's, there will be a warning relating to the `NA`-valued CI columns
+that are present in the output.
+
+```{r}
+plots$observedVsFitted
 ```
 
-The figure 'observedVsFitted' plots the observed cases and deaths (the input data) against the modeled values for reported cases and deaths. In the plot bellow, note that the effect of weekends on detection and reporting can be clearly observed in both the input data and in the model output. 
+The figure 'infectionsAndCases' plots modeled reported cases against modeled
+'true' new infections. The latter is what we estimate to be the complete,
+un-lagged time series of incident infections that would give rise to the
+trends we observe in the case and death data. 
 
-
-```r
-visual$observedVsFitted
+```{r}
+plots$infectionsAndCases
 ```
-
-![Figure 1](figure/Rplot001.png)
-
-The figure 'infectionsAndCases' plots reported cases against modeled 'true' new infections. The latter is what we estimate to be the complete, un-lagged time series of incident infections that would give rise to the trends we observe in the case and death data. 
-
-```r
-visual$infectionsAndCases
-```
-
-![Figure 2](figure/Rplot002.png)
-
-Finlly, 'RtEstim' is the estimated effective reproduction number (Rt) based on the modeled time series of new infections. These estimates are produced using the [EpiEstim package for R](https://cran.r-project.org/web/packages/EpiEstim/index.html). We use a five-day moving average. Values are plotted on the middle day of the moving average (e.g. the Rt estimate for March 16 is the average Rt over the period March 14 - March 18). 
-
-
-```r
-visual$RtEstim
-```
-
-![Figure 3](figure/Rplot003.png)
-
-
-
-
 

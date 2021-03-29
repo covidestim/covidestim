@@ -60,13 +60,13 @@ used in the core model.}
 An S3 object of class \code{priors}
 }
 \description{
-This function returns a keyed list of values related to progression to
+This function returns a keyed list of priors related to progression to
 the infectious state. Called with no arguments, the default values are
 returned. Custom hyperpriors can be specified by passing values for the
 parameters specified below. The return value of this function must be added
-to a \code{covidestim} object using the additon operator (see examples). The
+to a \code{covidestim} object using the addition operator (see examples). The
 following arguments can be passed to create different priors:
 }
 \examples{
-cfg <- covidestim(ndays = 50) + priors_progression(inf_prg_delay = c(4, 1))
+cfg <- covidestim(ndays = 50, region = 'New York') + priors_progression(inf_prg_delay = c(4, 1))
 }

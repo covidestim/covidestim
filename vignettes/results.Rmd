@@ -9,7 +9,7 @@ vignette: >
 ---
 ## Covidestim Results
 
-*This guide is intended to describe the various result objects contained in the object produced by the call `covidestim::run()`
+This guide is intended to describe the various result objects contained in the object produced by the call `covidestim::run()`. Note that most model timeseries estimates are readily available through calling `summary()` on a `covidestim_result` object. This guide explores the internals of the `covidestim_run` object, to aid the interested user in accessing timeseries outcomes from individual iterations of the NUTS sampler.
 
 ### Overview
 Calling `run()` on a valid covidestim configuration will produce a S3 object of class `covidestim_result` containing the configuration used to run the model ("config"), the raw results ("result"), the extracted result as produced by [`rstan::extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) ("extracted"), and the summarized results as produced by [`rstan::summary`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) ("summary"). 

@@ -9,22 +9,23 @@ priors_diagnosis_delays_scale(dx_delay_sym = c(2, 2), dx_delay_sev = c(2, 2))
 \arguments{
 \item{dx_delay_sym}{A two element vector containing the \code{c(alpha,beta)}
 parameters/hyperpriors of a Beta distribution modeling a scaling factor.
-Delay to diagnosis for symptomatic cases is modeled as the fraction of
-time in the symptomatic disease state, scaled by this factor. For
-instance, if \code{dx_delay_sym} is specified to have \code{E[dx_delay_sym] = 1/2},
-this implies an assumption that individuals will be diagnosed roughly
-halfway through the course of their symptomatic disease state - or in
-other words, progress to diagnosis at twice the rate at which they
+Delay to diagnosis for symptomatic cases is modeled as the \emph{fraction of
+time in the symptomatic disease state}, scaled by this factor.
+
+For instance, if \code{dx_delay_sym} is specified to have \code{E[dx_delay_sym] = 1/2}, this implies an assumption that individuals will be diagnosed
+roughly halfway through the course of their symptomatic disease state - or
+in other words, progress to diagnosis at twice the rate at which they
 progress to severe infection, following transition into the symptomatic
 disease state.}
 
 \item{dx_delay_sev}{A two element vector containing the \code{c(alpha,beta)}
-parameters/hyperpriors of a Beta distribution modeling a scaleing factor.
-Delay to diagnosis for severe cases is modeled as the fraction of time in
-the severe disease state, scaled by this factor. Similarly to above,
-a scaling factor of \code{E[dx_delay_sev]=0.5} implies that individuals get
-diagnosed, on average, halfway through time spent in the severe disease
-state.}
+parameters/hyperpriors of a Beta distribution modeling a scaling factor.
+Delay to diagnosis for severe cases is modeled as the \emph{fraction of time in
+the severe disease state}, scaled by this factor.
+
+Similarly to above, a scaling factor with \code{E[x] = 0.5} implies that
+individuals get diagnosed, on average, halfway through time spent in the
+severe disease state.}
 }
 \value{
 An S3 object of class 'priors'
@@ -34,11 +35,11 @@ This function returns a keyed list of priors related to delays in diagnosing
 of cases and deaths.  Called with no arguments, the default values are
 returned. Custom hyperpriors can be specified by passing values for the
 parameters specified below. The return value of this function must be added
-to a \code{covidestim} object using the additon operator (see examples).
+to a \code{covidestim} object using the addition operator (see examples).
 }
 \details{
 Boundary avoiding priors are used by default.
 }
 \examples{
-cfg <- covidestim(ndays = 50) + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
+cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
 }

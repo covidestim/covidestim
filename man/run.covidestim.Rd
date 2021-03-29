@@ -14,7 +14,7 @@
 \item{...}{Extra arguments, passed on to \code{\link[rstan]{sampling}}}
 }
 \value{
-A S3 object of class \code{covidestim_result} containing the
+An S3 object of class \code{covidestim_result} containing the
 configuration used to run the model, the raw Stan results, the extracted
 result as produced by \code{\link[rstan]{extract}}, and the summarized
 results as produced by \code{\link[rstan]{extract}}.
@@ -43,7 +43,7 @@ A second method for fitting the model, using the BFGS algorithm, is available
 as \link{runOptimizer}. It is significantly faster, but lacks CI's.\tabular{lllll}{
    \strong{Function} \tab \strong{Method} \tab \strong{CI's} \tab \strong{Speed} \tab \strong{Termination} \cr
    \code{run()} \tab NUTS \tab Yes \tab 30m-hours \tab Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious \cr
-   \code{runOptimizer()} \tab BFGS \tab No, \code{*.(lo|hi) == NA} \tab ~1-3min \tab Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally) \cr
+   \code{runOptimizer()} \tab BFGS \tab No \tab ~1-3min \tab Potentially with nonzero exit status (lack of convergence), or timeout (rare, gracefully handled internally) \cr
 }
 }
 \examples{
@@ -60,5 +60,5 @@ result <- run(cfg, cores = 2)
 
 }
 \seealso{
-\code{\link{runOptimizer}}
+\link{runOptimizer.covidestim}
 }

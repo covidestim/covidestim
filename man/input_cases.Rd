@@ -36,9 +36,7 @@ test was administered. For deaths, this would be the day an individual
 died. Note that, if the deaths data represent the day an individual's
 death was first reported as a SARS-Cov-2-related death, that data
 should be passed with \code{type = "reported"}, instead.
-}
-
-#' @rdname input_cases}
+}}
 }
 \description{
 A family of functions used for inputting data into Covidestim.
@@ -53,9 +51,9 @@ day
 }
 
 All input data to Covidestim is expected to be a
-\code{\link[base]{data.frame}} of two variables. One variable, \code{date}
+\code{\link[base]{data.frame}} of two variables. One variable, \code{date},
 must be a vector of type \code{\link[base]{POSIXct}} or
-\code{\link[base]{Date}}. The second column, \code{observations} must be a
+\code{\link[base]{Date}}. The second column, \code{observations}, must be a
 non-negative numeric vector.
 
 Missing values in cases and deaths data should be imputed before running the model.
