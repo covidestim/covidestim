@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Visualize results of Covidestim — viz.covidestim_result • covidestim</title>
+<title>Visualize results of a Covidestim run — viz.covidestim_result • covidestim</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Visualize results of Covidestim — viz.covidestim_result" />
-<meta property="og:description" content="Returns several graphs of Covidestim input and estimates" />
+<meta property="og:title" content="Visualize results of a Covidestim run — viz.covidestim_result" />
+<meta property="og:description" content="Returns two graphs of Covidestim input and estimates" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -103,10 +103,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cer_object.html">Results Object</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
+      <a href="../articles/results.html">Results Object</a>
     </li>
   </ul>
 </li>
@@ -131,13 +131,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Visualize results of Covidestim</h1>
+    <h1>Visualize results of a Covidestim run</h1>
     <small class="dont-index">Source: <a href='https://github.com/covidestim/covidestim/blob/master/R/viz.R'><code>R/viz.R</code></a></small>
     <div class="hidden name"><code>viz.covidestim_result.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Returns several graphs of Covidestim input and estimates</p>
+    <p>Returns two graphs of Covidestim input and estimates</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for covidestim_result</span>
@@ -165,15 +165,15 @@ returned.</p></td>
     <p>A list with the following keys:</p>
 <ul>
 <li><p><code>observedVsFitted</code> A <code>ggplot</code> of input cases/deaths data, and the
-    fit of the model to that data.</p></li>
+fit of the model to that data.</p></li>
 <li><p><code>infectionsAndCases</code> A <code>ggplot</code> of estimated daily infections,
-    compared to reported/observed cases.</p></li>
+compared to reported/observed cases.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='summary.covidestim_result.html'>summary.covidestim_result</a></code> for more details on the
-  quantities being plotted</p></div>
+quantities being plotted</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

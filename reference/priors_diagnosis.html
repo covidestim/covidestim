@@ -48,7 +48,10 @@
 
 <meta property="og:title" content="Priors on probability of diagnosis — priors_diagnosis" />
 <meta property="og:description" content="This function returns a keyed list of priors related to probability of
-diagnosis. Called with no arguments, the default values are returned." />
+diagnosis. Called with no arguments, the default values are returned. Custom
+hyperpriors can be specified by passing values for the parameters specified
+below. The return value of this function must be added to a
+covidestim object using the addition operator (see examples)." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -104,10 +107,10 @@ diagnosis. Called with no arguments, the default values are returned." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cer_object.html">Results Object</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
+      <a href="../articles/results.html">Results Object</a>
     </li>
   </ul>
 </li>
@@ -139,7 +142,10 @@ diagnosis. Called with no arguments, the default values are returned." />
 
     <div class="ref-description">
     <p>This function returns a keyed list of priors related to probability of
-diagnosis. Called with no arguments, the default values are returned.</p>
+diagnosis. Called with no arguments, the default values are returned. Custom
+hyperpriors can be specified by passing values for the parameters specified
+below. The return value of this function must be added to a
+<code>covidestim</code> object using the addition operator (see examples).</p>
     </div>
 
     <pre class="usage"><span class='fu'>priors_diagnosis</span><span class='op'>(</span>
@@ -153,22 +159,25 @@ diagnosis. Called with no arguments, the default values are returned.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>rr_diag_asy_vs_sym</th>
-      <td><p>A two-element numeric vector containing 
-<code><a href='https://rdrr.io/r/base/c.html'>c(alpha, beta)</a></code> parameters of a Beta distribution modeling the rate 
-ratio of diagnosis among asymptomatic vs symptomatic, but not severe, 
-infections.</p></td>
+      <td><p>A two-element numeric vector containing
+<code><a href='https://rdrr.io/r/base/c.html'>c(alpha, beta)</a></code> parameters/hyperpriors of a Beta distribution
+modeling the rate ratio of diagnosis among asymptomatic versus symptomatic,
+but non-"severe" infections.</p>
+<p>Lowering the mean of this prior would reflect a belief that even fewer
+asymptomatic indivivduals are diagnosed than currently assumed.</p></td>
+    </tr>
+    <tr>
+      <th>rr_diag_sym_vs_sev</th>
+      <td><p>A two-element numeric vector containing
+<code><a href='https://rdrr.io/r/base/c.html'>c(alpha, beta)</a></code> parameters/hyperpriors of a Beta distribution
+modeling the rate ratio of diagnosis at the symptomatic vs severe stage of
+infection.</p></td>
     </tr>
     <tr>
       <th>p_diag_if_sev</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
-beta)</a></code> parameters of a Beta distribution modeling the probability of
-being diagnosed if severely ill.</p></td>
-    </tr>
-    <tr>
-      <th>rr_diag_sym_vs_asy</th>
-      <td><p>A two-element numeric vector containing 
-<code><a href='https://rdrr.io/r/base/c.html'>c(alpha, beta)</a></code> parameters of a Beta distribution modeling the rate 
-ratio of diagnosis at the symptomatic vs severe stage of infection.</p></td>
+  beta)</a></code> parameters/hyperpriors of a Beta distribution modeling the
+probability of being diagnosed if severely ill.</p></td>
     </tr>
     </table>
 
@@ -181,8 +190,8 @@ ratio of diagnosis at the symptomatic vs severe stage of infection.</p></td>
 is used for the probability of diagnosis if severely ill.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_diagnosis</span><span class='op'>(</span>p_diag_if_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in defaultConfig(N_days = ndays, N_days_before = ndays_before, pop_size = pop_size,     N_days_av = window.length, region = region): argument "region" is missing, with no default</span></div></pre>
+    <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span>, region <span class='op'>=</span> <span class='st'>'New York'</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_diagnosis</span><span class='op'>(</span>p_diag_if_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

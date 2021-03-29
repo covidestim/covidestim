@@ -47,7 +47,9 @@
 
 
 <meta property="og:title" content="Summarize a Covidestim run — summary.covidestim_result" />
-<meta property="og:description" content="Summarize a Covidestim run" />
+<meta property="og:description" content="Returns a data.frame summarizing a Covidestim model run. Note that if
+runOptimizer is used, all *.(lo|hi) variables will be NA-valued,
+because BFGS does not generate confidence intervals." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -103,10 +105,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cer_object.html">Results Object</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
+      <a href="../articles/results.html">Results Object</a>
     </li>
   </ul>
 </li>
@@ -137,7 +139,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Summarize a Covidestim run</p>
+    <p>Returns a <code>data.frame</code> summarizing a Covidestim model run. Note that if
+runOptimizer is used, all <code>*.(lo|hi)</code> variables will be <code>NA</code>-valued,
+because BFGS does not generate confidence intervals.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for covidestim_result</span>
@@ -168,37 +172,48 @@ will be represented as <code>NA</code>.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <code>data.frame</code> with the following variables:</p>
-<p></p><ul>
+<ul>
 <li><p><code>date</code></p></li>
 <li><p><code>cases.fitted</code>, <code>cases.fitted.lo</code>,
-      <code>cases.fitted.hi</code>: Median and 95% interval around fitted case
-      data.</p></li>
-<li><p><code>cum.incidence</code>, <code>cum.incidence.lo</code>,
-      <code>cum.incidence.hi</code>: Median and 95% interval around cumulative 
-      incidence data.</p></li>
-<li><p><code>deaths.fitted</code>, <code>deaths.fitted.lo</code>,
-      <code>deaths.fitted.hi</code>: Median and 95% interval around fitted deaths
-      data.</p></li>
-<li><p><code>deaths</code>, <code>deaths.lo</code>, <code>deaths.hi</code>: Median and 95%
-      interval around estimated deaths/day.</p></li>
-<li><p><code>infections</code>, <code>infections.lo</code>, <code>infections.hi</code>:
-      Median and 95% interval around estimated infections/day.</p></li>
-<li><p><code>severe</code>, <code>severe.lo</code>, <code>severe.hi</code>: Median and 95%
-       interval around "severe" estimate.</p></li>
-<li><p><code>symptomatic</code>, <code>symptomatic.lo</code>, <code>symptomatic.hi</code>:
-       Median and 95% interval around estimate of quantity of individuals
-       symtomatic on a particular day.</p></li>
-<li><p><code>data.available</code>: <code>TRUE/FALSE</code> for whether input data
-      was available on that particular day.</p></li>
-<li><p><code>Rt</code>, <code>Rt.lo</code>, <code>Rt.hi</code>: Estimate of the effective 
-    reproductive number (Rt), with 95% CIs.</p></li>
-<li><p><code>sero.positive</code>, <code>sero.positive.lo</code>, 
-    <code>sero.positive.hi</code>: Estimate of the number of individuals sero-
-    positive, with 95% CIs.</p></li>
-<li><p><code>pop.infectiousness</code>, <code>pop.infectiousness.lo</code>, 
-    <code>pop.infectiousness.hi</code>: Estimate of the relative level of viral 
-    shedding in the community, with 95% CIs.</p></li>
-<li><p><code>index</code></p></li>
+<code>cases.fitted.hi</code>: Median and 95\<!-- % interval around fitted case -->
+data.</p><pre>\item \code{cum.incidence}, \code{cum.incidence.lo},
+  \code{cum.incidence.hi}: Median and 95\% interval around cumulative 
+  incidence data.
+
+\item \code{deaths.fitted}, \code{deaths.fitted.lo},
+  \code{deaths.fitted.hi}: Median and 95\% interval around fitted deaths
+  data.
+
+\item \code{deaths}, \code{deaths.lo}, \code{deaths.hi}: Median and 95\%
+  interval around estimated deaths/day, by date of death.
+
+\item \code{infections}, \code{infections.lo}, \code{infections.hi}:
+  Median and 95\% interval around estimated infections/day, by date of
+  infection.
+
+\item \code{severe}, \code{severe.lo}, \code{severe.hi}: Median and 95\%
+   interval around the number of individuals who transitioned into the
+   "severe" health state on a particular day. The "severe" state is
+   defined as disease that would merit hospitalization.
+
+\item \code{symptomatic}, \code{symptomatic.lo}, \code{symptomatic.hi}:
+   Median and 95\% interval around the estimate of the quantity of
+   individuals who became symtomatic on a particular day.
+
+\item \code{data.available}: \code{TRUE/FALSE} for whether input data
+  was available on that particular day.
+
+\item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of the effective 
+reproductive number (Rt), with 95\% CIs.
+
+\item \code{sero.positive}, \code{sero.positive.lo}, 
+\code{sero.positive.hi}: Estimate of the number of seropositive
+individuals, with 95\% CIs.
+
+\item \code{pop.infectiousness}, \code{pop.infectiousness.lo}, 
+\code{pop.infectiousness.hi}: Estimate of the relative level of viral 
+shedding in the community, with 95\% CIs.
+</pre></li>
 </ul>
 
 

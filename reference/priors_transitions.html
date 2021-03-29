@@ -49,7 +49,10 @@
 <meta property="og:title" content="Priors for transitions — priors_transitions" />
 <meta property="og:description" content="This function returns a keyed list of priors related to progression to
 various health states. Called with no arguments, the default values are
-returned. All parameters must be non-negative real numbers." />
+returned. Custom hyperpriors can be specified by passing values for the
+parameters specified below. All parameters must be non-negative real
+numbers. The return value of this function must be added to a
+covidestim object using the addition operator (see examples)." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -105,10 +108,10 @@ returned. All parameters must be non-negative real numbers." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cer_object.html">Results Object</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
+      <a href="../articles/results.html">Results Object</a>
     </li>
   </ul>
 </li>
@@ -141,7 +144,10 @@ returned. All parameters must be non-negative real numbers." />
     <div class="ref-description">
     <p>This function returns a keyed list of priors related to progression to
 various health states. Called with no arguments, the default values are
-returned. All parameters must be non-negative real numbers.</p>
+returned. Custom hyperpriors can be specified by passing values for the
+parameters specified below. All parameters must be non-negative real
+numbers. The return value of this function must be added to a
+<code>covidestim</code> object using the addition operator (see examples).</p>
     </div>
 
     <pre class="usage"><span class='fu'>priors_transitions</span><span class='op'>(</span>
@@ -158,10 +164,10 @@ returned. All parameters must be non-negative real numbers.</p>
     <tr>
       <th>p_sym_if_inf</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
-  beta)</a></code> parameters of a Beta distribution modeling the probability of being
-  symptomatic if infectious.</p>
-<p>Sources for default value:</p>  
-<p></p><ul>
+  beta)</a></code> parameters/hyperpriors of a Beta distribution modeling the
+probability of becoming symptomatic if infectious.</p>
+<p>Sources for default value:</p>
+<ul>
 <li><p>Byambasuren O, Cardona M, Bell K, Clark J, McLaws M, Glasziou P (2020).
 &#8220;Estimating the extent of asymptomatic COVID-19 and its potential for community transmission: systematic review and meta-analysis.&#8221;
 Infectious Diseases (except HIV/AIDS).
@@ -182,10 +188,12 @@ ISSN 12019712, doi: <a href='https://doi.org/10.1016/j.ijid.2020.03.020'>10.1016
     <tr>
       <th>p_sev_if_sym</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
-  beta)</a></code> parameters of a Beta distribution modeling the probability of
-  severe if symptomatic.</p>
+  beta)</a></code> parameters/hyperpriors of a Beta distribution modeling the
+probability of transitioning into the "severe" health state if
+symptomatic. "Severe" disease is defined as disease that would likely
+require hospitalization.</p>
 <p>Sources for default value:</p>
-<p></p><ul>
+<ul>
 <li><p>CDC COVID-19 Response Team, Bialek S, Boundy E, Bowen V, Chow N, Cohn A, Dowling N, Ellington S, Gierke R, Hall A, MacNeil J, Patel P, Peacock G, Pilishvili T, Razzaghi H, Reed N, Ritchey M, Sauber-Schatz E (2020).
 &#8220;Severe Outcomes Among Patients with Coronavirus Disease 2019 (COVID-19) — United States, February 12–March 16, 2020.&#8221;
 <em>MMWR. Morbidity and Mortality Weekly Report</em>, <b>69</b>(12), 343--346.
@@ -201,8 +209,8 @@ ISSN 14733099, doi: <a href='https://doi.org/10.1016/S1473-3099(20)30243-7'>10.1
     <tr>
       <th>p_die_if_sev</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
-  beta)</a></code> parameters of a Beta distribution modeling the probability of dying
-  if severely ill.</p>
+  beta)</a></code> parameters/hyperpriors of a Beta distribution modeling the
+probability of dying if in the "severe" health state.</p>
 <p>Source for default value: CDC COVID-19 Response Team, Bialek S, Boundy E, Bowen V, Chow N, Cohn A, Dowling N, Ellington S, Gierke R, Hall A, MacNeil J, Patel P, Peacock G, Pilishvili T, Razzaghi H, Reed N, Ritchey M, Sauber-Schatz E (2020).
 &#8220;Severe Outcomes Among Patients with Coronavirus Disease 2019 (COVID-19) — United States, February 12–March 16, 2020.&#8221;
 <em>MMWR. Morbidity and Mortality Weekly Report</em>, <b>69</b>(12), 343--346.
@@ -212,10 +220,11 @@ ISSN 0149-2195, 1545-861X, doi: <a href='https://doi.org/10.15585/mmwr.mm6912e2'
     <tr>
       <th>p_die_if_inf</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,
-  beta)</a></code> parameters of a Beta distribution modeling the probability of dying
-  if infected (e.g. the infection fatality rate). This prior represents a 
-  national average value, which is adjusted for state and county-level 
-  factors, and to reflect higher fatality rates early in the epidemic.</p>
+  beta)</a></code> parameters/hyperpriors of a Beta distribution modeling the
+probability of dying if infected (e.g. the infection fatality rate). This
+prior represents a national average value, which is later adjusted for
+state and county-level factors, and to reflect higher fatality rates early
+in the epidemic.</p>
 <p>Source for default value: Adummy A (2021).
 &#8220;Not avalable.&#8221;
 Failed to insert reference with key = ODriscoll_Nature_2020 from package = 'covidestim'. Possible cause --- missing or misspelled key.</p></td>
@@ -223,9 +232,10 @@ Failed to insert reference with key = ODriscoll_Nature_2020 from package = 'covi
     <tr>
       <th>ifr_decl_OR</th>
       <td><p>A two-element numeric vector containing <code><a href='https://rdrr.io/r/base/c.html'>c(shape,
-  rate)</a></code> parameters of a Gamma distribution modeling the elevated IFR in early
-  2020, relative to the present. Default value represents an IFR 30<!-- % higher -->
-  in March of 2020, with 95<!-- % interval 10-50% higher. --></p>
+  rate)</a></code> parameters/hyperpriors of a Gamma distribution modeling the
+elevated IFR in early 2020, relative to the present. Default value
+represents an IFR 30% higher in March of 2020, with 95% interval 10-50%
+higher.</p>
 <p>Source for default value: Expert opinion</p></td>
     </tr>
     </table>
@@ -235,8 +245,8 @@ Failed to insert reference with key = ODriscoll_Nature_2020 from package = 'covi
     <p>An S3 object of class <code>priors</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_transitions</span><span class='op'>(</span>p_sym_if_inf <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in defaultConfig(N_days = ndays, N_days_before = ndays_before, pop_size = pop_size,     N_days_av = window.length, region = region): argument "region" is missing, with no default</span></div></pre>
+    <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span>, region <span class='op'>=</span> <span class='st'>'New York'</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_transitions</span><span class='op'>(</span>p_sym_if_inf <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

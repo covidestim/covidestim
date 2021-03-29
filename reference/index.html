@@ -102,10 +102,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cer_object.html">Results Object</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
+      <a href="../articles/results.html">Results Object</a>
     </li>
   </ul>
 </li>
@@ -144,25 +144,6 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-model-execution" class="hasAnchor"><a href="#section-model-execution" class="anchor"></a>Model execution</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="run.covidestim.html">run(<i>&lt;covidestim&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Run the Covidestim model</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
           <h2 id="section-model-configuration" class="hasAnchor"><a href="#section-model-configuration" class="anchor"></a>Model configuration</h2>
           <p class="section-desc"></p>
         </th>
@@ -177,14 +158,20 @@
         <td>
           <p><code><a href="covidestim.html">covidestim()</a></code> </p>
         </td>
-        <td><p>Configure a Covidestim run on a set of data and priors</p></td>
+        <td><p>Configure a Covidestim run on a set of priors and input data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_pop.html">get_pop()</a></code> </p>
+        </td>
+        <td><p>Population estimates for US states and counties</p></td>
       </tr>
     </tbody><tbody>
       
       <tr>
         <th colspan="2">
-          <h3 id="section-model-configuration-data" class="hasAnchor"><a href="#section-model-configuration-data" class="anchor"></a>Model configuration — Data</h3>
-          <p class="section-desc"><p>Covidestim expects three data sources to be present - case data, death data, and hospitalization data. These functions allow adding these data sources to the model configuration.</p></p>
+          <h3 id="section-input-data" class="hasAnchor"><a href="#section-input-data" class="anchor"></a>Input data</h3>
+          <p class="section-desc"><p>Covidestim expects two data sources to be present - case data, and death data. These functions allow adding these data sources to the model configuration.</p></p>
         </th>
       </tr>
       
@@ -202,8 +189,147 @@
       
       <tr>
         <th colspan="2">
-          <h3 id="section-model-configuration-priors" class="hasAnchor"><a href="#section-model-configuration-priors" class="anchor"></a>Model configuration — Priors</h3>
-          <p class="section-desc"><p>These functions allow customization of model priors. By default, Covidestim comes with a complete set of priors. However, these functions make it possible to override the default parameterizations of the prior distributions, within certain constraints.</p></p>
+          <h3 id="section-custom-priors" class="hasAnchor"><a href="#section-custom-priors" class="anchor"></a>Custom priors</h3>
+          <p class="section-desc">
+<p>These functions allow customization of model priors. By default, Covidestim comes with a complete set of priors, which have been tailed for estimation of U.S. counties and states. However, these functions make it possible to override the default parameterizations of the prior distributions, within certain constraints. This allows you to conduct exploratory modeling of other geographies, or test the effect of different priors on estimates.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="30%">
+<col width="23%">
+<col width="23%">
+<col width="23%">
+</colgroup>
+<thead><tr class="header">
+<th align="right"><strong>Function</strong></th>
+<th><strong>Associated priors</strong></th>
+<th><strong>Type</strong></th>
+<th><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">
+<strong><code><a href="../reference/priors_diagnosis.html">priors_diagnosis()</a></code></strong>:</td>
+<td><code>rr_diag_asy_vs_sym</code></td>
+<td>Beta(α,β)</td>
+<td>Rate ratio of diagnosis, asymptomatic vs. symptomatic,non-severe</td>
+</tr>
+<tr class="even">
+<td align="right"></td>
+<td><code>rr_diag_sym_vs_sev</code></td>
+<td>Beta(α,β)</td>
+<td>RR diagnosis, symptomatic vs. severe</td>
+</tr>
+<tr class="odd">
+<td align="right"></td>
+<td><code>p_diag_if_sev</code></td>
+<td>Beta(α,β)</td>
+<td><code>P(diagnosed | severe)</code></td>
+</tr>
+<tr class="even">
+<td align="right">
+<strong><code><a href="../reference/priors_diagnosis_delays_scale.html">priors_diagnosis_delays_scale()</a></code></strong>:</td>
+<td><code>dx_delay_sym</code></td>
+<td>Beta(α,β)</td>
+<td>Time to diagnosis as fraction of time spent symptomatic</td>
+</tr>
+<tr class="odd">
+<td align="right"></td>
+<td><code>dx_delay_sev</code></td>
+<td>Beta(α,β)</td>
+<td>Time to diagnosis as fraction of time spent severe</td>
+</tr>
+<tr class="even">
+<td align="right">
+<strong><code><a href="../reference/priors_progression.html">priors_progression()</a></code></strong>:</td>
+<td><code>inf_prg_delay</code></td>
+<td>Gamma(α,β)</td>
+<td><code>T(infection → symptoms)</code></td>
+</tr>
+<tr class="odd">
+<td align="right"></td>
+<td><code>sym_prg_delay</code></td>
+<td>Gamma(α,β)</td>
+<td><code>T(symptoms → severe)</code></td>
+</tr>
+<tr class="even">
+<td align="right"></td>
+<td><code>sev_prg_delay</code></td>
+<td>Gamma(α,β)</td>
+<td><code>T(severe → dead)</code></td>
+</tr>
+<tr class="odd">
+<td align="right"></td>
+<td><code>asy_rec_delay</code></td>
+<td>Gamma(α,β)</td>
+<td>
+<code>T(infection → recovery)</code>, asymptomatics</td>
+</tr>
+<tr class="even">
+<td align="right"></td>
+<td><code>pri_serial_i</code></td>
+<td>Gamma(α,β)</td>
+<td>Serial interval</td>
+</tr>
+<tr class="odd">
+<td align="right"></td>
+<td><code>infect_dist</code></td>
+<td>Gamma(α,β)</td>
+<td>Change in infectiousness</td>
+</tr>
+<tr class="even">
+<td align="right"></td>
+<td><code>seropos_dist</code></td>
+<td>Gamma(α,β)</td>
+<td>Change in seropositivity</td>
+</tr>
+<tr class="odd">
+<td align="right">
+<strong><code><a href="../reference/priors_reporting_delays.html">priors_reporting_delays()</a></code></strong>:</td>
+<td><code>cas_rep_delay</code></td>
+<td>Gamma(α,β)</td>
+<td><code>T(test → report)</code></td>
+</tr>
+<tr class="even">
+<td align="right"></td>
+<td><code>die_rep_delay</code></td>
+<td>Gamma(α,β)</td>
+<td><code>T(death → report)</code></td>
+</tr>
+<tr class="odd">
+<td align="right">
+<strong><code><a href="../reference/priors_transitions.html">priors_transitions()</a></code></strong>:</td>
+<td><code>p_sym_if_inf</code></td>
+<td>Beta(α,β)</td>
+<td><code>P(symptoms | infected)</code></td>
+</tr>
+<tr class="even">
+<td align="right"></td>
+<td><code>p_sev_if_sym</code></td>
+<td>Beta(α,β)</td>
+<td><code>P(severe | symptoms)</code></td>
+</tr>
+<tr class="odd">
+<td align="right"></td>
+<td><code>p_die_if_sev</code></td>
+<td>Beta(α,β)</td>
+<td><code>P(die | severe)</code></td>
+</tr>
+<tr class="even">
+<td align="right"></td>
+<td><code>p_die_if_inf</code></td>
+<td>Beta(α,β)</td>
+<td>
+<code>P(die | infection)</code> (IFR)</td>
+</tr>
+<tr class="odd">
+<td align="right"></td>
+<td><code>ifr_decl_OR</code></td>
+<td>Gamma(α,β)</td>
+<td>~IFR decline</td>
+</tr>
+</tbody>
+</table>
+</p>
         </th>
       </tr>
       
@@ -213,39 +339,34 @@
       <tr>
         
         <td>
-          <p><code><a href="priors_diagnosis.html">priors_diagnosis()</a></code> </p>
-        </td>
-        <td><p>Priors on probability of diagnosis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="priors_diagnosis_delays_scale.html">priors_diagnosis_delays_scale()</a></code> </p>
-        </td>
-        <td><p>Priors on diagnostic delays</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="priors_progression.html">priors_progression()</a></code> </p>
-        </td>
-        <td><p>Fixed values on delay to progression</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="priors_reporting_delays.html">priors_reporting_delays()</a></code> </p>
-        </td>
-        <td><p>Fixed distributions on reporting delays</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="priors_transitions.html">priors_transitions()</a></code> </p>
-        </td>
-        <td><p>Priors for transitions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="pri_gamma_shape.html">pri_gamma_shape()</a></code> <code><a href="pri_gamma_shape.html">pri_gamma_rate()</a></code> </p>
+          <p><code><a href="gamma_shape.html">gamma_shape()</a></code> </p>
         </td>
         <td><p>Convert mean/variance stats to shape/rate parameters of gamma distribution</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-model-execution" class="hasAnchor"><a href="#section-model-execution" class="anchor"></a>Model execution</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="run.covidestim.html">run(<i>&lt;covidestim&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Run the Covidestim model using NUTS</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="runOptimizer.covidestim.html">runOptimizer(<i>&lt;covidestim&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Run the Covidestim model using BFGS</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -270,7 +391,7 @@
         <td>
           <p><code><a href="viz.covidestim_result.html">viz(<i>&lt;covidestim_result&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Visualize results of Covidestim</p></td>
+        <td><p>Visualize results of a Covidestim run</p></td>
       </tr>
     </tbody><tbody>
       <tr>

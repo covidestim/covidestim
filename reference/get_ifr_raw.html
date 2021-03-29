@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estimated IFR ... for US counties and states — get_ifr_raw • covidestim</title>
+<title>Estimated IFR for US counties and states — get_ifr_raw • covidestim</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Estimated IFR ... for US counties and states — get_ifr_raw" />
-<meta property="og:description" content="DETAILS HERE. Look in `data-raw/` for details on how this is generated." />
+<meta property="og:title" content="Estimated IFR for US counties and states — get_ifr_raw" />
+<meta property="og:description" content="DETAILS HERE. Look in data-raw/ for details on how this is generated." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -103,10 +103,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cer_object.html">Results Object</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
+      <a href="../articles/results.html">Results Object</a>
     </li>
   </ul>
 </li>
@@ -131,13 +131,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Estimated IFR ... for US counties and states</h1>
+    <h1>Estimated IFR for US counties and states</h1>
     <small class="dont-index">Source: <a href='https://github.com/covidestim/covidestim/blob/master/R/ifr.R'><code>R/ifr.R</code></a></small>
     <div class="hidden name"><code>get_ifr_raw.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>DETAILS HERE. Look in `data-raw/` for details on how this is generated.</p>
+    <p>DETAILS HERE. Look in <code>data-raw/</code> for details on how this is generated.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_ifr_raw</span><span class='op'>(</span><span class='va'>region</span><span class='op'>)</span></pre>
@@ -153,9 +153,9 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data.frame with two variables: [date, value], where value is
-  the odds ratio on VALUE HERE for that particular day. If <code>region</code>
-  is specified incorrectly, an error will be thrown</p>
+    <p>A data.frame with two variables: date, value, where value is
+the odds ratio on VALUE HERE for that particular day. If <code>region</code>
+is specified incorrectly, an error will be thrown.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>get_ifr_raw</span><span class='op'>(</span><span class='st'>'Connecticut'</span><span class='op'>)</span>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Configure a Covidestim run on a set of data and priors — covidestim • covidestim</title>
+<title>Configure a Covidestim run on a set of priors and input data — covidestim • covidestim</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,11 +46,13 @@
 
 
 
-<meta property="og:title" content="Configure a Covidestim run on a set of data and priors — covidestim" />
+<meta property="og:title" content="Configure a Covidestim run on a set of priors and input data — covidestim" />
 <meta property="og:description" content="covidestim returns a base configuration of the model with the default
 set of priors, and no input data. This configuration, after adding input
-data (see input_cases, input_deaths, represents 
-a valid model configuration that can be passed to run." />
+data (see input_cases, input_deaths,
+priors_*), represents a valid model configuration that can be passed
+to run.covidestim (for NUTS) or
+runOptimizer.covidestim (for BFGS)." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -106,10 +108,10 @@ a valid model configuration that can be passed to run." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cer_object.html">Results Object</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
+      <a href="../articles/results.html">Results Object</a>
     </li>
   </ul>
 </li>
@@ -134,7 +136,7 @@ a valid model configuration that can be passed to run." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Configure a Covidestim run on a set of data and priors</h1>
+    <h1>Configure a Covidestim run on a set of priors and input data</h1>
     <small class="dont-index">Source: <a href='https://github.com/covidestim/covidestim/blob/master/R/covidestim.R'><code>R/covidestim.R</code></a></small>
     <div class="hidden name"><code>covidestim.Rd</code></div>
     </div>
@@ -142,8 +144,10 @@ a valid model configuration that can be passed to run." />
     <div class="ref-description">
     <p><code>covidestim</code> returns a base configuration of the model with the default
 set of priors, and no input data. This configuration, after adding input
-data (see <code><a href='input_cases.html'>input_cases</a></code>, <code><a href='input_cases.html'>input_deaths</a></code>, represents 
-a valid model configuration that can be passed to <code>run</code>.</p>
+data (see <code><a href='input_cases.html'>input_cases</a></code>, <code><a href='input_cases.html'>input_deaths</a></code>,
+<code>priors_*</code>), represents a valid model configuration that can be passed
+to <code><a href='run.covidestim.html'>run.covidestim</a></code> (for NUTS) or
+<code><a href='runOptimizer.covidestim.html'>runOptimizer.covidestim</a></code> (for BFGS).</p>
     </div>
 
     <pre class="usage"><span class='fu'>covidestim</span><span class='op'>(</span>
@@ -166,36 +170,42 @@ a valid model configuration that can be passed to <code>run</code>.</p>
     <tr>
       <th>ndays</th>
       <td><p>A positive integer. The number of days of input data being
-modeled. This should always be set to the number of days in your input data.</p></td>
+modeled. This should always be set to the number of days in your input
+data.</p></td>
     </tr>
     <tr>
       <th>ndays_before</th>
       <td><p>A positive integer. How many days before the first day
-of model data should be modeled?</p></td>
+of model data should be modeled? A higher number will produce estimates
+that go farther back in time, however, those estimates will contain more
+and more uncertainty.</p></td>
     </tr>
     <tr>
       <th>pop_size</th>
-      <td><p>A positive real. What is the population in the geography 
-being modelled? This sets the max susceptible population</p></td>
+      <td><p>A positive integer What is the population in the geography
+being modelled? This sets the max susceptible population and becomes
+important as the population ever infected approaches the population size.</p></td>
     </tr>
     <tr>
       <th>chains</th>
-      <td><p>The number of chains to use during sampling, as passed to
+      <td><p>The number of chains to use during NUTS sampling, as passed to
 <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
     </tr>
     <tr>
       <th>iter</th>
-      <td><p>The number of iterations to run during sampling, as passed to
-<code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
+      <td><p>The number of iterations to run during NUTS sampling, as passed
+to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
     </tr>
     <tr>
       <th>thin</th>
       <td><p>A positive integer to specify period for saving samples, as
-passed to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
+passed to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>. Modify this only if you intend
+to inspect raw iterations data returned by <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></code>.</p></td>
     </tr>
     <tr>
       <th>seed</th>
-      <td><p>A number. The random number generator seed for use in sampling.</p></td>
+      <td><p>A number. The random number generator seed for use in NUTS
+sampling or in BFGS.</p></td>
     </tr>
     <tr>
       <th>region</th>
@@ -206,16 +216,76 @@ passed to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sa
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An S3 object of type <code>covidestim</code>. This can be passed to 
-  <code>run</code> to execute the model. This object can also be saved
-  to disk using <code><a href='https://rdrr.io/r/base/readRDS.html'>saveRDS</a></code> to enable reproducibility across
-  platforms or sessions. The <code>print</code> method is overloaded to return
-  to the user a summary of the configuration, including prior values and 
-  the presence or absence of input data.</p>
+    <p>An S3 object of type <code>covidestim</code>. This can be passed to
+<code><a href='run.covidestim.html'>run.covidestim</a></code> or <code><a href='runOptimizer.covidestim.html'>runOptimizer.covidestim</a></code> to execute the model, as
+long as input data has been added (using the addition operator, see
+example). This object can also be saved to disk using
+<code><a href='https://rdrr.io/r/base/readRDS.html'>saveRDS</a></code> to enable reproducibility across platforms or
+sessions. However, note that Stan runs are only reproducible under very
+specific conditions due to Stan's multi-language architecture. The
+<code>print</code> method is overloaded to return to the user a summary of the
+configuration, including prior values and the presence or absence of input
+data.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='https://mc-stan.org/docs/2_18/reference-manual/reproducibility-chapter.html'>https://mc-stan.org/docs/2_18/reference-manual/reproducibility-chapter.html</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>covidestim</span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span>, seed <span class='op'>=</span> <span class='fl'>42</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in defaultConfig(N_days = ndays, N_days_before = ndays_before, pop_size = pop_size,     N_days_av = window.length, region = region): argument "region" is missing, with no default</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'># Note that this configuration is improper as it uses New York City</span>
+<span class='co'># case/death data, but uses Manhattan's FIPS code and population size.</span>
+<span class='co'># (for demonstration purposes only!)</span>
+<span class='fu'>covidestim</span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>120</span>, seed <span class='op'>=</span> <span class='fl'>42</span>, region <span class='op'>=</span> <span class='st'>'36061'</span>, pop_size <span class='op'>=</span> <span class='fl'>1.63e6</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='input_cases.html'>input_cases</a></span><span class='op'>(</span><span class='fu'><a href='example_nyc_data.html'>example_nyc_data</a></span><span class='op'>(</span><span class='st'>'cases'</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='input_cases.html'>input_deaths</a></span><span class='op'>(</span><span class='fu'><a href='example_nyc_data.html'>example_nyc_data</a></span><span class='op'>(</span><span class='st'>'deaths'</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Covidestim Configuration:
+#&gt; 
+#&gt; Seed:	42
+#&gt; Chains:	3
+#&gt; Iterations:	1500
+#&gt; Warmup runs:	1200
+#&gt; Priors: Valid
+#&gt; ndays:	120
+#&gt; 
+#&gt; Priors:
+#&gt; 
+#&gt; 	log_new_inf_0_mu	0
+#&gt; 	log_new_inf_0_sd	10
+#&gt; 	logRt_mu	0
+#&gt; 	logRt_sd	3
+#&gt; 	inf_imported_mu	0
+#&gt; 	inf_imported_sd	0.6265664160401
+#&gt; 	deriv1_spl_par_sd	0.5
+#&gt; 	deriv2_spl_par_sd	0.1
+#&gt; 	p_sym_if_inf	[alpha]	5.143
+#&gt; 	p_sym_if_inf	[beta]	3.536
+#&gt; 	p_sev_if_sym	[alpha]	1.8854
+#&gt; 	p_sev_if_sym	[beta]	20.002
+#&gt; 	p_die_if_sev	[alpha]	28.239
+#&gt; 	p_die_if_sev	[beta]	162.3
+#&gt; 	p_die_if_inf	[alpha]	15.915
+#&gt; 	p_die_if_inf	[beta]	3167.1
+#&gt; 	ifr_decl_OR	[alpha]	9.1357
+#&gt; 	ifr_decl_OR	[beta]	29.339
+#&gt; 	inf_prg_delay	[shape]	3.413
+#&gt; 	inf_prg_delay	[rate]	0.6051
+#&gt; 	sym_prg_delay	[shape]	1.624
+#&gt; 	sym_prg_delay	[rate]	0.2175
+#&gt; 	sev_prg_delay	[shape]	2.061
+#&gt; 	sev_prg_delay	[rate]	0.2277
+#&gt; 	serial_i	[shape]	129.1
+#&gt; 	serial_i	[rate]	22.25
+#&gt; 	rr_diag	[alpha]sy_vs_sym_a	2
+#&gt; 	rr_diag	[alpha]sy_vs_sym	[beta]	18
+#&gt; 	rr_diag_sym_vs_sev	[alpha]	2
+#&gt; 	rr_diag_sym_vs_sev	[beta]	2
+#&gt; 	p_diag_if_sev	[alpha]	5
+#&gt; 	p_diag_if_sev	[beta]	2
+#&gt; 
+#&gt; Inputs:
+#&gt; 
+#&gt; 	[ 120]	Cases
+#&gt; 	[ 120]	Deaths</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

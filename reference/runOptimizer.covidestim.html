@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Priors on diagnostic delays — priors_diagnosis_delays_scale • covidestim</title>
+<title>Run the Covidestim model using BFGS — runOptimizer.covidestim • covidestim</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,12 +46,14 @@
 
 
 
-<meta property="og:title" content="Priors on diagnostic delays — priors_diagnosis_delays_scale" />
-<meta property="og:description" content="This function returns a keyed list of priors related to delays in diagnosing
-of cases and deaths.  Called with no arguments, the default values are
-returned. Custom hyperpriors can be specified by passing values for the
-parameters specified below. The return value of this function must be added
-to a covidestim object using the addition operator (see examples)." />
+<meta property="og:title" content="Run the Covidestim model using BFGS — runOptimizer.covidestim" />
+<meta property="og:description" content="In addition to NUTS sampling, you can fit the model using the BFGS algorithm.
+This algorithm tries to maximize the mode of the posterior; it runs much
+faster than NUTS, but won't return any confidence intervals. On
+https://covidestim.org, BFGS is used to produce estimates for counties, and as
+a fallback when NUTS fails to produce a timely and/or converged fit for state
+data. Runtimes scale linearly to the value of tries/cores, but are
+generally in the 30s-10min range. The same underlying model is used." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -135,57 +137,96 @@ to a covidestim object using the addition operator (see examples)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Priors on diagnostic delays</h1>
-    <small class="dont-index">Source: <a href='https://github.com/covidestim/covidestim/blob/master/R/priors.R'><code>R/priors.R</code></a></small>
-    <div class="hidden name"><code>priors_diagnosis_delays_scale.Rd</code></div>
+    <h1>Run the Covidestim model using BFGS</h1>
+    <small class="dont-index">Source: <a href='https://github.com/covidestim/covidestim/blob/master/R/covidestim.R'><code>R/covidestim.R</code></a></small>
+    <div class="hidden name"><code>runOptimizer.covidestim.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function returns a keyed list of priors related to delays in diagnosing
-of cases and deaths.  Called with no arguments, the default values are
-returned. Custom hyperpriors can be specified by passing values for the
-parameters specified below. The return value of this function must be added
-to a <code>covidestim</code> object using the addition operator (see examples).</p>
+    <p>In addition to NUTS sampling, you can fit the model using the BFGS algorithm.
+This algorithm tries to maximize the mode of the posterior; it runs much
+faster than NUTS, but won't return any confidence intervals. On
+<a href='https://covidestim.org'>https://covidestim.org</a>, BFGS is used to produce estimates for counties, and as
+a fallback when NUTS fails to produce a timely and/or converged fit for state
+data. Runtimes scale linearly to the value of <code>tries/cores</code>, but are
+generally in the 30s-10min range. The same underlying model is used.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>priors_diagnosis_delays_scale</span><span class='op'>(</span>dx_delay_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>, dx_delay_sev <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for covidestim</span>
+<span class='fu'>runOptimizer</span><span class='op'>(</span>
+  <span class='va'>cc</span>,
+  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span>,
+  tries <span class='op'>=</span> <span class='fl'>10</span>,
+  iter <span class='op'>=</span> <span class='fl'>2000</span>,
+  timeout <span class='op'>=</span> <span class='fl'>60</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dx_delay_sym</th>
-      <td><p>A two element vector containing the <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,beta)</a></code>
-parameters/hyperpriors of a Beta distribution modeling a scaling factor.
-Delay to diagnosis for symptomatic cases is modeled as the <em>fraction of
-time in the symptomatic disease state</em>, scaled by this factor.</p>
-<p>For instance, if <code>dx_delay_sym</code> is specified to have <code>E[dx_delay_sym] = 1/2</code>, this implies an assumption that individuals will be diagnosed
-roughly halfway through the course of their symptomatic disease state - or
-in other words, progress to diagnosis at twice the rate at which they
-progress to severe infection, following transition into the symptomatic
-disease state.</p></td>
+      <th>cc</th>
+      <td><p>A valid <code><a href='covidestim.html'>covidestim</a></code> configuration</p></td>
     </tr>
     <tr>
-      <th>dx_delay_sev</th>
-      <td><p>A two element vector containing the <code><a href='https://rdrr.io/r/base/c.html'>c(alpha,beta)</a></code>
-parameters/hyperpriors of a Beta distribution modeling a scaling factor.
-Delay to diagnosis for severe cases is modeled as the <em>fraction of time in
-the severe disease state</em>, scaled by this factor.</p>
-<p>Similarly to above, a scaling factor with <code>E[x] = 0.5</code> implies that
-individuals get diagnosed, on average, halfway through time spent in the
-severe disease state.</p></td>
+      <th>cores</th>
+      <td><p>A number. How many cores to use to execute runs. Multicore
+execution is less important for <code>runOptimizer</code> than it is for
+<code>run</code>.</p></td>
+    </tr>
+    <tr>
+      <th>tries</th>
+      <td><p>The number of times to run the BFGS algorithm.</p></td>
+    </tr>
+    <tr>
+      <th>iter</th>
+      <td><p>Passed to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-optimizing.html'>optimizing</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>timeout</th>
+      <td><p>How long to let each run go for before killing it, in seconds.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Arguments forwarded to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-optimizing.html'>optimizing</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An S3 object of class 'priors'</p>
+    <p>An S3 object of class <code>covidestim_result</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Boundary avoiding priors are used by default.</p>
+    <p>The BFGS algorithm is run <code>tries</code> times using <code>tries</code> different
+seeds derived from <code>cc$seed</code>. Once all runs complete, the run with the
+highest value of the log-posterior is selected and returned. BFGS
+occasionally gets stuck; these runs are flagged and discarded before the
+ranking begins.</p>
+<p>A second method for fitting the model, using the NUTS algorithm, is available
+as run. It provides CI's, but is significantly slower.</p><table class='table'>
+<tr><td><strong>Function</strong></td><td><strong>Method</strong></td><td><strong>CI's</strong></td><td><strong>Speed</strong></td><td><strong>Termination</strong></td></tr>
+<tr><td><code>run()</code></td><td>NUTS</td><td>Yes</td><td>30m-hours</td><td>Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious</td></tr>
+<tr><td><code>runOptimizer()</code></td><td>BFGS</td><td>No</td><td>~1-3min</td><td>Potentially with nonzero exit status (lack of convergence), or timeout (rare, gracefully handled internally)</td></tr>
+</table>
+
+
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='run.covidestim.html'>run.covidestim</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>50</span>, region <span class='op'>=</span> <span class='st'>'New York'</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>priors_diagnosis_delays_scale</span><span class='op'>(</span>dx_delay_sym <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># Note that this configuration is improper as it uses New York City</span>
+<span class='co'># case/death data, but uses Manhattan's FIPS code ('36061') and population size.</span>
+<span class='co'># (for demonstration purposes only!)</span>
+<span class='va'>cfg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='covidestim.html'>covidestim</a></span><span class='op'>(</span>ndays <span class='op'>=</span> <span class='fl'>120</span>, seed <span class='op'>=</span> <span class='fl'>42</span>, region <span class='op'>=</span> <span class='st'>'36061'</span>, pop_size <span class='op'>=</span> <span class='fl'>1.63e6</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='input_cases.html'>input_cases</a></span><span class='op'>(</span><span class='fu'><a href='example_nyc_data.html'>example_nyc_data</a></span><span class='op'>(</span><span class='st'>'cases'</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='input_cases.html'>input_deaths</a></span><span class='op'>(</span><span class='fu'><a href='example_nyc_data.html'>example_nyc_data</a></span><span class='op'>(</span><span class='st'>'deaths'</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'>runOptimizer</span><span class='op'>(</span><span class='va'>cfg</span>, cores <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='op'>}</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
