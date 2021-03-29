@@ -14,29 +14,29 @@ input_deaths(data, type = "reported")
 
 \item{type}{A string, either \code{"reported"} or \code{"occurred"}.
 
-  \code{"reported"} applies to the following situations:
-  \itemize{
-    \item Case or death data where the count for a particular day
-    represents the number of cases or deaths that were reported publicly on
-    that day (for example, as of June 1st, 2020, this is the type of data
-      reported by the New York Times'
-       \href{https://github.com/nytimes/covid-19-data}{covid-19-data}
-      repository, and by the
-      \href{https://covidtracking.org}{Covid Tracking Project}.
-    \item Cases or deaths data where the count for a particular day is the 
-      number of cases or deaths received from hospital reports, or
-      diagnostic laboratories, accumulated across a particular region
-  }
+\code{"reported"} applies to the following situations:
+\itemize{
+\item Case or death data where the count for a particular day
+represents the number of cases or deaths that were reported publicly on
+that day (for example, as of June 1st, 2020, this is the type of data
+reported by the New York Times'
+\href{https://github.com/nytimes/covid-19-data}{covid-19-data}
+repository, and by the
+\href{https://covidtracking.org}{Covid Tracking Project}.
+\item Cases or deaths data where the count for a particular day is the
+number of cases or deaths received from hospital reports, or
+diagnostic laboratories, accumulated across a particular region
+}
 
-  \code{"occurred"} applies to the following situations:
-  \itemize{
-    \item Data where counts represent the number of cases or deaths that
-      actually occured on that day. For case data, this would be the day a
-      test was administered. For deaths, this would be the day an individual
-      died. Note that, if the deaths data represent the day an individual's
-      death was first reported as a SARS-Cov-2-related death, that data
-      should be passed with \code{type = "reported"}, instead.
-  }
+\code{"occurred"} applies to the following situations:
+\itemize{
+\item Data where counts represent the number of cases or deaths that
+actually occured on that day. For case data, this would be the day a
+test was administered. For deaths, this would be the day an individual
+died. Note that, if the deaths data represent the day an individual's
+death was first reported as a SARS-Cov-2-related death, that data
+should be passed with \code{type = "reported"}, instead.
+}
 
 #' @rdname input_cases}
 }
@@ -47,9 +47,9 @@ A family of functions used for inputting data into Covidestim.
 There are two types of observational data that can be used with Covidestim:
 
 \itemize{
-  \item Case data, detailing the number of new cases each day
-  \item Death data, detailing the number of confirmed Covid-19 deaths each
-  day
+\item Case data, detailing the number of new cases each day
+\item Death data, detailing the number of confirmed Covid-19 deaths each
+day
 }
 
 All input data to Covidestim is expected to be a

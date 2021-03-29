@@ -11,16 +11,16 @@ priors_diagnosis(
 )
 }
 \arguments{
-\item{rr_diag_asy_vs_sym}{A two-element numeric vector containing 
+\item{rr_diag_asy_vs_sym}{A two-element numeric vector containing
 \code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution
-modeling the rate ratio of diagnosis among asymptomatic vs [symptomatic,
-non-"severe"] infections.}
+modeling the rate ratio of diagnosis among asymptomatic versus symptomatic,
+but non-"severe" infections.}
 
 \item{p_diag_if_sev}{A two-element numeric vector containing \code{c(alpha,
-beta)} parameters/hyperpriors of a Beta distribution modeling the
+  beta)} parameters/hyperpriors of a Beta distribution modeling the
 probability of being diagnosed if severely ill.}
 
-\item{rr_diag_sym_vs_asy}{A two-element numeric vector containing 
+\item{rr_diag_sym_vs_asy}{A two-element numeric vector containing
 \code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution
 modeling the rate ratio of diagnosis at the symptomatic vs severe stage of
 infection.}

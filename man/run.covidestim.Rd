@@ -15,9 +15,9 @@
 }
 \value{
 A S3 object of class \code{covidestim_result} containing the
-  configuration used to run the model, the raw Stan results, the extracted
-  result as produced by \code{\link[rstan]{extract}}, and the summarized
-  results as produced by \code{\link[rstan]{extract}}.
+configuration used to run the model, the raw Stan results, the extracted
+result as produced by \code{\link[rstan]{extract}}, and the summarized
+results as produced by \code{\link[rstan]{extract}}.
 }
 \description{
 Calling \code{run()} with a \code{\link{covidestim}} object executes the
@@ -31,21 +31,20 @@ a strong correlate to longer runtime.
 When running in an interactive/TTY environment (like Rstudio, Radian, or the
 R terminal), progress messages from \code{rstan} will be displayed,
 indicatng how many iterations each chain has completed. When running in
-other environments, for instance on a cluster, \code{rstan} will produce 
+other environments, for instance on a cluster, \code{rstan} will produce
 no output until the end of sampling.
 
 The sampler may return warnings upon completion. In general, "treedepth" and
 "divergent transitions" are the most serious. Use caution when interpreting
-results which were accompanied by these messages. See [mc-stan.org](https://mc-stan.org/misc/warnings.html) for
+results which were accompanied by these messages. See \href{https://mc-stan.org/misc/warnings.html}{mc-stan.org} for
 a detailed guide to Stan's most common warning messages.
 
 A second method for fitting the model, using the BFGS algorithm, is available
-as [runOptimizer]. It is significantly faster, but lacks CI's.
-
-| Function | Method used | CI's | Speed | Termination |
-| ---      | ---         |      |       |             |
-| `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
-| `runOptimizer()` | BFGS | No, `*.(lo|hi) == NA` | ~1-3min | Potentially with nonzero exit status (rare)
+as \link{runOptimizer}. It is significantly faster, but lacks CI's.\tabular{lllll}{
+   \strong{Function} \tab \strong{Method} \tab \strong{CI's} \tab \strong{Speed} \tab \strong{Termination} \cr
+   \code{run()} \tab NUTS \tab Yes \tab 30m-hours \tab Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious \cr
+   \code{runOptimizer()} \tab BFGS \tab No, \code{*.(lo|hi) == NA} \tab ~1-3min \tab Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally) \cr
+}
 }
 \examples{
 # Note that this configuration is improper as it uses New York City

@@ -2,7 +2,7 @@
 % Please edit documentation in R/viz.R
 \name{viz.covidestim_result}
 \alias{viz.covidestim_result}
-\title{Visualize results of Covidestim}
+\title{Visualize results of a Covidestim run}
 \usage{
 \method{viz}{covidestim_result}(ccr, renderPDF = FALSE)
 }
@@ -19,16 +19,16 @@ returned.}
 A list with the following keys:
 
 \itemize{
-  \item \code{observedVsFitted} A \code{ggplot} of input cases/deaths data, and the
-    fit of the model to that data.
-  \item \code{infectionsAndCases} A \code{ggplot} of estimated daily infections,
-    compared to reported/observed cases.
+\item \code{observedVsFitted} A \code{ggplot} of input cases/deaths data, and the
+fit of the model to that data.
+\item \code{infectionsAndCases} A \code{ggplot} of estimated daily infections,
+compared to reported/observed cases.
 }
 }
 \description{
-Returns several graphs of Covidestim input and estimates
+Returns two graphs of Covidestim input and estimates
 }
 \seealso{
 \code{\link{summary.covidestim_result}} for more details on the
-  quantities being plotted
+quantities being plotted
 }

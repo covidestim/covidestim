@@ -23,6 +23,20 @@ pri_gamma_rate  <- function(mv) mv[1]/mv[2]
 # A list with arbitrary values, of class 'priors'
 priors <- function(...) structure(list(...), class='priors')
 
+printPriors2 <- function(ps) {
+
+  # Get priors from 'ps' by matching on
+  # '_(a|b|shap|rate)$'
+  # Then strip that, to create the actual nodes
+  # Then figure out how to look up the corresponding a/b/shap/rate
+  # and pretty-print it
+
+  tibble::tibble(
+    priors = c('Priors', names(ps)),
+    desc   = rlang::list2(names(ps), !!!rep(list(character(0)), length(ps)))
+  ) %>% cli::tree()
+}
+
 print.priors <- function(ps, .tab = FALSE) {
 'Priors:
 
@@ -282,8 +296,8 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #'
 #' @param rr_diag_asy_vs_sym A two-element numeric vector containing 
 #'   \code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution
-#'   modeling the rate ratio of diagnosis among asymptomatic vs [symptomatic,
-#'   non-"severe"] infections. 
+#'   modeling the rate ratio of diagnosis among asymptomatic versus symptomatic,
+#'   but non-"severe" infections. 
 #'   
 #' @param rr_diag_sym_vs_asy A two-element numeric vector containing 
 #'   \code{c(alpha, beta)} parameters/hyperpriors of a Beta distribution

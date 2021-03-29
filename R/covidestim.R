@@ -164,10 +164,10 @@ run <- function(...) UseMethod('run')
 #' A second method for fitting the model, using the BFGS algorithm, is available
 #' as [runOptimizer]. It is significantly faster, but lacks CI's.
 #'
-#' | Function | Method used | CI's | Speed | Termination |
-#' | ---      | ---         |      |       |             |
+#' | **Function** | **Method** | **CI's** | **Speed** | **Termination** |
+#' | ---      | ---         | ---  | ---   | ---         |
 #' | `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
-#' | `runOptimizer()` | BFGS | No, `*.(lo|hi) == NA` | ~1-3min | Potentially with nonzero exit status (rare)
+#' | `runOptimizer()` | BFGS | No, \code{*.(lo|hi) == NA} | ~1-3min | Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally)
 #'
 #' @param cc A valid \code{\link{covidestim}} configuration
 #' @param cores A number. How many cores to use to execute runs.
@@ -232,16 +232,10 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 #' In addition to NUTS sampling, you can fit the model using the BFGS algorithm.
 #' This algorithm tries to maximize the mode of the posterior; it runs much
 #' faster than NUTS, but won't return any confidence intervals. On
-#' \url{covidestim.org}, BFGS is used to produce estimates for counties, and as
+#' \url{https://covidestim.org}, BFGS is used to produce estimates for counties, and as
 #' a fallback when NUTS fails to produce a timely and/or converged fit for state
 #' data. Runtimes scale linearly to the value of \code{tries/cores}, but are
-#' generally in the 30s-10min range. The same underlying model is used. Details
-#' on the BFGS algorithm can be found on [Wikipedia](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm).
-#'
-#' | Function | Method used | CI's | Speed | Termination |
-#' | ---      | ---         |      |       |             |
-#' | `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
-#' | `runOptimizer()` | BFGS | No, `*.(lo|hi) == NA` | ~1-3min | Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally)
+#' generally in the 30s-10min range. The same underlying model is used.
 #'
 #' The BFGS algorithm is run \code{tries} times using \code{tries} different
 #' seeds derived from \code{cc$seed}. Once all runs complete, the run with the
@@ -249,13 +243,22 @@ run.covidestim <- function(cc, cores = parallel::detectCores(), ...) {
 #' occasionally gets stuck; these runs are flagged and discarded before the
 #' ranking begins.
 #'
+#' A second method for fitting the model, using the NUTS algorithm, is available
+#' as [run.covidestim]. It provides CI's, but is significantly slower.
+#'
+#' | **Function** | **Method** | **CI's** | **Speed** | **Termination** |
+#' | ---      | ---         | ---  | ---   | ---         |
+#' | `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
+#' | `runOptimizer()` | BFGS | No, \code{*.(lo|hi) == NA} | ~1-3min | Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally)
+#'
 #' @param cc A valid \code{\link{covidestim}} configuration
 #' @param cores A number. How many cores to use to execute runs. Multicore
 #'   execution is less important for \code{runOptimizer} than it is for
 #'   \code{\link{run}}.
 #' @param tries The number of times to run the BFGS algorithm.
 #' @param iter Passed to \code{\link[rstan]{optimizing}}.
-#' @param timeout How long to let each run go for before killing it. Default 60s.
+#' @param timeout How long to let each run go for before killing it, in seconds.
+#' @param ... Arguments forwarded to \code{\link[rstan]{optimizing}}.
 #'
 #' @examples
 #' # Note that this configuration is improper as it uses New York City
@@ -287,7 +290,7 @@ runOptimizer <- function(cc,
   # Set the RNG seed to the seed specified in the `covidestim_config` object.
   # Then, use that seed to create `tries` random integers, each of which will
   # be used as the seed value for an instance of `rstan::optimizing`.
-  set.seed(cc$seed);
+  set.seed(cc$seed)
   seeds <- sample.int(.Machine$integer.max, tries)
 
   runOptimizerWithSeed <- function(seed, i) {

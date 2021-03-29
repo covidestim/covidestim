@@ -15,51 +15,51 @@ priors_transitions(
 \arguments{
 \item{p_sym_if_inf}{A two-element numeric vector containing \code{c(alpha,
   beta)} parameters/hyperpriors of a Beta distribution modeling the
-  probability of becoming symptomatic if infectious.
+probability of becoming symptomatic if infectious.
 
-  Sources for default value: 
-  
-  \itemize{
-    \item \insertRef{byambasuren_estimating_2020}{covidestim}
-    \item \insertRef{mizumoto_estimating_2020}{covidestim}
-    \item \insertRef{nishiura_estimation_2020}{covidestim}
-  }}
+Sources for default value:
+
+\itemize{
+\item \insertRef{byambasuren_estimating_2020}{covidestim}
+\item \insertRef{mizumoto_estimating_2020}{covidestim}
+\item \insertRef{nishiura_estimation_2020}{covidestim}
+}}
 
 \item{p_sev_if_sym}{A two-element numeric vector containing \code{c(alpha,
   beta)} parameters/hyperpriors of a Beta distribution modeling the
-  probability of transitioning into the "severe" health state if
-  symptomatic. "Severe" disease is defined as disease that would likely
-  require hospitalization.
+probability of transitioning into the "severe" health state if
+symptomatic. "Severe" disease is defined as disease that would likely
+require hospitalization.
 
-  Sources for default value: 
+Sources for default value:
 
-  \itemize{
-    \item \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}
-    \item \insertRef{verity_estimates_2020}{covidestim}
-  }}
+\itemize{
+\item \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}
+\item \insertRef{verity_estimates_2020}{covidestim}
+}}
 
 \item{p_die_if_sev}{A two-element numeric vector containing \code{c(alpha,
   beta)} parameters/hyperpriors of a Beta distribution modeling the
-  probability of dying if in the "severe" health state.
+probability of dying if in the "severe" health state.
 
-  Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}}
+Source for default value: \insertRef{cdc_covid-19_response_team_severe_2020}{covidestim}}
 
 \item{p_die_if_inf}{A two-element numeric vector containing \code{c(alpha,
   beta)} parameters/hyperpriors of a Beta distribution modeling the
-  probability of dying if infected (e.g. the infection fatality rate). This
-  prior represents a national average value, which is later adjusted for
-  state and county-level factors, and to reflect higher fatality rates early
-  in the epidemic.
+probability of dying if infected (e.g. the infection fatality rate). This
+prior represents a national average value, which is later adjusted for
+state and county-level factors, and to reflect higher fatality rates early
+in the epidemic.
 
-  Source for default value: \insertRef{ODriscoll_Nature_2020}{covidestim}}
+Source for default value: \insertRef{ODriscoll_Nature_2020}{covidestim}}
 
 \item{ifr_decl_OR}{A two-element numeric vector containing \code{c(shape,
   rate)} parameters/hyperpriors of a Gamma distribution modeling the
-  elevated IFR in early 2020, relative to the present. Default value
-  represents an IFR 30% higher in March of 2020, with 95% interval 10-50%
-  higher.
+elevated IFR in early 2020, relative to the present. Default value
+represents an IFR 30\% higher in March of 2020, with 95\% interval 10-50\%
+higher.
 
-  Source for default value: Expert opinion}
+Source for default value: Expert opinion}
 }
 \value{
 An S3 object of class \code{priors}

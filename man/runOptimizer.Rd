@@ -30,23 +30,24 @@ execution is less important for \code{runOptimizer} than it is for
 In addition to NUTS sampling, you can fit the model using the BFGS algorithm.
 This algorithm tries to maximize the mode of the posterior; it runs much
 faster than NUTS, but won't return any confidence intervals. On
-\url{covidestim.org}, BFGS is used to produce estimates for counties, and as
+\url{https://covidestim.org}, BFGS is used to produce estimates for counties, and as
 a fallback when NUTS fails to produce a timely and/or converged fit for state
 data. Runtimes scale linearly to the value of \code{tries/cores}, but are
-generally in the 30s-10min range. The same underlying model is used. Details
-on the BFGS algorithm can be found on [Wikipedia](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm).
+generally in the 30s-10min range. The same underlying model is used.
 }
 \details{
-| Function | Method used | CI's | Speed | Termination |
-| ---      | ---         |      |       |             |
-| `run()`  | NUTS        | Yes  | 30m-hours | Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious |
-| `runOptimizer()` | BFGS | No, `*.(lo|hi) == NA` | ~1-3min | Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally)
-
 The BFGS algorithm is run \code{tries} times using \code{tries} different
 seeds derived from \code{cc$seed}. Once all runs complete, the run with the
 highest value of the log-posterior is selected and returned. BFGS
 occasionally gets stuck; these runs are flagged and discarded before the
 ranking begins.
+
+A second method for fitting the model, using the NUTS algorithm, is available
+as \link{run.covidestim}. It provides CI's, but is significantly slower.\tabular{lllll}{
+   \strong{Function} \tab \strong{Method} \tab \strong{CI's} \tab \strong{Speed} \tab \strong{Termination} \cr
+   \code{run()} \tab NUTS \tab Yes \tab 30m-hours \tab Always, potentially with warnings, of which "treedepth" and "divergent transitions" are the most serious \cr
+   \code{runOptimizer()} \tab BFGS \tab No, \code{*.(lo|hi) == NA} \tab ~1-3min \tab Potentially with nonzero exit status (rare), or timeout (rare, gracefully handled internally) \cr
+}
 }
 \examples{
 # Note that this configuration is improper as it uses New York City

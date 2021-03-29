@@ -23,6 +23,7 @@ BugReports: https://github.com/covidestim/covidestim/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
 Imports:
     ggplot2,
     glue,

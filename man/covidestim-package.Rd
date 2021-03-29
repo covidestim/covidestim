@@ -6,7 +6,7 @@
 \title{The 'covidestim' package.}
 \description{
 Real-time estimates of the true size and trajectory of local
-  COVID-19 epidemics.
+COVID-19 epidemics.
 }
 \references{
 Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org

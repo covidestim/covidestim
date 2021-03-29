@@ -17,41 +17,41 @@ priors_progression(
 \arguments{
 \item{inf_prg_delay}{A two-element numeric vector containing \code{c(shape, rate)}
 parameters/hyperpriors of a Gamma distribution modeling the time from
-infection to sypmtom onset. 
+infection to sypmtom onset.
 
 Source for default value: \insertRef{lauer_incubation_2020}{covidestim}}
 
 \item{sym_prg_delay}{A two-element numeric vector containing \code{c(shape, rate)}
-  parameters/hyperpriors of a Gamma distribution modeling the time (in
-  number of days) from symptom onset to severe disease. 
+parameters/hyperpriors of a Gamma distribution modeling the time (in
+number of days) from symptom onset to severe disease.
 
 Source for default value: \insertRef{zhou_clinical_2020}{covidestim}}
 
 \item{sev_prg_delay}{A two-element numeric vector containing
-  \code{c(shape, rate)} parameters/hyperpriors of a Gamma distribution
-  modeling the time (in number of days) from onset of severe symptoms to
-  death. 
-  
+\code{c(shape, rate)} parameters/hyperpriors of a Gamma distribution
+modeling the time (in number of days) from onset of severe symptoms to
+death.
+
 Source for default value: \insertRef{linton_incubation_2020}{covidestim}}
 
-\item{asy_rec_delay}{A two-element numeric vector containing 
+\item{asy_rec_delay}{A two-element numeric vector containing
 \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
 modeling the time (in number of days) from infection to recovery for
 individuals who never develop symptoms.}
 
-\item{pri_serial_i}{A two-element numeric vector containing 
+\item{pri_serial_i}{A two-element numeric vector containing
 \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
 modeling the serial interval, the average time (in number of days)
 between successive cases.}
 
-\item{infect_dist}{A two-element numeric vector containing 
-\code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the 
+\item{infect_dist}{A two-element numeric vector containing
+\code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the
 changes of infectiousness, following initial infection. The PDF of this
 distribution can be thought of as describing how infectious an individual
 is, as a function of time (in days).}
 
-\item{seropos_dist}{A two-element numeric vector containing 
-\code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the 
+\item{seropos_dist}{A two-element numeric vector containing
+\code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the
 time (in days) to seroreversion, following initial infection. We do not
 recommend modifying this value, as it is an experimental feature, and not
 used in the core model.}

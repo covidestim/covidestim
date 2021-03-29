@@ -10,8 +10,8 @@ example_nyc_data(type = "cases")
 \item{type}{A string. One of \code{"cases"} or  \code{"deaths"}.}
 }
 \value{
-A tibble with two variables: \code{date}, a vector of \code{Date} 
-  objects, and \code{observation}, a vector of doubles.
+A tibble with two variables: \code{date}, a vector of \code{Date}
+objects, and \code{observation}, a vector of doubles.
 }
 \description{
 Returns a \code{\link[tibble]{tibble}} of NYC case and death

@@ -28,7 +28,7 @@ of model data should be modeled? A higher number will produce estimates
 that go farther back in time, however, those estimates will contain more
 and more uncertainty.}
 
-\item{pop_size}{A positive integer What is the population in the geography 
+\item{pop_size}{A positive integer What is the population in the geography
 being modelled? This sets the max susceptible population and becomes
 important as the population ever infected approaches the population size.}
 

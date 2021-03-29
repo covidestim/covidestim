@@ -10,12 +10,12 @@ get_ifr_raw(region)
 \item{region}{A string with the state name, or the FIPS code}
 }
 \value{
-A data.frame with two variables: [date, value], where value is
-  the odds ratio on VALUE HERE for that particular day. If \code{region}
-  is specified incorrectly, an error will be thrown.
+A data.frame with two variables: \link{date, value}, where value is
+the odds ratio on VALUE HERE for that particular day. If \code{region}
+is specified incorrectly, an error will be thrown.
 }
 \description{
-DETAILS HERE. Look in `data-raw/` for details on how this is generated.
+DETAILS HERE. Look in \verb{data-raw/} for details on how this is generated.
 }
 \examples{
 get_ifr_raw('Connecticut')

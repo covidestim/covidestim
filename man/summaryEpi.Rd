@@ -12,12 +12,12 @@ summaryEpi(ccr)
 \value{
 A \code{data.frame} with the following variables:
 
-  \itemize{
-    \item \code{par}: Name of the Stan parameter
+\itemize{
+\item \code{par}: Name of the Stan parameter\preformatted{\\item \code{2.5\%}, \code{50\%}, \code{97.5\%}: Quantiles for the posterior
+  distribution of \code{par}.
+}
 
-    \item \code{2.5\%}, \code{50\%}, \code{97.5\%}: Quantiles for the posterior
-      distribution of \code{par}.
-  }
+}
 }
 \description{
 Returns a \code{data.frame} with a information on the posterior of a few

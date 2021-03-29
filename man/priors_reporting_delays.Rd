@@ -23,8 +23,8 @@ average delay reported in Santa Clara County, CA on 8 April 2020.}
 An S3 object of class 'priors'
 }
 \description{
-This function returns a keyed list of mean values for the gamma distribution 
-of delays related reporting of cases and deaths.  Called with no arguments, 
+This function returns a keyed list of mean values for the gamma distribution
+of delays related reporting of cases and deaths.  Called with no arguments,
 the default values are returned. Custom hyperpriors can be specified by
 passing values for the parameters specified below. The return value of this
 function must be added to a \code{covidestim} object using the additon

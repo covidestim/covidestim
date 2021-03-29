@@ -8,7 +8,7 @@ build_priors(..., .postfix = c("_a", "_b"), .prefix = "")
 }
 \description{
 Assumes each argument is a two-element vector. Captures the name of each
-argument. Creates two list-elements for each argument, using the 
+argument. Creates two list-elements for each argument, using the
 naming convention given by '.postfix'. Prefixes these list-element keys
 with the string '.prefix'. Returns the new list.
 }
