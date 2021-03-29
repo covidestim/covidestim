@@ -88,8 +88,23 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "pop_infectiousness"   = "pop.infectiousness"
   ) -> params
 
+  c(
+    "p_diag_if_sym"        = "p_diag_if_sym",
+    "p_diag_if_asy"        = "p_diag_if_asy",
+    "p_diag_if_sev"        = "p_diag_if_sev",
+    "p_sym_if_inf"         = "p_sym_if_inf",
+    "p_sev_if_sym"         = "p_sev_if_sym"
+  ) -> extraParams
+
   if ("optimizer" %in% ccr$flags)
-    return(summaryOptimizer(ccr, toDate, params, start_date))
+    return(
+      summaryOptimizer(
+        ccr,
+        toDate,
+        params = c(params, extraParams),
+        start_date
+      )
+    )
 
   # Used for renaming quantiles output by Stan
   quantile_names <- c("2.5%" = ".lo", "50%" = "", "97.5%" = ".hi")
