@@ -300,7 +300,9 @@ runOptimizer <- function(cc,
   c(
     "p_diag_if_sym",
     "p_diag_if_asy",
-    "p_diag_if_sev"
+    "p_diag_if_sev",
+    "p_sym_if_inf",
+    "p_sev_if_sym"
   ) -> extraParams
 
 
