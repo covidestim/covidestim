@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert mean/variance stats to shape/rate parameters of gamma distribution — pri_gamma_shape • covidestim</title>
+<title>Convert mean/variance stats to shape/rate parameters of gamma distribution — gamma_shape • covidestim</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,7 @@
 
 
 
-<meta property="og:title" content="Convert mean/variance stats to shape/rate parameters of gamma distribution — pri_gamma_shape" />
+<meta property="og:title" content="Convert mean/variance stats to shape/rate parameters of gamma distribution — gamma_shape" />
 <meta property="og:description" content="Using a method of moments approach, converts a sample with a specified
 mean and variance to a parameterization of a gamma distribution" />
 <meta property="og:image" content="/logo.png" />
@@ -104,10 +104,10 @@ mean and variance to a parameterization of a gamma distribution" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cer_object.html">Results Object</a>
+      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
     </li>
     <li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
+      <a href="../articles/results.html">Results Object</a>
     </li>
   </ul>
 </li>
@@ -142,23 +142,27 @@ mean and variance to a parameterization of a gamma distribution" />
 mean and variance to a parameterization of a gamma distribution</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pri_gamma_shape</span><span class='op'>(</span><span class='va'>mv</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>gamma_shape</span><span class='op'>(</span><span class='va'>mv</span><span class='op'>)</span>
 
-<span class='fu'>pri_gamma_rate</span><span class='op'>(</span><span class='va'>mv</span><span class='op'>)</span></pre>
+<span class='fu'>gamma_rate</span><span class='op'>(</span><span class='va'>mv</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mv</th>
-      <td><p>A two-element numeric vector, where <code>[1]</code> represents mean
-and <code>[2]</code> represents variance.</p></td>
+      <td><p>A two-element numeric vector <code><a href='https://rdrr.io/r/base/c.html'>c(mean, variance)</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A number representing the shape or rate parameter</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Implemented as:</p>
+<p><code>pri_gamma_shape &lt;- function(mv) (mv[1]^2)/mv[2]</code>
+<code>pri_gamma_rate  &lt;- function(mv) mv[1]/mv[2]</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -192,143 +192,148 @@
           <h3 id="section-custom-priors" class="hasAnchor"><a href="#section-custom-priors" class="anchor"></a>Custom priors</h3>
           <p class="section-desc">
 <p>These functions allow customization of model priors. By default, Covidestim comes with a complete set of priors, which have been tailed for estimation of U.S. counties and states. However, these functions make it possible to override the default parameterizations of the prior distributions, within certain constraints. This allows you to conduct exploratory modeling of other geographies, or test the effect of different priors on estimates.</p>
-<table style="width:100%;">
+<table>
 <colgroup>
-<col width="30%">
-<col width="23%">
-<col width="23%">
-<col width="23%">
+<col width="33%">
+<col width="33%">
+<col width="33%">
 </colgroup>
 <thead><tr class="header">
-<th align="right"><strong>Function</strong></th>
-<th><strong>Associated priors</strong></th>
+<th><strong>Prior</strong></th>
 <th><strong>Type</strong></th>
 <th><strong>Description</strong></th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">
+<td>
 <strong><code><a href="../reference/priors_diagnosis.html">priors_diagnosis()</a></code></strong>:</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><code>rr_diag_asy_vs_sym</code></td>
 <td>Beta(α,β)</td>
 <td>Rate ratio of diagnosis, asymptomatic vs. symptomatic,non-severe</td>
 </tr>
-<tr class="even">
-<td align="right"></td>
+<tr class="odd">
 <td><code>rr_diag_sym_vs_sev</code></td>
 <td>Beta(α,β)</td>
 <td>RR diagnosis, symptomatic vs. severe</td>
 </tr>
-<tr class="odd">
-<td align="right"></td>
+<tr class="even">
 <td><code>p_diag_if_sev</code></td>
 <td>Beta(α,β)</td>
 <td><code>P(diagnosed | severe)</code></td>
 </tr>
-<tr class="even">
-<td align="right">
+<tr class="odd">
+<td>
 <strong><code><a href="../reference/priors_diagnosis_delays_scale.html">priors_diagnosis_delays_scale()</a></code></strong>:</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><code>dx_delay_sym</code></td>
 <td>Beta(α,β)</td>
 <td>Time to diagnosis as fraction of time spent symptomatic</td>
 </tr>
 <tr class="odd">
-<td align="right"></td>
 <td><code>dx_delay_sev</code></td>
 <td>Beta(α,β)</td>
 <td>Time to diagnosis as fraction of time spent severe</td>
 </tr>
 <tr class="even">
-<td align="right">
+<td>
 <strong><code><a href="../reference/priors_progression.html">priors_progression()</a></code></strong>:</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><code>inf_prg_delay</code></td>
 <td>Gamma(α,β)</td>
 <td><code>T(infection → symptoms)</code></td>
 </tr>
-<tr class="odd">
-<td align="right"></td>
+<tr class="even">
 <td><code>sym_prg_delay</code></td>
 <td>Gamma(α,β)</td>
 <td><code>T(symptoms → severe)</code></td>
 </tr>
-<tr class="even">
-<td align="right"></td>
+<tr class="odd">
 <td><code>sev_prg_delay</code></td>
 <td>Gamma(α,β)</td>
 <td><code>T(severe → dead)</code></td>
 </tr>
-<tr class="odd">
-<td align="right"></td>
+<tr class="even">
 <td><code>asy_rec_delay</code></td>
 <td>Gamma(α,β)</td>
 <td>
 <code>T(infection → recovery)</code>, asymptomatics</td>
 </tr>
-<tr class="even">
-<td align="right"></td>
+<tr class="odd">
 <td><code>pri_serial_i</code></td>
 <td>Gamma(α,β)</td>
 <td>Serial interval</td>
 </tr>
-<tr class="odd">
-<td align="right"></td>
+<tr class="even">
 <td><code>infect_dist</code></td>
 <td>Gamma(α,β)</td>
 <td>Change in infectiousness</td>
 </tr>
-<tr class="even">
-<td align="right"></td>
+<tr class="odd">
 <td><code>seropos_dist</code></td>
 <td>Gamma(α,β)</td>
 <td>Change in seropositivity</td>
 </tr>
-<tr class="odd">
-<td align="right">
+<tr class="even">
+<td>
 <strong><code><a href="../reference/priors_reporting_delays.html">priors_reporting_delays()</a></code></strong>:</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><code>cas_rep_delay</code></td>
 <td>Gamma(α,β)</td>
 <td><code>T(test → report)</code></td>
 </tr>
 <tr class="even">
-<td align="right"></td>
 <td><code>die_rep_delay</code></td>
 <td>Gamma(α,β)</td>
 <td><code>T(death → report)</code></td>
 </tr>
 <tr class="odd">
-<td align="right">
+<td>
 <strong><code><a href="../reference/priors_transitions.html">priors_transitions()</a></code></strong>:</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><code>p_sym_if_inf</code></td>
 <td>Beta(α,β)</td>
 <td><code>P(symptoms | infected)</code></td>
 </tr>
-<tr class="even">
-<td align="right"></td>
+<tr class="odd">
 <td><code>p_sev_if_sym</code></td>
 <td>Beta(α,β)</td>
 <td><code>P(severe | symptoms)</code></td>
 </tr>
-<tr class="odd">
-<td align="right"></td>
+<tr class="even">
 <td><code>p_die_if_sev</code></td>
 <td>Beta(α,β)</td>
 <td><code>P(die | severe)</code></td>
 </tr>
-<tr class="even">
-<td align="right"></td>
+<tr class="odd">
 <td><code>p_die_if_inf</code></td>
 <td>Beta(α,β)</td>
 <td>
 <code>P(die | infection)</code> (IFR)</td>
 </tr>
-<tr class="odd">
-<td align="right"></td>
+<tr class="even">
 <td><code>ifr_decl_OR</code></td>
 <td>Gamma(α,β)</td>
 <td>~IFR decline</td>
 </tr>
 </tbody>
 </table>
+<p>Helper functions:</p>
 </p>
         </th>
       </tr>
@@ -339,7 +344,7 @@
       <tr>
         
         <td>
-          <p><code><a href="gamma_shape.html">gamma_shape()</a></code> </p>
+          <p><code><a href="pri_gamma_shape.html">gamma_shape()</a></code> <code><a href="pri_gamma_shape.html">gamma_rate()</a></code> </p>
         </td>
         <td><p>Convert mean/variance stats to shape/rate parameters of gamma distribution</p></td>
       </tr>
