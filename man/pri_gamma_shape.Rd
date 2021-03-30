@@ -2,9 +2,12 @@
 % Please edit documentation in R/priors.R
 \name{gamma_shape}
 \alias{gamma_shape}
+\alias{gamma_rate}
 \title{Convert mean/variance stats to shape/rate parameters of gamma distribution}
 \usage{
 gamma_shape(mv)
+
+gamma_rate(mv)
 }
 \arguments{
 \item{mv}{A two-element numeric vector \code{c(mean, variance)}}
@@ -19,9 +22,6 @@ mean and variance to a parameterization of a gamma distribution
 \details{
 Implemented as:
 
-\code{
-  pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]
-
-  pri_gamma_rate  <- function(mv) mv[1]/mv[2]
-}
+\code{pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]}
+\code{pri_gamma_rate  <- function(mv) mv[1]/mv[2]}
 }

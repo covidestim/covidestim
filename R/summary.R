@@ -1,8 +1,8 @@
 #' Summarize a Covidestim run
 #'
-#' Returns a `data.frame` summarizing a Covidestim model run. Note that if 
-#' [runOptimizer] is used, all \code{*.(lo|hi)} variables will be \code{NA}-valued,
-#' because BFGS does not generate confidence intervals.
+#' Returns a \code{data.frame} summarizing a Covidestim model run. Note that if 
+#' \link{\code{runOptimizer}} is used, all \code{*.(lo|hi)} variables will be
+#' \code{NA}-valued, because BFGS does not generate confidence intervals.
 #'
 #' @param ccr A \code{covidestim_result} object
 #'
@@ -15,6 +15,7 @@
 #' @param index A logical scalar. If \code{TRUE}, will include a variable
 #'   \code{index} in the output, with range \code{1:(ndays_before + ndays)}.
 #'
+#' @noMd
 #' @return A \code{data.frame} with the following variables:
 #'
 #'   \itemize{

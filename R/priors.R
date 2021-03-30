@@ -5,15 +5,13 @@
 #'
 #' Implemented as:
 #'
-#' \code{
-#'   pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]
-#'
-#'   pri_gamma_rate  <- function(mv) mv[1]/mv[2]
-#' }
+#' \code{pri_gamma_shape <- function(mv) (mv[1]^2)/mv[2]}
+#' \code{pri_gamma_rate  <- function(mv) mv[1]/mv[2]}
 #'
 #' @param mv A two-element numeric vector \code{c(mean, variance)}
 #'
 #' @return A number representing the shape or rate parameter
+#' @rdname pri_gamma_shape
 #' @export
 gamma_shape <- function(mv) (mv[1]^2)/mv[2]
 
