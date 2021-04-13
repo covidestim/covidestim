@@ -9,7 +9,7 @@ priors_transitions(
   p_sev_if_sym = c(1.8854, 20.002),
   p_die_if_sev = c(28.239, 162.3),
   p_die_if_inf = c(15.915, 3167.1),
-  ifr_decl_OR = c(9.1357, 29.339)
+  ifr_decl_OR = c(12.031, 8.999)
 )
 }
 \arguments{

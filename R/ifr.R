@@ -1,6 +1,6 @@
 #' Estimated IFR for US counties and states
 #'
-#' DETAILS HERE. Look in `data-raw/` for details on how this is generated.
+#' Look in `data-raw/` for details on how this is generated.
 #'
 #' @param region A string with the state name, or the FIPS code
 #'
@@ -8,9 +8,11 @@
 #'   the odds ratio on VALUE HERE for that particular day. If \code{region}
 #'   is specified incorrectly, an error will be thrown.
 #'
-#' @examples
-#' get_ifr_raw('Connecticut')
-#' get_ifr_raw('09009')
+#' @usage
+#' \dontrun{
+#'   get_ifr_raw('Connecticut')
+#'   get_ifr_raw('09009')
+#' }
 get_ifr_raw <- function(region) {
   found_state <- FALSE
   region_is_county <- any(region %in% ifr_county$fips)

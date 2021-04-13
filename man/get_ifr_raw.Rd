@@ -4,7 +4,10 @@
 \alias{get_ifr_raw}
 \title{Estimated IFR for US counties and states}
 \usage{
-get_ifr_raw(region)
+\dontrun{
+  get_ifr_raw('Connecticut')
+  get_ifr_raw('09009')
+}
 }
 \arguments{
 \item{region}{A string with the state name, or the FIPS code}
@@ -15,9 +18,5 @@ the odds ratio on VALUE HERE for that particular day. If \code{region}
 is specified incorrectly, an error will be thrown.
 }
 \description{
-DETAILS HERE. Look in \verb{data-raw/} for details on how this is generated.
-}
-\examples{
-get_ifr_raw('Connecticut')
-get_ifr_raw('09009')
+Look in \verb{data-raw/} for details on how this is generated.
 }
