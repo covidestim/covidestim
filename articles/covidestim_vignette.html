@@ -174,8 +174,8 @@
 <span class="co">#&gt;  p_die_if_sev    [beta]  162.3</span>
 <span class="co">#&gt;  p_die_if_inf    [alpha] 15.915</span>
 <span class="co">#&gt;  p_die_if_inf    [beta]  3167.1</span>
-<span class="co">#&gt;  ifr_decl_OR [alpha] 9.1357</span>
-<span class="co">#&gt;  ifr_decl_OR [beta]  29.339</span>
+<span class="co">#&gt;  ifr_decl_OR [alpha] 12.031</span>
+<span class="co">#&gt;  ifr_decl_OR [beta]  8.999</span>
 <span class="co">#&gt;  inf_prg_delay   [shape] 3.413</span>
 <span class="co">#&gt;  inf_prg_delay   [rate]  0.6051</span>
 <span class="co">#&gt;  sym_prg_delay   [shape] 1.624</span>
@@ -209,16 +209,22 @@
 <p>Finally, the model is run with the function <code><a href="../reference/run.covidestim.html">?run.covidestim</a></code>. Don’t forget to assign the a name to the output of the run - you could lose it!. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in an interactive environment like RStudio, periodic status updates will appear in the console. Here, we will use the BFGS algorithm to quickly produce a result, as NUTS, the method used by <code>run()</code>, takes longer.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">runOptimizer</span><span class="op">(</span><span class="va">cfg</span><span class="op">)</span>
-<span class="co">#&gt; Finished try #1 in 1.3s with exit code 0</span>
-<span class="co">#&gt; Finished try #2 in 1.7s with exit code 0</span>
-<span class="co">#&gt; Finished try #3 in 1.7s with exit code 0</span>
-<span class="co">#&gt; Finished try #4 in 2.5s with exit code 0</span>
-<span class="co">#&gt; Finished try #5 in 2s with exit code 0</span>
-<span class="co">#&gt; Finished try #6 in 1.7s with exit code 0</span>
-<span class="co">#&gt; Finished try #7 in 1.5s with exit code 0</span>
-<span class="co">#&gt; Finished try #8 in 1.7s with exit code 0</span>
-<span class="co">#&gt; Finished try #9 in 2.4s with exit code 0</span>
-<span class="co">#&gt; Finished try #10 in 1.6s with exit code 0</span></code></pre></div>
+<span class="co">#&gt; Finished try #1 in 2.1s with exit code 0</span>
+<span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
+<span class="co">#&gt; Finished try #2 in 3.3s with exit code 70</span>
+<span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
+<span class="co">#&gt; Finished try #3 in 3s with exit code 70</span>
+<span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
+<span class="co">#&gt; Finished try #4 in 4.9s with exit code 70</span>
+<span class="co">#&gt; Finished try #5 in 5.2s with exit code 0</span>
+<span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
+<span class="co">#&gt; Finished try #6 in 5.6s with exit code 70</span>
+<span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
+<span class="co">#&gt; Finished try #7 in 5.5s with exit code 70</span>
+<span class="co">#&gt; Finished try #8 in 6s with exit code 0</span>
+<span class="co">#&gt; Finished try #9 in 6.5s with exit code 0</span>
+<span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
+<span class="co">#&gt; Finished try #10 in 5.9s with exit code 70</span></code></pre></div>
 <p>Typically, BFGS will occasionally fail to converge. This is what causes the non-zero return codes. <code><a href="../reference/runOptimizer.covidestim.html">runOptimizer.covidestim()</a></code> will automatically exclude these, and select the BFGS run that maximizes the posterior.</p>
 </div>
 </div>
@@ -236,12 +242,12 @@
 <span class="co">#&gt; # A tibble: 6 x 5</span>
 <span class="co">#&gt;   date       cases.fitted cases.fitted.hi cases.fitted.lo cum.incidence</span>
 <span class="co">#&gt;   &lt;date&gt;            &lt;dbl&gt; &lt;lgl&gt;           &lt;lgl&gt;                   &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 2020-03-11         192. NA              NA                    162890.</span>
-<span class="co">#&gt; 2 2020-03-12         291. NA              NA                    226912.</span>
-<span class="co">#&gt; 3 2020-03-13         427. NA              NA                    307625.</span>
-<span class="co">#&gt; 4 2020-03-14         608. NA              NA                    406064.</span>
-<span class="co">#&gt; 5 2020-03-15         842. NA              NA                    522268.</span>
-<span class="co">#&gt; 6 2020-03-16        1134. NA              NA                    655150.</span></code></pre></div>
+<span class="co">#&gt; 1 2020-03-11         188. NA              NA                    103145.</span>
+<span class="co">#&gt; 2 2020-03-12         281. NA              NA                    143009.</span>
+<span class="co">#&gt; 3 2020-03-13         410. NA              NA                    193204.</span>
+<span class="co">#&gt; 4 2020-03-14         581. NA              NA                    254446.</span>
+<span class="co">#&gt; 5 2020-03-15         802. NA              NA                    326885.</span>
+<span class="co">#&gt; 6 2020-03-16        1079. NA              NA                    410016.</span></code></pre></div>
 </div>
 </div>
 <div id="visualizing-model-output" class="section level2">
