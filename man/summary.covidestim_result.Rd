@@ -67,7 +67,8 @@ A \code{data.frame} with the following variables:
   }
 }
 \description{
-Returns a \code{data.frame} summarizing a Covidestim model run. Note that if 
-\link{\code{runOptimizer.covidestim}} is used, all \code{*.(lo|hi)} variables will be
-\code{NA}-valued, because BFGS does not generate confidence intervals.
+Returns a \code{data.frame} summarizing a Covidestim model run. Note that if
+\code{\link{runOptimizer.covidestim}} is used, all \code{*.(lo|hi)}
+variables will be \code{NA}-valued, because BFGS does not generate
+confidence intervals.
 }

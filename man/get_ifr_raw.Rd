@@ -4,10 +4,7 @@
 \alias{get_ifr_raw}
 \title{Estimated IFR for US counties and states}
 \usage{
-\dontrun{
-  get_ifr_raw('Connecticut')
-  get_ifr_raw('09009')
-}
+get_ifr_raw(region)
 }
 \arguments{
 \item{region}{A string with the state name, or the FIPS code}
@@ -19,4 +16,10 @@ is specified incorrectly, an error will be thrown.
 }
 \description{
 Look in \verb{data-raw/} for details on how this is generated.
+}
+\examples{
+\dontrun{
+  get_ifr_raw('Connecticut')
+  get_ifr_raw('09009')
+}
 }

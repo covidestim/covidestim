@@ -8,7 +8,7 @@
 #'   the odds ratio on VALUE HERE for that particular day. If \code{region}
 #'   is specified incorrectly, an error will be thrown.
 #'
-#' @usage
+#' @examples
 #' \dontrun{
 #'   get_ifr_raw('Connecticut')
 #'   get_ifr_raw('09009')
