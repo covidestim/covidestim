@@ -38,12 +38,25 @@ modelconfig_add.priors <- function(rightside, leftside) {
   structure(cfg, class = "modelconfig")
 }
 
+genNARepresentation <- function(observations, prefix) {
+  rlang::list2(
+    !!glue('{prefix}') :=
+      observations[which(!is.na(observations))] %>% as.integer,
+
+    !!glue('{prefix}_N_mis')  := sum(is.na(observations)),
+    !!glue('{prefix}_N_obs')  := sum(!is.na(observations)),
+
+    !!glue('{prefix}_ii_mis') := which(is.na(observations)),
+    !!glue('{prefix}_ii_obs') := which(!is.na(observations)),
+  )
+}
+
 modelconfig_add.input <- function(rightside, leftside) {
 
   cfg  <- leftside
   d    <- rightside
 
-  integer_keys <- c("obs_cas", "obs_die")
+  integer_keys <- c("obs_cas", "obs_die", "obs_vacc")
   keys         <- integer_keys
 
   # Create a list of any existing data
@@ -87,6 +100,15 @@ modelconfig_add.input <- function(rightside, leftside) {
 
     cfg[[data_type_key]] <-
       switch(attr(d, "date_type"), "reported" = 1, "occurred" = 0)
+
+  } else if (data_type_key %in% c("obs_vacc_rep")) {
+    naPackage <- genNARepresentation(d[[1]]$observation, prefix = data_key)
+
+    cfg <- rlang::dots_list(!!!cfg, !!! naPackage, .homonyms = 'last')
+
+    cfg[[data_type_key]] <-
+      switch(attr(d, "date_type"), "reported" = 1, "occurred" = 0)
+
   } else {
     stop(glue("{data_key} is not a valid input to a covidestim configuration"))
   }
@@ -119,12 +141,15 @@ print.inputs <- function(cfg, .tab = FALSE) {
   status_cases <-
     ifelse(is.null(cfg$obs_cas), '[ _ ]', glue('[{frmtr(cfg$obs_cas)}]'))
   status_deaths <-
-    ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_die)}]'))
+    ifelse(is.null(cfg$obs_die), '[ _ ]', glue('[{frmtr(cfg$obs_die)}]'))
+  status_vaccs <-
+    ifelse(is.null(cfg$obs_vacc), '[ _ ]', glue('[{frmtr(cfg$obs_vacc)}]'))
 
 'Inputs:
 
 {t}{status_cases}\tCases
 {t}{status_deaths}\tDeaths
+{t}{status_vaccs}\tVaccinations
 ' -> msg
 
   cat(glue(msg))
@@ -185,8 +210,9 @@ genData <- function(N_days, N_days_before = 28,
     pop_size = pop_size, 
     
     # vectors of event counts; default to 0 if no input
-    obs_cas = NULL, # vector of int by date. should have 0s if no event that day
-    obs_die = NULL, # vector of int by date. should have 0s if no event that day
+    obs_cas  = NULL, # vector of int by date. should have 0s if no event that day
+    obs_die  = NULL, # vector of int by date. should have 0s if no event that day
+    obs_vacc = NULL,
 
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
@@ -208,11 +234,13 @@ genData <- function(N_days, N_days_before = 28,
     spl_basis_dx = as.matrix(as.data.frame(des_mat_dx)),
 
     # indicates whether case or death data are being used 
-    cas_yes = as.integer(1), 
-    die_yes = as.integer(1), 
+    cas_yes  = as.integer(1), 
+    die_yes  = as.integer(1), 
+    vacc_yes = as.integer(1),
     
-    obs_cas_rep = as.integer(0),  # This ~means FALSE in stan
-    obs_die_rep = as.integer(0),  # This ~means FALSE in stan
+    obs_cas_rep  = as.integer(0),  # This ~means FALSE in stan
+    obs_die_rep  = as.integer(0),  # This ~means FALSE in stan
+    obs_vacc_rep = as.integer(0),  # This ~means FALSE in stan
   )
 
   # Adding the priors in separately is neccessary in order to make checks

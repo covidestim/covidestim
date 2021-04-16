@@ -120,3 +120,8 @@ input_deaths <- function(data, type = "reported") {
   structure(list(obs_die=data), class='input', date_type = type)
 }
 
+input_vaccinations <- function(data) {
+  validate_input(data, "reported") # Doesn't really have a type, so say "reported"
+  data <- transform_input(data)
+  structure(list(obs_vacc=data), class='input', date_type = "reported")
+}
