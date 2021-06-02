@@ -282,7 +282,7 @@ transformed parameters {
 // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
   rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * logit(spl_par_sym_dx));
 // probability of diagnosis 
-  p_diag_if_sym = p_diag_if_sev * rr_diag_sym_vs_sev;
+  p_diag_if_sym = 0.9 * rr_diag_sym_vs_sev;
   p_diag_if_asy = p_diag_if_sym * rr_diag_asy_vs_sym; 
   
 // DELAYS //
@@ -418,14 +418,14 @@ transformed parameters {
 // as above for symptomatic 
   for(i in 1:N_days_tot) {
     new_sev_dx[i] = dot_product(new_sev[idx1[i]:i]-dx_sym_sev[idx1[i]:i],
-      sev_diag_delay_rv[idx2[i]:Max_delay]) * p_diag_if_sev;
+      sev_diag_delay_rv[idx2[i]:Max_delay]) * 0.9;
   }
   
 // cascade from diagnosis
 // as above for symptomatic 
   for(i in 1:N_days_tot) {
     dx_sev_die[i] = dot_product(new_sev[idx1[i]:i]-dx_sym_sev[idx1[i]:i],
-      sev_prg_delay_rv[idx2[i]:Max_delay]) * p_diag_if_sev * p_die_if_sevt[i];
+      sev_prg_delay_rv[idx2[i]:Max_delay]) * 0.9 * p_die_if_sevt[i];
   }
 
 // TOTAL DIAGNOSED CASES AND DEATHS //
