@@ -85,9 +85,6 @@ data {
       // rate ratio, pr(dx) symptomatic to severe
   real<lower=0>          pri_rr_diag_sym_vs_sev_a; 
   real<lower=0>          pri_rr_diag_sym_vs_sev_b;
-     // probability of diagnosis at severe 
-  real<lower=0>          pri_p_diag_if_sev_a;
-  real<lower=0>          pri_p_diag_if_sev_b;
   // delay to diagnosis assumed to be some fraction of progression delay
   // Beta prior distribtuion for that fraction 
   real<lower=0>          scale_dx_delay_sym_a; 
@@ -208,7 +205,6 @@ parameters {
   real<lower=0, upper=1>    scale_dx_delay_sev; 
 // probability of diagnosis at each illness state
   real<lower=0, upper=1>    rr_diag_asy_vs_sym; 
-  real<lower=0, upper=1>    p_diag_if_sev;
   vector<lower=0, upper=1>[N_spl_par_dx]  spl_par_sym_dx;
 
 // LIKELIHOOD 
@@ -498,7 +494,6 @@ model {
   // probabilities of diagnosis
   rr_diag_asy_vs_sym   ~ beta(pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
   spl_par_sym_dx       ~ beta(pri_rr_diag_sym_vs_sev_a,pri_rr_diag_sym_vs_sev_b);
-  p_diag_if_sev        ~ beta(pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
   // delay distribution scaling factors
   scale_dx_delay_sym   ~ beta(scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);

@@ -308,29 +308,21 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #'   infection. 
 #'   
 #'   
-#' @param p_diag_if_sev A two-element numeric vector containing \code{c(alpha,
-#'   beta)} parameters/hyperpriors of a Beta distribution modeling the
-#'   probability of being diagnosed if severely ill. 
-#'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis(p_diag_if_sev = c(2, 2))
+#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis(rr_diag_sym_vs_sev = c(2, 2))
 #' @export
 priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
-                             rr_diag_sym_vs_sev = c(2  , 2  ), # a/b
-                             p_diag_if_sev      = c(5  , 2  )) {# a/b
+                             rr_diag_sym_vs_sev = c(2  , 2  )) {# a/b
 
   att(length(rr_diag_asy_vs_sym) == 2)
   att(length(rr_diag_sym_vs_sev) == 2)
-  att(length(p_diag_if_sev) == 2)
   att(is_nonNegativeReal(rr_diag_asy_vs_sym))
   att(is_nonNegativeReal(rr_diag_sym_vs_sev))
-  att(is_nonNegativeReal(p_diag_if_sev))
 
   build_priors(
     rr_diag_asy_vs_sym, 
     rr_diag_sym_vs_sev,
-    p_diag_if_sev,
     .postfix=c("_a", "_b"),
     .prefix = "pri_"
   ) -> ps
