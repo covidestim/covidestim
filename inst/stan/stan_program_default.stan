@@ -191,7 +191,6 @@ parameters {
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
   real<lower=3, upper=11>           serial_i; // serial interval
-  //vector[N_spl_par_rt]    spl_par_rt;
   real spl_intercept;
   vector[N_spl_par_rt - 1] deriv1_spl_par_rt;
 
@@ -232,8 +231,7 @@ transformed parameters {
   vector[N_days_tot]      logRt0;
   vector[N_days_tot]      logRt;
   vector[N_days_tot]      Rt;
-//  vector[N_spl_par_rt-1]  deriv1_spl_par_rt;
-vector[N_spl_par_rt]  spl_par_rt;
+  vector[N_spl_par_rt]    spl_par_rt;
   vector[N_spl_par_rt-2]  deriv2_spl_par_rt;
   
   // transitions
@@ -312,7 +310,8 @@ vector[N_spl_par_rt]  spl_par_rt;
 // symptomatic, and the probability of becoming symptomatic if infected. 
   p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
 
-// CASCADE OF INCIDENT OUTCOMES ("TRUE") //
+  // USING FIRST DIFFERENCES TO CREATE SPLINE PARAMS
+  spl_par_rt = spl_intercept + append_row(0, cumulative_sum(deriv1_spl_par_rt));
 
 // NEW INCIDENT CASES
   
@@ -336,31 +335,27 @@ vector[N_spl_par_rt]  spl_par_rt;
   }
   
   
-  // print("logRt0:");
-  // print(logRt0);
-  // print("deriv1_log_new_inf:");
-  // print(deriv1_log_new_inf);
-  // print("serial_i:");
-  // print(serial_i);
-  // print("log_new_inf_0:");
-  // print(log_new_inf_0);
-  // print("log_new_inf:");
-  // print(log_new_inf);
-  // print("new_inf:");
-  // print(new_inf);
-  // print("pop_uninf:");
-  // print(pop_uninf);
-  // print("logRt:");
-  // print(logRt);
+  print("spl_par_rt:");
+  print(spl_par_rt);
+  print("logRt0:");
+  print(logRt0);
+  print("deriv1_log_new_inf:");
+  print(deriv1_log_new_inf);
+  print("serial_i:");
+  print(serial_i);
+  print("log_new_inf_0:");
+  print(log_new_inf_0);
+  print("log_new_inf:");
+  print(log_new_inf);
+  print("new_inf:");
+  print(new_inf);
+  print("pop_uninf:");
+  print(pop_uninf);
+  print("logRt:");
+  print(logRt);
   
   Rt = exp(logRt); 
 
-// spline params
-spl_par_rt[1] = spl_intercept;
-for(i in 2:N_spl_par_rt) {
-  spl_par_rt[i] = spl_par_rt[i-1] + deriv1_spl_par_rt[i-1];
-}
-  
   // second derivative
   deriv2_spl_par_rt[1:(N_spl_par_rt-2)] = spl_par_rt[2:(N_spl_par_rt-1)] * 2 - 
     spl_par_rt[1:(N_spl_par_rt-2)] - spl_par_rt[3:N_spl_par_rt]; 
