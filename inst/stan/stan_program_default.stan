@@ -191,7 +191,10 @@ parameters {
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
   real<lower=3, upper=11>           serial_i; // serial interval
-  vector[N_spl_par_rt]    spl_par_rt;
+  //vector[N_spl_par_rt]    spl_par_rt;
+  real spl_intercept;
+  vector[N_spl_par_rt - 1] deriv1_spl_par_rt;
+
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -229,7 +232,8 @@ transformed parameters {
   vector[N_days_tot]      logRt0;
   vector[N_days_tot]      logRt;
   vector[N_days_tot]      Rt;
-  vector[N_spl_par_rt-1]  deriv1_spl_par_rt;
+//  vector[N_spl_par_rt-1]  deriv1_spl_par_rt;
+vector[N_spl_par_rt]  spl_par_rt;
   vector[N_spl_par_rt-2]  deriv2_spl_par_rt;
   
   // transitions
@@ -350,14 +354,20 @@ transformed parameters {
   // print(logRt);
   
   Rt = exp(logRt); 
+
+// spline params
+spl_par_rt[1] = spl_intercept;
+for(i in 2:N_spl_par_rt) {
+  spl_par_rt[i] = spl_par_rt[i-1] + deriv1_spl_par_rt[i-1];
+}
   
   // second derivative
   deriv2_spl_par_rt[1:(N_spl_par_rt-2)] = spl_par_rt[2:(N_spl_par_rt-1)] * 2 - 
     spl_par_rt[1:(N_spl_par_rt-2)] - spl_par_rt[3:N_spl_par_rt]; 
   
   // first derivative
-  deriv1_spl_par_rt[1:(N_spl_par_rt-1)] = spl_par_rt[2:N_spl_par_rt] - 
-    spl_par_rt[1:(N_spl_par_rt-1)];
+//  deriv1_spl_par_rt[1:(N_spl_par_rt-1)] = spl_par_rt[2:N_spl_par_rt] - 
+//    spl_par_rt[1:(N_spl_par_rt-1)];
 
  // SYMPTOMATIC CASES
  // cases entering a state on day i + j - 1: 
@@ -483,6 +493,7 @@ model {
 //// PRIORS
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
+  spl_intercept         ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
   deriv2_spl_par_rt     ~ normal(0, pri_deriv2_spl_par_sd);
