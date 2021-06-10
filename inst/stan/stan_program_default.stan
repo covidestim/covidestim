@@ -293,15 +293,23 @@ transformed parameters {
 // for 1 to 60 days in state. We do this by scaling the rate term
 // of the gamma distribution of progressiong delays by a modeled fraction 
 // (scale_dx_delay_xxx)
+  
+  // sym_diag_delay_rv = reverse(
+  //   gamma_cdf([1:Max_delay], ..., ...) -
+  //   gamma_cdf([0:Max_delay-1], ..., ...)
+  // )
+
+  // sym_diag-delay_rv = reverse(
+  //   gamma_cdf(range(1, Max_delay), sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym) -
+  //   gamma_cdf(range(0, Max_delay-1), sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym)
+  // )
+
   for(i in 1:Max_delay){
-    sym_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sym_prg_delay_shap, 
-                        sym_prg_delay_rate/scale_dx_delay_sym)
-                      - gamma_cdf(i-1.0, sym_prg_delay_shap, 
-                      sym_prg_delay_rate/scale_dx_delay_sym);
-    sev_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sev_prg_delay_shap, 
-                        sev_prg_delay_rate/scale_dx_delay_sev)
-                        - gamma_cdf(i-1.0, sev_prg_delay_shap, 
-                        sev_prg_delay_rate/scale_dx_delay_sev);
+    sym_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym) -
+                                       gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
+
+    sev_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev) -
+                                       gamma_cdf(i-1.0, sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
   }
 
 // DEATHS // 
@@ -334,25 +342,24 @@ transformed parameters {
     }
   }
   
-  
-  print("spl_par_rt:");
-  print(spl_par_rt);
-  print("logRt0:");
-  print(logRt0);
-  print("deriv1_log_new_inf:");
-  print(deriv1_log_new_inf);
-  print("serial_i:");
-  print(serial_i);
-  print("log_new_inf_0:");
-  print(log_new_inf_0);
-  print("log_new_inf:");
-  print(log_new_inf);
-  print("new_inf:");
-  print(new_inf);
-  print("pop_uninf:");
-  print(pop_uninf);
-  print("logRt:");
-  print(logRt);
+  // print("spl_par_rt:");
+  // print(spl_par_rt);
+  // print("logRt0:");
+  // print(logRt0);
+  // print("deriv1_log_new_inf:");
+  // print(deriv1_log_new_inf);
+  // print("serial_i:");
+  // print(serial_i);
+  // print("log_new_inf_0:");
+  // print(log_new_inf_0);
+  // print("log_new_inf:");
+  // print(log_new_inf);
+  // print("new_inf:");
+  // print(new_inf);
+  // print("pop_uninf:");
+  // print(pop_uninf);
+  // print("logRt:");
+  // print(logRt);
   
   Rt = exp(logRt); 
 
@@ -370,8 +377,10 @@ transformed parameters {
  // the probability progression occurred on day j 
 
   for(i in 1:N_days_tot) {
-    new_sym[i] = dot_product(new_inf[idx1[i]:i],
-      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inf;
+    new_sym[i] = p_sym_if_inf * dot_product(
+      new_inf[idx1[i]:i],
+      inf_prg_delay_rv[idx2[i]:Max_delay]
+    );
   }
   
   for(i in 1:N_days_tot) {
