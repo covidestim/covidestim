@@ -191,9 +191,7 @@ parameters {
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
   real<lower=3, upper=11>           serial_i; // serial interval
-  real spl_intercept;
-  vector[N_spl_par_rt - 1] deriv1_spl_par_rt;
-
+  vector[N_spl_par_rt]    spl_par_rt;
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -231,7 +229,7 @@ transformed parameters {
   vector[N_days_tot]      logRt0;
   vector[N_days_tot]      logRt;
   vector[N_days_tot]      Rt;
-  vector[N_spl_par_rt]    spl_par_rt;
+  vector[N_spl_par_rt-1]  deriv1_spl_par_rt;
   vector[N_spl_par_rt-2]  deriv2_spl_par_rt;
   
   // transitions
@@ -293,23 +291,15 @@ transformed parameters {
 // for 1 to 60 days in state. We do this by scaling the rate term
 // of the gamma distribution of progressiong delays by a modeled fraction 
 // (scale_dx_delay_xxx)
-  
-  // sym_diag_delay_rv = reverse(
-  //   gamma_cdf([1:Max_delay], ..., ...) -
-  //   gamma_cdf([0:Max_delay-1], ..., ...)
-  // )
-
-  // sym_diag-delay_rv = reverse(
-  //   gamma_cdf(range(1, Max_delay), sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym) -
-  //   gamma_cdf(range(0, Max_delay-1), sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym)
-  // )
-
   for(i in 1:Max_delay){
-    sym_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym) -
-                                       gamma_cdf(i-1.0, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
-
-    sev_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev) -
-                                       gamma_cdf(i-1.0, sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
+    sym_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sym_prg_delay_shap, 
+                        sym_prg_delay_rate/scale_dx_delay_sym)
+                      - gamma_cdf(i-1.0, sym_prg_delay_shap, 
+                      sym_prg_delay_rate/scale_dx_delay_sym);
+    sev_diag_delay_rv[1+Max_delay-i] = gamma_cdf(i+0.0, sev_prg_delay_shap, 
+                        sev_prg_delay_rate/scale_dx_delay_sev)
+                        - gamma_cdf(i-1.0, sev_prg_delay_shap, 
+                        sev_prg_delay_rate/scale_dx_delay_sev);
   }
 
 // DEATHS // 
@@ -318,8 +308,7 @@ transformed parameters {
 // symptomatic, and the probability of becoming symptomatic if infected. 
   p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
 
-  // USING FIRST DIFFERENCES TO CREATE SPLINE PARAMS
-  spl_par_rt = spl_intercept + append_row(0, cumulative_sum(deriv1_spl_par_rt));
+// CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 
 // NEW INCIDENT CASES
   
@@ -342,8 +331,7 @@ transformed parameters {
     }
   }
   
-  // print("spl_par_rt:");
-  // print(spl_par_rt);
+  
   // print("logRt0:");
   // print(logRt0);
   // print("deriv1_log_new_inf:");
@@ -362,14 +350,14 @@ transformed parameters {
   // print(logRt);
   
   Rt = exp(logRt); 
-
+  
   // second derivative
   deriv2_spl_par_rt[1:(N_spl_par_rt-2)] = spl_par_rt[2:(N_spl_par_rt-1)] * 2 - 
     spl_par_rt[1:(N_spl_par_rt-2)] - spl_par_rt[3:N_spl_par_rt]; 
   
   // first derivative
-//  deriv1_spl_par_rt[1:(N_spl_par_rt-1)] = spl_par_rt[2:N_spl_par_rt] - 
-//    spl_par_rt[1:(N_spl_par_rt-1)];
+  deriv1_spl_par_rt[1:(N_spl_par_rt-1)] = spl_par_rt[2:N_spl_par_rt] - 
+    spl_par_rt[1:(N_spl_par_rt-1)];
 
  // SYMPTOMATIC CASES
  // cases entering a state on day i + j - 1: 
@@ -377,10 +365,8 @@ transformed parameters {
  // the probability progression occurred on day j 
 
   for(i in 1:N_days_tot) {
-    new_sym[i] = p_sym_if_inf * dot_product(
-      new_inf[idx1[i]:i],
-      inf_prg_delay_rv[idx2[i]:Max_delay]
-    );
+    new_sym[i] = dot_product(new_inf[idx1[i]:i],
+      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inf;
   }
   
   for(i in 1:N_days_tot) {
@@ -497,7 +483,6 @@ model {
 //// PRIORS
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
-  spl_intercept         ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
   deriv2_spl_par_rt     ~ normal(0, pri_deriv2_spl_par_sd);
