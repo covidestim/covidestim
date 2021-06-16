@@ -275,8 +275,9 @@ transformed parameters {
   real                phi_die;
   
   // NATURAL HISTORY CASCADE
-  p_die_if_sevt = p_die_if_sev/(1-p_die_if_sev) * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR);
-  p_die_if_sevt ./= (1+p_die_if_sevt);
+  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (ifr_adj * ifr_decl_OR);
+  // p_die_if_sevt = p_die_if_sev/(1-p_die_if_sev) * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR);
+  // p_die_if_sevt ./= (1+p_die_if_sevt);
 
 // DIAGNOSIS // 
 // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
