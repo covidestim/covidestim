@@ -74,11 +74,11 @@ covidestim <- function(ndays,
                        ndays_before = 28,
                        pop_size = 1e12,
                        chains = 4, 
-                       iter = 2500, 
+                       iter = 3000, 
                        thin = 1, 
                        seed = 42,
                        adapt_delta = 0.99, 
-                       max_treedepth = 12,
+                       max_treedepth = 14,
                        window.length = 7,
                        region) {
 
@@ -102,9 +102,9 @@ covidestim <- function(ndays,
     chains  = chains,
     iter    = iter,
     thin    = thin,
-    warmup  = round(0.72*iter), # Warmup runs should be 80% of iter runs
+    warmup  = round((2/3)*iter), # Warmup runs should be 66% of iter runs
     seed    = seed,
-    control = list(adapt_delta = adapt_delta, max_treedepth = 12)
+    control = list(adapt_delta = adapt_delta, max_treedepth = max_treedepth)
   ) -> properties
 
   structure(properties, class='covidestim')
