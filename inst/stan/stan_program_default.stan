@@ -13,7 +13,8 @@ data {
   real<lower=0>          pri_ifr_decl_OR_a; 
   real<lower=0>          pri_ifr_decl_OR_b;
   real<lower=0>          ifr_adj_fixed;
-  
+  vector<lower=0>[N_ifr_adj] ifr_vac_adj; //vaccine ifr_adjustment
+
   real<lower=0>          infect_dist_rate;
   real<lower=0>          infect_dist_shap;
   real<lower=0>          seropos_dist_rate;
@@ -114,7 +115,10 @@ transformed data {
 // Cumulative reporting delays
  vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
  vector[N_days + N_days_before]  die_cum_report_delay_rv; 
- 
+//    real<lower=0> alpha = 1.5;
+int<lower=1> K = 3;
+simplex[K] prop_vac = rep_vector(1.0/3.0, K);
+
 // for likelihood function moving avg. 
   nda0 = N_days_av - 1; 
    
@@ -215,6 +219,11 @@ parameters {
 // phi terms for negative b ino imal likelihood function 
   real<lower=0>             inv_sqrt_phi_c;
   real<lower=0>             inv_sqrt_phi_d;
+// simplex for dirichlet values
+     // simplex[K]               prop_vac;
+ 
+     
+
 }
 ///////////////////////////////////////////
 transformed parameters {
@@ -234,6 +243,8 @@ transformed parameters {
   
   // transitions
   vector[N_ifr_adj]      p_die_if_sevt;
+  // vector[N_ifr_adj]     p_sev_if_symt;
+// vector[N_ifr_adj]     p_sym_if_inft;
   
 // DIAGNOSIS AND REPORTING  
  // probability of diagnosis
@@ -249,6 +260,7 @@ transformed parameters {
 // DISEASE OUTCOMES
   // overall case fatality rate
   real                p_die_if_inf;
+//  vector[N_ifr_adj] p_die_if_inft;
   // "true" number entering disease state each day
   vector[N_days_tot]  new_sym; 
   vector[N_days_tot]  new_sev;
@@ -274,10 +286,16 @@ transformed parameters {
   real                phi_cas;
   real                phi_die;
   
+
   // NATURAL HISTORY CASCADE
-  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR)./(1.0 + ifr_adj * ifr_decl_OR * p_die_if_sev);
-  // p_die_if_sevt = p_die_if_sev/(1-p_die_if_sev) * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR);
-  // p_die_if_sevt ./= (1+p_die_if_sevt);
+    p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * 
+  (1.0 + ifr_adj * ifr_decl_OR)./(1.0 + ifr_adj * ifr_decl_OR * p_die_if_sev);
+  
+  // for(i in 1:N_days_tot){
+ // p_die_if_sevt[i] = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prop_vac[1]);
+// p_sev_if_symt[i] = p_sev_if_sym * pow(ifr_vac_adj[i], prop_vac[2]);
+// p_sym_if_inft[i] = p_sym_if_inf * pow(ifr_vac_adj[i], prop_vac[3]);
+// }
 
 // DIAGNOSIS // 
 // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
@@ -308,6 +326,7 @@ transformed parameters {
 // severely ill individuals, the probability of being severely ill if 
 // symptomatic, and the probability of becoming symptomatic if infected. 
   p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
+//  p_die_if_inft = p_sym_if_inft .* p_sev_if_symt .* p_die_if_sevt;
 
 // CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 
@@ -506,6 +525,8 @@ model {
 // phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
+  // dirichlet on the proprotion
+  // prop_vac             ~ dirichlet(rep_vector(1.5, 3));
     
 ///// LIKELIHOOD
 // Before data

@@ -101,11 +101,16 @@ modelconfig_add.input <- function(rightside, leftside) {
     N_days_before = cfg$N_days_before,
     region        = cfg$region
   )
-
+  
+  
   # Assign the results of the call to the `cfg` object
   cfg$ifr_adj       = ifr_adjustments$ifr_adj
   cfg$ifr_adj_fixed = ifr_adjustments$ifr_adj_fixed
   cfg$N_ifr_adj     = ifr_adjustments$N_ifr_adj
+
+  # update the ifr_vac_adjustments with ones for all the pre-time
+  pre_vac           = rep(1, cfg$N_ifr_adj - length(cfg$ifr_vac_adj))
+  cfg$ifr_vac_adj   = c(pre_vac, cfg$ifr_vac_adj)
 
   structure(cfg, class = "modelconfig")
 }
@@ -140,7 +145,7 @@ validate.modelconfig <- function(cfg) {
 
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
-                    region)
+                    region, ifr_vac_adj = rep(1, N_days + N_days_before))
 {
 
   n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/5))
@@ -174,6 +179,9 @@ genData <- function(N_days, N_days_before = 28,
     
     #max delay to allow the model to consider. 30 is recommended. 
     Max_delay = 30, 
+    
+    #vector of ifr adjustments from vaccination coverage
+    ifr_vac_adj = ifr_vac_adj,
 
     # moving average for likelihood function 
     N_days_av = N_days_av,
