@@ -106,6 +106,11 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg$ifr_adj       = ifr_adjustments$ifr_adj
   cfg$ifr_adj_fixed = ifr_adjustments$ifr_adj_fixed
   cfg$N_ifr_adj     = ifr_adjustments$N_ifr_adj
+  
+  # pre-fill the ifr_vaccine_adjustment with ones, such that
+  # the length of ifr_vac_adj matches N_ifr_adj
+  prefill <- rep(1, cfg$N_ifr_adj - length(cfg$ifr_vac_adj))
+  cfg$ifr_vac_adj   = c(prefill, cfg$ifr_vac_adj)
 
   structure(cfg, class = "modelconfig")
 }
@@ -140,7 +145,7 @@ validate.modelconfig <- function(cfg) {
 
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
-                    region)
+                    region, ifr_vac_adj)
 {
 
   n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/5))
@@ -168,6 +173,11 @@ genData <- function(N_days, N_days_before = 28,
     ifr_adj       = NULL,
     ifr_adj_fixed = NULL,
     N_ifr_adj     = NULL,
+    
+    # the ifr_vaccine adjustment data is entered here, but further 
+    # when input_*() is added ,because we need to pre-fill the 
+    # ifr_vaccine adjustment from 2020-12-18 until the start date of the data
+    ifr_vac_adj = ifr_vac_adj,
 
     #n days to model before start of data
     N_days_before = as.integer(N_days_before),
