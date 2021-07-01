@@ -238,8 +238,8 @@ transformed parameters {
   
   // transitions
   vector[N_ifr_adj]      p_die_if_sevt;
-  vector[N_ifr_adj]      p_sev_if_symt;
-  vector[N_ifr_adj]      p_sym_if_inft;
+  // vector[N_ifr_adj]      p_sev_if_symt;
+  // vector[N_ifr_adj]      p_sym_if_inft;
   
 // DIAGNOSIS AND REPORTING  
  // probability of diagnosis
@@ -280,16 +280,16 @@ transformed parameters {
   real                phi_cas;
   real                phi_die;
   // the proprtion parameter
-  simplex[3]     prop;
+  // simplex[3]     prop;
   
   // NATURAL HISTORY CASCADE
-  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR)./(1.0 + ifr_adj * ifr_decl_OR * p_die_if_sev);
+  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR)./(1.0 + ifr_adj * ifr_decl_OR * p_die_if_sev) .* ifr_vac_adj;
   
-  for(i in 1:N_days_tot){
-    p_die_if_sevt[i] = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prop[1]);
-    p_sev_if_symt[i] = p_sev_if_sym * pow(ifr_vac_adj[i], prop[2]);
-    p_sym_if_inft[i] = p_sym_if_inf * pow(ifr_vac_adj[i], prop[3]);
-  }
+  // for(i in 1:N_days_tot){
+    // p_die_if_sevt[i] = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prop[1]);
+    // p_sev_if_symt[i] = p_sev_if_sym * pow(ifr_vac_adj[i], prop[2]);
+    // p_sym_if_inft[i] = p_sym_if_inf * pow(ifr_vac_adj[i], prop[3]);
+  // }
   
 
   // p_die_if_sevt = p_die_if_sev/(1-p_die_if_sev) * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR);
@@ -383,12 +383,12 @@ transformed parameters {
 
   for(i in 1:N_days_tot) {
     new_sym[i] = dot_product(new_inf[idx1[i]:i],
-      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i];
+      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inf;
   }
   
   for(i in 1:N_days_tot) {
     new_sev[i] = dot_product(new_sym[idx1[i]:i],
-      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_symt[i];
+      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_sym;
   }
   
   for(i in 1:N_days_tot) {
@@ -406,7 +406,7 @@ transformed parameters {
 // asymptomatic for the entire course of their infection. 
   for(i in 1:N_days_tot) {
     new_asy_dx[i] = dot_product(new_inf[idx1[i]:i] .* p_diag_if_asy[idx1[i]:i], 
-      asy_rec_delay_rv[idx2[i]:Max_delay]) * (1-p_sym_if_inft[i]);
+      asy_rec_delay_rv[idx2[i]:Max_delay]) * (1-p_sym_if_inf);
   }
   
 // diagnosed at symptomatic
@@ -423,7 +423,7 @@ transformed parameters {
 // at symptomatic eventually die 
   for(i in 1:N_days_tot) {
     dx_sym_sev[i] = dot_product(new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i],
-      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_symt[i];
+      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_sym;
   }
         
   for(i in 1:N_days_tot) {
@@ -523,7 +523,7 @@ model {
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
   // prop for vaccine
-  prop                 ~ dirichlet(rep_vector(1.5, 3));
+  // prop                 ~ dirichlet(rep_vector(1.5, 3));
     
 ///// LIKELIHOOD
 // Before data
