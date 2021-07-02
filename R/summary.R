@@ -91,25 +91,25 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "diag_cases"           = "symptomatic.diagnosed", 
     "diag_all"             = "diagnoses",
     "sero_positive"        = "sero.positive",
-    "pop_infectiousness"   = "pop.infectiousness"
+    "pop_infectiousness"   = "pop.infectiousness",
+    "p_diag_if_sym"        = "p_diag_if_sym",  # [n_days_total]
+    "p_diag_if_asy"        = "p_diag_if_asy"   # [n_days_total]
   ) -> mainParams
 
   c(
-    "p_diag_if_sym"        = "p_diag_if_sym",
-    "p_diag_if_asy"        = "p_diag_if_asy",
-    "p_diag_if_sev"        = "p_diag_if_sev",
-    "p_sym_if_inf"         = "p_sym_if_inf",
-    "p_sev_if_sym"         = "p_sev_if_sym"
-  ) -> extraParams
+    "p_diag_if_sev"        = "p_diag_if_sev",  # scalar
+    "p_sym_if_inf"         = "p_sym_if_inf",   # scalar
+    "p_sev_if_sym"         = "p_sev_if_sym"    # scalar
+  ) -> scalarParams
 
-  params <- c(mainParams, extraParams)
+  allParams <- c(mainParams, scalarParams)
 
   if ("optimizer" %in% ccr$flags)
     return(
       summaryOptimizer(
         ccr,
         toDate,
-        params = params,
+        params = allParams,
         start_date
       )
     )
@@ -119,15 +119,15 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
 
   # This creates the list of `pars` that gets passed to `rstan::summary`
   # by enumerating all combs of varnames and indices
-  purrr::cross2(names(params), as.character(1:ndays_total)) %>% 
+  purrr::cross2(names(mainParams), as.character(1:ndays_total)) %>% 
   purrr::map_chr(
     function(item)
       glue("{par}[{idx}]", par = item[[1]], idx = item[[2]])
-  ) -> pars
+  ) -> parsWithIndexes
 
   rstan::summary(
     ccr$result,
-    pars = pars,
+    pars = c(parsWithIndexes, scalarParams),
     probs = c(0.025, 0.5, 0.975)
   )$summary %>% # Get rid of the per-chain summaries by indexing into `$summary`
     as.data.frame %>%
@@ -141,11 +141,11 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   # into their name:idx components
   stan_extracts <- dplyr::left_join(
     melted,
-    split_array_indexing(melted$parname),
+    split_array_indexing(melted$parname, scalarParams),
     by = "parname"
   ) %>%
     # Reformat the dates, and rename some of the variable names
-    dplyr::mutate(date = toDate(index), variable = params[variable]) %>%
+    dplyr::mutate(date = toDate(index), variable = allParams[variable]) %>%
     # Eliminate things like R-hat that we don't care about right now
     dplyr::select_at(vars_of_interest) %>%
     # Melt things more to get down to three columns
@@ -154,15 +154,13 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     # quantile variable
     dplyr::mutate(
       variable = paste0(variable, quantile_names[quantile]),
-      quantile = NULL,
-      
+      quantile = NULL
     ) %>%
     # Cast everything back out
     tidyr::spread(key = "variable", value = "value") %>%
     dplyr::mutate(data.available = date >= start_date)
 
   d <- stan_extracts
-
 
   if (index == TRUE)
     d <- dplyr::bind_cols(d, list(index = 1:ndays_total))
@@ -174,20 +172,31 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   d
 }
 
-split_array_indexing <- function(elnames) {
+# Assumption: all vector parameters are of the same length!
+split_array_indexing <- function(elnames, scalarParams) {
+
+  # Params with are time-varying
+  nonscalar <- elnames[which(!elnames %in% scalarParams)]
 
   # Matches a valid indexed variable in Stan, capturing it into two groups
-  regex <- '^([A-Za-z_][A-Za-z_0-9]+)\\[([0-9]+)\\]$'
+  regex <- '^([A-Za-z_][A-Za-z_0-9]*)\\[([0-9]+)\\]$'
 
   # Match everything into a data.frame
-  captured <- stringr::str_match(elnames, regex)
+  captured <- stringr::str_match(nonscalar, regex)
   captured <- as.data.frame(captured, stringsAsFactors = FALSE)
 
   # Rename cols, coerce the index to a number
   colnames(captured) <- c("parname", "variable", "index")
   captured$index <- as.numeric(captured$index)
 
-  captured
+  all_indices <- unique(captured$index)
+
+  indices_for_scalar_params <- purrr::map_dfr(
+    scalarParams,
+    ~tibble::tibble(parname=., variable=., index=all_indices)
+  )
+
+  dplyr::bind_rows(captured, indices_for_scalar_params)
 }
 
 #' Summarize internal parameters of a Covidestim run
