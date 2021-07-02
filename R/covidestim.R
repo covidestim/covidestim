@@ -388,23 +388,17 @@ runOptimizer.covidestim <- function(cc,
   result <- successful_results[which(opt_vals == max(opt_vals))][[1]]
 
   c(
-    "new_inf",
-    "Rt",
-    "occur_cas",
-    "occur_die",
-    "cumulative_incidence",
-    "new_sym",
-    "new_sev",
-    "new_die",
-    "new_die_dx",
-    "diag_cases",
-    "diag_all",
-    "sero_positive",
-    "pop_infectiousness"
-  ) -> essential_vars
+    "p_diag_if_sym",
+    "p_diag_if_asy",
+    "p_diag_if_sev",
+    "p_sym_if_inf",
+    "p_sev_if_sym"
+  ) -> extraParams
+
 
   structure(
-    list(result   = result$par[essential_vars],
+    list(result   = result$par[c(essential_vars, extraParams)],
+         resultRaw= result,
          opt_vals = opt_vals,
          config   = cc$config,
          flags    = "optimizer"),
