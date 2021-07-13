@@ -4,12 +4,12 @@ library(readr)
 ifrs <- local({
 
   ifr_county <- read_csv(
-    'data-raw/ifr-data/ifr_county_12-12-2020.csv',
+    'data-raw/ifr-data/ifr_county_07-02-2021.csv',
     col_types = 'cccn'
   )
 
   ifr_state <- read_csv(
-    'data-raw/ifr-data/ifr_state_12-12-2020.csv',
+    'data-raw/ifr-data/ifr_state_07-02-2021.csv',
     col_types = 'cnn'
   )
   
