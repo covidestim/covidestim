@@ -525,7 +525,7 @@ model {
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
   // prop for vaccine
-   prob_vac            ~ dirichlet(rep_vector(1.5, 3));
+   prob_vac            ~ dirichlet(rep_vector(5, 3));
     
 ///// LIKELIHOOD
 // Before data
