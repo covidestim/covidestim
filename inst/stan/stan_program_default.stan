@@ -240,8 +240,8 @@ transformed parameters {
   
   // transitions
   vector[N_ifr_adj]      p_die_if_sevt;
-  vector[N_ifr_adj]      p_sev_if_symt;
-  vector[N_ifr_adj]      p_sym_if_inft;
+  vector[N_days_tot]      p_sev_if_symt;
+  vector[N_days_tot]      p_sym_if_inft;
   
 // DIAGNOSIS AND REPORTING  
  // probability of diagnosis
