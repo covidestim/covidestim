@@ -10,7 +10,7 @@ data {
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
-  vector<lower=0>[N_ifr_adj] ifr_vac_adj; // ifr_vaccine_adjustment
+  vector<lower=0>[N_days + N_days_before] ifr_vac_adj; // ifr_vaccine_adjustment
   real<lower=0>          pri_ifr_decl_OR_a; 
   real<lower=0>          pri_ifr_decl_OR_b;
   real<lower=0>          ifr_adj_fixed;
