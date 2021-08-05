@@ -10,7 +10,6 @@ nyc_data <- local({
       .default = readr::col_number()
     )
   ) %>%
-  tidyr::replace_na(
-    list(cases=0, deaths=0)
-  )
+  tidyr::replace_na(list(cases=0, deaths=0)) %>%
+  dplyr::mutate(RR = 1) # Vaccine RR=1 because no vaccines at this point
 })
