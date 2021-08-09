@@ -74,11 +74,11 @@ covidestim <- function(ndays,
                        ndays_before = 28,
                        pop_size = 1e12,
                        chains = 3, 
-                       iter = 1500, 
+                       iter = 2000, 
                        thin = 1, 
                        seed = 42,
-                       adapt_delta = 0.92, 
-                       max_treedepth = 12,
+                       adapt_delta = 0.98, 
+                       max_treedepth = 14,
                        window.length = 7,
                        region) {
 
@@ -102,9 +102,9 @@ covidestim <- function(ndays,
     chains  = chains,
     iter    = iter,
     thin    = thin,
-    warmup  = round(0.8*iter), # Warmup runs should be 80% of iter runs
+    warmup  = round((2/3)*iter), # Warmup runs should be 66% of iter runs
     seed    = seed,
-    control = list(adapt_delta = adapt_delta, max_treedepth = 12)
+    control = list(adapt_delta = adapt_delta, max_treedepth = max_treedepth)
   ) -> properties
 
   structure(properties, class='covidestim')
@@ -406,7 +406,17 @@ runOptimizer.covidestim <- function(cc,
     "pop_infectiousness"
   ) -> essential_vars
 
+  # c(
+  #   "p_diag_if_sym",
+  #   "p_diag_if_asy",
+  #   "p_diag_if_sev",
+  #   "p_sym_if_inf",
+  #   "p_sev_if_sym"
+  # ) -> extraParams
+
+
   structure(
+    #list(result   = result$par[c(essential_vars, extraParams)],
     list(result   = result$par[essential_vars],
          opt_vals = opt_vals,
          config   = cc$config,
