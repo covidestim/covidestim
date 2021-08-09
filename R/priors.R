@@ -318,7 +318,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
 #' @export
 priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
                              rr_diag_sym_vs_sev = c(2  , 2  ), # a/b
-                             p_diag_if_sev      = c(5  , 2  )) {# a/b
+                             p_diag_if_sev      = c(20 , 5  )) {# a/b
 
   att(length(rr_diag_asy_vs_sym) == 2)
   att(length(rr_diag_sym_vs_sev) == 2)
