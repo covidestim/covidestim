@@ -209,21 +209,21 @@
 <p>Finally, the model is run with the function <code><a href="../reference/run.covidestim.html">?run.covidestim</a></code>. Don’t forget to assign the a name to the output of the run - you could lose it!. Runtimes vary depending on the size and quality of the data, and may take over an hour. If you are running the model in an interactive environment like RStudio, periodic status updates will appear in the console. Here, we will use the BFGS algorithm to quickly produce a result, as NUTS, the method used by <code>run()</code>, takes longer.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">runOptimizer</span><span class="op">(</span><span class="va">cfg</span><span class="op">)</span>
-<span class="co">#&gt; Finished try #1 in 3.1s with exit code 0</span>
+<span class="co">#&gt; Finished try #1 in 3.3s with exit code 0</span>
 <span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
-<span class="co">#&gt; Finished try #2 in 2.6s with exit code 70</span>
+<span class="co">#&gt; Finished try #2 in 3.2s with exit code 70</span>
 <span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
-<span class="co">#&gt; Finished try #3 in 2.2s with exit code 70</span>
+<span class="co">#&gt; Finished try #3 in 2.1s with exit code 70</span>
 <span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
-<span class="co">#&gt; Finished try #4 in 3.5s with exit code 70</span>
+<span class="co">#&gt; Finished try #4 in 4.3s with exit code 70</span>
 <span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
-<span class="co">#&gt; Finished try #5 in 4.8s with exit code 70</span>
+<span class="co">#&gt; Finished try #5 in 5s with exit code 70</span>
 <span class="co">#&gt; Warning in .local(object, ...): non-zero return code in optimizing</span>
-<span class="co">#&gt; Finished try #6 in 4s with exit code 70</span>
+<span class="co">#&gt; Finished try #6 in 4.1s with exit code 70</span>
 <span class="co">#&gt; Finished try #7 in 1.9s with exit code 0</span>
-<span class="co">#&gt; Finished try #8 in 2.5s with exit code 0</span>
-<span class="co">#&gt; Finished try #9 in 2.8s with exit code 0</span>
-<span class="co">#&gt; Finished try #10 in 3.1s with exit code 0</span></code></pre></div>
+<span class="co">#&gt; Finished try #8 in 2.9s with exit code 0</span>
+<span class="co">#&gt; Finished try #9 in 2.9s with exit code 0</span>
+<span class="co">#&gt; Finished try #10 in 3.4s with exit code 0</span></code></pre></div>
 <p>Typically, BFGS will occasionally fail to converge. This is what causes the non-zero return codes. <code><a href="../reference/runOptimizer.covidestim.html">runOptimizer.covidestim()</a></code> will automatically exclude these, and select the BFGS run that maximizes the posterior.</p>
 </div>
 </div>
