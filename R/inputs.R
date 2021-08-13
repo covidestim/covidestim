@@ -54,6 +54,7 @@ transform_input <- function(d)
 
 reformat_dates <- function(vec) vec
 
+
 #' Input observational data
 #'
 #' A family of functions used for inputting data into Covidestim.
@@ -114,10 +115,22 @@ input_cases <- function(data, type = "reported") {
 
 #' @rdname input_cases
 #' @export
-input_deaths <- function(data, type = "reported") {
+input_deaths <- function(data, type = "reported",
+                         lastDeathDate = NULL) {
   validate_input(data, type)
   data <- transform_input(data)
-  structure(list(obs_die=data), class='input', date_type = type)
+  out <- list(obs_die=data)
+  
+  if(!is.null(lastDeathDate)){
+    att(
+      "POSIXct" %in% class(lastDeathDate) | "Date" %in% class(lastDeathDate),
+      msg=glue("The `lastDeathDate` variable must be NULL or of class `POSIXct` or `Date`. ",
+               "Your `lastDeathDate` variable was of class `{class(lastDeathDate)}`. ",
+               "Consider using as.Date()?"))
+    
+    attr(out,"lastDeathDate") <- lastDeathDate
+  }
+  structure(out,class='input', date_type = type)
 }
 
 #' @rdname input_cases

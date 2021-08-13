@@ -56,7 +56,9 @@ data {
   //  how many days should be used for the moving average in the likelihood 
   //  function? 
   int<lower = 1, upper = 10> N_days_av; 
-  
+  // is there a last obeserved deaths data day?
+  int<lower=0> lastDeathDate;
+
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
   // for new infections
@@ -136,7 +138,6 @@ for(i in 1:N_days_tot) {
     idx2[i] = Max_delay-i+1;
   }
 }
-
  // calculate the daily probability of transitioning to a new disease state
  // for days 1 to 60 after entering that state
   for(i in 1:Max_delay) {
@@ -581,6 +582,10 @@ model {
       if (tmp_occur_die <= 0) // Account for floating point error
         tmp_occur_die = 0.000000001;
 
+//don't add to target if no observations are present
+if(i > lastDeathDate) {
+  break;
+}
       // Don't add to `target` unless we have `N_days_av` of data accumulated
       // in `tmp_occur_die`
       if (i >= N_days_av)

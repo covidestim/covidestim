@@ -39,7 +39,6 @@ modelconfig_add.priors <- function(rightside, leftside) {
 }
 
 modelconfig_add.input <- function(rightside, leftside) {
-  
   cfg  <- leftside
   d    <- rightside
 
@@ -78,6 +77,12 @@ modelconfig_add.input <- function(rightside, leftside) {
 
   # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
+  
+  if("lastDeathDate" %in% names(attributes(d))){
+    lastDate <- attr(d, "lastDeathDate")
+    diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
+    cfg$lastDeathDate <- as.numeric(diff)
+  } 
 
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
@@ -155,7 +160,6 @@ validate.modelconfig <- function(cfg) {
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
                     region
-                    # , ifr_vac_adj
                     )
 {
 
@@ -210,6 +214,8 @@ genData <- function(N_days, N_days_before = 28,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
+    # last death date is initiated here; gets updated as deaths data gets added
+    lastDeathDate = N_days,
     
     # Rt and new infections
     pri_log_new_inf_0_mu = 0,
