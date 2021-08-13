@@ -127,6 +127,8 @@ input_deaths <- function(data, type = "reported",
       msg=glue("The `lastDeathDate` variable must be NULL or of class `POSIXct` or `Date`. ",
                "Your `lastDeathDate` variable was of class `{class(lastDeathDate)}`. ",
                "Consider using as.Date()?"))
+    att(lastDeathDate > data$date[1], msg =glue("The `lastDeathDate` specified was prior to the first observed date. ",
+                                                "Specify NULL or a date later than the first observed date"))
     
     attr(out,"lastDeathDate") <- lastDeathDate
   }
