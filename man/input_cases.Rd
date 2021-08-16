@@ -8,7 +8,7 @@
 \usage{
 input_cases(data, type = "reported")
 
-input_deaths(data, type = "reported")
+input_deaths(data, type = "reported", lastDeathDate = NULL)
 
 input_vaccines(data, type = "reported")
 }
