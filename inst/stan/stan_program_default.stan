@@ -1,3 +1,27 @@
+functions {
+  // function to solve for odds vac not inf
+  // given OR, p_inf and p_vac
+  real solveOR(real OR, real p_inf, real p_vac) {
+    real b;
+    real a;
+    real odds_vac_not_inf;
+    real odds_vac_inf;
+    real cp_vac_inf;
+    real p_vac_and_inf;
+    real p_immune;
+    
+    b = 1+OR*p_inf - p_inf - OR*p_vac - p_vac;
+    a = OR - OR*p_vac;
+    odds_vac_not_inf = (-b + (b^2 + 4*p_vac*a)^0.5) / (2*a);
+    odds_vac_inf = odds_vac_not_inf * OR;
+    cp_vac_inf = odds_vac_inf/(1+odds_vac_inf);
+    p_vac_and_inf = cp_vac_inf * p_inf;
+    p_immune = p_inf+p_vac - p_vac_and_inf;
+    
+    return p_immune;
+  }
+}
+///////////////////////////////////////////////////////////
 data {
   // INPUT DATA
   int<lower=0>           N_days; // days of data
@@ -6,6 +30,7 @@ data {
   
   int<lower=0>           obs_cas[N_days]; // vector of cases
   int<lower=0>           obs_die[N_days]; // vector of deaths
+  real<lower=0, upper=1> obs_vac[N_days]; // vector of cumulative vaccination rate
   real<lower=0>          pop_size; // population size
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
@@ -56,6 +81,9 @@ data {
   //  how many days should be used for the moving average in the likelihood 
   //  function? 
   int<lower = 1, upper = 10> N_days_av; 
+  // how many days should be used for the moving window for the recent 
+  // immunity calculation?
+  int<lower = 1> ndays_recent_imm;
   // is there a last obeserved deaths data day?
   int<lower=0> lastDeathDate;
 
@@ -70,7 +98,9 @@ data {
   real<lower=0>          pri_serial_i_rate; 
   real<lower=0>          pri_deriv1_spl_par_sd;
   real<lower=0>          pri_deriv2_spl_par_sd;
-  
+  // for odds ratio of vaccination if infected/if not infected
+  real                   pri_log_or_mu;
+  real<lower=0>          pri_log_or_sd;
   // probabilities of progression inf -> sym -> sev -> die
   real<lower=0>          pri_p_sym_if_inf_a; 
   real<lower=0>          pri_p_sym_if_inf_b;
@@ -215,6 +245,9 @@ parameters {
   real<lower=0, upper=1>    rr_diag_asy_vs_sym; 
   real<lower=0, upper=1>    p_diag_if_sev;
   vector<lower=0, upper=1>[N_spl_par_dx]  spl_par_sym_dx;
+
+// IMMUNITY
+real<lower=0>           or_vac_inf;
 
 // LIKELIHOOD 
 // phi terms for negative b ino imal likelihood function 
@@ -506,6 +539,7 @@ model {
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
   deriv2_spl_par_rt     ~ normal(0, pri_deriv2_spl_par_sd);
+  or_vac_inf            ~ lognormal(pri_log_or_mu, pri_log_or_sd);
   // DISEASE PROGRESSION
   // probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
@@ -615,7 +649,34 @@ generated quantities {
   vector[N_days_tot]  pop_infectiousness;  
   vector[Max_delay]   infect_dist_rv;
   vector[500]         seropos_dist_rv;
+  
+  vector[N_days_tot]  cum_p_inf;
+  vector[N_days_tot]  cum_p_inf_recent;
+  vector[N_days_tot]  cum_p_vac;
+  vector[N_days_tot]  cum_p_vac_recent;
 
+  vector[N_days_tot]  p_immune;
+  vector[N_days_tot]  p_immune_recent;
+  vector[N_days_tot]  p_immune_independence;
+  
+  // calculate cumulative percent infected and vaccinated
+  // and rolling cumulative percent
+  cum_p_inf = cumulative_incidence / pop_size;
+  cum_p_vac = cumulative_sum(obs_vac);
+  
+  for(i in 1:N_days_tot){
+      cum_p_inf_recent[i] = cum_p_inf[i];
+      cum_p_vac_recent[i] = cum_p_vac[i];
+      
+      if(i > ndays_recent_imm){
+        cum_p_inf_recent[i] -= cum_p_inf[i-ndays_recent_imm];
+        cum_p_vac_recent[i] -= cum_p_vac[i-ndays_recent_imm];
+      }
+      p_immune[i] = solveOR(or_vac_inf, cum_p_inf[i], cum_p_vac[i]);
+      p_immune_recent[i] = solveOR(or_vac_inf, cum_p_inf_recent[i],cum_p_vac_recent[i]);
+      p_immune_independence[i] = 1 - ((1 - cum_p_inf[i]) * (1 - cum_p_vac[i]));
+  }
+  
   // Indexes for convolutions (longer than max-delay)
   for(i in 1:N_days_tot) {
     if(i-500>0){

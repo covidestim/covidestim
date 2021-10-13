@@ -42,7 +42,7 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg  <- leftside
   d    <- rightside
 
-  integer_keys <- c("obs_cas", "obs_die", "ifr_vac_adj")
+  integer_keys <- c("obs_cas", "obs_die", "ifr_vac_adj", "obs_vac")
   keys         <- integer_keys
 
   # Create a list of any existing data
@@ -87,8 +87,10 @@ modelconfig_add.input <- function(rightside, leftside) {
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
 
-  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep", "ifr_vac_adj_rep")) {
-    if(data_type_key == "ifr_vac_adj_rep"){
+  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep", "ifr_vac_adj_rep",
+                           "obs_vac_rep")) {
+    if(data_type_key %in% c("ifr_vac_adj_rep",
+                            "obs_vac_rep")){
       cfg[[data_key]] <- d[[1]]$observation 
     } else {
       cfg[[data_key]] <- as.integer(d[[1]]$observation)
@@ -138,12 +140,15 @@ print.inputs <- function(cfg, .tab = FALSE) {
     ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_die)}]'))
   status_vaccines <-
     ifelse(is.null(cfg$ifr_vac_adj), '[ x ]', glue('[{frmtr(cfg$ifr_vac_adj)}]'))
+  status_vaccines_obs <-
+    ifelse(is.null(cfg$obs_vac), '[ x ]', glue('[{frmtr(cfg$obs_vac)}]'))
 
 'Inputs:
 
 {t}{status_cases}\tCases
 {t}{status_deaths}\tDeaths
-{t}{status_vaccines}\tVaccines
+{t}{status_vaccines}\tVaccines-ifr
+{t}{status_vaccines_obs}\tVaccines-data
 ' -> msg
 
   cat(glue(msg))
@@ -157,9 +162,27 @@ validate.modelconfig <- function(cfg) {
 
 }
 
+get_logor <- function(region) {
+  found <- dplyr::filter(logor_vac_state, state == region)
+  
+  if (nrow(found) == 0)
+    found <- dplyr::filter(logor_vac_county, fips == region)
+  
+  if (nrow(found) == 0)
+    stop(glue::glue("Could not find a log-odds-ratio of vaccinations given
+                    prior infection status for region {region}!"))
+  
+  if (nrow(found) > 1)
+    stop(glue::glue("Found more than 1 set of log-odds-ratio data for region {region}!"))
+  
+  found
+}
+
+
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
-                    region
+                    region,
+                    ndays_recent_imm = 30*9
                     )
 {
 
@@ -200,15 +223,20 @@ genData <- function(N_days, N_days_before = 28,
     # moving average for likelihood function 
     N_days_av = N_days_av,
     
+    # moving window for recent immune-activation. default is 9 months
+    ndays_recent_imm = ndays_recent_imm,
+    
     # Whether to assume no reported cases and deats before the data (0 = no, 1 = yes) 
     pre_period_zero = 1,
 
     # Add population size to constrain susceptible population, large default assumes no constraint
     pop_size = pop_size, 
+    log_or_region = get_logor(region),
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day
+    obs_vac = NULL, # vector of int by date. should have 0s if no event that day
     # the ifr_vaccine adjustment data
     ifr_vac_adj = NULL,
     # first day of data, as determined by looking at input data. This allows 
@@ -226,6 +254,8 @@ genData <- function(N_days, N_days_before = 28,
     pri_inf_imported_sd = 0.5/0.798,   # imported infections 
     pri_deriv1_spl_par_sd = 0.5, # penalizes changes in Rt level
     pri_deriv2_spl_par_sd = 0.1, # penalizes changes in Rt curvature
+    pri_log_or_mu = log_or_region$mu, # estimate of logodds-ratio vaccination | infection
+    pri_log_or_sd = log_or_region$sd, # variance of logodds-ratio vaccination | infection 
     
     N_spl_par_rt = n_spl_par_rt, 
     spl_basis_rt = as.matrix(as.data.frame(des_mat_rt)),
