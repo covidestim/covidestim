@@ -58,6 +58,8 @@ data {
   int<lower = 1, upper = 10> N_days_av; 
   // is there a last obeserved deaths data day?
   int<lower=0> lastDeathDate;
+  // is there a last obeserved case data day?
+  int<lower=0> lastCaseDate;
 
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
@@ -554,6 +556,12 @@ model {
 
       if (tmp_occur_cas <= 0) // Account for floating point error
         tmp_occur_cas = 0.000000001;
+      //
+      //don't add to target if no observations are present
+      if(i > lastCaseDate) {
+        break;
+      }
+
       
       // Don't add to `target` unless we have `N_days_av` of data accumulated
       // in `tmp_occur_cas`
@@ -582,10 +590,11 @@ model {
       if (tmp_occur_die <= 0) // Account for floating point error
         tmp_occur_die = 0.000000001;
 
-//don't add to target if no observations are present
-if(i > lastDeathDate) {
-  break;
-}
+      //don't add to target if no observations are present
+      if(i > lastDeathDate) {
+        break;
+      }
+
       // Don't add to `target` unless we have `N_days_av` of data accumulated
       // in `tmp_occur_die`
       if (i >= N_days_av)

@@ -107,10 +107,23 @@ reformat_dates <- function(vec) vec
 #'
 #' @rdname input_cases
 #' @export
-input_cases <- function(data, type = "reported") {
+input_cases <- function(data, type = "reported", lastCaseDate = NULL) {
   validate_input(data, type)
   data <- transform_input(data)
-  structure(list(obs_cas=data), class='input', date_type = type)
+  out <- list(obs_cas=data)
+
+  if(!is.null(lastCaseDate)){
+    att(
+      "POSIXct" %in% class(lastCaseDate) | "Date" %in% class(lastCaseDate),
+      msg=glue("The `lastCaseDate` variable must be NULL or of class `POSIXct` or `Date`. ",
+               "Your `lastCaseDate` variable was of class `{class(lastCaseDate)}`. ",
+               "Consider using as.Date()?"))
+    att(lastCaseDate > data$date[1], msg =glue("The `lastCaseDate` specified was prior to the first observed date. ",
+                                                "Specify NULL or a date later than the first observed date"))
+    
+    attr(out,"lastCaseDate") <- lastCaseDate
+  }
+  structure(out,class='input', date_type = type)
 }
 
 #' @rdname input_cases

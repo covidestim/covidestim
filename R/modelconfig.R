@@ -84,6 +84,12 @@ modelconfig_add.input <- function(rightside, leftside) {
     cfg$lastDeathDate <- as.numeric(diff)
   } 
 
+  if("lastCaseDate" %in% names(attributes(d))){
+    lastDate <- attr(d, "lastCaseDate")
+    diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
+    cfg$lastCaseDate <- as.numeric(diff)
+  } 
+
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
 
@@ -216,6 +222,7 @@ genData <- function(N_days, N_days_before = 28,
     first_date = NA,
     # last death date is initiated here; gets updated as deaths data gets added
     lastDeathDate = N_days,
+    lastCaseDate  = N_days,
     
     # Rt and new infections
     pri_log_new_inf_0_mu = 0,
