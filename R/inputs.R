@@ -137,7 +137,7 @@ input_deaths <- function(data, type = "reported",
 
 #' @rdname input_cases
 #' @export
-input_vaccines <- function(data, type = "reported") {
+input_rr <- function(data, type = "reported") {
   validate_input(data, type)
   structure(list(ifr_vac_adj=data), class='input', date_type = type)
 }

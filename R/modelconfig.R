@@ -236,7 +236,7 @@ genData <- function(N_days, N_days_before = 28,
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day
-    obs_vac = NULL, # vector of int by date. should have 0s if no event that day
+    obs_vac = NULL, # vector of p by date [0-1 range]. should have 0s if no event that day
     # the ifr_vaccine adjustment data
     ifr_vac_adj = NULL,
     # first day of data, as determined by looking at input data. This allows 

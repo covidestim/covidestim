@@ -66,7 +66,9 @@ NULL
 #' # (for demonstration purposes only!)
 #' covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
 #'   input_cases(example_nyc_data('cases')) +
-#'   input_deaths(example_nyc_data('deaths'))
+#'   input_deaths(example_nyc_data('deaths')) +
+#'   input_rr(example_nyc_data('RR')) + 
+#'   input_vaccinations(example_nyc_data('vaccines'))
 #'
 #' @importFrom magrittr %>%
 #' @export
