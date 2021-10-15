@@ -62,6 +62,18 @@
 #'     \item \code{pop.infectiousness}, \code{pop.infectiousness.lo}, 
 #'     \code{pop.infectiousness.hi}: Estimate of the relative level of viral 
 #'     shedding in the community, with 95\% CIs.
+#'     
+#'     \item \code{immunity}, \code{immunity.lo}, 
+#'     \code{immunity.hi}: Estimate of immune activation in the community,
+#'     with 95\% CIs.
+#'     
+#'     \item \code{immunity.recent}, \code{immunity.recent.lo}, 
+#'     \code{immunity.recent.hi}: Estimate of the recent level of immune-
+#'     activation in the community, with 95\% CIs.
+#'     
+#'     \item \code{immunity.independent}, \code{immunity.independent.lo}, 
+#'     \code{immunity.independent.hi}: Estimate of the level of immunity,
+#'     under the assumption of independence, in the community, with 95\% CIs.
 #'   }
 #'
 #' @export
@@ -91,7 +103,10 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "diag_cases"           = "symptomatic.diagnosed", 
     "diag_all"             = "diagnoses",
     "sero_positive"        = "sero.positive",
-    "pop_infectiousness"   = "pop.infectiousness"
+    "pop_infectiousness"   = "pop.infectiousness",
+    "p_immune"             = "immunity",
+    "p_immune_recent"      = "immunity.recent",
+    "p_immune_independent" = "immunity.independent"
   ) -> params
 
   if ("optimizer" %in% ccr$flags)
