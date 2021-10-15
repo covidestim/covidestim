@@ -146,7 +146,11 @@ transformed data {
  vector[Max_delay]  die_rep_delay_rv;
 // Cumulative reporting delays
  vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
- vector[N_days + N_days_before]  die_cum_report_delay_rv; 
+ vector[N_days + N_days_before]  die_cum_report_delay_rv;
+ 
+ real cum_vac[N_days];
+ 
+ cum_vac = cumulative_sum(obs_vac);
  
  // vector for proportions
  // simplex[3] prop = rep_vector(1.0/3.0, 3);
@@ -662,9 +666,13 @@ generated quantities {
   // calculate cumulative percent infected and vaccinated
   // and rolling cumulative percent
   cum_p_inf = cumulative_incidence / pop_size;
-  cum_p_vac = cumulative_sum(obs_vac);
   
   for(i in 1:N_days_tot){
+    if(i <= N_days_before){
+      cum_p_vac[i] = 0;
+    } else{
+      cum_p_vac[i] = cum_vac[i-N_days_before];
+    }
       cum_p_inf_recent[i] = cum_p_inf[i];
       cum_p_vac_recent[i] = cum_p_vac[i];
       
