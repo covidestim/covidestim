@@ -12,6 +12,7 @@ ifr_county <- ifrs$county
 
 usethis::use_data(
   ifr_state, ifr_county, nyc_data, pop_state, pop_county,
+  pop_state_age, pop_county_age,
   logor_vac_state, logor_vac_county,
   internal = TRUE, overwrite = TRUE
 )
