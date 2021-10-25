@@ -75,6 +75,7 @@ NULL
 covidestim <- function(ndays, 
                        ndays_before = 28,
                        pop_size = 1e12,
+                       pop_under12 = .15,
                        chains = 3, 
                        iter = 2000, 
                        thin = 1, 
@@ -91,6 +92,7 @@ covidestim <- function(ndays,
     N_days = ndays,
     N_days_before = ndays_before,
     pop_size = pop_size,
+    pop_under12 = pop_under12,
     N_days_av = window.length,
     region = region,
     ndays_recent_imm = ndays_recent_imm
@@ -140,6 +142,33 @@ get_pop <- function(region) {
     stop(glue::glue("Found more than set of population data for region {region}!"))
 
   found$pop
+}
+#' Population proportion under 12 for US states and counties
+#'
+#' Returns proportion of the 2019 census under 12 per state (proxy for county).
+#'
+#' @param region A string with the state name, or the FIPS code
+#'
+#' @return State/county population as a numeric, or an error
+#'
+#' @examples
+#' get_pop_under12('Connecticut')
+#' get_pop_under12('09009')
+#'
+#' @export
+get_pop_under12 <- function(region) {
+  found <- dplyr::filter(pop_state_age, state == region)
+
+  if (nrow(found) == 0)
+    found <- dplyr::filter(pop_county_age, fips == region)
+
+  if (nrow(found) == 0)
+    stop(glue::glue("Could not find population data for region {region}!"))
+
+  if (nrow(found) > 1)
+    stop(glue::glue("Found more than set of population data for region {region}!"))
+
+  found$propunder12
 }
 
 
@@ -407,7 +436,10 @@ runOptimizer.covidestim <- function(cc,
     "diag_cases",
     "diag_all",
     "sero_positive",
-    "pop_infectiousness"
+    "pop_infectiousness",
+    "p_immune",
+    "p_immune_recent",
+    "p_immune_independence" 
   ) -> essential_vars
 
   # c(

@@ -181,6 +181,7 @@ get_logor <- function(region) {
 
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
+                    pop_under12 = .15,
                     region,
                     ndays_recent_imm = 30*9
                     )
@@ -193,7 +194,8 @@ genData <- function(N_days, N_days_before = 28,
   n_spl_par_dx <- max(4,ceiling((N_days + N_days_before)/21)) 
   des_mat_dx <- splines::bs(1:(N_days + N_days_before), 
                          df=n_spl_par_dx, degree=3, intercept=T) 
-  
+  log_or_region <- get_logor(region)
+
   # The first set of components of 'datList'
   config <- rlang::dots_list(
     .homonyms = "error", # Ensure that no keys are entered twice
@@ -231,8 +233,8 @@ genData <- function(N_days, N_days_before = 28,
 
     # Add population size to constrain susceptible population, large default assumes no constraint
     pop_size = pop_size, 
-    log_or_region = get_logor(region),
-    
+    pop_under12 = pop_under12,
+
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day

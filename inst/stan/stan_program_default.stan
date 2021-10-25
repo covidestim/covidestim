@@ -32,6 +32,7 @@ data {
   int<lower=0>           obs_die[N_days]; // vector of deaths
   real<lower=0, upper=1> obs_vac[N_days]; // vector of cumulative vaccination rate
   real<lower=0>          pop_size; // population size
+  real<lower=0, upper=1> pop_under12; // proportion population under 12
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
@@ -147,10 +148,7 @@ transformed data {
 // Cumulative reporting delays
  vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
  vector[N_days + N_days_before]  die_cum_report_delay_rv;
- 
- real cum_vac[N_days];
- 
- cum_vac = cumulative_sum(obs_vac);
+
  
  // vector for proportions
  // simplex[3] prop = rep_vector(1.0/3.0, 3);
@@ -653,6 +651,7 @@ generated quantities {
   vector[N_days_tot]  pop_infectiousness;  
   vector[Max_delay]   infect_dist_rv;
   vector[500]         seropos_dist_rv;
+  real                OR;
   
   vector[N_days_tot]  cum_p_inf;
   vector[N_days_tot]  cum_p_inf_recent;
@@ -660,18 +659,29 @@ generated quantities {
   vector[N_days_tot]  cum_p_vac_recent;
 
   vector[N_days_tot]  p_immune;
+  vector[N_days_tot]  p_immune_over12;
   vector[N_days_tot]  p_immune_recent;
+  vector[N_days_tot]  p_immune_recent_over12;
   vector[N_days_tot]  p_immune_independence;
+  vector[N_days_tot]  p_immune_independence_over12;
+  
+// cumulative incidence
+  cumulative_incidence = cumulative_sum(new_inf); 
+  p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
+  diag_cases = new_sym_dx + new_sev_dx; 
   
   // calculate cumulative percent infected and vaccinated
   // and rolling cumulative percent
+  OR = or_vac_inf;
   cum_p_inf = cumulative_incidence / pop_size;
-  
   for(i in 1:N_days_tot){
     if(i <= N_days_before){
       cum_p_vac[i] = 0;
-    } else{
-      cum_p_vac[i] = cum_vac[i-N_days_before];
+    } else{ // cap the vaccination at the population over 12
+      cum_p_vac[i] = obs_vac[i-N_days_before] / (1.0-pop_under12);
+      if(cum_p_vac[i] > .999){
+        cum_p_vac[i] = .999;
+      }
     }
       cum_p_inf_recent[i] = cum_p_inf[i];
       cum_p_vac_recent[i] = cum_p_vac[i];
@@ -680,9 +690,14 @@ generated quantities {
         cum_p_inf_recent[i] -= cum_p_inf[i-ndays_recent_imm];
         cum_p_vac_recent[i] -= cum_p_vac[i-ndays_recent_imm];
       }
-      p_immune[i] = solveOR(or_vac_inf, cum_p_inf[i], cum_p_vac[i]);
-      p_immune_recent[i] = solveOR(or_vac_inf, cum_p_inf_recent[i],cum_p_vac_recent[i]);
-      p_immune_independence[i] = 1 - ((1 - cum_p_inf[i]) * (1 - cum_p_vac[i]));
+      p_immune_over12[i] = solveOR(or_vac_inf, cum_p_inf[i], cum_p_vac[i]);
+      p_immune_recent_over12[i] = solveOR(or_vac_inf, cum_p_inf_recent[i],cum_p_vac_recent[i]);
+      p_immune_independence_over12[i] = 1 - ((1 - cum_p_inf[i]) * (1 - cum_p_vac[i]));
+      
+      p_immune[i] = p_immune_over12[i]*(1 - pop_under12) + cum_p_vac[i] * pop_under12;
+      p_immune_recent[i] = p_immune_recent_over12[i]*(1 - pop_under12) + cum_p_vac_recent[i] * pop_under12;
+      p_immune_independence[i] = p_immune_independence_over12[i]*(1 - pop_under12) + cum_p_vac[i] * pop_under12;
+      
   }
   
   // Indexes for convolutions (longer than max-delay)
@@ -695,11 +710,6 @@ generated quantities {
      idx2b[i] = 500-i+1;
    }
  }
-  
-// cumulative incidence
-  cumulative_incidence = cumulative_sum(new_inf); 
-  p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
-  diag_cases = new_sym_dx + new_sev_dx; 
   
    // vector to distribute infectiousness
   for(i in 1:Max_delay) {

@@ -104,9 +104,9 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "diag_all"             = "diagnoses",
     "sero_positive"        = "sero.positive",
     "pop_infectiousness"   = "pop.infectiousness",
-    "p_immune"             = "immunity",
-    "p_immune_recent"      = "immunity.recent",
-    "p_immune_independent" = "immunity.independent"
+    "p_immune"             = "immune",
+    "p_immune_recent"      = "immune.recent",
+    "p_immune_independence" = "immune.independence"
   ) -> params
 
   if ("optimizer" %in% ccr$flags)
