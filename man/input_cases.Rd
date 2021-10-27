@@ -3,14 +3,17 @@
 \name{input_cases}
 \alias{input_cases}
 \alias{input_deaths}
-\alias{input_vaccines}
+\alias{input_rr}
+\alias{input_vaccinations}
 \title{Input observational data}
 \usage{
 input_cases(data, type = "reported")
 
 input_deaths(data, type = "reported", lastDeathDate = NULL)
 
-input_vaccines(data, type = "reported")
+input_rr(data, type = "reported")
+
+input_vaccinations(data, type = "reported")
 }
 \arguments{
 \item{data}{A \code{\link[base]{data.frame}} as described below.}

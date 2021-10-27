@@ -8,6 +8,7 @@ covidestim(
   ndays,
   ndays_before = 28,
   pop_size = 1e+12,
+  pop_under12 = 0.15,
   chains = 3,
   iter = 2000,
   thin = 1,
@@ -15,6 +16,7 @@ covidestim(
   adapt_delta = 0.98,
   max_treedepth = 14,
   window.length = 7,
+  ndays_recent_imm = 30 * 9,
   region
 )
 }
@@ -74,7 +76,9 @@ to \code{\link{run.covidestim}} (for NUTS) or
 # (for demonstration purposes only!)
 covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
   input_cases(example_nyc_data('cases')) +
-  input_deaths(example_nyc_data('deaths'))
+  input_deaths(example_nyc_data('deaths')) +
+  input_rr(example_nyc_data('RR')) + 
+  input_vaccinations(example_nyc_data('vaccines'))
 
 }
 \seealso{
