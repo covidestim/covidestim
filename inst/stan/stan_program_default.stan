@@ -677,7 +677,8 @@ generated quantities {
   for(i in 1:N_days_tot){
     if(i <= N_days_before){
       cum_p_vac[i] = 0;
-    } else{ // cap the vaccination at the population over 12
+    } else{ // compute pct vaccinated in over 12 population 
+    // and cap the vaccination at the population over 12
       cum_p_vac[i] = obs_vac[i-N_days_before] / (1.0-pop_under12);
       if(cum_p_vac[i] > .999){
         cum_p_vac[i] = .999;
@@ -694,9 +695,9 @@ generated quantities {
       p_immune_recent_over12[i] = solveOR(or_vac_inf, cum_p_inf_recent[i],cum_p_vac_recent[i]);
       p_immune_independence_over12[i] = 1 - ((1 - cum_p_inf[i]) * (1 - cum_p_vac[i]));
       
-      p_immune[i] = p_immune_over12[i]*(1 - pop_under12) + cum_p_vac[i] * pop_under12;
-      p_immune_recent[i] = p_immune_recent_over12[i]*(1 - pop_under12) + cum_p_vac_recent[i] * pop_under12;
-      p_immune_independence[i] = p_immune_independence_over12[i]*(1 - pop_under12) + cum_p_vac[i] * pop_under12;
+      p_immune[i] = p_immune_over12[i]*(1 - pop_under12) + cum_p_inf[i] * pop_under12;
+      p_immune_recent[i] = p_immune_recent_over12[i]*(1 - pop_under12) + cum_p_inf_recent[i] * pop_under12;
+      p_immune_independence[i] = p_immune_independence_over12[i]*(1 - pop_under12) + cum_p_inf[i] * pop_under12;
       
   }
   
