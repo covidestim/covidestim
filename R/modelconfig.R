@@ -159,7 +159,7 @@ validate.modelconfig <- function(cfg) {
 
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
-                    region
+                    region, nRt
                     )
 {
 
@@ -188,7 +188,7 @@ genData <- function(N_days, N_days_before = 28,
     ifr_adj       = NULL,
     ifr_adj_fixed = NULL,
     N_ifr_adj     = NULL,
-    
+    N_days_pri_Rt = nRt,
 
 
     #n days to model before start of data
