@@ -140,10 +140,10 @@ validate.modelconfig <- function(cfg) {
 
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
-                    region)
+                    n_spl_rt_knotwidth = 5, region)
 {
 
-  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/5))
+  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/n_spl_rt_knotwidth))
   des_mat_rt <- splines::bs(1:(N_days + N_days_before), 
                          df=n_spl_par_rt, degree=3, intercept=T)
   
