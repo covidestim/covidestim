@@ -140,12 +140,21 @@ validate.modelconfig <- function(cfg) {
 
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
-                    n_spl_rt_knotwidth = 5, region)
+                    n_spl_rt_knotwidth = 5, predata_flat_rt = TRUE,
+                    region)
 {
 
-  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/n_spl_rt_knotwidth))
+  # adjust spline matrix if predata flat rt is desired    
+if(predata_flat_rt == TRUE){
+  n_spl_par_rt <- max(4,ceiling(N_days/n_spl_rt_knotwidth)) 
+  des_mat_rt_tmp <- splines::bs(1:(N_days), 
+                         df=n_spl_par_rt, degree=3, intercept=T)
+  des_mat_rt <- des_mat_rt_tmp[c(rep(1,N_days_before), 1:N_days),]
+} else{
+    n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/n_spl_rt_knotwidth))
   des_mat_rt <- splines::bs(1:(N_days + N_days_before), 
                          df=n_spl_par_rt, degree=3, intercept=T)
+}
   
   n_spl_par_dx <- max(4,ceiling((N_days + N_days_before)/21)) 
   des_mat_dx <- splines::bs(1:(N_days + N_days_before), 
@@ -204,6 +213,7 @@ genData <- function(N_days, N_days_before = 28,
     
     N_spl_par_rt = n_spl_par_rt, 
     spl_basis_rt = as.matrix(as.data.frame(des_mat_rt)),
+    
     N_spl_par_dx = n_spl_par_dx, 
     spl_basis_dx = as.matrix(as.data.frame(des_mat_dx)),
 
@@ -213,6 +223,8 @@ genData <- function(N_days, N_days_before = 28,
     
     obs_cas_rep = as.integer(0),  # This ~means FALSE in stan
     obs_die_rep = as.integer(0),  # This ~means FALSE in stan
+    
+    predata_flat_rt = as.integer(predata_flat_rt),
   )
 
   # Adding the priors in separately is neccessary in order to make checks
