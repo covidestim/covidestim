@@ -80,7 +80,8 @@ covidestim <- function(ndays,
                        adapt_delta = 0.99, 
                        max_treedepth = 14,
                        window.length = 7,
-                       region) {
+                       region,
+                       predata_flat_rt = FALSE) {
 
   att(is.numeric(ndays), ndays >= 1)
 
