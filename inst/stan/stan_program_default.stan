@@ -55,6 +55,8 @@ data {
   //  how many days should be used for the moving average in the likelihood 
   //  function? 
   int<lower = 1, upper = 10> N_days_av; 
+  // should Rt be flat at the beginning?
+  int<lower=0,upper=1> predata_flat_rt;
   
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
@@ -191,7 +193,8 @@ parameters {
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
   real<lower=3, upper=11>           serial_i; // serial interval
-  vector[N_spl_par_rt]    spl_par_rt;
+  vector[N_spl_par_rt-1]    spl_par_rt0; //all but first spline parameters
+  real spl_par_rt1;// first rt spline parameter
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -224,6 +227,7 @@ transformed parameters {
   vector[N_days_tot]      new_inf;
   vector[N_days_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
+  vector[N_spl_par_rt]    spl_par_rt; //complete set of spline parameters
 
   // Rt spline
   vector[N_days_tot]      logRt0;
@@ -313,6 +317,15 @@ transformed parameters {
 // NEW INCIDENT CASES
   
   // modeled with a spline
+    spl_par_rt[2:N_spl_par_rt] = spl_par_rt0; 
+    if(predata_flat_rt == 1){
+  spl_par_rt[1] = (spl_basis_rt[2+N_days_before,2:N_spl_par_rt]-
+                   spl_basis_rt[1+N_days_before,2:N_spl_par_rt]) * spl_par_rt0 / 
+                  (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
+    } else {
+      spl_par_rt[1] = spl_par_rt1;
+}
+
   logRt0 = spl_basis_rt * spl_par_rt;
   pop_uninf = pop_size;
   for(i in 1:N_days_tot) {
