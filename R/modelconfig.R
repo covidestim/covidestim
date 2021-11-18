@@ -140,7 +140,7 @@ validate.modelconfig <- function(cfg) {
 
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
-                    n_spl_rt_knotwidth = 5, predata_flat_rt = TRUE,
+                    n_spl_rt_knotwidth = 5, predata_flat_rt = FALSE,
                     region)
 {
 
