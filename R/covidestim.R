@@ -92,7 +92,8 @@ covidestim <- function(ndays,
     pop_size = pop_size,
     N_spl_rt_knotwidth = nspl_rt_knotwidth,
     N_days_av = window.length,
-    region = region
+    region = region,
+    predata_flat_rt
   ) -> config
 
   # All user-specified config-related things must be specified above this line
