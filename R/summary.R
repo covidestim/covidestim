@@ -99,7 +99,8 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   c(
     "p_diag_if_sev"        = "p_diag_if_sev",  # scalar
     "p_sym_if_inf"         = "p_sym_if_inf",   # scalar
-    "p_sev_if_sym"         = "p_sev_if_sym"    # scalar
+    "p_sev_if_sym"         = "p_sev_if_sym",   # scalar
+    "p_die_if_inf"         = "p_die_if_inf"    # scalar
   ) -> scalarParams
 
   allParams <- c(mainParams, scalarParams)
