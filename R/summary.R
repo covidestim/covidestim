@@ -266,6 +266,7 @@ summaryOptimizer <- function(ccr, toDate, params, start_date) {
   # ccr$result is a list keyed on Stan param name, each value is a numeric
   # vector of equal length.
   tibble::as_tibble(ccr$result) %>%
+    dplyr::mutate_all(as.double) %>%
     # Convert to result naming-scheme provided by `summary()`
     dplyr::rename_with(~params[.]) %>%
     # Add empty conf. interval variables
