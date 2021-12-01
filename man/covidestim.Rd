@@ -8,12 +8,12 @@ covidestim(
   ndays,
   ndays_before = 28,
   pop_size = 1e+12,
-  chains = 3,
-  iter = 1500,
+  chains = 4,
+  iter = 3000,
   thin = 1,
   seed = 42,
-  adapt_delta = 0.92,
-  max_treedepth = 12,
+  adapt_delta = 0.99,
+  max_treedepth = 14,
   window.length = 7,
   region
 )
