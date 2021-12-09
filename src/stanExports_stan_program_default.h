@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_stan_program_default");
-    reader.add_event(740, 738, "end", "model_stan_program_default");
+    reader.add_event(741, 739, "end", "model_stan_program_default");
     return reader;
 }
 template <typename T0__, typename T1__, typename T2__>
@@ -3173,128 +3173,128 @@ public:
                                 0, 
                                 "assigning variable cum_p_vac");
                 } else {
-                    current_statement_begin__ = 681;
+                    current_statement_begin__ = 682;
                     stan::model::assign(cum_p_vac, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (get_base1(obs_vac, (i - N_days_before), "obs_vac", 1) / (1.0 - pop_under12)), 
                                 "assigning variable cum_p_vac");
-                    current_statement_begin__ = 682;
+                    current_statement_begin__ = 683;
                     if (as_bool(logical_gt(get_base1(cum_p_vac, i, "cum_p_vac", 1), .999))) {
-                        current_statement_begin__ = 683;
+                        current_statement_begin__ = 684;
                         stan::model::assign(cum_p_vac, 
                                     stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                     .999, 
                                     "assigning variable cum_p_vac");
                     }
                 }
-                current_statement_begin__ = 686;
+                current_statement_begin__ = 687;
                 stan::model::assign(cum_p_inf_recent, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             get_base1(cum_p_inf, i, "cum_p_inf", 1), 
                             "assigning variable cum_p_inf_recent");
-                current_statement_begin__ = 687;
+                current_statement_begin__ = 688;
                 stan::model::assign(cum_p_vac_recent, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             get_base1(cum_p_vac, i, "cum_p_vac", 1), 
                             "assigning variable cum_p_vac_recent");
-                current_statement_begin__ = 689;
+                current_statement_begin__ = 690;
                 if (as_bool(logical_gt(i, ndays_recent_imm))) {
-                    current_statement_begin__ = 690;
+                    current_statement_begin__ = 691;
                     stan::model::assign(cum_p_inf_recent, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (stan::model::rvalue(cum_p_inf_recent, stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), "cum_p_inf_recent") - get_base1(cum_p_inf, (i - ndays_recent_imm), "cum_p_inf", 1)), 
                                 "assigning variable cum_p_inf_recent");
-                    current_statement_begin__ = 691;
+                    current_statement_begin__ = 692;
                     stan::model::assign(cum_p_vac_recent, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (stan::model::rvalue(cum_p_vac_recent, stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), "cum_p_vac_recent") - get_base1(cum_p_vac, (i - ndays_recent_imm), "cum_p_vac", 1)), 
                                 "assigning variable cum_p_vac_recent");
                 }
-                current_statement_begin__ = 693;
+                current_statement_begin__ = 694;
                 stan::model::assign(p_immune_over12, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             solveOR(or_vac_inf, get_base1(cum_p_inf, i, "cum_p_inf", 1), get_base1(cum_p_vac, i, "cum_p_vac", 1), pstream__), 
                             "assigning variable p_immune_over12");
-                current_statement_begin__ = 694;
+                current_statement_begin__ = 695;
                 stan::model::assign(p_immune_recent_over12, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             solveOR(or_vac_inf, get_base1(cum_p_inf_recent, i, "cum_p_inf_recent", 1), get_base1(cum_p_vac_recent, i, "cum_p_vac_recent", 1), pstream__), 
                             "assigning variable p_immune_recent_over12");
-                current_statement_begin__ = 695;
+                current_statement_begin__ = 696;
                 stan::model::assign(p_immune_independence_over12, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (1 - ((1 - get_base1(cum_p_inf, i, "cum_p_inf", 1)) * (1 - get_base1(cum_p_vac, i, "cum_p_vac", 1)))), 
                             "assigning variable p_immune_independence_over12");
-                current_statement_begin__ = 697;
+                current_statement_begin__ = 698;
                 stan::model::assign(p_immune, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            ((get_base1(p_immune_over12, i, "p_immune_over12", 1) * (1 - pop_under12)) + (get_base1(cum_p_vac, i, "cum_p_vac", 1) * pop_under12)), 
+                            ((get_base1(p_immune_over12, i, "p_immune_over12", 1) * (1 - pop_under12)) + (get_base1(cum_p_inf, i, "cum_p_inf", 1) * pop_under12)), 
                             "assigning variable p_immune");
-                current_statement_begin__ = 698;
+                current_statement_begin__ = 699;
                 stan::model::assign(p_immune_recent, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            ((get_base1(p_immune_recent_over12, i, "p_immune_recent_over12", 1) * (1 - pop_under12)) + (get_base1(cum_p_vac_recent, i, "cum_p_vac_recent", 1) * pop_under12)), 
+                            ((get_base1(p_immune_recent_over12, i, "p_immune_recent_over12", 1) * (1 - pop_under12)) + (get_base1(cum_p_inf_recent, i, "cum_p_inf_recent", 1) * pop_under12)), 
                             "assigning variable p_immune_recent");
-                current_statement_begin__ = 699;
+                current_statement_begin__ = 700;
                 stan::model::assign(p_immune_independence, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            ((get_base1(p_immune_independence_over12, i, "p_immune_independence_over12", 1) * (1 - pop_under12)) + (get_base1(cum_p_vac, i, "cum_p_vac", 1) * pop_under12)), 
+                            ((get_base1(p_immune_independence_over12, i, "p_immune_independence_over12", 1) * (1 - pop_under12)) + (get_base1(cum_p_inf, i, "cum_p_inf", 1) * pop_under12)), 
                             "assigning variable p_immune_independence");
             }
-            current_statement_begin__ = 704;
+            current_statement_begin__ = 705;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 705;
+                current_statement_begin__ = 706;
                 if (as_bool(logical_gt((i - 500), 0))) {
-                    current_statement_begin__ = 706;
+                    current_statement_begin__ = 707;
                     stan::model::assign(idx1b, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 ((i - 500) + 1), 
                                 "assigning variable idx1b");
-                    current_statement_begin__ = 707;
+                    current_statement_begin__ = 708;
                     stan::model::assign(idx2b, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 1, 
                                 "assigning variable idx2b");
                 } else {
-                    current_statement_begin__ = 709;
+                    current_statement_begin__ = 710;
                     stan::model::assign(idx1b, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 1, 
                                 "assigning variable idx1b");
-                    current_statement_begin__ = 710;
+                    current_statement_begin__ = 711;
                     stan::model::assign(idx2b, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 ((500 - i) + 1), 
                                 "assigning variable idx2b");
                 }
             }
-            current_statement_begin__ = 715;
+            current_statement_begin__ = 716;
             for (int i = 1; i <= Max_delay; ++i) {
-                current_statement_begin__ = 716;
+                current_statement_begin__ = 717;
                 stan::model::assign(infect_dist_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + Max_delay) - i)), stan::model::nil_index_list()), 
                             (gamma_cdf((i + 0.0), infect_dist_shap, infect_dist_rate) - gamma_cdf((i - 1.0), infect_dist_shap, infect_dist_rate)), 
                             "assigning variable infect_dist_rv");
             }
-            current_statement_begin__ = 721;
+            current_statement_begin__ = 722;
             for (int i = 1; i <= 500; ++i) {
-                current_statement_begin__ = 722;
+                current_statement_begin__ = 723;
                 stan::model::assign(seropos_dist_rv, 
                             stan::model::cons_list(stan::model::index_uni(((1 + 500) - i)), stan::model::nil_index_list()), 
                             (1.0 - gamma_cdf((i + 0.0), seropos_dist_shap, seropos_dist_rate)), 
                             "assigning variable seropos_dist_rv");
             }
-            current_statement_begin__ = 727;
+            current_statement_begin__ = 728;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 728;
+                current_statement_begin__ = 729;
                 stan::model::assign(pop_infectiousness, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             dot_product(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1, i, "idx1", 1), i), stan::model::nil_index_list()), "new_inf"), stan::model::rvalue(infect_dist_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2, i, "idx2", 1), Max_delay), stan::model::nil_index_list()), "infect_dist_rv")), 
                             "assigning variable pop_infectiousness");
             }
-            current_statement_begin__ = 733;
+            current_statement_begin__ = 734;
             for (int i = 1; i <= N_days_tot; ++i) {
-                current_statement_begin__ = 734;
+                current_statement_begin__ = 735;
                 stan::model::assign(sero_positive, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             dot_product(stan::model::rvalue(new_inf, stan::model::cons_list(stan::model::index_min_max(get_base1(idx1b, i, "idx1b", 1), i), stan::model::nil_index_list()), "new_inf"), stan::model::rvalue(seropos_dist_rv, stan::model::cons_list(stan::model::index_min_max(get_base1(idx2b, i, "idx2b", 1), 500), stan::model::nil_index_list()), "seropos_dist_rv")), 
