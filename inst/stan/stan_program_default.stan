@@ -651,6 +651,17 @@ generated quantities {
   vector[N_days_tot]  pop_infectiousness;  
   vector[Max_delay]   infect_dist_rv;
   vector[500]         seropos_dist_rv;
+  vector[N_days_tot]  waning_dist_rv;
+  vector[N_days_tot]  waning_vac;
+  vector[N_days_tot]  waning_inf;
+  vector[N_days_tot]  vac_only;
+  vector[N_days_tot]  inf_only;
+  vector[N_days_tot]  both_only;
+  vector[N_days_tot]  immune_vac;
+  vector[N_days_tot]  immune_inf;
+  vector[N_days_tot]  immune_both;
+  vector[N_days_tot]  immune_waning;
+  vector[N_days_tot]  vac_inf;
   real                OR;
   
   vector[N_days_tot]  cum_p_inf;
@@ -722,6 +733,42 @@ generated quantities {
   for(i in 1:500) {
     seropos_dist_rv[1+500-i] = 1.0 - gamma_cdf(i+0.0, seropos_dist_shap, 
       seropos_dist_rate);
+  }
+// vector to define waning
+  for(i in 1:N_days_tot) {
+    waning_dist_rv[i] = 1.0 - gamma_cdf(i+0.0, seropos_dist_shap, 
+      seropos_dist_rate);
+      waning_vac[i] = waning_dist_rv[i] * (.9 - .25) + .25;
+      waning_inf[i] = waning_dist_rv[i] * (.8 - .15) + .15;
+  }
+  
+  // conditional probrability
+  for(i in 1:N_days_tot){
+    vac_inf[i] = (cum_p_vac[i] + cum_p_inf[i] - p_immune[i]) / cum_p_inf[i];
+  }
+  // effective immunity
+  for(i in 1:N_days_tot){
+    for(j in i:1){
+      if(j == 1){
+        if(i == 1){
+      vac_only[j]  = cum_p_vac[1];
+      inf_only[j]  = cum_p_inf[1];
+      both_only[j] = p_immune[1] - vac_only[1] - inf_only[1];
+        } else {
+      vac_only[j]  = cum_p_vac[i] - cum_p_vac[i-1];
+      inf_only[j]  = cum_p_inf[i] - cum_p_inf[i-1];
+      both_only[j] = (p_immune[i] - p_immune[i-1]) - vac_only[i] - inf_only[i];
+      } 
+      } else {
+      vac_only[j] = vac_only[j-1] * (1-(cum_p_inf[i]-cum_p_inf[i-1]));
+      inf_only[j] = inf_only[j-1] * (1-(vac_inf[i]-vac_inf[i-1]));
+      both_only[j] = (p_immune[i] - p_immune[i-1]) - vac_only[i] - inf_only[i];
+    }
+    }
+    immune_vac[i] = dot_product(vac_only[1:i], waning_vac[1:i]);
+    immune_inf[i] = dot_product(inf_only[1:i], waning_inf[1:i]);
+    immune_both[i] = dot_product(both_only[1:i], waning_vac[1:i]);
+    immune_waning[i] = immune_vac[i] + immune_inf[i]+ immune_both[i];
   }
   
 // infectiousness
