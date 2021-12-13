@@ -748,25 +748,24 @@ generated quantities {
   }
   // effective immunity
   for(i in 1:N_days_tot){
-    for(j in 1:i){
-      if(j == i){
-        if(i == 1){
-      vac_only[j]  = cum_p_vac[1];
-      inf_only[j]  = cum_p_inf[1];
-      both_only[j] = p_immune[1] - vac_only[1] - inf_only[1];
+    if(i == 1){
+      inf_only[1]  = cum_p_inf[1];
+      vac_only[1]  = cum_p_vac[1];
+      both_only[1] = p_immune[1] - vac_only[1] - inf_only[1];
         } else {
-      vac_only[j]  = cum_p_vac[i] - cum_p_vac[i-1];
-      inf_only[j]  = cum_p_inf[i] - cum_p_inf[i-1];
-      both_only[j] = (p_immune[i] - p_immune[i-1]) - vac_only[i] - inf_only[i];
+      inf_only[i]  = cum_p_inf[i] - cum_p_inf[i-1];
+      vac_only[i]  = cum_p_vac[i] - cum_p_vac[i-1];
+      both_only[i] = (p_immune[i] - p_immune[i-1]) - vac_only[i] - inf_only[i];
       } 
-      } else {
-      vac_only[j] = vac_only[j-1] * (1-(cum_p_inf[i]-cum_p_inf[i-1]));
-      inf_only[j] = inf_only[j-1] * (1-(vac_inf[i]-vac_inf[i-1]));
-      both_only[j] = (p_immune[i] - p_immune[i-1]) - vac_only[i] - inf_only[i];
-    }
-    }
-    immune_vac[i] = dot_product(vac_only[i:1], waning_vac[1:i]);
-    immune_inf[i] = dot_product(inf_only[i:1], waning_inf[1:i]);
+    //   } else {
+    //   vac_only[j] = vac_only[j-1] * (1-(cum_p_inf[i]-cum_p_inf[i-1]));
+    //   inf_only[j] = inf_only[j-1] * (1-(vac_inf[i]-vac_inf[i-1]));
+    //   both_only[j] = (p_immune[i] - p_immune[i-1]) - vac_only[i] - inf_only[i];
+    // }
+    immune_vac[i] = dot_product(vac_only[i:1] * (1-(cum_p_inf[i]-cum_p_inf[i-1])), 
+                              waning_vac[1:i]);
+    immune_inf[i] = dot_product(inf_only[i:1] * (1-(vac_inf[i]-vac_inf[i-1])), 
+                              waning_inf[1:i]);
     immune_both[i] = dot_product(both_only[i:1], waning_vac[1:i]);
     immune_waning[i] = immune_vac[i] + immune_inf[i]+ immune_both[i];
   }
