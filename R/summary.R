@@ -106,7 +106,15 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "pop_infectiousness"   = "pop.infectiousness",
     "p_immune"             = "immune",
     "p_immune_recent"      = "immune.recent",
-    "p_immune_independence" = "immune.independence",
+    "p_immune_independence"= "immune.independence",
+    "immune_vac"           = "immune.vaccinated",
+    "immune_inf"           = "immune.infected",
+    "immune_both"          = "immune.both",
+    "immune_waning"        = "immune.waning",
+    "vac_inf"              = "vac.inf",
+    "vac_only"             = "vac.only",
+    "inf_only"             = "inf.only",
+    "both_only"            = "both.only",
     "or_vac_inf"           = "or.vac.inf"
   ) -> params
 

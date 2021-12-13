@@ -440,6 +440,14 @@ runOptimizer.covidestim <- function(cc,
     "p_immune",
     "p_immune_recent",
     "p_immune_independence",
+    "immune_vac",
+    "immune_inf",
+    "immune_both",
+    "immune_waning",
+    "vac_inf",
+    "vac_only",
+    "inf_only",
+    "both_only",
     "or_vac_inf"
   ) -> essential_vars
 
