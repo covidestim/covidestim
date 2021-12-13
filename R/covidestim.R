@@ -84,7 +84,11 @@ covidestim <- function(ndays,
                        max_treedepth = 14,
                        window.length = 7,
                        ndays_recent_imm = 30*9,
-                       region) {
+                       region,
+                       wane_vac_start = .9,
+                       wane_vac_end = .25,
+                       wane_inf_start = .8,
+                       wane_vac_end = .15) {
 
   att(is.numeric(ndays), ndays >= 1)
 
@@ -95,7 +99,11 @@ covidestim <- function(ndays,
     pop_under12 = pop_under12,
     N_days_av = window.length,
     region = region,
-    ndays_recent_imm = ndays_recent_imm
+    ndays_recent_imm = ndays_recent_imm,
+    wane_vac_start = wane_vac_start,
+    wane_vac_end = wane_vac_end,
+    wane_inf_start = wane_inf_start,
+    want_inf_end = wane_inf_end
   ) -> config
 
   # All user-specified config-related things must be specified above this line

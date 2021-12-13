@@ -183,7 +183,11 @@ genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
                     pop_under12 = .15,
                     region,
-                    ndays_recent_imm = 30*9
+                    ndays_recent_imm = 30*9,
+                    wane_vac_start = .9,
+                    wane_vac_end = .25,
+                    wane_inf_start = .8,
+                    wane_inf_end = .15
                     )
 {
 
@@ -234,6 +238,12 @@ genData <- function(N_days, N_days_before = 28,
     # Add population size to constrain susceptible population, large default assumes no constraint
     pop_size = pop_size, 
     pop_under12 = pop_under12,
+    
+    # Add the waning starting and end points
+    wane_vac_start = wane_vac_start,
+    wane_vac_end = wane_vac_end,
+    wane_inf_start = wane_inf_start,
+    wane_inf_end = wane_inf_end,
 
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
