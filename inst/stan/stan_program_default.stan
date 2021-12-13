@@ -748,8 +748,8 @@ generated quantities {
   }
   // effective immunity
   for(i in 1:N_days_tot){
-    for(j in i:1){
-      if(j == 1){
+    for(j in 1:i){
+      if(j == i){
         if(i == 1){
       vac_only[j]  = cum_p_vac[1];
       inf_only[j]  = cum_p_inf[1];
