@@ -782,15 +782,15 @@ generated quantities {
       inf_only[i]  = cum_p_inf[i] - cum_p_inf[i-1];
       vac_only[i]  = cum_p_vac[i] - cum_p_vac[i-1];
       both_only[i] = vac_only[i] + inf_only[i] - (p_immune[i] - p_immune[i-1]);
-    immune_vac[i] = dot_product(vac_only[1:i] * (1-(cum_p_inf[i]-cum_p_inf[i-1])),
+    immune_vac[i] = dot_product(vac_only[1:i] * (1-(cum_p_inf[i])),
                               waning_vacinf[1:i]);
-    immune_inf[i] = dot_product(inf_only[1:i] * (1-(vac_inf[i]-vac_inf[i-1])),
+    immune_inf[i] = dot_product(inf_only[1:i] * (1-(vac_inf[i])),
                               waning_vacinf[1:i]);
     immune_both[i] = dot_product(both_only[1:i], waning_both[1:i]);
     immune_waning[i] = immune_vac[i] + immune_inf[i]+ immune_both[i];
-    immune_sev_vac[i] = dot_product(vac_only[1:i] * (1-(cum_p_inf[i]-cum_p_inf[i-1])),
+    immune_sev_vac[i] = dot_product(vac_only[1:i] * (1-(cum_p_inf[i])),
                               sev_vacinf[1:i]);
-    immune_sev_inf[i] = dot_product(inf_only[1:i] * (1-(vac_inf[i]-vac_inf[i-1])),
+    immune_sev_inf[i] = dot_product(inf_only[1:i] * (1-(vac_inf[i])),
                               sev_vacinf[1:i]);
     immune_sev_both[i] = dot_product(both_only[1:i], sev_both[1:i]);
     immune_sev_waning[i] = immune_sev_vac[i] + immune_sev_inf[i]+ immune_sev_both[i];
