@@ -129,10 +129,15 @@ data {
   real<lower=0>          scale_dx_delay_sev_a; 
   real<lower=0>          scale_dx_delay_sev_b;
   // waning starting points
-  real<lower=0,upper=1> wane_vac_start;
-  real<lower=0,upper=1> wane_vac_end;
-  real<lower=0,upper=1> wane_inf_start;
-  real<lower=0,upper=1> wane_inf_end;
+  // real<lower=0,upper=1> wane_vac_start;
+  // real<lower=0,upper=1> wane_vac_end;
+  // real<lower=0,upper=1> wane_inf_start;
+  // real<lower=0,upper=1> wane_inf_end;
+  //waning curves
+  vector<lower=0,upper=1>[N_days + N_days_before] waning_vacinf;
+  vector<lower=0,upper=1>[N_days + N_days_before] waning_both;
+  vector<lower=0,upper=1>[N_days + N_days_before] sev_vacinf;
+  vector<lower=0,upper=1>[N_days + N_days_before] sev_both;
 
 }
 ///////////////////////////////////////////////////////////
@@ -656,9 +661,11 @@ generated quantities {
   vector[N_days_tot]  pop_infectiousness;  
   vector[Max_delay]   infect_dist_rv;
   vector[500]         seropos_dist_rv;
-  vector[N_days_tot]  waning_dist_rv;
-  vector[N_days_tot]  waning_vac;
-  vector[N_days_tot]  waning_inf;
+//  vector[N_days_tot]  waning_dist_rv;
+  // vector[N_days_tot]  waning_vacinf;
+  // vector[N_days_tot]  waning_both;
+  // vector[N_days_tot]  sev_vacinf;
+  // vector[N_days_tot]  sev_both;
   vector[N_days_tot]  vac_only;
   vector[N_days_tot]  inf_only;
   vector[N_days_tot]  both_only;
@@ -666,6 +673,10 @@ generated quantities {
   vector[N_days_tot]  immune_inf;
   vector[N_days_tot]  immune_both;
   vector[N_days_tot]  immune_waning;
+  vector[N_days_tot]  immune_sev_vac;
+  vector[N_days_tot]  immune_sev_inf;
+  vector[N_days_tot]  immune_sev_both;
+  vector[N_days_tot]  immune_sev_waning;
   vector[N_days_tot]  vac_inf;
   real                OR;
   
@@ -740,12 +751,14 @@ generated quantities {
       seropos_dist_rate);
   }
 // vector to define waning
-  for(i in 1:N_days_tot) {
-    waning_dist_rv[i] = 1.0 - gamma_cdf(i+0.0, seropos_dist_shap, 
-      seropos_dist_rate);
-      waning_vac[i] = waning_dist_rv[i] * (wane_vac_start - wane_vac_end) + wane_vac_end;
-      waning_inf[i] = waning_dist_rv[i] * (wane_inf_start - wane_inf_end) + wane_inf_end;
-  }
+ //  for(i in 1:N_days_tot) {
+ // //   waning_dist_rv[i] = 1.0 - gamma_cdf(i+0.0, seropos_dist_shap, 
+ //  //    seropos_dist_rate);
+ //      waning_vacinf[i] = //waning_dist_rv[i] * (wane_vac_start - wane_vac_end) + wane_vac_end;
+ //      waning_both[i] = //waning_dist_rv[i] * (wane_inf_start - wane_inf_end) + wane_inf_end;
+ //      sev_vacinf[i] = ;
+ //      sev_both[i] = ;
+ //  }
   
   // conditional probrability
   for(i in 1:N_days_tot){
@@ -757,20 +770,30 @@ generated quantities {
       inf_only[1]  = cum_p_inf[1];
       vac_only[1]  = cum_p_vac[1];
       both_only[1] = vac_only[1] + inf_only[1] - p_immune[1];
-      immune_vac[1] = vac_only[1] * waning_vac[1];
-    immune_inf[1] = inf_only[1] * waning_inf[1];
-    immune_both[1] = both_only[1] * waning_vac[1];
+      immune_vac[1] = vac_only[1] * waning_vacinf[1];
+    immune_inf[1] = inf_only[1] * waning_vacinf[1];
+    immune_both[1] = both_only[1] * waning_both[1];
     immune_waning[1] = immune_vac[1] + immune_inf[1]+ immune_both[1];
+    immune_sev_vac[1] = vac_only[1] * sev_vacinf[1];
+    immune_sev_inf[1] = inf_only[1] * sev_vacinf[1];
+    immune_sev_both[1] = both_only[1] * sev_both[1];
+    immune_sev_waning[1] = immune_sev_vac[1] + immune_sev_inf[1]+ immune_sev_both[1];
         } else {
       inf_only[i]  = cum_p_inf[i] - cum_p_inf[i-1];
       vac_only[i]  = cum_p_vac[i] - cum_p_vac[i-1];
       both_only[i] = vac_only[i] + inf_only[i] - (p_immune[i] - p_immune[i-1]);
     immune_vac[i] = dot_product(vac_only[1:i] * (1-(cum_p_inf[i]-cum_p_inf[i-1])),
-                              waning_vac[1:i]);
+                              waning_vacinf[1:i]);
     immune_inf[i] = dot_product(inf_only[1:i] * (1-(vac_inf[i]-vac_inf[i-1])),
-                              waning_inf[1:i]);
-    immune_both[i] = dot_product(both_only[1:i], waning_vac[1:i]);
+                              waning_vacinf[1:i]);
+    immune_both[i] = dot_product(both_only[1:i], waning_both[1:i]);
     immune_waning[i] = immune_vac[i] + immune_inf[i]+ immune_both[i];
+    immune_sev_vac[i] = dot_product(vac_only[1:i] * (1-(cum_p_inf[i]-cum_p_inf[i-1])),
+                              sev_vacinf[1:i]);
+    immune_sev_inf[i] = dot_product(inf_only[1:i] * (1-(vac_inf[i]-vac_inf[i-1])),
+                              sev_vacinf[1:i]);
+    immune_sev_both[i] = dot_product(both_only[1:i], sev_both[1:i]);
+    immune_sev_waning[i] = immune_sev_vac[i] + immune_sev_inf[i]+ immune_sev_both[i];
         }
   }
   

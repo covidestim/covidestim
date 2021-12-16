@@ -162,6 +162,65 @@ validate.modelconfig <- function(cfg) {
 
 }
 
+get_waning <- function(scenario, N_days, N_days_before){
+  
+    vacinf_inf_start = .8
+    vacinf_inf_mid   = .5
+    vacinf_inf_end   = .25
+    vacinf_daystart  = 60
+    vacinf_daymid    = 60
+    vacinf_dayend    = 150
+    vacinf_sev_start = .95
+    vacinf_sev_decl  = .1/120
+    vacinf_sev_daystart = 120
+    both_inf = .9
+    both_inf_daystart = 120
+    both_inf_decl = 0
+    both_sev = .95
+    both_sev_daystart = 120
+    both_sev_decl = 0
+    
+  if(scenario == 2){ # lo scenario
+    vacinf_inf_start = vacinf_inf_start - .05
+    vacinf_inf_mid   = vacinf_inf_mid - .05
+    vacinf_inf_end   = vacinf_inf_end - .05
+    vacinf_sev_start = vacinf_sev_start - .05
+    vacinf_sev_decl  = .2/120
+    both_inf = both_inf - .1
+    both_inf_decl = .1/120
+    both_sev = both_sev - .05
+    both_sev_decl = .1/120
+  }
+  if(scenario == 3){ # hi scenario
+    vacinf_inf_start = .9
+    vacinf_inf_mid   = .75
+    vacinf_inf_end   = .5
+    vacinf_sev_start = vacinf_sev_start + .05
+    vacinf_sev_decl  = .05/120
+    both_inf = both_inf + .05
+    both_inf_decl = 0
+    both_sev = both_sev + .05
+    both_sev_decl = 0
+  }
+    
+    waning_vacinf = c(rep(vacinf_inf_start, vacinf_daystart),
+                      vacinf_inf_start - (1:vacinf_daymid)/vacinf_daymid * (vacinf_inf_start - vacinf_inf_mid),
+                      vacinf_inf_mid   - (1:vacinf_dayend)/vacinf_dayend * (vacinf_inf_mid   - vacinf_inf_end),
+                      rep(vacinf_inf_end, N_days + N_days_before - vacinf_daystart - vacinf_daymid - vacinf_dayend)
+    )
+    waning_both = c(rep(both_inf, both_inf_daystart),
+                    both_inf - (1:(N_days + N_days_before - both_inf_daystart)) * both_inf_decl
+    )
+    sev_vacinf = c(rep(vacinf_sev_start, vacinf_sev_daystart),
+                   vacinf_sev_start - (1:(N_days + N_days_before - vacinf_sev_daystart)) * vacinf_sev_decl
+    )
+    sev_both = c(rep(both_sev, both_sev_daystart),
+                 both_sev  - (1:(N_days + N_days_before - both_sev_daystart)) * both_sev_decl
+    )
+    return(list("waning_vacinf" = waning_vacinf, "waning_both" = waning_both,
+                "sev_vacinf" = sev_vacinf, "sev_both" = sev_both))
+}
+
 get_logor <- function(region) {
   found <- dplyr::filter(logor_vac_state, state == region)
   
@@ -184,10 +243,7 @@ genData <- function(N_days, N_days_before = 28,
                     pop_under12 = .15,
                     region,
                     ndays_recent_imm = 30*9,
-                    wane_vac_start = .9,
-                    wane_vac_end = .25,
-                    wane_inf_start = .8,
-                    wane_inf_end = .15
+                    scenario = 1
                     )
 {
 
@@ -218,8 +274,6 @@ genData <- function(N_days, N_days_before = 28,
     ifr_adj_fixed = NULL,
     N_ifr_adj     = NULL,
     
-
-
     #n days to model before start of data
     N_days_before = as.integer(N_days_before),
     
@@ -240,10 +294,10 @@ genData <- function(N_days, N_days_before = 28,
     pop_under12 = pop_under12,
     
     # Add the waning starting and end points
-    wane_vac_start = wane_vac_start,
-    wane_vac_end = wane_vac_end,
-    wane_inf_start = wane_inf_start,
-    wane_inf_end = wane_inf_end,
+    waning_vacinf = get_waning(scenario, N_days, N_days_before)$waning_vacinf,
+    waning_both = get_waning(scenario, N_days, N_days_before)$waning_both,
+    sev_vacinf = get_waning(scenario, N_days, N_days_before)$sev_vacinf,
+    sev_both = get_waning(scenario, N_days, N_days_before)$sev_both,
 
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day

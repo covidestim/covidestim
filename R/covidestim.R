@@ -85,10 +85,7 @@ covidestim <- function(ndays,
                        window.length = 7,
                        ndays_recent_imm = 30*9,
                        region,
-                       wane_vac_start = .9,
-                       wane_vac_end = .25,
-                       wane_inf_start = .8,
-                       wane_vac_end = .15) {
+                       waningScenario = 1) {
 
   att(is.numeric(ndays), ndays >= 1)
 
@@ -100,10 +97,7 @@ covidestim <- function(ndays,
     N_days_av = window.length,
     region = region,
     ndays_recent_imm = ndays_recent_imm,
-    wane_vac_start = wane_vac_start,
-    wane_vac_end = wane_vac_end,
-    wane_inf_start = wane_inf_start,
-    want_inf_end = wane_inf_end
+    scenario = waningScenario
   ) -> config
 
   # All user-specified config-related things must be specified above this line
@@ -452,6 +446,10 @@ runOptimizer.covidestim <- function(cc,
     "immune_inf",
     "immune_both",
     "immune_waning",
+    "immune_sev_vac",
+    "immune_sev_inf",
+    "immune_sev_both",
+    "immune_sev_waning",
     "vac_inf",
     "vac_only",
     "inf_only",
