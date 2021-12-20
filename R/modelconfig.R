@@ -171,13 +171,13 @@ get_waning <- function(scenario, N_days, N_days_before){
     vacinf_daymid    = 60
     vacinf_dayend    = 150
     vacinf_sev_start = .95
-    vacinf_sev_decl  = .1/120
-    vacinf_sev_daystart = 120
+    vacinf_sev_decl  = .1/180
+    vacinf_sev_daystart = 180
     both_inf = .9
-    both_inf_daystart = 120
+    both_inf_daystart = 180
     both_inf_decl = 0
     both_sev = .95
-    both_sev_daystart = 120
+    both_sev_daystart = 180
     both_sev_decl = 0
     
   if(scenario == 2){ # lo scenario
@@ -185,18 +185,18 @@ get_waning <- function(scenario, N_days, N_days_before){
     vacinf_inf_mid   = vacinf_inf_mid - .05
     vacinf_inf_end   = vacinf_inf_end - .05
     vacinf_sev_start = vacinf_sev_start - .05
-    vacinf_sev_decl  = .2/120
+    vacinf_sev_decl  = .2/180
     both_inf = both_inf - .1
-    both_inf_decl = .1/120
+    both_inf_decl = .1/180
     both_sev = both_sev - .05
-    both_sev_decl = .1/120
+    both_sev_decl = .1/180
   }
   if(scenario == 3){ # hi scenario
     vacinf_inf_start = .9
     vacinf_inf_mid   = .75
     vacinf_inf_end   = .5
     vacinf_sev_start = vacinf_sev_start + .05
-    vacinf_sev_decl  = .05/120
+    vacinf_sev_decl  = .05/180
     both_inf = both_inf + .05
     both_inf_decl = 0
     both_sev = both_sev + .05
@@ -217,6 +217,11 @@ get_waning <- function(scenario, N_days, N_days_before){
     sev_both = c(rep(both_sev, both_sev_daystart),
                  both_sev  - (1:(N_days + N_days_before - both_sev_daystart)) * both_sev_decl
     )
+    waning_vacinf[waning_vacinf < 0] <- 0
+    waning_both[waning_both < 0]     <- 0
+    sev_vacinf[sev_vacinf < 0]       <- 0
+    sev_both[sev_both < 0]           <- 0
+    
     return(list("waning_vacinf" = waning_vacinf, "waning_both" = waning_both,
                 "sev_vacinf" = sev_vacinf, "sev_both" = sev_both))
 }
