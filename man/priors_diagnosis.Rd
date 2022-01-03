@@ -7,7 +7,7 @@
 priors_diagnosis(
   rr_diag_asy_vs_sym = c(2, 18),
   rr_diag_sym_vs_sev = c(2, 2),
-  p_diag_if_sev = c(5, 2)
+  p_diag_if_sev = c(20, 5)
 )
 }
 \arguments{
