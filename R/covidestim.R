@@ -73,7 +73,7 @@ NULL
 covidestim <- function(ndays, 
                        ndays_before = 28,
                        pop_size = 1e12,
-                       nspl_rt_knotwidth = 5,
+                       nspl_rt_knotwidth = 10,
                        chains = 4, 
                        iter = 3000, 
                        thin = 1, 
