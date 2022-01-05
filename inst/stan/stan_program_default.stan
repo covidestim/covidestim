@@ -64,6 +64,10 @@ data {
   vector<lower=0>[N_weeks+N_weeks_before] ifr_vac_adj; // ifr_vaccine_adjustment
   real<lower=0>          pri_ifr_decl_OR_a; 
   real<lower=0>          pri_ifr_decl_OR_b;
+  real<lower=0>          pri_rr_decl_sev_a;
+  real<lower=0>          pri_rr_decl_sev_b;
+  real<lower=0>          pri_rr_decl_die_a;
+  real<lower=0>          pri_rr_decl_die_b;
   real<lower=0>          ifr_adj_fixed;
   
   real<lower=0>          infect_dist_rate;
@@ -325,6 +329,7 @@ parameters {
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
   real<lower=0, upper=1>    p_sym_if_inf;
+  real<lower=0, upper=1>    new_p_sym_if_inf;
   real<lower=0, upper=1>    p_sev_if_sym;
   real<lower=0, upper=1>    p_die_if_sev;
   real<lower=0>             ifr_decl_OR;
@@ -722,6 +727,7 @@ model {
   // PRIORS: DISEASE PROGRESSION
   // probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
+  new_p_sym_if_inf     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
