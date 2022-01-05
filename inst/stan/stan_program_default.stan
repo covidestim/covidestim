@@ -10,9 +10,14 @@ data {
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
+  vector<lower=0>[N_ifr_adj] ifr_omi; // ifr_omicron
   vector<lower=0>[N_days + N_days_before] ifr_vac_adj; // ifr_vaccine_adjustment
   real<lower=0>          pri_ifr_decl_OR_a; 
   real<lower=0>          pri_ifr_decl_OR_b;
+  real<lower=0>          pri_rr_decl_sev_a;
+  real<lower=0>          pri_rr_decl_sev_b;
+  real<lower=0>          pri_rr_decl_die_a;
+  real<lower=0>          pri_rr_decl_die_b;
   real<lower=0>          ifr_adj_fixed;
   
   real<lower=0>          infect_dist_rate;
@@ -76,6 +81,8 @@ data {
   // probabilities of progression inf -> sym -> sev -> die
   real<lower=0>          pri_p_sym_if_inf_a; 
   real<lower=0>          pri_p_sym_if_inf_b;
+  real<lower=0>          pri_new_p_sym_if_inf_a;
+  real<lower=0>          pri_new_p_sym_if_inf_b;
   real<lower=0>          pri_p_sev_if_sym_a;
   real<lower=0>          pri_p_sev_if_sym_b;
   real<lower=0>          pri_p_die_if_sev_a;
@@ -203,9 +210,12 @@ parameters {
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
   real<lower=0, upper=1>    p_sym_if_inf;
+  real<lower=0, upper=1>    new_p_sym_if_inf;
   real<lower=0, upper=1>    p_sev_if_sym;
   real<lower=0, upper=1>    p_die_if_sev;
   real<lower=0>             ifr_decl_OR;
+  real<lower=0>             rr_decl_sev;
+  real<lower=0>             rr_decl_die;
 
   
 // DIANGOSIS
@@ -245,6 +255,10 @@ transformed parameters {
   vector[N_ifr_adj]      p_die_if_sevt;
   vector[N_days_tot]      p_sev_if_symt;
   vector[N_days_tot]      p_sym_if_inft;
+  // new probability of symptomatic
+  real<lower=0>      rr_sym_if_inf;
+  real<lower=0>      rr_sev_if_sym;
+  real<lower=0>      rr_die_if_sev;
   
 // DIAGNOSIS AND REPORTING  
  // probability of diagnosis
@@ -287,13 +301,17 @@ transformed parameters {
   // the proprtion parameter
   // simplex[3]     prop;
   
+  // RELATIVE RISKS for omicron adjustment 
+  rr_sym_if_inf = new_p_sym_if_inf / p_sym_if_inf;
+  rr_sev_if_sym = rr_decl_sev / rr_sym_if_inf;
+  rr_die_if_sev = rr_decl_die / rr_decl_sev;
   // NATURAL HISTORY CASCADE
-  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR);
+  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR) .* (1.0 - ifr_omi * (1.0 - rr_die_if_sev));
   
   for(i in 1:N_days_tot){
   p_die_if_sevt[i] = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prob_vac[1]);
-  p_sev_if_symt[i] = p_sev_if_sym * pow(ifr_vac_adj[i], prob_vac[2]);
-  p_sym_if_inft[i] = p_sym_if_inf * pow(ifr_vac_adj[i], prob_vac[3]);
+  p_sev_if_symt[i] = p_sev_if_sym * pow(ifr_vac_adj[i], prob_vac[2]) * (1.0 - ifr_omi[i] * (1.0 - rr_sev_if_sym));
+  p_sym_if_inft[i] = p_sym_if_inf * pow(ifr_vac_adj[i], prob_vac[3]) * (1.0 - ifr_omi[i] * (1.0 - rr_sym_if_inf));
   }
   
 
@@ -511,9 +529,12 @@ model {
   // DISEASE PROGRESSION
   // probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
+  new_p_sym_if_inf     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
+  rr_decl_sev          ~ gamma(pri_rr_decl_sev_a, pri_rr_decl_sev_b);
+  rr_decl_die          ~ gamma(pri_rr_decl_die_a, pri_rr_decl_die_b);
   // overall infection fatality rate
   p_die_if_inf         ~ beta(pri_p_die_if_inf_a, pri_p_die_if_inf_b);
 // DIAGNOSIS    

@@ -154,6 +154,22 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #'   represents an IFR 30% higher in March of 2020, with 95% interval 10-50%
 #'   higher.
 #'
+#' @param new_p_sym_if_inf A two-element numeric vector containing \code{c(alpha,
+#'   beta)} parameters/hyperpriors of a Beta distribution modeling the
+#'   new probability of symptomatic if infected after Dec 2021 (omicron). Default value
+#'   represents a p_sym_if_inf of 7%, with 95% interval 5-10%
+#'   higher.
+#'
+#' @param rr_decl_sev A two-element numeric vector containing \code{c(shape,
+#'   rate)} parameters/hyperpriors of a Gamma distribution modeling the
+#'   decline in infection hospitalization ratio after Dec 2021 (omicron). Default value
+#'   represents an IFR in Dec 2021 7.5% of before, with 95% interval 4-10%.
+#'
+#' @param rr_decl_die A two-element numeric vector containing \code{c(shape,
+#'   rate)} parameters/hyperpriors of a Gamma distribution modeling the
+#'   decline in IFR in after Dec 2021 (omicron). Default value
+#'   represents an IFR 2% March of 2020, with 95% interval 1-3%.
+#'
 #'   Source for default value: Expert opinion
 #'
 #' @return An S3 object of class \code{priors}
@@ -164,7 +180,10 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
                                p_die_if_sev = c(28.239, 162.30),    # a/b
                                p_die_if_inf = c(15.915,3167.1),     # a/b
-                               ifr_decl_OR  = c(12.031, 8.999)     # shape/rate: this is actually a gamma distribution!!
+                               ifr_decl_OR  = c(12.031, 8.999),     # shape/rate: this is actually a gamma distribution!!
+                               new_p_sym_if_inf = c(32.906,393.51), # decline symptomatic if infected
+                               rr_decl_sev = c(20.915,298.79), # decline severe if infected shape/rate (gamma)
+                               rr_decl_die = c(15.366,786,32) # decline die if infected shape/rate (gamma)
                                ) {                                 
 
   att(length(p_sym_if_inf) == 2)
@@ -172,11 +191,17 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
   att(length(p_die_if_sev) == 2)
   att(length(p_die_if_inf) == 2)
   att(length(ifr_decl_OR) == 2)
+  att(length(new_p_sym_if_inf) == 2)
+  att(length(rr_decl_sev) == 2)
+  att(length(rr_decl_die) == 2)
   att(is_nonNegativeReal(p_sym_if_inf))
   att(is_nonNegativeReal(p_sev_if_sym))
   att(is_nonNegativeReal(p_die_if_sev))
   att(is_nonNegativeReal(p_die_if_inf))
   att(is_nonNegativeReal(ifr_decl_OR))
+  att(is_nonNegativeReal(new_p_sym_if_inf))
+  att(is_nonNegativeReal(rr_decl_sev))
+  att(is_nonNegativeReal(rr_decl_die))
   
   build_priors(
     p_sym_if_inf,
@@ -184,6 +209,9 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
     p_die_if_sev,
     p_die_if_inf,
     ifr_decl_OR,
+    new_p_sym_if_inf,
+    rr_decl_sev,
+    rr_decl_die,
     .postfix=c("_a", "_b"),
     .prefix="pri_"
   ) -> ps
