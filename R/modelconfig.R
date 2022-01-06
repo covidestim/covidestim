@@ -119,6 +119,7 @@ modelconfig_add.input <- function(rightside, leftside) {
 
   # Assign the results of the call to the `cfg` object
   cfg$ifr_adj       = ifr_adjustments$ifr_adj
+  cfg$ifr_omi       = ifr_adjustments$ifr_omi
   cfg$ifr_adj_fixed = ifr_adjustments$ifr_adj_fixed
   cfg$N_ifr_adj     = ifr_adjustments$N_ifr_adj
   
@@ -192,6 +193,7 @@ genData <- function(N_days, N_days_before = 28,
     # They get defined when an input_*() is added, because it's there that
     # we first see what the user's first day of data is.
     ifr_adj       = NULL,
+    ifr_omi       = NULL,
     ifr_adj_fixed = NULL,
     N_ifr_adj     = NULL,
     N_days_pri_Rt = nRt,

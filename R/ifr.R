@@ -77,12 +77,26 @@ gen_ifr_adjustments <- function(first_date, N_days_before, region) {
         21
       )
   )
+  # reduction in IFR over the course of December 2021 due to Omicron.
+  # Operationalized as a Normal CDF, with max slope on December 20, 2021, 
+  # and sd = 5 days. Vector created from ifr_adj_start to end 2022.
+  ifr_omi_df <- tibble::tibble(
+    date  = seq.Date(ifr_adj_start, ymd('2022-12-31'), by = '1 day'),
+    value = pnorm(
+        ifr_adj_start : ymd("2022-12-31"),
+        ymd("2021-12-20"),
+        14
+      )
+  )
 
   ifr_adj <- dplyr::pull(ifr_adj_df, value)
+  ifr_omi <- dplyr::pull(ifr_omi_df, value)
+  
 
   list(
     ifr_adj_fixed = ifr_adj_fixed,
     ifr_adj       = ifr_adj,
+    ifr_omi       = ifr_omi,
     N_ifr_adj     = length(ifr_adj)
   )
 }
