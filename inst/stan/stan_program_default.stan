@@ -350,7 +350,21 @@ transformed parameters {
     deriv1_log_new_inf[i] = logRt[i]/serial_i;
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
     new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
-    pop_uninf -= new_inf[i];
+    
+    //CHOOSE ONE OF THE REINFECTION STRATEGIES
+    // option 1: original: reduce population with new_inf
+   // pop_uninf -= new_inf[i]; 
+    //option 2: no code; full population always can be infected
+    //option 3: remove only 50% of the new_inf from pop_uninf 
+   pop_uninf -= new_inf[i] * 0.5; 
+   // option3b: add 50% back in pop_uninf after 180 days (6 months)
+   // i.e. 50+50 = 100% no longer immune
+   if(i > 180){
+     pop_uninf += new_inf[i-180] * 0.5;
+   }
+   
+   // END OF REINFECTION STRATEGIES
+   
     if (pop_uninf < 1) {
       // print("WARNING pop_uninf preliminary value was ", pop_uninf);
       pop_uninf = 1;
