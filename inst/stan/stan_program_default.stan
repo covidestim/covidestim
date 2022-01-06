@@ -102,6 +102,7 @@ data {
   
   // input for the number of days to put the Rt prior on
   int<lower=0> N_days_pri_Rt;
+  real<lower=0> sd_pri_Rt;
 
 }
 ///////////////////////////////////////////////////////////
@@ -532,7 +533,7 @@ model {
   inv_sqrt_phi_d       ~ normal(0, 1);
   // prop for vaccine
    prob_vac            ~ dirichlet(rep_vector(5, 3));
-   logRt[(N_days_tot-N_days_pri_Rt):N_days_tot] ~ normal(0,1);
+   logRt[(N_days_tot-N_days_pri_Rt):N_days_tot] ~ normal(0, sd_pri_Rt);
     
 ///// LIKELIHOOD
 // Before data

@@ -81,7 +81,8 @@ covidestim <- function(ndays,
                        max_treedepth = 14,
                        window.length = 7,
                        region,
-                       nRt = 7) {
+                       nRt = 7,
+                       sdRt = 1) {
 
   att(is.numeric(ndays), ndays >= 1)
 
@@ -91,7 +92,8 @@ covidestim <- function(ndays,
     pop_size = pop_size,
     N_days_av = window.length,
     region = region,
-    nRt = nRt
+    nRt = nRt,
+    sdRt = sdRt
   ) -> config
 
   # All user-specified config-related things must be specified above this line
