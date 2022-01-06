@@ -533,8 +533,10 @@ model {
   inv_sqrt_phi_d       ~ normal(0, 1);
   // prop for vaccine
    prob_vac            ~ dirichlet(rep_vector(5, 3));
-   logRt[(N_days_tot-N_days_pri_Rt):N_days_tot] ~ normal(0, sd_pri_Rt);
-    
+   if(N_days_pri_Rt > 0){
+   logRt[(N_days_tot-N_days_pri_Rt+1):N_days_tot] ~ normal(0, sd_pri_Rt);
+   }
+   
 ///// LIKELIHOOD
 // Before data
   if(pre_period_zero==1){
