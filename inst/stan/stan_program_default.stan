@@ -66,6 +66,9 @@ data {
   // is there a last obeserved case data day?
   int<lower=0> lastCaseDate;
 
+// reinfection setup
+int<lower=0> reinfection;
+vector<lower=0,upper=1>[2] reinf_prob;
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
   // for new infections
@@ -118,6 +121,7 @@ transformed data {
  int  nda0;
  int  idx1[N_days + N_days_before];
  int  idx2[N_days + N_days_before];
+ int  reinf_day_int;
 
  // Progression delays
  vector[Max_delay]  inf_prg_delay_rv;
@@ -370,15 +374,13 @@ transformed parameters {
     new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
     
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
-    // option 1: original: reduce population with new_inf
-   // pop_uninf -= new_inf[i]; 
-    //option 2: no code; full population always can be infected
-    //option 3: remove only 50% of the new_inf from pop_uninf 
-   pop_uninf -= new_inf[i] * 0.5; 
-   // option3b: add 50% back in pop_uninf after 180 days (6 months)
-   // i.e. 50+50 = 100% no longer immune
-   if(i > 180){
-     pop_uninf += new_inf[i-180] * 0.5;
+    if(reinfection == 0){
+   pop_uninf -= new_inf[i];
+    } else {
+   pop_uninf -= new_inf[i] * reinf_prob[1];
+        if(i > 180){
+   pop_uninf -= new_inf[i-180] * reinf_prob[2];
+     }
    }
    
    // END OF REINFECTION STRATEGIES

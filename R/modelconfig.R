@@ -114,7 +114,8 @@ modelconfig_add.input <- function(rightside, leftside) {
   ifr_adjustments <- gen_ifr_adjustments(
     first_date    = cfg$first_date %>% as.Date(origin = '1970-01-01'),
     N_days_before = cfg$N_days_before,
-    region        = cfg$region
+    region        = cfg$region,
+    omicron       = cfg$omicron
   )
 
   # Assign the results of the call to the `cfg` object
@@ -166,7 +167,9 @@ validate.modelconfig <- function(cfg) {
 
 genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
-                    region, nRt, sdRt = 1
+                    region, nRt, sdRt = 1,
+                    reinf_prob = NULL,
+                    omicron_adjust = FALSE
                     )
 {
 
@@ -198,7 +201,11 @@ genData <- function(N_days, N_days_before = 28,
     N_ifr_adj     = NULL,
     N_days_pri_Rt = nRt,
     sd_pri_Rt     = sdRt,
-
+    omicron       = omicron_adjust,
+    
+    # Reinfection parameters
+    reinfection    = length(reinf_prob),
+    reinf_prob     = c(reinf_prob,0,0)[1:2],
 
     #n days to model before start of data
     N_days_before = as.integer(N_days_before),

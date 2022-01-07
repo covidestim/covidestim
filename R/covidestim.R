@@ -46,6 +46,13 @@ NULL
 #'   sampling or in BFGS.
 #' @param region A string. The FIPS code (for U.S. counties) or state name
 #'   (e.g. \code{New York}) being modeled. Required.
+#' @param nRt A positive integer. How many days of Rt (measured from last day)
+#'    should be penalized?
+#' @param sdRt A number. The standard deviation of the Rt penalty.
+#' @param reinf_prob NULL or vector of length 1 or 2. The fractions of the 
+#'    infections to be put back in the Susceptible pool on day 1 and 180
+#'    after infection. Example: c(.5, .2) 50% of new infections is immediately
+#'    available for reinfection; an additional 20% is available after 180 days.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to
 #' \code{\link{run.covidestim}} or \code{\link{runOptimizer.covidestim}} to execute the model, as
@@ -82,9 +89,14 @@ covidestim <- function(ndays,
                        window.length = 7,
                        region,
                        nRt = 7,
-                       sdRt = 1) {
+                       sdRt = 1,
+                      reinf_prob = NULL,  
+                      omicron_adjust = FALSE) {
 
   att(is.numeric(ndays), ndays >= 1)
+  att(is.logical(omicron_adjust))
+  att(all(reinf_prob > 0))
+#  att(sum(reinf_prob <= 1))
 
   defaultConfig(
     N_days = ndays,
@@ -93,8 +105,10 @@ covidestim <- function(ndays,
     N_days_av = window.length,
     region = region,
     nRt = nRt,
-    sdRt = sdRt
-  ) -> config
+    sdRt = sdRt,
+    reinf_prob = reinf_prob,
+    omicron_adjust = omicron_adjust
+    ) -> config
 
   # All user-specified config-related things must be specified above this line
   # to avoid double-validation/no-validation
