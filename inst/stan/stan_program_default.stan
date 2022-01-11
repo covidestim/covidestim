@@ -80,6 +80,8 @@ vector<lower=0,upper=1>[2] reinf_prob;
   real<lower=0>          pri_logRt_sd;   
   real<lower=0>          pri_serial_i_shap; 
   real<lower=0>          pri_serial_i_rate; 
+  real<lower=0>          pri_serial_i_omi_shap; 
+  real<lower=0>          pri_serial_i_omi_rate; 
   real<lower=0>          pri_deriv1_spl_par_sd;
   real<lower=0>          pri_deriv2_spl_par_sd;
   
@@ -220,6 +222,7 @@ parameters {
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
   real<lower=3, upper=11>           serial_i; // serial interval
+  real<lower=0, upper=8>           serial_i_omi; // serial interval
   vector[N_spl_par_rt]    spl_par_rt;
 
 // DISEASE PROGRESSION
@@ -260,6 +263,7 @@ transformed parameters {
   vector[N_days_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
 
+vector<lower=0>[N_days_tot]    serial_i_comb;
   // Rt spline
   vector[N_days_tot]      logRt0;
   vector[N_days_tot]      logRt;
@@ -333,6 +337,12 @@ vector[N_days_tot]   ifr_omi_rv_die;
       
     }
   }
+  
+  // compute new serial i, combination of ancestral and omicron
+  for(i in 1:N_days_tot){
+    serial_i_comb[i] = serial_i * ifr_omi_rv[i] + serial_i_omi * (1 - ifr_omi_rv[i]);
+  }
+  
   // RELATIVE RISKS for omicron adjustment 
   rr_sym_if_inf = p_sym_if_inf_omi / p_sym_if_inf;
   rr_sev_if_sym = rr_decl_sev / rr_sym_if_inf;
@@ -394,7 +404,7 @@ vector[N_days_tot]   ifr_omi_rv_die;
     } else{
       logRt[i] = logRt0[i] + log(pop_uninf/pop_size);
     }
-    deriv1_log_new_inf[i] = logRt[i]/serial_i;
+    deriv1_log_new_inf[i] = logRt[i]/serial_i_comb[i];
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
     new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
     
@@ -564,6 +574,7 @@ model {
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
+  serial_i_omi          ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
   deriv2_spl_par_rt     ~ normal(0, pri_deriv2_spl_par_sd);
   // DISEASE PROGRESSION
