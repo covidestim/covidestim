@@ -176,7 +176,9 @@ genData <- function(N_days, N_days_before = 28,
                     region, nRt, sdRt = 1,
                     reinf_delay = 180,
                     reinf_prob = NULL,
-                    omicron_adjust = FALSE
+                    omicron_adjust = FALSE,
+                    Omicron_takeover_sd = 14,
+                    sd_omicron_delay = 10
                     )
 {
 
@@ -209,6 +211,9 @@ genData <- function(N_days, N_days_before = 28,
     N_days_pri_Rt = nRt,
     sd_pri_Rt     = sdRt,
     omicron       = omicron_adjust,
+    sd_omicron_delay = sd_omicron_delay,
+    Omicron_takeover_sd = Omicron_takeover_sd,
+    
     
     # Reinfection parameters
     reinfection    = length(reinf_prob),
