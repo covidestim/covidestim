@@ -77,6 +77,11 @@ modelconfig_add.input <- function(rightside, leftside) {
 
   # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
+
+  # Update the `Omicron_takeover_mean`
+  cfg$Omicron_takeover_mean <- as.integer(
+    as.Date('2021-12-20') - as.Date(cfg$first_date, origin = '1970-01-01') + 1
+  )
   
   if("lastDeathDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastDeathDate")
@@ -175,7 +180,7 @@ genData <- function(N_days, N_days_before = 28,
                     )
 {
 
-  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/n_spl_rt_knotwidth)))
+  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/n_spl_rt_knotwidth))
   des_mat_rt <- splines::bs(1:(N_days + N_days_before), 
                          df=n_spl_par_rt, degree=3, intercept=T)
   
@@ -233,6 +238,11 @@ genData <- function(N_days, N_days_before = 28,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
+    # index corresponding to the midpoint of Omicron takeover (50% takeover),
+    # currently corresponds to 2021-12-20, is set when the user adds input data
+    # since that is when we find out what date corresponds to the first day of
+    # data.
+    Omicron_takeover_mean = NA,
     # last death date is initiated here; gets updated as deaths data gets added
     lastDeathDate = N_days,
     lastCaseDate  = N_days,
