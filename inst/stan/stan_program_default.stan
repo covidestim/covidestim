@@ -334,7 +334,7 @@ vector[N_days_tot]   ifr_omi_rv_die;
     }
   }
   // RELATIVE RISKS for omicron adjustment 
- // rr_sym_if_inf = new_p_sym_if_inf / p_sym_if_inf;
+  rr_sym_if_inf = p_sym_if_inf_omi / p_sym_if_inf;
   rr_sev_if_sym = rr_decl_sev / rr_sym_if_inf;
   rr_die_if_sev = rr_decl_die / rr_decl_sev;
   // NATURAL HISTORY CASCADE
