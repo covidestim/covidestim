@@ -115,7 +115,7 @@ covidestim <- function(ndays,
     reinf_prob = reinf_prob,
     omicron_adjust = omicron_adjust,
     Omicron_takeover_sd = Omicron_takeover_sd,
-    sd_omciron_delay = sd_omicron_delay
+    sd_omicron_delay = sd_omicron_delay
     ) -> config
 
   # All user-specified config-related things must be specified above this line
