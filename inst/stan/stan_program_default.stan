@@ -310,7 +310,7 @@ transformed parameters {
   // simplex[3]     prop;
   
   // RELATIVE RISKS for omicron adjustment 
-  rr_sym_if_inf = new_p_sym_if_inf / p_sym_if_inf;
+ // rr_sym_if_inf = new_p_sym_if_inf / p_sym_if_inf;
   rr_sev_if_sym = rr_decl_sev / rr_sym_if_inf;
   rr_die_if_sev = rr_decl_die / rr_decl_sev;
   // NATURAL HISTORY CASCADE
@@ -319,7 +319,7 @@ transformed parameters {
   for(i in 1:N_days_tot){
   p_die_if_sevt[i] = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prob_vac[1]);
   p_sev_if_symt[i] = p_sev_if_sym * pow(ifr_vac_adj[i], prob_vac[2]) * (1.0 - ifr_omi[i] * (1.0 - rr_sev_if_sym));
-  p_sym_if_inft[i] = p_sym_if_inf * pow(ifr_vac_adj[i], prob_vac[3]) * (1.0 - ifr_omi[i] * (1.0 - rr_sym_if_inf));
+  p_sym_if_inft[i] = p_sym_if_inf * pow(ifr_vac_adj[i], prob_vac[3]);// * (1.0 - ifr_omi[i] * (1.0 - rr_sym_if_inf));
   }
   
 
@@ -391,24 +391,6 @@ transformed parameters {
     }
   }
   
-  
-  // print("logRt0:");
-  // print(logRt0);
-  // print("deriv1_log_new_inf:");
-  // print(deriv1_log_new_inf);
-  // print("serial_i:");
-  // print(serial_i);
-  // print("log_new_inf_0:");
-  // print(log_new_inf_0);
-  // print("log_new_inf:");
-  // print(log_new_inf);
-  // print("new_inf:");
-  // print(new_inf);
-  // print("pop_uninf:");
-  // print(pop_uninf);
-  // print("logRt:");
-  // print(logRt);
-  
   Rt = exp(logRt); 
   
   // second derivative
@@ -424,10 +406,24 @@ transformed parameters {
  // cases entering previous state on day i * the probability of progression *
  // the probability progression occurred on day j 
 
+  // pre omicron new_sym implementation, for reference
+  //for(i in 1:N_days_tot) {
+  //  new_sym[i] = dot_product(new_inf[idx1[i]:i],
+  //    inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i];
+  //}
+  
   for(i in 1:N_days_tot) {
-    new_sym[i] = dot_product(new_inf[idx1[i]:i],
-      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i];
-  }
+    new_sym[i] = dot_product(new_inf[idx1[i]:i]*(1-ifr_omi[i]),
+      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i] + 
+      new_inf[idx1[i]:i]*ifr_omi[i],
+      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft_omi[i];
+  } 
+  
+  //for(i in 1:N_days_tot) {
+  //  anc_sym_frac = dot_product(new_inf[idx1[i]:i]*(1-ifr_omi[i]),
+  //    inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i] / 
+  //    new_sym[i]; 
+  //}
   
   for(i in 1:N_days_tot) {
     new_sev[i] = dot_product(new_sym[idx1[i]:i],
@@ -549,7 +545,7 @@ model {
   // DISEASE PROGRESSION
   // probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
-  new_p_sym_if_inf     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
+  p_sym_if_inft_omi    ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
