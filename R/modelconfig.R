@@ -219,7 +219,8 @@ genData <- function(N_days, N_days_before = 28,
     # Reinfection parameters
     reinfection    = length(reinf_prob),
     reinf_prob     = c(reinf_prob,0,0)[1:2],
-    reinf_delay    = reinf_delay, 
+    reinf_delay1    = reinf_delay[1], 
+    reinf_delay2    = reinf_delay[2], 
 
     #n days to model before start of data
     N_days_before = as.integer(N_days_before),

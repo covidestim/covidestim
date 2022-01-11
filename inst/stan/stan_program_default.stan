@@ -68,7 +68,8 @@ data {
 
 // reinfection setup
 int<lower=0> reinfection;
-vector<lower=0>[2] reinf_delay; 
+int<lower=0> reinf_delay1; 
+int<lower=0> reinf_delay2; 
 vector<lower=0,upper=1>[2] reinf_prob;
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
