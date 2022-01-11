@@ -93,7 +93,9 @@ covidestim <- function(ndays,
                        sdRt = 1,
                        reinf_delay = 180,
                       reinf_prob = NULL,  
-                      omicron_adjust = FALSE) {
+                      omicron_adjust = FALSE,
+                      Omicron_takeover_sd = 14,
+                      sd_omicron_delay = 10) {
 
   att(is.numeric(ndays), ndays >= 1)
   att(is.logical(omicron_adjust))
@@ -111,7 +113,9 @@ covidestim <- function(ndays,
     sdRt = sdRt,
     reinf_delay = reinf_delay,
     reinf_prob = reinf_prob,
-    omicron_adjust = omicron_adjust
+    omicron_adjust = omicron_adjust,
+    Omicron_takeover_sd = Omicron_takeover_sd,
+    sd_omciron_delay = sd_omicron_delay
     ) -> config
 
   # All user-specified config-related things must be specified above this line
