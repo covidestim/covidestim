@@ -91,6 +91,7 @@ covidestim <- function(ndays,
                        region,
                        nRt = 7,
                        sdRt = 1,
+                       reinf_delay = 180,
                       reinf_prob = NULL,  
                       omicron_adjust = FALSE) {
 
@@ -108,6 +109,7 @@ covidestim <- function(ndays,
     region = region,
     nRt = nRt,
     sdRt = sdRt,
+    reinf_delay = reinf_delay,
     reinf_prob = reinf_prob,
     omicron_adjust = omicron_adjust
     ) -> config

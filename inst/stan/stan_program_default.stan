@@ -68,6 +68,7 @@ data {
 
 // reinfection setup
 int<lower=0> reinfection;
+int<lower=0> reinf_delay; 
 vector<lower=0,upper=1>[2] reinf_prob;
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
@@ -374,12 +375,11 @@ transformed parameters {
     new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
     
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
-    if(reinfection == 0){
    pop_uninf -= new_inf[i];
-    } else {
-   pop_uninf -= new_inf[i] * reinf_prob[1];
-        if(i > 180){
-   pop_uninf -= new_inf[i-180] * reinf_prob[2];
+    if(reinfection > 0){
+   pop_uninf += new_inf[i] * reinf_prob[1];
+        if(i > reinf_delay){
+   pop_uninf += new_inf[i-reinf_delay] * reinf_prob[2];
      }
    }
    
