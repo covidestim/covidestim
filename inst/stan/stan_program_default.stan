@@ -110,6 +110,10 @@ vector<lower=0,upper=1>[2] reinf_prob;
   real<lower=0>          scale_dx_delay_sym_b; 
   real<lower=0>          scale_dx_delay_sev_a; 
   real<lower=0>          scale_dx_delay_sev_b;
+  // omicron delay
+  real                  Omicron_takeover_mean; // ndays from start date that is Dec 20
+  real<lower=0>         Omicron_takeover_sd; // fixed sd for the shape of the omicron takeover. Default: 14
+  real<lower=0>          sd_omicron_delay; // sd of the variation of the mean date: default :10
   
   // input for the number of days to put the Rt prior on
   int<lower=0> N_days_pri_Rt;
@@ -219,13 +223,14 @@ parameters {
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
   real<lower=0, upper=1>    p_sym_if_inf;
-  real<lower=0, upper=1>    new_p_sym_if_inf;
+  real<lower=0, upper=1>    p_sym_if_inf_omi;
   real<lower=0, upper=1>    p_sev_if_sym;
   real<lower=0, upper=1>    p_die_if_sev;
   real<lower=0>             ifr_decl_OR;
   real<lower=0>             rr_decl_sev;
   real<lower=0>             rr_decl_die;
-
+// OMICRON TAKEOVER
+real                        omicron_delay;
   
 // DIANGOSIS
 // scaling factor for time to diagnosis
@@ -263,7 +268,9 @@ transformed parameters {
   // transitions
   vector[N_ifr_adj]      p_die_if_sevt;
   vector[N_days_tot]      p_sev_if_symt;
-  vector[N_days_tot]      p_sym_if_inft;
+  vector[N_days_tot]      p_sym_if_inft;  
+  vector[N_days_tot]    p_sym_if_inft_omi;
+
   // new probability of symptomatic
   real<lower=0>      rr_sym_if_inf;
   real<lower=0>      rr_sev_if_sym;
@@ -302,7 +309,10 @@ transformed parameters {
   // (all diagnosed cases with an additional delay to report) 
   vector[N_days_tot]  occur_cas;
   vector[N_days_tot]  occur_die; 
-  
+  // OMICRON DELAY int 
+vector[N_days_tot]   ifr_omi_rv;
+vector[N_days_tot]   ifr_omi_rv_sev;
+vector[N_days_tot]   ifr_omi_rv_die;
 // LIKELIHOOD
 // phi terms for negative binomial likelihood function 
   real                phi_cas;
@@ -310,17 +320,23 @@ transformed parameters {
   // the proprtion parameter
   // simplex[3]     prop;
   
+  for(i in 1:N_days_tot){
+    ifr_omi_rv[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay, Omicron_takeover_sd);
+    ifr_omi_rv_die[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6+ 7 + 9, Omicron_takeover_sd);
+    ifr_omi_rv_sev[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6+ 7, Omicron_takeover_sd);
+  }
   // RELATIVE RISKS for omicron adjustment 
  // rr_sym_if_inf = new_p_sym_if_inf / p_sym_if_inf;
   rr_sev_if_sym = rr_decl_sev / rr_sym_if_inf;
   rr_die_if_sev = rr_decl_die / rr_decl_sev;
   // NATURAL HISTORY CASCADE
-  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR) .* (1.0 - ifr_omi * (1.0 - rr_die_if_sev));
+  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR);
   
   for(i in 1:N_days_tot){
-  p_die_if_sevt[i] = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prob_vac[1]);
-  p_sev_if_symt[i] = p_sev_if_sym * pow(ifr_vac_adj[i], prob_vac[2]) * (1.0 - ifr_omi[i] * (1.0 - rr_sev_if_sym));
+  p_die_if_sevt[i] = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prob_vac[1]) * (1.0 - ifr_omi_rv_die[i] * (1.0 - rr_die_if_sev));
+  p_sev_if_symt[i] = p_sev_if_sym * pow(ifr_vac_adj[i], prob_vac[2]) * (1.0 - ifr_omi_rv_sev[i] * (1.0 - rr_sev_if_sym));
   p_sym_if_inft[i] = p_sym_if_inf * pow(ifr_vac_adj[i], prob_vac[3]);// * (1.0 - ifr_omi[i] * (1.0 - rr_sym_if_inf));
+  p_sym_if_inft_omi[i] = p_sym_if_inf_omi * pow(ifr_vac_adj[i], prob_vac[3]);
   }
   
 
@@ -413,9 +429,9 @@ transformed parameters {
   //}
   
   for(i in 1:N_days_tot) {
-    new_sym[i] = dot_product(new_inf[idx1[i]:i]*(1-ifr_omi[i]),
+    new_sym[i] = dot_product(new_inf[idx1[i]:i].*(1-ifr_omi_rv[idx1[i]:i]),
       inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i] + 
-      new_inf[idx1[i]:i]*ifr_omi[i],
+      dot_product(new_inf[idx1[i]:i].*ifr_omi_rv[idx1[i]:i],
       inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft_omi[i];
   } 
   
@@ -545,7 +561,7 @@ model {
   // DISEASE PROGRESSION
   // probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
-  p_sym_if_inft_omi    ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
+  p_sym_if_inf_omi    ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
@@ -564,6 +580,8 @@ model {
 // phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
+  // omicron delay 
+  omicron_delay        ~ normal(0, sd_omicron_delay);
   // prop for vaccine
    prob_vac            ~ dirichlet(rep_vector(5, 3));
    if(N_days_pri_Rt > 0){
