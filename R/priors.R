@@ -256,6 +256,11 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
 #'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
 #'    modeling the serial interval, the average time (in number of days)
 #'    between successive cases. 
+#'    
+#' @param pri_serial_i_omi A two-element numeric vector containing 
+#'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
+#'    modeling the serial interval under omicron, the average time (in number of days)
+#'    between successive cases. 
 #' 
 #' @param infect_dist A two-element numeric vector containing 
 #'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the 
@@ -278,6 +283,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
                                sev_prg_delay = c(2.061, 0.2277),  # shap/rate
                                asy_rec_delay = c(14   , 2     ),  # shap/rate 
                                pri_serial_i  = c(129.1, 22.25 ),  # shap/rate 
+                               pri_serial_i_omi  = c(34.615, 11.538),  # shap/rate 
                                infect_dist   = c(8    , 1.241 ),  # shap/rate 
                                seropos_dist  = c(4.41 , 0.042 ) ) {   # shap/rate 
 
@@ -286,6 +292,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
   att(length(sev_prg_delay) == 2)
   att(length(asy_rec_delay) == 2)
   att(length(pri_serial_i) == 2)
+  att(length(pri_serial_i_omi) == 2)
   att(length(infect_dist) == 2)
   att(length(seropos_dist) == 2)
   att(is_nonNegativeReal(inf_prg_delay))
@@ -293,6 +300,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
   att(is_nonNegativeReal(sev_prg_delay))
   att(is_nonNegativeReal(asy_rec_delay))
   att(is_nonNegativeReal(pri_serial_i))
+  att(is_nonNegativeReal(pri_serial_i_omi))
   att(is_nonNegativeReal(infect_dist))
   att(is_nonNegativeReal(seropos_dist))
   
@@ -302,6 +310,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
     sev_prg_delay,
     asy_rec_delay,
     pri_serial_i,
+    pri_serial_i_omi,
     infect_dist,
     seropos_dist,
     .postfix=c("_shap", "_rate")
