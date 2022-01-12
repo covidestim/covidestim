@@ -49,10 +49,16 @@ NULL
 #' @param nRt A positive integer. How many days of Rt (measured from last day)
 #'    should be penalized?
 #' @param sdRt A number. The standard deviation of the Rt penalty.
-#' @param reinf_prob NULL or vector of length 1 or 2. The fractions of the 
+#' @param reinf_prob a vector of length 1 or 2. The fractions of the 
 #'    infections to be put back in the Susceptible pool on day 1 and 180
 #'    after infection. Example: c(.5, .2) 50% of new infections is immediately
 #'    available for reinfection; an additional 20% is available after 180 days.
+#' @param reinf_delay a vector of length 2. The days on which the reinf_prob of
+#'    infections are put back in the Susceptible pool. Example: c(30, 180),
+#'    the reinf_prob[1] fraction of infections are available for reinfection on
+#'    day 30, and reinf_prob[2] of the infections are available for reinfection
+#'    on day 180.
+#' @param reinfection logical. Should reinfection be allowed?
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to
 #' \code{\link{run.covidestim}} or \code{\link{runOptimizer.covidestim}} to execute the model, as
@@ -91,8 +97,9 @@ covidestim <- function(ndays,
                        region,
                        nRt = 7,
                        sdRt = 1,
-                       reinf_delay = c(0,180),
-                      reinf_prob = NULL,  
+                       reinf_delay = c(30,180),
+                      reinf_prob = c(.2,.5),
+                      reinfection = FALSE,
                       omicron_adjust = FALSE,
                       Omicron_takeover_sd = 14,
                       sd_omicron_delay = 10) {
@@ -113,6 +120,7 @@ covidestim <- function(ndays,
     sdRt = sdRt,
     reinf_delay = reinf_delay,
     reinf_prob = reinf_prob,
+    reinfection = reinfection,
     omicron_adjust = omicron_adjust,
     Omicron_takeover_sd = Omicron_takeover_sd,
     sd_omicron_delay = sd_omicron_delay
