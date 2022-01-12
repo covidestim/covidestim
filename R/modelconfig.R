@@ -174,8 +174,9 @@ genData <- function(N_days, N_days_before = 28,
                     N_days_av = 7, pop_size = 1e12, #new default value
                     n_spl_rt_knotwidth = 10, 
                     region, nRt, sdRt = 1,
-                    reinf_delay = c(0,180),
-                    reinf_prob = NULL,
+                    reinf_delay = c(30,180),
+                    reinf_prob = c(.2,.5),
+                    reinfection = FALSE,
                     omicron_adjust = FALSE,
                     Omicron_takeover_sd = 14,
                     sd_omicron_delay = 10
@@ -217,7 +218,7 @@ genData <- function(N_days, N_days_before = 28,
     
     
     # Reinfection parameters
-    reinfection    = length(reinf_prob),
+    reinfection    = as.numeric(reinfection),
     reinf_prob     = c(reinf_prob,0,0)[1:2],
     reinf_delay1    = reinf_delay[1], 
     reinf_delay2    = reinf_delay[2], 
