@@ -409,13 +409,13 @@ vector[N_days_tot]   ifr_omi_rv_die;
     new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
     
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
-   pop_uninf -= new_inf[i];
-    if(reinfection > 0){
-   pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
-        if(i > reinf_delay2){
-   pop_uninf += new_inf[i-reinf_delay2] * reinf_prob[2];
-     }
-   }
+    pop_uninf -= new_inf[i];
+    if(reinfection > 0 && i > reinf_delay1){
+      pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
+      if(i > reinf_delay2){
+        pop_uninf += new_inf[i-reinf_delay2] * reinf_prob[2];
+      }
+    }
    
    // END OF REINFECTION STRATEGIES
    
