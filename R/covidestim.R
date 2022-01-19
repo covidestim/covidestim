@@ -76,6 +76,8 @@ covidestim <- function(ndays,
                        nspl_rt_knotwidth = 10,
                        chains = 4, 
                        iter = 3000, 
+                       # Warmup runs should be 66% of iter runs
+                       warmup = round((2/3)*iter), 
                        thin = 1, 
                        seed = 42,
                        adapt_delta = 0.99, 
@@ -106,7 +108,7 @@ covidestim <- function(ndays,
     chains  = chains,
     iter    = iter,
     thin    = thin,
-    warmup  = round((2/3)*iter), # Warmup runs should be 66% of iter runs
+    warmup  = warmup,
     seed    = seed,
     control = list(adapt_delta = adapt_delta, max_treedepth = max_treedepth)
   ) -> properties
