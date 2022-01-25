@@ -365,8 +365,8 @@ transformed parameters {
     }
 
     // Diff and reverse, vectorized
-    sym_diag_delay_rv = reverse(_sym_delay_gammas[1:Max_delay] - _sym_delay_gammas[0:Max_delay-1]);
-    sev_diag_delay_rv = reverse(_sev_delay_gammas[1:Max_delay] - _sym_delay_gammas[0:Max_delay-1]);
+    sym_diag_delay_rv = reverse(_sym_delay_gammas[2:(Max_delay+1)] - _sym_delay_gammas[1:Max_delay]);
+    sev_diag_delay_rv = reverse(_sev_delay_gammas[2:(Max_delay+1)] - _sym_delay_gammas[1:Max_delay]);
   }
 
   // DEATHS // 
