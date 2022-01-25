@@ -1704,17 +1704,17 @@ public:
                 current_statement_begin__ = 330;
                 stan::model::assign(ifr_omi_rv, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            normal_cdf(i, (Omicron_takeover_mean + omicron_delay), Omicron_takeover_sd), 
+                            (normal_cdf(i, (Omicron_takeover_mean + omicron_delay), Omicron_takeover_sd) * .95), 
                             "assigning variable ifr_omi_rv");
                 current_statement_begin__ = 331;
                 stan::model::assign(ifr_omi_rv_die, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            normal_cdf(i, ((((Omicron_takeover_mean + omicron_delay) + 6) + 7) + 9), Omicron_takeover_sd), 
+                            (normal_cdf(i, ((((Omicron_takeover_mean + omicron_delay) + 6) + 7) + 9), Omicron_takeover_sd) * .95), 
                             "assigning variable ifr_omi_rv_die");
                 current_statement_begin__ = 332;
                 stan::model::assign(ifr_omi_rv_sev, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            normal_cdf(i, (((Omicron_takeover_mean + omicron_delay) + 6) + 7), Omicron_takeover_sd), 
+                            (normal_cdf(i, (((Omicron_takeover_mean + omicron_delay) + 6) + 7), Omicron_takeover_sd) * .95), 
                             "assigning variable ifr_omi_rv_sev");
                 current_statement_begin__ = 333;
                 if (as_bool(logical_eq(omicron_adjust, 0))) {
@@ -1833,7 +1833,7 @@ public:
                 current_statement_begin__ = 412;
                 stan::math::assign(pop_uninf, (pop_uninf - get_base1(new_inf, i, "new_inf", 1)));
                 current_statement_begin__ = 413;
-                if (as_bool(logical_gt(reinfection, 0))) {
+                if (as_bool((primitive_value(logical_gt(reinfection, 0)) && primitive_value(logical_gt(i, reinf_delay1))))) {
                     current_statement_begin__ = 414;
                     stan::math::assign(pop_uninf, (pop_uninf + (get_base1(new_inf, (i - reinf_delay1), "new_inf", 1) * get_base1(reinf_prob, 1, "reinf_prob", 1))));
                     current_statement_begin__ = 415;
@@ -3084,17 +3084,17 @@ public:
                 current_statement_begin__ = 330;
                 stan::model::assign(ifr_omi_rv, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            normal_cdf(i, (Omicron_takeover_mean + omicron_delay), Omicron_takeover_sd), 
+                            (normal_cdf(i, (Omicron_takeover_mean + omicron_delay), Omicron_takeover_sd) * .95), 
                             "assigning variable ifr_omi_rv");
                 current_statement_begin__ = 331;
                 stan::model::assign(ifr_omi_rv_die, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            normal_cdf(i, ((((Omicron_takeover_mean + omicron_delay) + 6) + 7) + 9), Omicron_takeover_sd), 
+                            (normal_cdf(i, ((((Omicron_takeover_mean + omicron_delay) + 6) + 7) + 9), Omicron_takeover_sd) * .95), 
                             "assigning variable ifr_omi_rv_die");
                 current_statement_begin__ = 332;
                 stan::model::assign(ifr_omi_rv_sev, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            normal_cdf(i, (((Omicron_takeover_mean + omicron_delay) + 6) + 7), Omicron_takeover_sd), 
+                            (normal_cdf(i, (((Omicron_takeover_mean + omicron_delay) + 6) + 7), Omicron_takeover_sd) * .95), 
                             "assigning variable ifr_omi_rv_sev");
                 current_statement_begin__ = 333;
                 if (as_bool(logical_eq(omicron_adjust, 0))) {
@@ -3213,7 +3213,7 @@ public:
                 current_statement_begin__ = 412;
                 stan::math::assign(pop_uninf, (pop_uninf - get_base1(new_inf, i, "new_inf", 1)));
                 current_statement_begin__ = 413;
-                if (as_bool(logical_gt(reinfection, 0))) {
+                if (as_bool((primitive_value(logical_gt(reinfection, 0)) && primitive_value(logical_gt(i, reinf_delay1))))) {
                     current_statement_begin__ = 414;
                     stan::math::assign(pop_uninf, (pop_uninf + (get_base1(new_inf, (i - reinf_delay1), "new_inf", 1) * get_base1(reinf_prob, 1, "reinf_prob", 1))));
                     current_statement_begin__ = 415;
