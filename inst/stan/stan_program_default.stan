@@ -106,11 +106,12 @@ data {
   // is there a last obeserved case data day?
   int<lower=0> lastCaseDate;
 
-// reinfection setup
-int<lower=0> reinfection;
-int<lower=0> reinf_delay1; 
-int<lower=0> reinf_delay2; 
-vector<lower=0,upper=1>[2] reinf_prob;
+  // reinfection setup
+  int<lower=0> reinfection;
+  int<lower=0> reinf_delay1; 
+  int<lower=0> reinf_delay2; 
+  vector<lower=0,upper=1>[2] reinf_prob;
+
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
   // for new infections
@@ -154,10 +155,10 @@ vector<lower=0,upper=1>[2] reinf_prob;
   real<lower=0>          scale_dx_delay_sev_a; 
   real<lower=0>          scale_dx_delay_sev_b;
   // omicron delay
-  int<lower=0, upper=1>   omicron_adjust; // 0/1 indicator of whether omicron adjustment should happen
+  int<lower=0, upper=1> omicron_adjust; // 0/1 indicator of whether omicron adjustment should happen
   real                  Omicron_takeover_mean; // ndays from start date that is Dec 20
   real<lower=0>         Omicron_takeover_sd; // fixed sd for the shape of the omicron takeover. Default: 14
-  real<lower=0>          sd_omicron_delay; // sd of the variation of the mean date: default :10
+  real<lower=0>         sd_omicron_delay; // sd of the variation of the mean date: default :10
   
   // input for the number of days to put the Rt prior on
   int<lower=0> N_days_pri_Rt;
