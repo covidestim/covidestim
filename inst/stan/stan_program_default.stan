@@ -145,7 +145,6 @@ transformed data {
   vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
   vector[N_days + N_days_before]  die_cum_report_delay_rv; 
  
-     
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
   N_days_tot = N_days + N_days_before; 
@@ -446,15 +445,20 @@ transformed parameters {
   //}
   
   for(i in 1:N_days_tot) {
-    new_sev[i] = dot_product(new_sym[idx1[i]:i],
-      sym_prg_delay_rv[idx2[i]:Max_delay]);// * p_sev_if_symt[i];
+    new_sev[i] = dot_product(
+      new_sym[idx1[i]:i],
+      sym_prg_delay_rv[idx2[i]:Max_delay]
+    );// * p_sev_if_symt[i];
   }
   new_sev .*= p_sev_if_symt;
   
   for(i in 1:N_days_tot) {
-    new_die[i] = dot_product(new_sev[idx1[i]:i],
-      sev_prg_delay_rv[idx2[i]:Max_delay]) * p_die_if_sevt[i];
+    new_die[i] = dot_product(
+      new_sev[idx1[i]:i],
+      sev_prg_delay_rv[idx2[i]:Max_delay]
+    ); // * p_die_if_sevt[i];
   }
+  new_die .*= p_die_if_sevt;
 
   // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 
@@ -465,48 +469,66 @@ transformed parameters {
   // we assume asymptomatic diagnosis only occurs among individuals who will be
   // asymptomatic for the entire course of their infection. 
   for(i in 1:N_days_tot) {
-    new_asy_dx[i] = dot_product(new_inf[idx1[i]:i] .* p_diag_if_asy[idx1[i]:i], 
-      asy_rec_delay_rv[idx2[i]:Max_delay]) * (1-p_sym_if_inft[i]);
+    new_asy_dx[i] = dot_product(
+      new_inf[idx1[i]:i] .* p_diag_if_asy[idx1[i]:i], 
+      asy_rec_delay_rv[idx2[i]:Max_delay]
+    );// * (1-p_sym_if_inft[i]);
   }
+  new_asy_dx .*= 1 - p_sym_if_inft;
   
   // diagnosed at symptomatic
   // a diagnosed symptomatic (not severe) case on day i + j - 1
   // is a symptomatic case on day i with some probability of diagnosis
   // and some probability that the diagnosis occurred on day j.  
   for(i in 1:N_days_tot) {
-    new_sym_dx[i] = dot_product(new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i], 
-      sym_diag_delay_rv[idx2[i]:Max_delay]);
+    new_sym_dx[i] = dot_product(
+      new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i], 
+      sym_diag_delay_rv[idx2[i]:Max_delay]
+    );
   }
   
   // cascade from diagnosis 
   // follow diagnosed cases forward to determine how many cases diagnosed
   // at symptomatic eventually die 
   for(i in 1:N_days_tot) {
-    dx_sym_sev[i] = dot_product(new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i],
-      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_symt[i];
+    dx_sym_sev[i] = dot_product(
+      new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i],
+      sym_prg_delay_rv[idx2[i]:Max_delay]
+    );// * p_sev_if_symt[i];
   }
+  dx_sym_sev .*= p_sev_if_symt;
         
   for(i in 1:N_days_tot) {
-    dx_sym_die[i] = dot_product(dx_sym_sev[idx1[i]:i],
-      sev_prg_delay_rv[idx2[i]:Max_delay]) * p_die_if_sevt[i];
+    dx_sym_die[i] = dot_product(
+      dx_sym_sev[idx1[i]:i],
+      sev_prg_delay_rv[idx2[i]:Max_delay]
+    );// * p_die_if_sevt[i];
   }
+  dx_sym_die .*= p_die_if_sevt;
         
   // diagnosed at severe 
   // as above for symptomatic 
   for(i in 1:N_days_tot) {
-    new_sev_dx[i] = dot_product(new_sev[idx1[i]:i]-dx_sym_sev[idx1[i]:i],
-      sev_diag_delay_rv[idx2[i]:Max_delay]) * p_diag_if_sev;
+    new_sev_dx[i] = dot_product(
+      new_sev[idx1[i]:i] - dx_sym_sev[idx1[i]:i],
+      sev_diag_delay_rv[idx2[i]:Max_delay]
+    );// * p_diag_if_sev;
   }
+  new_sev_dx *= p_diag_if_sev;
   
   // cascade from diagnosis
   // as above for symptomatic 
   for(i in 1:N_days_tot) {
-    dx_sev_die[i] = dot_product(new_sev[idx1[i]:i]-dx_sym_sev[idx1[i]:i],
-      sev_prg_delay_rv[idx2[i]:Max_delay]) * p_diag_if_sev * p_die_if_sevt[i];
+    dx_sev_die[i] = dot_product(
+      new_sev[idx1[i]:i] - dx_sym_sev[idx1[i]:i],
+      sev_prg_delay_rv[idx2[i]:Max_delay]
+    );// * p_diag_if_sev * p_die_if_sevt[i];
   }
+  dx_sev_die  *= p_diag_if_sev;
+  dx_sev_die .*= p_die_if_sevt;
 
   // TOTAL DIAGNOSED CASES AND DEATHS //
-  diag_all = new_asy_dx + new_sym_dx + new_sev_dx;
+  diag_all   = new_asy_dx + new_sym_dx + new_sev_dx;
   new_die_dx = dx_sym_die + dx_sev_die;
 
   // REPORTING //
@@ -517,8 +539,10 @@ transformed parameters {
   // dated
   if(obs_cas_rep == 1) {
     for(i in 1:N_days_tot) {
-      occur_cas[i] = dot_product(diag_all[idx1[i]:i] , 
-      cas_rep_delay_rv[idx2[i]:Max_delay]);
+      occur_cas[i] = dot_product(
+        diag_all[idx1[i]:i], 
+        cas_rep_delay_rv[idx2[i]:Max_delay]
+      );
     }
   } else {
     // for cases by date of occurrence
@@ -529,8 +553,10 @@ transformed parameters {
   // reporting delays modeled as described above for cases
   if(obs_die_rep == 1) {
     for(i in 1:N_days_tot) {
-      occur_die[i] = dot_product(new_die_dx[idx1[i]:i] , 
-      die_rep_delay_rv[idx2[i]:Max_delay]);
+      occur_die[i] = dot_product(
+        new_die_dx[idx1[i]:i], 
+        die_rep_delay_rv[idx2[i]:Max_delay]
+      );
     }
   } else {
     occur_die = new_die_dx .* die_cum_report_delay_rv;
