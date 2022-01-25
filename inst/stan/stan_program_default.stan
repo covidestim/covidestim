@@ -1,3 +1,42 @@
+functions {
+  vector conv1d(vector X, vector kernel) {
+    int nK = rows(kernel);
+    int nX = rows(X);
+
+    // Get a row-vector of `X`; we need to repeatedly refer to `X` as a row
+    // vector when we are assigning into `Y`, because assignments to rows of
+    // `Y` require that the RHS be a row vector.
+    row_vector[nX] Xt = X';
+
+    // Initialize a matrix of zeroes. We fill this matrix with the subsequences
+    // of `X` that we are going to use in the convolution.
+    matrix[nX, nK] Y = rep_matrix(0, nX, nK);
+
+    if (nX < nK)
+      reject("nrow(X) must be >= nrow(kernel). X had nrow =", nX);
+
+    // The first `nK-1` rows of the convolution are special, because we don't
+    // yet have a full "window" of X entries to take the dot product of against
+    // the kernel. We want to handle this case by taking the dot prod of
+    // `X[1:i]` and the the last `i` elements in the kernel.
+    //
+    // By being clever about how we position the elements of `X[1:i]` within
+    // row `i` of `Y`, we can guarantee that during the final matmul step (`Y *
+    // X`), the elements will be lined up with the correct subsequence of the
+    // kernel.
+    //
+    // Note that this strategy depends on row being zero'd out to begin with!
+    for (i in 1:(nK-1))
+      Y[i, (nK - i + 1) : nK] = Xt[1:i];
+
+    // Fill the remaining rows of `Y` with a sequence from `X` that's the same
+    // length as the kernel.
+    for (i in nK:nX)
+      Y[i, ] = Xt[(i-nK) : i];
+
+    return Y * X;
+  }
+}
 data {
   // INPUT DATA
   int<lower=0>           N_days; // days of data
@@ -330,8 +369,8 @@ transformed parameters {
   
   // RELATIVE RISKS for omicron adjustment 
   rr_sym_if_inf = p_sym_if_inf_omi / p_sym_if_inf;
-  rr_sev_if_sym = rr_decl_sev / rr_sym_if_inf;
-  rr_die_if_sev = rr_decl_die / rr_decl_sev;
+  rr_sev_if_sym = rr_decl_sev      / rr_sym_if_inf;
+  rr_die_if_sev = rr_decl_die      / rr_decl_sev;
 
   // NATURAL HISTORY CASCADE
   p_die_if_sevt     = p_die_if_sev     * ifr_adj_fixed                  * (1 + ifr_adj * ifr_decl_OR);
