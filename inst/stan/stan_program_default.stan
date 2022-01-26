@@ -50,7 +50,7 @@ data {
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
-  vector<lower=0>[N_days_tot] ifr_vac_adj; // ifr_vaccine_adjustment
+  vector<lower=0>[N_days+N_days_before] ifr_vac_adj; // ifr_vaccine_adjustment
   real<lower=0>          pri_ifr_decl_OR_a; 
   real<lower=0>          pri_ifr_decl_OR_b;
   real<lower=0>          pri_rr_decl_sev_a;
@@ -167,6 +167,11 @@ data {
 ///////////////////////////////////////////////////////////
 transformed data {
   int  N_days_tot;
+
+  // create 'N_days_tot', which is days of data plus days to model before first 
+  // case or death 
+  N_days_tot = N_days + N_days_before; 
+
   int  idx1[N_days_tot];
   int  idx2[N_days_tot];
   int  reinf_day_int;
@@ -185,9 +190,6 @@ transformed data {
   vector[N_days_tot]  cas_cum_report_delay_rv; 
   vector[N_days_tot]  die_cum_report_delay_rv; 
  
-  // create 'N_days_tot', which is days of data plus days to model before first 
-  // case or death 
-  N_days_tot = N_days + N_days_before; 
   
   // Indexes for convolutions
   for(i in 1:N_days_tot) {
@@ -399,14 +401,14 @@ transformed parameters {
     // to avoid double-computing them
     vector[Max_delay+1] sym_delay_gammas;
     vector[Max_delay+1] sev_delay_gammas;
-    for (i in 0:Max_delay) {
-      sym_delay_gammas[i] = gamma_cdf(i | sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
-      sev_delay_gammas[i] = gamma_cdf(i | sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
+    for (i in 1:Max_delay+1) {
+      sym_delay_gammas[i] = gamma_cdf(i-1 | sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
+      sev_delay_gammas[i] = gamma_cdf(i-1 | sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
     }
 
     // Diff and reverse, vectorized
     sym_diag_delay_rv = reverse(sym_delay_gammas[2:(Max_delay+1)] - sym_delay_gammas[1:Max_delay]);
-    sev_diag_delay_rv = reverse(sev_delay_gammas[2:(Max_delay+1)] - sym_delay_gammas[1:Max_delay]);
+    sev_diag_delay_rv = reverse(sev_delay_gammas[2:(Max_delay+1)] - sev_delay_gammas[1:Max_delay]);
   }
 
   // DEATHS // 
@@ -463,7 +465,7 @@ transformed parameters {
   new_sym =
     p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
     p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
-  
+
   new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
   new_die = p_die_if_sevt .* conv1d(new_die, sev_prg_delay_rv);
 
@@ -500,6 +502,27 @@ transformed parameters {
   // as above for symptomatic 
   new_sev_dx = p_diag_if_sev * conv1d(new_sev - dx_sym_sev, sev_diag_delay_rv);
   
+  if (min(new_sev) < 0)
+    reject("`new_sev` had a negative value");
+
+  
+  if (min(dx_sym_sev) < 0)
+    reject("`dx_sym_sev` had a negative value");
+
+  if (min(sev_diag_delay_rv) < 0) {
+    print(sev_diag_delay_rv);
+    reject("`sev_diag_delay_rv` had a negative value");
+  }
+  
+  if (min(new_sev - dx_sym_sev) < 0) {
+    print(new_sev);
+    print(dx_sym_sev);
+    reject("`new_sev - dx_sym_sev` had a negative value");
+  }
+  
+  if (min(new_sev_dx) < 0)
+    reject("`new_sev_dx` had a negative value");
+
   // cascade from diagnosis
   // as above for symptomatic 
   dx_sev_die = p_die_if_sev * p_die_if_sevt .* conv1d(
@@ -524,6 +547,9 @@ transformed parameters {
     // we assume all cases diagnosed more than 60 days from the final day of data
     occur_cas = diag_all .* cas_cum_report_delay_rv;
   }
+
+  if (min(occur_cas) < 0)
+    reject("Can't have a negative number of occurred cases");
 
   // reporting delays modeled as described above for cases
   if(obs_die_rep == 1) {
