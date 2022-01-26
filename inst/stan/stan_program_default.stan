@@ -17,10 +17,8 @@ functions {
     // within row `i` of `Y`, we can guarantee that during the final matmul
     // step (`Xmatrix * kernel`), the elements will be lined up with the
     // correct subsequence of the kernel.
-    //
-    // Note that this strategy depends on row being zero'd out to begin with!
-
     for (i in 1:nk) {
+
       // Fill the beginning of the column with the correct number of `0`
       // elements.
       //
@@ -52,8 +50,7 @@ data {
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
-  vector<lower=0>[N_ifr_adj] ifr_omi; // ifr_omicron
-  vector<lower=0>[N_days + N_days_before] ifr_vac_adj; // ifr_vaccine_adjustment
+  vector<lower=0>[N_days_tot] ifr_vac_adj; // ifr_vaccine_adjustment
   real<lower=0>          pri_ifr_decl_OR_a; 
   real<lower=0>          pri_ifr_decl_OR_b;
   real<lower=0>          pri_rr_decl_sev_a;
@@ -170,8 +167,8 @@ data {
 ///////////////////////////////////////////////////////////
 transformed data {
   int  N_days_tot;
-  int  idx1[N_days + N_days_before];
-  int  idx2[N_days + N_days_before];
+  int  idx1[N_days_tot];
+  int  idx2[N_days_tot];
   int  reinf_day_int;
  
   // Progression delays
@@ -185,8 +182,8 @@ transformed data {
   vector[Max_delay]  die_rep_delay_rv;
  
   // Cumulative reporting delays
-  vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
-  vector[N_days + N_days_before]  die_cum_report_delay_rv; 
+  vector[N_days_tot]  cas_cum_report_delay_rv; 
+  vector[N_days_tot]  die_cum_report_delay_rv; 
  
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
@@ -377,10 +374,10 @@ transformed parameters {
   rr_die_if_sev = rr_decl_die      / rr_decl_sev;
 
   // NATURAL HISTORY CASCADE
-  p_die_if_sevt     = p_die_if_sev     * ifr_adj_fixed                  * (1 + ifr_adj * ifr_decl_OR);
+  p_die_if_sevt     = p_die_if_sev     * ifr_adj_fixed                  * (1 + ifr_adj[1:N_days_tot] * ifr_decl_OR);
   p_die_if_sevt     = p_die_if_sevt   .* pow(ifr_vac_adj, prob_vac[1]) .* (1 - ifr_omi_rv_die * (1 - rr_die_if_sev));
   p_sev_if_symt     = p_sev_if_sym     * pow(ifr_vac_adj, prob_vac[2]) .* (1 - ifr_omi_rv_sev * (1 - rr_sev_if_sym));
-  p_sym_if_inft     = p_sym_if_inf     * pow(ifr_vac_adj, prob_vac[3]);  // * (1.0 - ifr_omi[i] * (1.0 - rr_sym_if_inf));
+  p_sym_if_inft     = p_sym_if_inf     * pow(ifr_vac_adj, prob_vac[3]);
   p_sym_if_inft_omi = p_sym_if_inf_omi * pow(ifr_vac_adj, prob_vac[3]);
   
   // DIAGNOSIS // 
@@ -462,22 +459,11 @@ transformed parameters {
   // cases entering a state on day i + j - 1: 
   // cases entering previous state on day i * the probability of progression *
   // the probability progression occurred on day j 
-
-  // pre omicron new_sym implementation, for reference
-  //for(i in 1:N_days_tot) {
-  //  new_sym[i] = dot_product(new_inf[idx1[i]:i],
-  //    inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i];
-  //}
   
   new_sym =
     p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
     p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
   
-  //for(i in 1:N_days_tot) {
-  //  anc_sym_frac = dot_product(new_inf[idx1[i]:i]*(1-ifr_omi[i]),
-  //    inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i] / 
-  //    new_sym[i]; 
-  //}
   new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
   new_die = p_die_if_sevt .* conv1d(new_die, sev_prg_delay_rv);
 
@@ -508,7 +494,7 @@ transformed parameters {
     sym_prg_delay_rv
   );
         
-  dx_sym_die = p_die_if_sevt .* conv1d(dx_sym_sev, sev_prg_delay_rv);
+  dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
         
   // diagnosed at severe 
   // as above for symptomatic 
