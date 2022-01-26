@@ -1,40 +1,42 @@
 functions {
-  vector conv1d(vector X, vector kernel) {
-    int nK = rows(kernel);
-    int nX = rows(X);
+  vector conv1d(vector x, vector kernel) {
+    int nk = rows(kernel);
+    int nx = rows(x);
 
-    // Get a row-vector of `X`; we need to repeatedly refer to `X` as a row
-    // vector when we are assigning into `Y`, because assignments to rows of
-    // `Y` require that the RHS be a row vector.
-    row_vector[nX] Xt = X';
+    if (nx < nk)
+      reject("nrow(x) must be >= nrow(kernel). x had nrow =", nx);
 
-    // Initialize a matrix of zeroes. We fill this matrix with the subsequences
-    // of `X` that we are going to use in the convolution.
-    matrix[nX, nK] Y = rep_matrix(0, nX, nK);
-
-    if (nX < nK)
-      reject("nrow(X) must be >= nrow(kernel). X had nrow =", nX);
+    matrix[nx, nk] X;
 
     // The first `nK-1` rows of the convolution are special, because we don't
     // yet have a full "window" of X entries to take the dot product of against
     // the kernel. We want to handle this case by taking the dot prod of
     // `X[1:i]` and the the last `i` elements in the kernel.
     //
-    // By being clever about how we position the elements of `X[1:i]` within
-    // row `i` of `Y`, we can guarantee that during the final matmul step (`Y *
-    // X`), the elements will be lined up with the correct subsequence of the
-    // kernel.
+    // By being clever about how we position the elements of `Xmatrix[1:i]`
+    // within row `i` of `Y`, we can guarantee that during the final matmul
+    // step (`Xmatrix * kernel`), the elements will be lined up with the
+    // correct subsequence of the kernel.
     //
     // Note that this strategy depends on row being zero'd out to begin with!
-    for (i in 1:(nK-1))
-      Y[i, (nK - i + 1) : nK] = Xt[1:i];
 
-    // Fill the remaining rows of `Y` with a sequence from `X` that's the same
-    // length as the kernel.
-    for (i in nK:nX)
-      Y[i, ] = Xt[(i-nK) : i];
+    for (i in 1:nk) {
+      // Fill the beginning of the column with the correct number of `0`
+      // elements.
+      //
+      // What we are shooting for here is for the first column to have `nK-1`
+      // `0`s in it, and for the last column to have no `0`s in it.
+      if (i < nk)
+        X[1:(nk - i), i] = rep_vector(0, nk - i);
 
-    return Y * X;
+      // Populate the rest of each column with the entries of X, until we run
+      // out of slots in the matrix (at the bottom of the column). The only
+      // column that should have a full set of `X` entries is the last column,
+      // the `nK`'th column.
+      X[(nk - i + 1):nx, i] = x[1:(nx - nk + i)];
+    }
+
+    return X * kernel;
   }
 }
 
@@ -398,16 +400,16 @@ transformed parameters {
   {
     // Use two vectors to store the results of the `gamma_cdf()` calls in order
     // to avoid double-computing them
-    vector[Max_delay+1] _sym_delay_gammas;
-    vector[Max_delay+1] _sev_delay_gammas;
+    vector[Max_delay+1] sym_delay_gammas;
+    vector[Max_delay+1] sev_delay_gammas;
     for (i in 0:Max_delay) {
-      _sym_delay_gammas[i] = gamma_cdf(i | sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
-      _sev_delay_gammas[i] = gamma_cdf(i | sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
+      sym_delay_gammas[i] = gamma_cdf(i | sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
+      sev_delay_gammas[i] = gamma_cdf(i | sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
     }
 
     // Diff and reverse, vectorized
-    sym_diag_delay_rv = reverse(_sym_delay_gammas[2:(Max_delay+1)] - _sym_delay_gammas[1:Max_delay]);
-    sev_diag_delay_rv = reverse(_sev_delay_gammas[2:(Max_delay+1)] - _sym_delay_gammas[1:Max_delay]);
+    sym_diag_delay_rv = reverse(sym_delay_gammas[2:(Max_delay+1)] - sym_delay_gammas[1:Max_delay]);
+    sev_diag_delay_rv = reverse(sev_delay_gammas[2:(Max_delay+1)] - sym_delay_gammas[1:Max_delay]);
   }
 
   // DEATHS // 
