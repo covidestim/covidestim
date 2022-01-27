@@ -728,7 +728,7 @@ generated quantities {
   //     seropos_dist_rv[idx2b[i]:500]);
   // }
 
-  sero_positive = conv1d(new_inf, seropos_dist_rv);
+  sero_positive = conv1d(new_inf, seropos_dist_rv[1:N_days_tot]);
   
 }
 
