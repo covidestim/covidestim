@@ -485,7 +485,7 @@ transformed parameters {
     p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
 
   new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
-  new_die = p_die_if_sevt .* conv1d(new_die, sev_prg_delay_rv);
+  new_die = p_die_if_sevt .* conv1d(new_sev, sev_prg_delay_rv);
 
   // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 
