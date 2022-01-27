@@ -1,3 +1,43 @@
+functions {
+  vector conv1d(vector x, vector kernel) {
+    int nk = rows(kernel);
+    int nx = rows(x);
+
+    if (nx < nk)
+      reject("nrow(x) must be >= nrow(kernel). x had nrow =", nx);
+
+    matrix[nx, nk] X;
+
+    // The first `nK-1` rows of the convolution are special, because we don't
+    // yet have a full "window" of X entries to take the dot product of against
+    // the kernel. We want to handle this case by taking the dot prod of
+    // `X[1:i]` and the the last `i` elements in the kernel.
+    //
+    // By being clever about how we position the elements of `Xmatrix[1:i]`
+    // within row `i` of `Y`, we can guarantee that during the final matmul
+    // step (`Xmatrix * kernel`), the elements will be lined up with the
+    // correct subsequence of the kernel.
+    for (i in 1:nk) {
+
+      // Fill the beginning of the column with the correct number of `0`
+      // elements.
+      //
+      // What we are shooting for here is for the first column to have `nK-1`
+      // `0`s in it, and for the last column to have no `0`s in it.
+      if (i < nk)
+        X[1:(nk - i), i] = rep_vector(0, nk - i);
+
+      // Populate the rest of each column with the entries of X, until we run
+      // out of slots in the matrix (at the bottom of the column). The only
+      // column that should have a full set of `X` entries is the last column,
+      // the `nK`'th column.
+      X[(nk - i + 1):nx, i] = x[1:(nx - nk + i)];
+    }
+
+    return X * kernel;
+  }
+}
+
 data {
   // INPUT DATA
   int<lower=0>           N_days; // days of data
@@ -431,10 +471,7 @@ transformed parameters {
       sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_symt[i];
   }
         
-  for(i in 1:N_days_tot) {
-    dx_sym_die[i] = dot_product(dx_sym_sev[idx1[i]:i],
-      sev_prg_delay_rv[idx2[i]:Max_delay]) * p_die_if_sevt[i];
-  }
+  dx_sym_die = p_die_if_sevt .* conv1d(dx_sym_sev, sev_prg_delay_rv);
         
 // diagnosed at severe 
 // as above for symptomatic 
