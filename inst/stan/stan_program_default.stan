@@ -193,9 +193,22 @@ transformed data {
   // Cumulative reporting delays
   vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
   vector[N_days + N_days_before]  die_cum_report_delay_rv; 
+  
+   int  idx1[N_days + N_days_before];
+ int  idx2[N_days + N_days_before];
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
   N_days_tot = N_days + N_days_before; 
+  // Indexes for convolutions
+for(i in 1:N_days_tot) {
+  if(i-Max_delay>0){
+    idx1[i] = i-Max_delay+1;
+    idx2[i] = 1;
+  } else {
+    idx1[i] = 1;
+    idx2[i] = Max_delay-i+1;
+  }
+}
  
   // calculate the daily probability of transitioning to a new disease state
   // for days 1 to 60 after entering that state
@@ -424,8 +437,13 @@ transformed parameters {
     }
 
     // Diff and reverse, vectorized
-    sym_diag_delay_rv = reverse(sym_delay_gammas[2:(Max_delay+1)] - sym_delay_gammas[1:Max_delay]);
-    sev_diag_delay_rv = reverse(sev_delay_gammas[2:(Max_delay+1)] - sev_delay_gammas[1:Max_delay]);
+    // sym_diag_delay_rv = reverse(sym_delay_gammas[2:(Max_delay+1)] - sym_delay_gammas[1:Max_delay]);
+    // sev_diag_delay_rv = reverse(sev_delay_gammas[2:(Max_delay+1)] - sev_delay_gammas[1:Max_delay]);
+    for(i in 1:Max_delay){
+    sym_diag_delay_rv[1+Max_delay-i] = sym_delay_gammas[i+1] - sym_delay_gammas[i];
+    sev_diag_delay_rv[1+Max_delay-i] = sev_delay_gammas[i+1] - sev_delay_gammas[i];
+    }
+
   }
 
   // DEATHS // 
@@ -677,13 +695,13 @@ generated quantities {
  // vector to distribute infectiousness
   for(i in 1:Max_delay)
     infect_dist_rv[1+Max_delay-i] = 
-      gamma_cdf(i   | infect_dist_shap, infect_dist_rate) -
-      gamma_cdf(i-1 | infect_dist_shap, infect_dist_rate);
+      gamma_cdf(i   , infect_dist_shap, infect_dist_rate) -
+      gamma_cdf(i-1 , infect_dist_shap, infect_dist_rate);
   
   // vector to distribute infectiousness seropositives
   for(i in 1:500)
     seropos_dist_rv[1+500-i] =
-      1.0 - gamma_cdf(i | seropos_dist_shap, seropos_dist_rate);
+      1.0 - gamma_cdf(i , seropos_dist_shap, seropos_dist_rate);
   
   // infectiousness
   pop_infectiousness = conv1d(new_inf, infect_dist_rv);
