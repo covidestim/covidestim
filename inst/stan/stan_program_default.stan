@@ -160,7 +160,7 @@ data {
   real<lower=0>         sd_omicron_delay; // sd of the variation of the mean date: default :10
   
   // input for the number of days to put the Rt prior on
-  int<lower=0> N_days_pri_Rt;
+  int<lower=0>  N_days_pri_Rt;
   real<lower=0> sd_pri_Rt;
 
 }
@@ -172,10 +172,6 @@ transformed data {
   // case or death 
   N_days_tot = N_days + N_days_before; 
 
-  int  idx1[N_days_tot];
-  int  idx2[N_days_tot];
-  int  reinf_day_int;
- 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
   vector[Max_delay]  asy_rec_delay_rv; 
@@ -190,18 +186,6 @@ transformed data {
   vector[N_days_tot]  cas_cum_report_delay_rv; 
   vector[N_days_tot]  die_cum_report_delay_rv; 
  
-  
-  // Indexes for convolutions
-  for(i in 1:N_days_tot) {
-    if(i-Max_delay>0){
-      idx1[i] = i-Max_delay+1;
-      idx2[i] = 1;
-    } else {
-      idx1[i] = 1;
-      idx2[i] = Max_delay-i+1;
-    }
-  }
-
   // calculate the daily probability of transitioning to a new disease state
   // for days 1 to 60 after entering that state
   for(i in 1:Max_delay) {
@@ -224,8 +208,8 @@ transformed data {
       gamma_cdf(i-1 | sev_prg_delay_shap, sev_prg_delay_rate);
   }
   
-// Calcluate the probability of reporting for each day after diagnosis
-// for 1 to 60 post diagnosis. 
+  // Calcluate the probability of reporting for each day after diagnosis
+  // for 1 to 60 post diagnosis. 
   for(i in 1:Max_delay) {
     cas_rep_delay_rv[1+Max_delay-i] = 
       gamma_cdf(i   | cas_rep_delay_shap, cas_rep_delay_rate) -
@@ -236,7 +220,7 @@ transformed data {
       gamma_cdf(i-1 | die_rep_delay_shap, die_rep_delay_rate);
   }
   
- // Make sure sum to 1
+   // Make sure sum to 1
   inf_prg_delay_rv = inf_prg_delay_rv/sum(inf_prg_delay_rv);
   asy_rec_delay_rv = asy_rec_delay_rv/sum(asy_rec_delay_rv);
   sym_prg_delay_rv = sym_prg_delay_rv/sum(sym_prg_delay_rv);
@@ -244,7 +228,7 @@ transformed data {
   cas_rep_delay_rv = cas_rep_delay_rv/sum(cas_rep_delay_rv);
   die_rep_delay_rv = die_rep_delay_rv/sum(die_rep_delay_rv);
 
-// Cumulative reporting probability
+  // Cumulative reporting probability
   for(i in 1:N_days_tot) {
     if(i < Max_delay){
       cas_cum_report_delay_rv[1+N_days_tot-i] = gamma_cdf(i | cas_rep_delay_shap, cas_rep_delay_rate);
@@ -336,46 +320,55 @@ transformed parameters {
   // DISEASE OUTCOMES
   // overall case fatality rate
   real                p_die_if_inf;
+
   // "true" number entering disease state each day
   vector[N_days_tot]  new_sym; 
   vector[N_days_tot]  new_sev;
   vector[N_days_tot]  new_die;
+
   // newly diagnosed
   vector[N_days_tot]  new_asy_dx; 
   vector[N_days_tot]  new_sym_dx; 
   vector[N_days_tot]  new_sev_dx;
+
   // follow diagnosed cases forward to calculate deaths among diagnosed
   vector[N_days_tot]  dx_sym_sev; 
   vector[N_days_tot]  dx_sym_die; 
   vector[N_days_tot]  dx_sev_die; 
+
   // sum to diagnosed cases and deaths
   vector[N_days_tot]  diag_all;
   vector[N_days_tot]  new_die_dx;
+
   // number of cases and deaths in official record on each day
   // (all diagnosed cases with an additional delay to report) 
   vector[N_days_tot]  occur_cas;
   vector[N_days_tot]  occur_die; 
+
   // OMICRON DELAY int 
   vector[N_days_tot]   ifr_omi_rv;
   vector[N_days_tot]   ifr_omi_rv_sev;
   vector[N_days_tot]   ifr_omi_rv_die;
+
   // LIKELIHOOD
   // phi terms for negative binomial likelihood function 
-  real                phi_cas;
-  real                phi_die;
-  // the proprtion parameter
-  // simplex[3]     prop;
-  
-  for(i in 1:N_days_tot){
-    ifr_omi_rv[i]     = .95 * normal_cdf(i | Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
-    ifr_omi_rv_die[i] = .95 * normal_cdf(i | Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
-    ifr_omi_rv_sev[i] = .95 * normal_cdf(i | Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
+  real phi_cas;
+  real phi_die;
 
-    if(omicron_adjust == 0){
-      ifr_omi_rv[i] = 0;
-      ifr_omi_rv_sev[i] = 0;
-      ifr_omi_rv_die[i] = 0;
+  if (omicron_adjust == 0) {
+    ifr_omi_rv     = rep_vector(0, N_days_tot);
+    ifr_omi_rv_sev = ifr_omi_rv;
+    ifr_omi_rv_die = ifr_omi_rv;
+  } else {
+    for(i in 1:N_days_tot){
+      ifr_omi_rv[i]     = normal_cdf(i | Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
+      ifr_omi_rv_die[i] = normal_cdf(i | Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
+      ifr_omi_rv_sev[i] = normal_cdf(i | Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
     }
+
+    ifr_omi_rv     *= 0.95;
+    ifr_omi_rv_die *= 0.95;
+    ifr_omi_rv_sev *= 0.95;
   }
   
   // compute new serial i, combination of ancestral and omicron
@@ -394,7 +387,7 @@ transformed parameters {
   p_sym_if_inft_omi = p_sym_if_inf_omi * pow(ifr_vac_adj, prob_vac[3]);
   
   // DIAGNOSIS // 
-  // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomat vs severe
+  // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomatic vs severe
   rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * logit(spl_par_sym_dx));
   
   // probability of diagnosis 
@@ -468,11 +461,14 @@ transformed parameters {
   Rt = exp(logRt); 
   
   // second derivative
-  deriv2_spl_par_rt[1:(N_spl_par_rt-2)] = spl_par_rt[2:(N_spl_par_rt-1)] * 2 - 
-    spl_par_rt[1:(N_spl_par_rt-2)] - spl_par_rt[3:N_spl_par_rt]; 
+  deriv2_spl_par_rt[1:(N_spl_par_rt-2)] =
+    2 * spl_par_rt[2:(N_spl_par_rt-1)] - 
+        spl_par_rt[1:(N_spl_par_rt-2)] -
+        spl_par_rt[3:N_spl_par_rt]; 
   
   // first derivative
-  deriv1_spl_par_rt[1:(N_spl_par_rt-1)] = spl_par_rt[2:N_spl_par_rt] - 
+  deriv1_spl_par_rt[1:(N_spl_par_rt-1)] =
+    spl_par_rt[2:N_spl_par_rt] - 
     spl_par_rt[1:(N_spl_par_rt-1)];
 
   // SYMPTOMATIC CASES
@@ -532,18 +528,18 @@ transformed parameters {
   new_die_dx = dx_sym_die + dx_sev_die;
 
   // REPORTING //
-  // calcluate "occur_cas" and "occur_die", which are vectors of diagnosed cases 
+  // Calcluate "occur_cas" and "occur_die", which are vectors of diagnosed cases 
   // and deaths by the date we expect them to appear in the reported data. 
 
-  // how reporting delays are reflected in the data depend on how the data are 
-  // dated
-  if(obs_cas_rep == 1) {
+  // How reporting delays are reflected in the data depend on how the data are 
+  // dated.
+  //
+  // For cases by date of occurrence, we assume all cases diagnosed more than
+  // 60 days from the final day of data.
+  if(obs_cas_rep == 1)
     occur_cas = conv1d(diag_all, cas_rep_delay_rv);
-  } else {
-    // for cases by date of occurrence
-    // we assume all cases diagnosed more than 60 days from the final day of data
+  else
     occur_cas = diag_all .* cas_cum_report_delay_rv;
-  }
 
   // reporting delays modeled as described above for cases
   if(obs_die_rep == 1)
@@ -610,7 +606,6 @@ model {
       if (sum(occur_cas[1:N_days_before]) < 0)
         reject("`sum(occur_cas[1:N_days_before])` had a negative value");
 
-      
       if (sum(occur_die[1:N_days_before]) < 0)
         reject("`sum(occur_die[1:N_days_before])` had a negative value");
 
@@ -674,7 +669,8 @@ generated quantities {
   
   // vector to distribute infectiousness seropositives
   for(i in 1:500)
-    seropos_dist_rv[1+500-i] = 1.0 - gamma_cdf(i | seropos_dist_shap, seropos_dist_rate);
+    seropos_dist_rv[1+500-i] =
+      1.0 - gamma_cdf(i | seropos_dist_shap, seropos_dist_rate);
   
   // infectiousness
   pop_infectiousness = conv1d(new_inf, infect_dist_rv);
