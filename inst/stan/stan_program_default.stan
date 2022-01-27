@@ -81,6 +81,7 @@ data {
   real<lower=0>          sym_prg_delay_rate;
   real<lower=0>          sev_prg_delay_shap;
   real<lower=0>          sev_prg_delay_rate;
+
   // fixed delay from diagnosis to report
   real<lower=0>          cas_rep_delay_shap;
   real<lower=0>          cas_rep_delay_rate;
@@ -94,14 +95,18 @@ data {
   //  what data are included --  cases, deaths: 
   int<lower = 0, upper = 1> cas_yes; 
   int<lower = 0, upper = 1> die_yes; 
+
   //  how are the data dated -- report, occurrence: 
   int<lower = 0, upper = 1> obs_cas_rep;
   int<lower = 0, upper = 1> obs_die_rep;
+
   //  how many days should be used for the moving average in the likelihood 
   //  function? 
   int<lower = 1, upper = 10> N_days_av; 
+
   // is there a last obeserved deaths data day?
   int<lower=0> lastDeathDate;
+
   // is there a last obeserved case data day?
   int<lower=0> lastCaseDate;
 
@@ -114,45 +119,51 @@ data {
   /////////
   // TERMS FOR PRIOR DISTRIBTUIONS
   // for new infections
-  real                   pri_log_new_inf_0_mu;
-  real<lower=0>          pri_log_new_inf_0_sd;
-  real                   pri_logRt_mu;   
-  real<lower=0>          pri_logRt_sd;   
-  real<lower=0>          pri_serial_i_shap; 
-  real<lower=0>          pri_serial_i_rate; 
-  real<lower=0>          pri_serial_i_omi_shap; 
-  real<lower=0>          pri_serial_i_omi_rate; 
-  real<lower=0>          pri_deriv1_spl_par_sd;
-  real<lower=0>          pri_deriv2_spl_par_sd;
+  real          pri_log_new_inf_0_mu;
+  real<lower=0> pri_log_new_inf_0_sd;
+  real          pri_logRt_mu;   
+  real<lower=0> pri_logRt_sd;   
+  real<lower=0> pri_serial_i_shap; 
+  real<lower=0> pri_serial_i_rate; 
+  real<lower=0> pri_serial_i_omi_shap; 
+  real<lower=0> pri_serial_i_omi_rate; 
+  real<lower=0> pri_deriv1_spl_par_sd;
+  real<lower=0> pri_deriv2_spl_par_sd;
   
   // probabilities of progression inf -> sym -> sev -> die
-  real<lower=0>          pri_p_sym_if_inf_a; 
-  real<lower=0>          pri_p_sym_if_inf_b;
-  real<lower=0>          pri_new_p_sym_if_inf_a;
-  real<lower=0>          pri_new_p_sym_if_inf_b;
-  real<lower=0>          pri_p_sev_if_sym_a;
-  real<lower=0>          pri_p_sev_if_sym_b;
-  real<lower=0>          pri_p_die_if_sev_a;
-  real<lower=0>          pri_p_die_if_sev_b;
+  real<lower=0> pri_p_sym_if_inf_a; 
+  real<lower=0> pri_p_sym_if_inf_b;
+  real<lower=0> pri_new_p_sym_if_inf_a;
+  real<lower=0> pri_new_p_sym_if_inf_b;
+  real<lower=0> pri_p_sev_if_sym_a;
+  real<lower=0> pri_p_sev_if_sym_b;
+  real<lower=0> pri_p_die_if_sev_a;
+  real<lower=0> pri_p_die_if_sev_b;
+
   // overall case fatality rate
-  real<lower=0>          pri_p_die_if_inf_a;
-  real<lower=0>          pri_p_die_if_inf_b;
+  real<lower=0> pri_p_die_if_inf_a;
+  real<lower=0> pri_p_die_if_inf_b;
+
   // probabilities of diagnosis 
      // rate ratio, pr(dx) asymptomatic to symptomatic
-  real<lower=0>          pri_rr_diag_asy_vs_sym_a; 
-  real<lower=0>          pri_rr_diag_asy_vs_sym_b;
+  real<lower=0> pri_rr_diag_asy_vs_sym_a; 
+  real<lower=0> pri_rr_diag_asy_vs_sym_b;
+
       // rate ratio, pr(dx) symptomatic to severe
-  real<lower=0>          pri_rr_diag_sym_vs_sev_a; 
-  real<lower=0>          pri_rr_diag_sym_vs_sev_b;
+  real<lower=0> pri_rr_diag_sym_vs_sev_a; 
+  real<lower=0> pri_rr_diag_sym_vs_sev_b;
+
      // probability of diagnosis at severe 
-  real<lower=0>          pri_p_diag_if_sev_a;
-  real<lower=0>          pri_p_diag_if_sev_b;
+  real<lower=0> pri_p_diag_if_sev_a;
+  real<lower=0> pri_p_diag_if_sev_b;
+
   // delay to diagnosis assumed to be some fraction of progression delay
   // Beta prior distribtuion for that fraction 
-  real<lower=0>          scale_dx_delay_sym_a; 
-  real<lower=0>          scale_dx_delay_sym_b; 
-  real<lower=0>          scale_dx_delay_sev_a; 
-  real<lower=0>          scale_dx_delay_sev_b;
+  real<lower=0> scale_dx_delay_sym_a; 
+  real<lower=0> scale_dx_delay_sym_b; 
+  real<lower=0> scale_dx_delay_sev_a; 
+  real<lower=0> scale_dx_delay_sev_b;
+
   // omicron delay
   int<lower=0, upper=1> omicron_adjust; // 0/1 indicator of whether omicron adjustment should happen
   real                  Omicron_takeover_mean; // ndays from start date that is Dec 20
