@@ -2,11 +2,11 @@ functions {
   vector conv1d(vector x, vector kernel) {
     int nk = rows(kernel);
     int nx = rows(x);
+    matrix[nx, nk] X;
 
     if (nx < nk)
       reject("nrow(x) must be >= nrow(kernel). x had nrow =", nx);
 
-    matrix[nx, nk] X;
 
     // The first `nK-1` rows of the convolution are special, because we don't
     // yet have a full "window" of X entries to take the dot product of against
@@ -179,9 +179,6 @@ data {
 transformed data {
   int  N_days_tot;
 
-  // create 'N_days_tot', which is days of data plus days to model before first 
-  // case or death 
-  N_days_tot = N_days + N_days_before; 
 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
@@ -194,41 +191,44 @@ transformed data {
   vector[Max_delay]  die_rep_delay_rv;
  
   // Cumulative reporting delays
-  vector[N_days_tot]  cas_cum_report_delay_rv; 
-  vector[N_days_tot]  die_cum_report_delay_rv; 
+  vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
+  vector[N_days + N_days_before]  die_cum_report_delay_rv; 
+  // create 'N_days_tot', which is days of data plus days to model before first 
+  // case or death 
+  N_days_tot = N_days + N_days_before; 
  
   // calculate the daily probability of transitioning to a new disease state
   // for days 1 to 60 after entering that state
   for(i in 1:Max_delay) {
     inf_prg_delay_rv[1+Max_delay-i] =
-      gamma_cdf(i   | inf_prg_delay_shap, inf_prg_delay_rate) -
-      gamma_cdf(i-1 | inf_prg_delay_shap, inf_prg_delay_rate);
+      gamma_cdf(i   , inf_prg_delay_shap, inf_prg_delay_rate) -
+      gamma_cdf(i-1 , inf_prg_delay_shap, inf_prg_delay_rate);
 
     asy_rec_delay_rv[1+Max_delay-i] =
-      gamma_cdf(i   |  asy_rec_delay_shap, asy_rec_delay_rate*2) -
-      gamma_cdf(i-1 | asy_rec_delay_shap, asy_rec_delay_rate*2); 
+      gamma_cdf(i   ,  asy_rec_delay_shap, asy_rec_delay_rate*2) -
+      gamma_cdf(i-1 , asy_rec_delay_shap, asy_rec_delay_rate*2); 
 
     // diagnosis happens, on average, midway through the infectious period
     // therefore, we multiple the rate parameter by 2
     sym_prg_delay_rv[1+Max_delay-i] =
-      gamma_cdf(i   | sym_prg_delay_shap, sym_prg_delay_rate) -
-      gamma_cdf(i-1 | sym_prg_delay_shap, sym_prg_delay_rate);
+      gamma_cdf(i   , sym_prg_delay_shap, sym_prg_delay_rate) -
+      gamma_cdf(i-1 , sym_prg_delay_shap, sym_prg_delay_rate);
 
     sev_prg_delay_rv[1+Max_delay-i] =
-      gamma_cdf(i   | sev_prg_delay_shap, sev_prg_delay_rate) -
-      gamma_cdf(i-1 | sev_prg_delay_shap, sev_prg_delay_rate);
+      gamma_cdf(i   , sev_prg_delay_shap, sev_prg_delay_rate) -
+      gamma_cdf(i-1 , sev_prg_delay_shap, sev_prg_delay_rate);
   }
   
   // Calcluate the probability of reporting for each day after diagnosis
   // for 1 to 60 post diagnosis. 
   for(i in 1:Max_delay) {
     cas_rep_delay_rv[1+Max_delay-i] = 
-      gamma_cdf(i   | cas_rep_delay_shap, cas_rep_delay_rate) -
-      gamma_cdf(i-1 | cas_rep_delay_shap, cas_rep_delay_rate);
+      gamma_cdf(i   , cas_rep_delay_shap, cas_rep_delay_rate) -
+      gamma_cdf(i-1 , cas_rep_delay_shap, cas_rep_delay_rate);
 
     die_rep_delay_rv[1+Max_delay-i] =
-      gamma_cdf(i   | die_rep_delay_shap, die_rep_delay_rate) -
-      gamma_cdf(i-1 | die_rep_delay_shap, die_rep_delay_rate);
+      gamma_cdf(i   , die_rep_delay_shap, die_rep_delay_rate) -
+      gamma_cdf(i-1 , die_rep_delay_shap, die_rep_delay_rate);
   }
   
    // Make sure sum to 1
@@ -242,8 +242,8 @@ transformed data {
   // Cumulative reporting probability
   for(i in 1:N_days_tot) {
     if(i < Max_delay){
-      cas_cum_report_delay_rv[1+N_days_tot-i] = gamma_cdf(i | cas_rep_delay_shap, cas_rep_delay_rate);
-      die_cum_report_delay_rv[1+N_days_tot-i] = gamma_cdf(i | die_rep_delay_shap, die_rep_delay_rate);
+      cas_cum_report_delay_rv[1+N_days_tot-i] = gamma_cdf(i , cas_rep_delay_shap, cas_rep_delay_rate);
+      die_cum_report_delay_rv[1+N_days_tot-i] = gamma_cdf(i , die_rep_delay_shap, die_rep_delay_rate);
     } else {
       cas_cum_report_delay_rv[1+N_days_tot-i] = 1.0;
       die_cum_report_delay_rv[1+N_days_tot-i] = 1.0;
@@ -372,9 +372,9 @@ transformed parameters {
     ifr_omi_rv_die = ifr_omi_rv;
   } else {
     for(i in 1:N_days_tot){
-      ifr_omi_rv[i]     = normal_cdf(i | Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
-      ifr_omi_rv_die[i] = normal_cdf(i | Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
-      ifr_omi_rv_sev[i] = normal_cdf(i | Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
+      ifr_omi_rv[i]     = normal_cdf(i , Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
+      ifr_omi_rv_die[i] = normal_cdf(i , Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
+      ifr_omi_rv_sev[i] = normal_cdf(i , Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
     }
 
     ifr_omi_rv     *= 0.95;
@@ -392,10 +392,12 @@ transformed parameters {
 
   // NATURAL HISTORY CASCADE
   p_die_if_sevt     = p_die_if_sev     * ifr_adj_fixed                  * (1 + ifr_adj[1:N_days_tot] * ifr_decl_OR);
-  p_die_if_sevt     = p_die_if_sevt   .* pow(ifr_vac_adj, prob_vac[1]) .* (1 - ifr_omi_rv_die * (1 - rr_die_if_sev));
-  p_sev_if_symt     = p_sev_if_sym     * pow(ifr_vac_adj, prob_vac[2]) .* (1 - ifr_omi_rv_sev * (1 - rr_sev_if_sym));
-  p_sym_if_inft     = p_sym_if_inf     * pow(ifr_vac_adj, prob_vac[3]);
-  p_sym_if_inft_omi = p_sym_if_inf_omi * pow(ifr_vac_adj, prob_vac[3]);
+  for( i in 1:N_days_tot){
+  p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - ifr_omi_rv_die[i] * (1 - rr_die_if_sev));
+  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - ifr_omi_rv_sev[i] * (1 - rr_sev_if_sym));
+  p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
+  p_sym_if_inft_omi[i] = p_sym_if_inf_omi    * pow(ifr_vac_adj[i], prob_vac[3]);
+  }
   
   // DIAGNOSIS // 
   // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomatic vs severe
@@ -417,8 +419,8 @@ transformed parameters {
     vector[Max_delay+1] sym_delay_gammas;
     vector[Max_delay+1] sev_delay_gammas;
     for (i in 1:Max_delay+1) {
-      sym_delay_gammas[i] = gamma_cdf(i-1 | sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
-      sev_delay_gammas[i] = gamma_cdf(i-1 | sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
+      sym_delay_gammas[i] = gamma_cdf(i-1 , sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
+      sev_delay_gammas[i] = gamma_cdf(i-1 , sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
     }
 
     // Diff and reverse, vectorized
