@@ -1,3 +1,43 @@
+functions {
+  vector conv1d(vector x, vector kernel) {
+    int nk = rows(kernel);
+    int nx = rows(x);
+
+    if (nx < nk)
+      reject("nrow(x) must be >= nrow(kernel). x had nrow =", nx);
+
+    matrix[nx, nk] X;
+
+    // The first `nK-1` rows of the convolution are special, because we don't
+    // yet have a full "window" of X entries to take the dot product of against
+    // the kernel. We want to handle this case by taking the dot prod of
+    // `X[1:i]` and the the last `i` elements in the kernel.
+    //
+    // By being clever about how we position the elements of `Xmatrix[1:i]`
+    // within row `i` of `Y`, we can guarantee that during the final matmul
+    // step (`Xmatrix * kernel`), the elements will be lined up with the
+    // correct subsequence of the kernel.
+    for (i in 1:nk) {
+
+      // Fill the beginning of the column with the correct number of `0`
+      // elements.
+      //
+      // What we are shooting for here is for the first column to have `nK-1`
+      // `0`s in it, and for the last column to have no `0`s in it.
+      if (i < nk)
+        X[1:(nk - i), i] = rep_vector(0, nk - i);
+
+      // Populate the rest of each column with the entries of X, until we run
+      // out of slots in the matrix (at the bottom of the column). The only
+      // column that should have a full set of `X` entries is the last column,
+      // the `nK`'th column.
+      X[(nk - i + 1):nx, i] = x[1:(nx - nk + i)];
+    }
+
+    return X * kernel;
+  }
+}
+
 data {
   // INPUT DATA
   int<lower=0>           N_days; // days of data
@@ -426,7 +466,7 @@ vector[N_days_tot]   ifr_omi_rv_die;
   }
   
   Rt = exp(logRt); 
-  
+
   // second derivative
   deriv2_spl_par_rt[1:(N_spl_par_rt-2)] = spl_par_rt[2:(N_spl_par_rt-1)] * 2 - 
     spl_par_rt[1:(N_spl_par_rt-2)] - spl_par_rt[3:N_spl_par_rt]; 
@@ -435,130 +475,92 @@ vector[N_days_tot]   ifr_omi_rv_die;
   deriv1_spl_par_rt[1:(N_spl_par_rt-1)] = spl_par_rt[2:N_spl_par_rt] - 
     spl_par_rt[1:(N_spl_par_rt-1)];
 
- // SYMPTOMATIC CASES
- // cases entering a state on day i + j - 1: 
- // cases entering previous state on day i * the probability of progression *
- // the probability progression occurred on day j 
+  // SYMPTOMATIC CASES
+  // cases entering a state on day i + j - 1: 
+  // cases entering previous state on day i * the probability of progression *
+  // the probability progression occurred on day j 
+  
+  new_sym =
+    p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
+    p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
 
-  // pre omicron new_sym implementation, for reference
-  //for(i in 1:N_days_tot) {
-  //  new_sym[i] = dot_product(new_inf[idx1[i]:i],
-  //    inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i];
-  //}
-  
-  for(i in 1:N_days_tot) {
-    new_sym[i] = dot_product(new_inf[idx1[i]:i].*(1-ifr_omi_rv[idx1[i]:i]),
-      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i] + 
-      dot_product(new_inf[idx1[i]:i].*ifr_omi_rv[idx1[i]:i],
-      inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft_omi[i];
-  } 
-  
-  //for(i in 1:N_days_tot) {
-  //  anc_sym_frac = dot_product(new_inf[idx1[i]:i]*(1-ifr_omi[i]),
-  //    inf_prg_delay_rv[idx2[i]:Max_delay]) * p_sym_if_inft[i] / 
-  //    new_sym[i]; 
-  //}
-  
-  for(i in 1:N_days_tot) {
-    new_sev[i] = dot_product(new_sym[idx1[i]:i],
-      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_symt[i];
-  }
-  
-  for(i in 1:N_days_tot) {
-    new_die[i] = dot_product(new_sev[idx1[i]:i],
-      sev_prg_delay_rv[idx2[i]:Max_delay]) * p_die_if_sevt[i];
-  }
+  new_sev = p_sev_if_symt               .* conv1d(new_sym, sym_prg_delay_rv);
+  new_die = p_die_if_sevt[1:N_days_tot] .* conv1d(new_sev, sev_prg_delay_rv);
 
-// CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
+  // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 
-// diagnosed at asymptomatic
-// a diagnosed asymptomatic infection on day i + j - 1
-// is an asymptomatic case on day i with some probability of diagnosis, 
-// and some probability that the diagnosis occurred on day j.
-// we assume asymptomatic diagnosis only occurs among individuals who will be
-// asymptomatic for the entire course of their infection. 
-  for(i in 1:N_days_tot) {
-    new_asy_dx[i] = dot_product(new_inf[idx1[i]:i] .* p_diag_if_asy[idx1[i]:i], 
-      asy_rec_delay_rv[idx2[i]:Max_delay]) * (1-p_sym_if_inft[i]);
-  }
+  // diagnosed at asymptomatic
+  // a diagnosed asymptomatic infection on day i + j - 1
+  // is an asymptomatic case on day i with some probability of diagnosis, 
+  // and some probability that the diagnosis occurred on day j.
+  // we assume asymptomatic diagnosis only occurs among individuals who will be
+  // asymptomatic for the entire course of their infection. 
+  new_asy_dx = (1 - p_sym_if_inft) .* conv1d(
+    new_inf .* p_diag_if_asy,
+    asy_rec_delay_rv
+  );
   
-// diagnosed at symptomatic
-// a diagnosed symptomatic (not severe) case on day i + j - 1
-// is a symptomatic case on day i with some probability of diagnosis
-// and some probability that the diagnosis occurred on day j.  
-  for(i in 1:N_days_tot) {
-    new_sym_dx[i] = dot_product(new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i], 
-      sym_diag_delay_rv[idx2[i]:Max_delay]);
-  }
+  // diagnosed at symptomatic
+  // a diagnosed symptomatic (not severe) case on day i + j - 1
+  // is a symptomatic case on day i with some probability of diagnosis
+  // and some probability that the diagnosis occurred on day j.  
+  new_sym_dx = conv1d(new_sym .* p_diag_if_sym, sym_diag_delay_rv);
   
-// cascade from diagnosis 
-// follow diagnosed cases forward to determine how many cases diagnosed
-// at symptomatic eventually die 
-  for(i in 1:N_days_tot) {
-    dx_sym_sev[i] = dot_product(new_sym[idx1[i]:i] .* p_diag_if_sym[idx1[i]:i],
-      sym_prg_delay_rv[idx2[i]:Max_delay]) * p_sev_if_symt[i];
-  }
+  // cascade from diagnosis 
+  // follow diagnosed cases forward to determine how many cases diagnosed
+  // at symptomatic eventually die 
+  dx_sym_sev = p_sev_if_symt .* conv1d(
+    new_sym .* p_diag_if_sym,
+    sym_prg_delay_rv
+  );
         
-  for(i in 1:N_days_tot) {
-    dx_sym_die[i] = dot_product(dx_sym_sev[idx1[i]:i],
-      sev_prg_delay_rv[idx2[i]:Max_delay]) * p_die_if_sevt[i];
-  }
+  dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
         
-// diagnosed at severe 
-// as above for symptomatic 
-  for(i in 1:N_days_tot) {
-    new_sev_dx[i] = dot_product(new_sev[idx1[i]:i]-dx_sym_sev[idx1[i]:i],
-      sev_diag_delay_rv[idx2[i]:Max_delay]) * p_diag_if_sev;
-  }
+  // diagnosed at severe 
+  // as above for symptomatic 
+  new_sev_dx = p_diag_if_sev * conv1d(new_sev - dx_sym_sev, sev_diag_delay_rv);
   
-// cascade from diagnosis
-// as above for symptomatic 
-  for(i in 1:N_days_tot) {
-    dx_sev_die[i] = dot_product(new_sev[idx1[i]:i]-dx_sym_sev[idx1[i]:i],
-      sev_prg_delay_rv[idx2[i]:Max_delay]) * p_diag_if_sev * p_die_if_sevt[i];
-  }
+  // cascade from diagnosis
+  // as above for symptomatic 
+  dx_sev_die = p_die_if_sev * p_die_if_sevt[1:N_days_tot] .* conv1d(
+    new_sev - dx_sym_sev,
+    sev_prg_delay_rv
+  );
 
-// TOTAL DIAGNOSED CASES AND DEATHS //
-diag_all = new_asy_dx + new_sym_dx + new_sev_dx;
-new_die_dx = dx_sym_die + dx_sev_die;
+  // TOTAL DIAGNOSED CASES AND DEATHS //
+  diag_all   = new_asy_dx + new_sym_dx + new_sev_dx;
+  new_die_dx = dx_sym_die + dx_sev_die;
 
-// REPORTING //
-// calcluate "occur_cas" and "occur_die", which are vectors of diagnosed cases 
-// and deaths by the date we expect them to appear in the reported data. 
+  // REPORTING //
+  // calcluate "occur_cas" and "occur_die", which are vectors of diagnosed cases 
+  // and deaths by the date we expect them to appear in the reported data. 
 
-// how reporting delays are reflected in the data depend on how the data are 
-// dated
+  // how reporting delays are reflected in the data depend on how the data are 
+  // dated
   if(obs_cas_rep == 1) {
-    for(i in 1:N_days_tot) {
-      occur_cas[i] = dot_product(diag_all[idx1[i]:i] , 
-      cas_rep_delay_rv[idx2[i]:Max_delay]);
-    }
+    occur_cas = conv1d(diag_all, cas_rep_delay_rv);
   } else {
-  // for cases by date of occurrence
-  // we assume all cases diagnosed more than 60 days from the final day of data
+    // for cases by date of occurrence
+    // we assume all cases diagnosed more than 60 days from the final day of data
     occur_cas = diag_all .* cas_cum_report_delay_rv;
   }
-// reporting delays modeled as described above for cases
-  if(obs_die_rep == 1) {
-    for(i in 1:N_days_tot) {
-      occur_die[i] = dot_product(new_die_dx[idx1[i]:i] , 
-      die_rep_delay_rv[idx2[i]:Max_delay]);
-    }
-  } else {
+
+  // reporting delays modeled as described above for cases
+  if(obs_die_rep == 1)
+    occur_die = conv1d(new_die_dx, die_rep_delay_rv);
+  else
     occur_die = new_die_dx .* die_cum_report_delay_rv;
-  }
 
-// phi
-phi_cas = pow(inv_sqrt_phi_c, -2);
-phi_die = pow(inv_sqrt_phi_d, -2);
+  // phi
+  phi_cas = pow(inv_sqrt_phi_c, -2);
+  phi_die = pow(inv_sqrt_phi_d, -2);
 
-// These are precision params for neg_binomial_2_lpmf, and must be >0. However,
-// lower bound on `inv_sqrt_phi_[cd]` is 0.
-if (phi_cas == 0)
-  phi_cas = 0.0000000001;
-if (phi_die == 0)
-  phi_die = 0.0000000001;
-
+  // These are precision params for neg_binomial_2_lpmf, and must be >0. However,
+  // lower bound on `inv_sqrt_phi_[cd]` is 0.
+  if (phi_cas == 0)
+    phi_cas = 0.0000000001;
+  if (phi_die == 0)
+    phi_die = 0.0000000001;
 }
 ///////////////////////////////////////////////////////////  
 model {
@@ -692,55 +694,38 @@ model {
 ///////////////////////////////////////////////////////////
 generated quantities {
   // calculate cumulative incidence + sero_positive + pop_infectiousness
-  int                 idx1b[N_days_tot];
-  int                 idx2b[N_days_tot];
   real                p_die_if_sym;
+
   vector[N_days_tot]  diag_cases;  
   vector[N_days_tot]  cumulative_incidence;  
   vector[N_days_tot]  sero_positive;  
   vector[N_days_tot]  pop_infectiousness;  
+
   vector[Max_delay]   infect_dist_rv;
+
   vector[500]         seropos_dist_rv;
 
-  // Indexes for convolutions (longer than max-delay)
-  for(i in 1:N_days_tot) {
-    if(i-500>0){
-      idx1b[i] = i-500+1;
-      idx2b[i] = 1;
-   } else {
-     idx1b[i] = 1;
-     idx2b[i] = 500-i+1;
-   }
- }
-  
-// cumulative incidence
+  // cumulative incidence
   cumulative_incidence = cumulative_sum(new_inf); 
+
   p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
+
   diag_cases = new_sym_dx + new_sev_dx; 
   
-   // vector to distribute infectiousness
-  for(i in 1:Max_delay) {
-    infect_dist_rv[1+Max_delay-i] = gamma_cdf(i+0.0, infect_dist_shap, 
-      infect_dist_rate) - gamma_cdf(i-1.0, infect_dist_shap, infect_dist_rate);
-  }
+ // vector to distribute infectiousness
+  for(i in 1:Max_delay)
+    infect_dist_rv[1+Max_delay-i] = 
+      gamma_cdf(i   | infect_dist_shap, infect_dist_rate) -
+      gamma_cdf(i-1 | infect_dist_shap, infect_dist_rate);
   
-// vector to distribute infectiousness seropositives
-  for(i in 1:500) {
-    seropos_dist_rv[1+500-i] = 1.0 - gamma_cdf(i+0.0, seropos_dist_shap, 
-      seropos_dist_rate);
-  }
+  // vector to distribute infectiousness seropositives
+  for(i in 1:500)
+    seropos_dist_rv[1+500-i] = 1.0 - gamma_cdf(i | seropos_dist_shap, seropos_dist_rate);
   
-// infectiousness
-  for(i in 1:N_days_tot) {
-    pop_infectiousness[i] = dot_product(new_inf[idx1[i]:i],
-      infect_dist_rv[idx2[i]:Max_delay]);
-  }
+  // infectiousness
+  pop_infectiousness = conv1d(new_inf, infect_dist_rv);
   
-  // sero-posotoves
-  for(i in 1:N_days_tot) {
-    sero_positive[i] = dot_product(new_inf[idx1b[i]:i],
-      seropos_dist_rv[idx2b[i]:500]);
-  }
-  
+  // seropositives
+  sero_positive = conv1d(new_inf, seropos_dist_rv[1:N_days_tot]);
 }
 
