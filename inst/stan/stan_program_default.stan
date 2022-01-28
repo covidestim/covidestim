@@ -36,6 +36,7 @@ functions {
 
     return X * kernel;
   }
+
 }
 
 data {
@@ -102,7 +103,8 @@ data {
 
   //  how many days should be used for the moving average in the likelihood 
   //  function? 
-  int<lower = 1, upper = 10> N_days_av; 
+  int N_days_av; 
+  // int<lower = 1, upper = 10> N_days_av; 
 
   // is there a last obeserved deaths data day?
   int<lower=0> lastDeathDate;
@@ -179,7 +181,10 @@ data {
 transformed data {
   int  N_days_tot;
 
-
+  // Moving sums
+  int<lower=0>           obs_cas_mvs[N_days]; // vector of cases
+  int<lower=0>           obs_die_mvs[N_days]; // vector of deaths
+  int<lower=0>           nda0 = N_days_av - 1;
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
   vector[Max_delay]  asy_rec_delay_rv; 
@@ -209,6 +214,17 @@ for(i in 1:N_days_tot) {
     idx2[i] = Max_delay-i+1;
   }
 }
+
+  // compute the moving sums
+  for(i in 1:N_days) {
+      if(i < N_days_av) {
+        obs_cas_mvs[i] = 0;
+        obs_die_mvs[i] = 0;
+      } else {
+        obs_cas_mvs[i] = sum(obs_cas[(i - nda0) : i]);
+        obs_die_mvs[i] = sum(obs_die[(i - nda0) : i]);
+      }
+  }
  
   // calculate the daily probability of transitioning to a new disease state
   // for days 1 to 60 after entering that state
@@ -368,6 +384,9 @@ transformed parameters {
   // (all diagnosed cases with an additional delay to report) 
   vector[N_days_tot]  occur_cas;
   vector[N_days_tot]  occur_die; 
+  // moving sum cases and deaths
+  vector[N_days_tot]  occur_cas_mvs;
+  vector[N_days_tot]  occur_die_mvs; 
 
   // OMICRON DELAY int 
   vector[N_days_tot]   ifr_omi_rv;
@@ -577,6 +596,18 @@ transformed parameters {
     occur_die = conv1d(new_die_dx, die_rep_delay_rv);
   else
     occur_die = new_die_dx .* die_cum_report_delay_rv;
+    
+  // compute moving sums
+    // compute the moving sums
+  for(i in 1:N_days) {
+      if(i < N_days_av) {
+        occur_cas_mvs[i] = 0;
+        occur_die_mvs[i] = 0;
+      } else {
+        occur_cas_mvs[i] = sum(occur_cas[(i - nda0) : i]);
+        occur_die_mvs[i] = sum(occur_die[(i - nda0) : i]);
+      }
+  }
 
   // phi
   phi_cas = pow(inv_sqrt_phi_c, -2);
@@ -655,21 +686,21 @@ model {
   // During data
   target += neg_binomial_2_lpmf(
     // `obs_cas` from the first observed day to the last death date
-    obs_cas[1:lastCaseDate] |
+    obs_cas_mvs[N_days_av:lastCaseDate] |
       // `occur_cas` from the first observed day (`N_days_before+1`) to the
       // last death date
-      occur_cas[N_days_before+1 : N_days_before+lastCaseDate],
+      occur_cas_mvs[N_days_before+N_days_av : N_days_before+lastCaseDate],
     phi_cas
-  );
+  ) ;// Optional, but likely unncessesary: / N_days_av;
 
   target += neg_binomial_2_lpmf(
     // `obs_die` from the first observed day to the last death date
-    obs_die[1:lastDeathDate] |
+    obs_die[N_days_av:lastDeathDate] |
       // `occur_die` from the first observed day (`N_days_before+1`) to the
       // last death date
-      occur_die[N_days_before+1 : N_days_before+lastDeathDate],
+      occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
     phi_die
-  );
+  ); // optional, but likelie unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
