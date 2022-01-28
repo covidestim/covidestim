@@ -173,8 +173,8 @@ data {
   real<lower=0>         sd_omicron_delay; // sd of the variation of the mean date: default :10
   
   // input for the number of days to put the Rt prior on
-  int<lower=0>  N_days_pri_Rt;
-  real<lower=0> sd_pri_Rt;
+  // int<lower=0>  N_days_pri_Rt;
+  // real<lower=0> sd_pri_Rt;
 
 }
 ///////////////////////////////////////////////////////////
@@ -286,7 +286,7 @@ parameters {
   real                    log_new_inf_0; // starting intercept
   real<lower=3, upper=11> serial_i; // serial interval
   real<lower=0, upper=8>  serial_i_omi; // serial interval
-  vector[N_spl_par_rt]    spl_par_rt;
+  vector<upper=5>[N_spl_par_rt]    spl_par_rt;
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -302,7 +302,7 @@ real                        omicron_delay;
   
 // DIANGOSIS
 // scaling factor for time to diagnosis
-  real<lower=0, upper=1>    scale_dx_delay_asy;
+  // real<lower=0, upper=1>    scale_dx_delay_asy;
   real<lower=0, upper=1>    scale_dx_delay_sym; 
   real<lower=0, upper=1>    scale_dx_delay_sev; 
 // probability of diagnosis at each illness state
@@ -669,8 +669,8 @@ model {
   // prop for vaccine
   prob_vac             ~ dirichlet(rep_vector(5, 3));
 
-  if(N_days_pri_Rt > 0)
-    logRt[(N_days_tot-N_days_pri_Rt+1) : N_days_tot] ~ normal(0, sd_pri_Rt);
+  // if(N_days_pri_Rt > 0)
+  //   logRt[(N_days_tot-N_days_pri_Rt+1) : N_days_tot] ~ normal(0, sd_pri_Rt);
    
   // LIKELIHOOD
   // Before data
