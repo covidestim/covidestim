@@ -423,7 +423,8 @@ transformed parameters {
   rr_die_if_sev = rr_decl_die      / rr_decl_sev;
 
   // NATURAL HISTORY CASCADE
-  p_die_if_sevt     = p_die_if_sev     * ifr_adj_fixed                  * (1 + ifr_adj[1:N_days_tot] * ifr_decl_OR);
+  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
+
   for( i in 1:N_days_tot){
   p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - ifr_omi_rv_die[i] * (1 - rr_die_if_sev));
   p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - ifr_omi_rv_sev[i] * (1 - rr_sev_if_sym));
@@ -525,13 +526,24 @@ transformed parameters {
   // cases entering a state on day i + j - 1: 
   // cases entering previous state on day i * the probability of progression *
   // the probability progression occurred on day j 
+  print("YO!");
+  print("spl_par_rt:");
+  print(spl_par_rt);
+  print("Rt:");
+  print(Rt);
+  print("new_inf:");
+  print(new_inf);
+  print("ifr_omi_rv:");
+  print(ifr_omi_rv);
+  print("inf_prg_delay_rv:");
+  print(inf_prg_delay_rv);
   
   new_sym =
     p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
     p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
 
-  new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
-  new_die = p_die_if_sevt .* conv1d(new_sev, sev_prg_delay_rv);
+  new_sev = p_sev_if_symt               .* conv1d(new_sym, sym_prg_delay_rv);
+  new_die = p_die_if_sevt[1:N_days_tot] .* conv1d(new_sev, sev_prg_delay_rv);
 
   // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 
@@ -568,7 +580,7 @@ transformed parameters {
   
   // cascade from diagnosis
   // as above for symptomatic 
-  dx_sev_die = p_die_if_sev * p_die_if_sevt .* conv1d(
+  dx_sev_die = p_die_if_sev * p_die_if_sevt[1:N_days_tot] .* conv1d(
     new_sev - dx_sym_sev,
     sev_prg_delay_rv
   );
@@ -599,7 +611,7 @@ transformed parameters {
     
   // compute moving sums
     // compute the moving sums
-  for(i in 1:N_days) {
+  for(i in 1:N_days_tot) {
       if(i < N_days_av) {
         occur_cas_mvs[i] = 0;
         occur_die_mvs[i] = 0;
