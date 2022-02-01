@@ -279,7 +279,8 @@ real                        omicron_delay;
   
 // DIANGOSIS
 // scaling factor for time to diagnosis
-  real<lower=0, upper=1>    scale_dx_delay_asy;
+  // real<lower=0, upper=1>    scale_dx_delay_asy; 
+  // scale_dx_delay_asy not connected to anything in model, no prior
   real<lower=0, upper=1>    scale_dx_delay_sym; 
   real<lower=0, upper=1>    scale_dx_delay_sev; 
 // probability of diagnosis at each illness state
