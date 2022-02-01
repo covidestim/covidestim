@@ -286,7 +286,7 @@ parameters {
   real                    log_new_inf_0; // starting intercept
   real<lower=3, upper=11> serial_i; // serial interval
   real<lower=0, upper=8>  serial_i_omi; // serial interval
-  vector<upper=5>[N_spl_par_rt]    spl_par_rt;
+  vector[N_spl_par_rt]    spl_par_rt;
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -312,8 +312,8 @@ real                        omicron_delay;
 
 // LIKELIHOOD 
 // phi terms for negative b ino imal likelihood function 
-  real<lower=0>             inv_sqrt_phi_c;
-  real<lower=0>             inv_sqrt_phi_d;
+  // real<lower=0>             inv_sqrt_phi_c;
+  // real<lower=0>             inv_sqrt_phi_d;
   // VACCINE ADJUSTMENT
   simplex[3]                prob_vac;
 }
@@ -395,8 +395,8 @@ transformed parameters {
 
   // LIKELIHOOD
   // phi terms for negative binomial likelihood function 
-  real phi_cas;
-  real phi_die;
+  // real phi_cas;
+  // real phi_die;
 
   if (omicron_adjust == 0) {
     ifr_omi_rv     = rep_vector(0, N_days_tot);
@@ -622,8 +622,9 @@ transformed parameters {
   }
 
   // phi
-  phi_cas = pow(inv_sqrt_phi_c, -2);
-  phi_die = pow(inv_sqrt_phi_d, -2);
+  // phi_cas = pow(inv_sqrt_phi_c, -2);
+  // phi_die = pow(inv_sqrt_phi_d, -2);
+
 }
 ///////////////////////////////////////////////////////////  
 model {
@@ -660,8 +661,8 @@ model {
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
   
   // phi  
-  inv_sqrt_phi_c       ~ normal(0, 1);
-  inv_sqrt_phi_d       ~ normal(0, 1);
+  // inv_sqrt_phi_c       ~ normal(0, 1);
+  // inv_sqrt_phi_d       ~ normal(0, 1);
 
   // omicron delay 
   omicron_delay        ~ normal(0, sd_omicron_delay);
@@ -683,8 +684,10 @@ model {
       if (sum(occur_die[1:N_days_before]) < 0)
         reject("`sum(occur_die[1:N_days_before])` had a negative value");
 
-      target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), phi_cas);
-      target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
+      target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), .2);
+      target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), .2);
+      // target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), phi_cas);
+      // target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
     }
   }
 
@@ -702,7 +705,8 @@ model {
       // `occur_cas` from the first observed day (`N_days_before+1`) to the
       // last death date
       occur_cas_mvs[N_days_before+N_days_av : N_days_before+lastCaseDate],
-    phi_cas
+    // phi_cas
+    .2
   ) ;// Optional, but likely unncessesary: / N_days_av;
 
   target += neg_binomial_2_lpmf(
@@ -711,7 +715,8 @@ model {
       // `occur_die` from the first observed day (`N_days_before+1`) to the
       // last death date
       occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
-    phi_die
+    // phi_die
+    .2
   ); // optional, but likelie unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////
