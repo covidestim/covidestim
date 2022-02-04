@@ -497,8 +497,8 @@ transformed parameters {
 
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
 
-    // new_inf[i] = exp(log_new_inf[i]);
-    new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
+    new_inf[i] = exp(log_new_inf[i]);
+    // new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
 
