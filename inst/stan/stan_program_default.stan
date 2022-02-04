@@ -392,7 +392,7 @@ transformed parameters {
   vector[N_days_tot]  occur_die_mvs; 
 
   // OMICRON DELAY int 
-  // vector[N_days_tot]   ifr_omi_rv;
+  vector[N_days_tot]   ifr_omi_rv;
   // vector[N_days_tot]   ifr_omi_rv_sev;
   // vector[N_days_tot]   ifr_omi_rv_die;
 
@@ -406,11 +406,11 @@ transformed parameters {
   //   ifr_omi_rv_sev = ifr_omi_rv;
   //   ifr_omi_rv_die = ifr_omi_rv;
   // } else {
-  //   for(i in 1:N_days_tot){
-  //     ifr_omi_rv[i]     = normal_cdf(i , Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
+    for(i in 1:N_days_tot){
+      ifr_omi_rv[i]     = normal_cdf(i,N_days_omi,14);
   //     ifr_omi_rv_die[i] = normal_cdf(i , Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
   //     ifr_omi_rv_sev[i] = normal_cdf(i , Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
-  //   }
+    }
 
   //   ifr_omi_rv     *= 0.95;
   //   ifr_omi_rv_die *= 0.95;
@@ -509,7 +509,7 @@ transformed parameters {
     // if(i < N_days_omi){ 
       // pop_sus = pop_uninf; 
     // } else { 
-      pop_sus = pop_uninf + p_reinf * (pop_size - pop_uninf);
+      pop_sus = pop_uninf + p_reinf * (pop_size - pop_uninf) * ifr_omi_rv[i];
       // pop_uninf + pop_uninf/pop_size;
       // }
 
