@@ -497,8 +497,8 @@ transformed parameters {
 
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
 
-    new_inf[i] = exp(log_new_inf[i]);
-    // new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
+    // new_inf[i] = exp(log_new_inf[i]);
+    new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
 
@@ -652,7 +652,7 @@ model {
   
   // PRIORS
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
-  p_reinf               ~ beta(2,2);
+  p_reinf               ~ beta(2,10);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   // serial_i_omi          ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
