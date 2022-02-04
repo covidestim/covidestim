@@ -1,4 +1,8 @@
 functions {
+  vector special_logistic_transform(vector spline) {
+    return 6.4 * inv_logit(0.2 * (spline - 7));
+  }
+
   vector conv1d(vector x, vector kernel) {
     int nk = rows(kernel);
     int nx = rows(x);
@@ -406,7 +410,7 @@ transformed parameters {
     ifr_omi_rv_sev = ifr_omi_rv;
     ifr_omi_rv_die = ifr_omi_rv;
   } else {
-    for(i in 1:N_days_tot){
+    for (i in 1:N_days_tot){
       ifr_omi_rv[i]     = normal_cdf(i, Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
       ifr_omi_rv_die[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
       ifr_omi_rv_sev[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
@@ -480,11 +484,10 @@ transformed parameters {
   // NEW INCIDENT CASES
   
   // modeled with a spline
-  spl_par_rt[1] = spl_par_rt_raw[1];
-  for (i in 2:N_spl_par_rt)
-    spl_par_rt[i] = spl_par_rt[i-1] + spl_par_rt_raw[i]*spl_par_rt_tau;
+  spl_par_rt = cumulative_sum(spl_par_rt_raw);
+  spl_par_rt[2:] *= spl_par_rt_tau;
 
-  Rt0 = firstRt + spl_basis_rt * spl_par_rt;
+  Rt0 = special_logistic_transform(spl_basis_rt * spl_par_rt);
   pop_uninf = pop_size;
 
   for(i in 1:N_days_tot) {
@@ -627,8 +630,7 @@ model {
   // PRIORS
   log_new_inf_0        ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
 
-  firstRt              ~ normal(3.5, 2.5);
-  spl_par_rt_raw       ~ normal(0, 0.4);
+  spl_par_rt_raw       ~ normal(0, 1);
   spl_par_rt_tau       ~ normal(0, 1);
 
   serial_i             ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
