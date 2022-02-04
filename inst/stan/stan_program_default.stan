@@ -506,12 +506,12 @@ transformed parameters {
     if (pop_uninf < 1) {
       pop_uninf = 1;
     }
-    if(i < N_days_omi){ 
-      pop_sus = pop_uninf; 
-    } else { 
+    // if(i < N_days_omi){ 
+      // pop_sus = pop_uninf; 
+    // } else { 
       pop_sus = pop_uninf + p_reinf * (pop_size - pop_uninf);
       // pop_uninf + pop_uninf/pop_size;
-      }
+      // }
 
     // if(reinfection > 0 && i > reinf_delay1) {
     //   pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
