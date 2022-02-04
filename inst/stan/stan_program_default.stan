@@ -44,6 +44,7 @@ data {
   int<lower=0>           N_days; // days of data
   int<lower=0>           N_days_before; // days before data to init epi model
   int<lower=0>           Max_delay; // maximum days delay 
+  int<lower=0>           N_days_omi; // number of days before the omicron changes 
   
   int<lower=0>           obs_cas[N_days]; // vector of cases
   int<lower=0>           obs_die[N_days]; // vector of deaths
@@ -314,6 +315,7 @@ parameters {
 // phi terms for negative b ino imal likelihood function 
   real<lower=0>             inv_sqrt_phi_c;
   real<lower=0>             inv_sqrt_phi_d;
+  real<lower=0,upper=1>     p_reinf;
   // VACCINE ADJUSTMENT
   simplex[3]                prob_vac;
 }
@@ -325,6 +327,7 @@ transformed parameters {
   vector[N_days_tot]      new_inf;
   vector[N_days_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
+  real                    pop_sus;
 
   // vector<lower=0>[N_days_tot] serial_i_comb;
 
@@ -484,21 +487,31 @@ transformed parameters {
   logRt0 = spl_basis_rt * spl_par_rt;
 
   pop_uninf = pop_size;
-
+  pop_sus = pop_size;
   for(i in 1:N_days_tot) {
 
-    logRt[i] = logRt0[i] + log(pop_uninf/pop_size);
+    logRt[i] = logRt0[i] + log(pop_sus/pop_size);
 
     deriv1_log_new_inf[i] = logRt[i]/serial_i;
     // deriv1_log_new_inf[i] = logRt[i]/serial_i_comb[i];
 
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
 
-    // new_inf[i] = exp(log_new_inf[i]);
-    new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
+    new_inf[i] = exp(log_new_inf[i]);
+    // new_inf[i] = (1-exp(-exp(log_new_inf[i])/pop_uninf)) * pop_uninf;
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
+
     pop_uninf -= new_inf[i];
+    if (pop_uninf < 1) {
+      pop_uninf = 1;
+    }
+    if(i < N_days_omi){ 
+      pop_sus = pop_uninf; 
+    } else { 
+      pop_sus = pop_uninf + p_reinf * (pop_size - pop_uninf);
+      // pop_uninf + pop_uninf/pop_size;
+      }
 
     // if(reinfection > 0 && i > reinf_delay1) {
     //   pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
@@ -508,11 +521,11 @@ transformed parameters {
     // }
    
    // END OF REINFECTION STRATEGIES
-   
-    if (pop_uninf < 1) {
-      // print("WARNING pop_uninf preliminary value was ", pop_uninf);
-      pop_uninf = 1;
-    }
+    // 
+    // if (pop_uninf < 1) {
+    //   // print("WARNING pop_uninf preliminary value was ", pop_uninf);
+    //   pop_uninf = 1;
+    // }
   }
   
   Rt = exp(logRt); 
@@ -639,6 +652,7 @@ model {
   
   // PRIORS
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
+  p_reinf               ~ beta(2,2);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   // serial_i_omi          ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
