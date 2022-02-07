@@ -655,7 +655,7 @@ model {
   
   // PRIORS
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
-  p_reinf               ~ beta(2,10);
+  p_reinf               ~ beta(4,32);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   // serial_i_omi          ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
