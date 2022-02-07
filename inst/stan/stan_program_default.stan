@@ -3,6 +3,72 @@ functions {
     return 6.4 * inv_logit(0.2 * (spline - 7));
   }
 
+  vector lconv1d(vector lx, vector kernel) {
+    int nk = rows(kernel);
+    int nx = rows(lx);
+    matrix[nx, nk] X; // Matrix-offsets form of the log-space vector `lx`
+    matrix[nx, nk] K; // Each row of `K` is the kernel
+    matrix[nx, nk] S; // X+K
+    vector[nx]     r; // Result vector
+
+    if (nx < nk)
+      reject("nrow(x) must be >= nrow(kernel). x had nrow = ", nx);
+
+    // Steps to do a log-space convolution, where `lx` is a vector in
+    // log-space, and `kernel` is a vector in real-space:
+    //
+    // 1. Fill in `X` like usual
+    // 2. Create `K` by turning `kernel` into a `row_vector` and using
+    //    `rep_vector()` to make it have the same number of rows as `X`.
+    // 3. Add `X + K`
+    // 4. Call log_sum_exp on each row of the resulting matrix.
+    // 5. Return the resulting vector
+
+    // Step 1. Fill in `X` like usual
+    //
+    // The first `nK-1` rows of the convolution are special, because we don't
+    // yet have a full "window" of X entries to take the dot product of against
+    // the kernel. We want to handle this case by filling those entires with
+    // zeroes. This is NOT to do anything clever; it's to make sure that no
+    // entry of the matrix contains undefined values.
+    for (i in 1:nk) {
+
+      // Fill the beginning of the column with the correct number of `0`
+      // elements.
+      //
+      // What we are shooting for here is for the first column to have `nK-1`
+      // `0`s in it, and for the last column to have no `0`s in it.
+      if (i < nk)
+        X[1:(nk - i), i] = rep_vector(0, nk - i);
+
+      // Populate the rest of each column with the entries of X, until we run
+      // out of slots in the matrix (at the bottom of the column). The only
+      // column that should have a full set of `X` entries is the last column,
+      // the `nK`'th column.
+      X[(nk - i + 1):nx, i] = lx[1:(nx - nk + i)];
+    }
+
+    // 2. Create `K` by turning `kernel` into a `row_vector` and using
+    //    `rep_vector()` to make it have the same number of rows as `X`.
+    K = rep_vector(kernel', nx);
+
+    // 3. Add `X + K`.
+    S = X + K;
+
+    // 4. Call log_sum_exp on each row of the resulting matrix. For the
+    //    case where `i < nk`, mask the first `nk - i` entries of the row,
+    //    which correspond to the "out-of-range" entries for the convolution.
+    for (i in 1:nx) {
+      if (i < nk)
+        r[i] = log_sum_exp(S[i, (nk - i + 1):nk]);
+      else
+        r[i] = log_sum_exp(S[i,]);
+    }
+
+    // 5. Return the resulting vector
+    return r;
+  }
+
   vector conv1d(vector x, vector kernel) {
     int nk = rows(kernel);
     int nx = rows(x);
@@ -491,21 +557,55 @@ transformed parameters {
   pop_uninf = pop_size;
 
   for(i in 1:N_days_tot) {
-    Rt[i] = Rt0[i] * pop_uninf/pop_size;
+    Rt[i] = Rt0[i] * (log_pop_uninf - log(pop_size));
 
-    if (i > 1)
+    if (i > 1) {
+      // ** NON-LOGSPACE IMPL **
       new_inf[i] = new_inf[i-1] * Rt[i]^(1/serial_i_comb[i]);
-    else if (i == 1)
+      // ** LOGSPACE IMPL **
+      log_new_inf[i] = log_new_inf[i-1] + log(Rt[i]^1/serial_i_comb[i]);
+    }
+    else if (i == 1) {
+      // ** NON-LOGSPACE IMPL **
       new_inf[i] =                Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
+      // ** LOGSPACE IMPL **
+      log_new_inf[i] = log(Rt[i]^(1/serial_i_comb[i])) + log_new_inf_0
+    }
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
+    // ** NON-LOGSPACE IMPL **
     pop_uninf -= new_inf[i];
+    // ** LOGSPACE IMPL **
+    // The basic idea:
+    // log_pop_uninf = log(exp(log_pop_uninf) - exp(log_new_inf))
+    //
+    // The "better" way
+    log_pop_uninf = log_diff_exp(log_pop_uninf, log_new_inf);
 
     if(reinfection > 0 && i > reinf_delay1) {
+      // ** NON-LOGSPACE IMPL **
       pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
+      // ** LOGSPACE IMPL **
+      // 
+      // * Derivation: *
+      // pop_uninf = pop_uninf + new_inf[i-reinf_delay1] * reinf_prob[1];
+      // log_pop_uninf = log(exp(log_pop_uninf) + exp(log_new_inf[i-reinf_delay1]) * reinf_prob[1]);
+      // log_pop_uninf = log(exp(log_pop_uninf) + exp(log(reinf_prob[1] + log_new_inf[i-reinf_delay1]));
+      // * Draft: *
+      log_pop_uninf = log_sum_exp(
+        log_pop_uninf,
+        log(reinf_prob[1]) + log_new_inf[i - reinf_delay1]
+      );
 
-      if(i > reinf_delay2)
+      if(i > reinf_delay2) {
+        // ** NON-LOGSPACE IMPL **
         pop_uninf += new_inf[i-reinf_delay2] * reinf_prob[2];
+        // ** LOGSPACE IMPL **
+        log_pop_uninf = log_sum_exp(
+          log_pop_uninf,
+          log(reinf_prob[2]) + log_new_inf[i - reinf_delay2]
+        );
+      }
     }
    // END OF REINFECTION STRATEGIES
    
@@ -609,7 +709,6 @@ transformed parameters {
     occur_die = new_die_dx .* die_cum_report_delay_rv;
     
   // compute moving sums
-    // compute the moving sums
   for(i in 1:N_days_tot) {
     if(i < N_days_av) {
       occur_cas_mvs[i] = 0;
