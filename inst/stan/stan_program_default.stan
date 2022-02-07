@@ -136,8 +136,8 @@ data {
   // probabilities of progression inf -> sym -> sev -> die
   real<lower=0> pri_p_sym_if_inf_a; 
   real<lower=0> pri_p_sym_if_inf_b;
-  // real<lower=0> pri_new_p_sym_if_inf_a;
-  // real<lower=0> pri_new_p_sym_if_inf_b;
+  real<lower=0> pri_new_p_sym_if_inf_a;
+  real<lower=0> pri_new_p_sym_if_inf_b;
   real<lower=0> pri_p_sev_if_sym_a;
   real<lower=0> pri_p_sev_if_sym_b;
   real<lower=0> pri_p_die_if_sev_a;
@@ -292,7 +292,7 @@ parameters {
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
   real<lower=0, upper=1>    p_sym_if_inf;
-  // real<lower=0, upper=1>    p_sym_if_inf_omi;
+  real<lower=0, upper=1>    p_sym_if_inf_omi;
   real<lower=0, upper=1>    p_sev_if_sym;
   real<lower=0, upper=1>    p_die_if_sev;
   real<lower=0>             ifr_decl_OR;
@@ -342,7 +342,7 @@ transformed parameters {
   vector[N_ifr_adj]   p_die_if_sevt;
   vector[N_days_tot]  p_sev_if_symt;
   vector[N_days_tot]  p_sym_if_inft;  
-  // vector[N_days_tot]  p_sym_if_inft_omi;
+  vector[N_days_tot]  p_sym_if_inft_omi;
 
   // new probability of symptomatic
   // real<lower=0>      rr_sym_if_inf;
@@ -436,7 +436,7 @@ transformed parameters {
   // p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - ifr_omi_rv_die[i] * (1 - rr_die_if_sev));
   // p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - ifr_omi_rv_sev[i] * (1 - rr_sev_if_sym));
   // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
-  // p_sym_if_inft_omi[i] = p_sym_if_inf_omi    * pow(ifr_vac_adj[i], prob_vac[3]);
+  p_sym_if_inft_omi[i] = p_sym_if_inf_omi    * pow(ifr_vac_adj[i], prob_vac[3]);
   }
   
   // DIAGNOSIS // 
@@ -557,11 +557,11 @@ transformed parameters {
   print("inf_prg_delay_rv:");
   print(inf_prg_delay_rv);
   
-  new_sym =
-    p_sym_if_inft     .* conv1d(new_inf , inf_prg_delay_rv);
   // new_sym =
-  //   p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
-  //   p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
+  //   p_sym_if_inft     .* conv1d(new_inf , inf_prg_delay_rv);
+  new_sym =
+    p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
+    p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
 
   new_sev = p_sev_if_symt               .* conv1d(new_sym, sym_prg_delay_rv);
   new_die = p_die_if_sevt[1:N_days_tot] .* conv1d(new_sev, sev_prg_delay_rv);
@@ -662,7 +662,7 @@ model {
   // PRIORS: DISEASE PROGRESSION
   // probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
-  // p_sym_if_inf_omi     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
+  p_sym_if_inf_omi     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
