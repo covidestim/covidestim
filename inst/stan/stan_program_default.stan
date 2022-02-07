@@ -709,10 +709,10 @@ model {
       if (sum(occur_die[1:N_days_before]) < 0)
         reject("`sum(occur_die[1:N_days_before])` had a negative value");
 
-      target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), .2);
-      target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), .2);
-      // target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), phi_cas);
-      // target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
+      // target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), .2);
+      // target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), .2);
+      target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), phi_cas);
+      target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
     }
   }
 
@@ -730,8 +730,8 @@ model {
       // `occur_cas` from the first observed day (`N_days_before+1`) to the
       // last death date
       occur_cas_mvs[N_days_before+N_days_av : N_days_before+lastCaseDate],
-    // phi_cas
-    .2
+    phi_cas
+    // .2
   ) ;// Optional, but likely unncessesary: / N_days_av;
 
   target += neg_binomial_2_lpmf(
@@ -740,8 +740,8 @@ model {
       // `occur_die` from the first observed day (`N_days_before+1`) to the
       // last death date
       occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
-    // phi_die
-    .2
+    phi_die
+    // .2
   ); // optional, but likelie unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////
