@@ -407,7 +407,7 @@ transformed parameters {
   //   ifr_omi_rv_die = ifr_omi_rv;
   // } else {
     for(i in 1:N_days_tot){
-      ifr_omi_rv[i]     = normal_cdf(i,N_days_omi,14);
+      ifr_omi_rv[i]     = normal_cdf(i,N_days_omi,28);
   //     ifr_omi_rv_die[i] = normal_cdf(i , Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
   //     ifr_omi_rv_sev[i] = normal_cdf(i , Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
     }
