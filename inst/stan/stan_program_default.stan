@@ -610,8 +610,10 @@ transformed parameters {
    // END OF REINFECTION STRATEGIES
    
     if (pop_uninf < 1 || is_nan(pop_uninf) || is_inf(pop_uninf)) {
-      // print("WARNING pop_uninf preliminary value was ", pop_uninf);
+      // ** NON-LOGSPACE IMPL **
       pop_uninf = 1;
+      // ** LOGSPACE IMPL **
+      log_pop_uninf = 0;
     }
   }
   
@@ -637,12 +639,27 @@ transformed parameters {
   // print(inf_prg_delay_rv);
   // print("ifr_omi_rv:");
   // print(ifr_omi_rv);
+
+  // ** NON-LOGSPACE IMPL **
   new_sym =
     p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
     p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
+  // ** LOGSPACE IMPL **
+  log_new_sym = log_sum_exp(
+    log(p_sym_if_inft) + lconv1d(log_new_inf + log(1 - ifr_omi_rv), inf_prg_delay_rv),
+    log(p_sym_if_inft_omi) + lconv1d(log_new_inf + log(ifr_omi_rv), inf_prg_delay_rv)
+  );
 
-  new_sev = p_sev_if_symt               .* conv1d(new_sym, sym_prg_delay_rv);
+  // ** NON-LOGSPACE IMPL **
+  new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
+  // ** LOGSPACE IMPL **
+  log_new_sev = log(p_sev_if_symt) + lconv1d(log_new_sym, sym_prg_delay_rv);
+
+
+  // ** NON-LOGSPACE IMPL **
   new_die = p_die_if_sevt[1:N_days_tot] .* conv1d(new_sev, sev_prg_delay_rv);
+  // ** LOGSPACE IMPL **
+  log_new_die = log(p_die_if_sevt[1:N_days_tot]) + lconv1d(log_new_sev, sev_prg_delay_rv);
 
   // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 
@@ -652,8 +669,15 @@ transformed parameters {
   // and some probability that the diagnosis occurred on day j.
   // we assume asymptomatic diagnosis only occurs among individuals who will be
   // asymptomatic for the entire course of their infection. 
+
+  // ** NON-LOGSPACE IMPL **
   new_asy_dx = (1 - p_sym_if_inft) .* conv1d(
     new_inf .* p_diag_if_asy,
+    asy_rec_delay_rv
+  );
+  // ** LOGSPACE IMPL **
+  log_new_asy_dx = log(1 - p_sym_if_inft) + lconv1d(
+    log_new_inf + log(p_diag_if_asy),
     asy_rec_delay_rv
   );
   
@@ -661,32 +685,65 @@ transformed parameters {
   // a diagnosed symptomatic (not severe) case on day i + j - 1
   // is a symptomatic case on day i with some probability of diagnosis
   // and some probability that the diagnosis occurred on day j.  
+  
+  // ** NON-LOGSPACE IMPL **
   new_sym_dx = conv1d(new_sym .* p_diag_if_sym, sym_diag_delay_rv);
+  // ** LOGSPACE IMPL **
+  log_new_sym_dx = lconv1d(log(p_diag_if_sym) + log_new_sym, sym_diag_delay_rv);
   
   // cascade from diagnosis 
   // follow diagnosed cases forward to determine how many cases diagnosed
-  // at symptomatic eventually die 
+  // at symptomatic eventually die.
+
+  // ** NON-LOGSPACE IMPL **
   dx_sym_sev = p_sev_if_symt .* conv1d(
     new_sym .* p_diag_if_sym,
     sym_prg_delay_rv
   );
+  // ** LOGSPACE IMPL **
+  log_dx_sym_sev = log(p_sev_if_symt) + lconv1d(
+    log(p_diag_if_sym) + log_new_sym,
+    sym_prg_delay_rv
+  );
         
+  
+  // ** NON-LOGSPACE IMPL **
   dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
+  // ** LOGSPACE IMPL **
+  log_dx_sym_die = log(p_die_if_sevt[1:N_days_tot]) + lconv1d(log_dx_sym_sev, sev_prg_delay_rv);
         
   // diagnosed at severe 
   // as above for symptomatic 
+  // ** NON-LOGSPACE IMPL **
   new_sev_dx = p_diag_if_sev * conv1d(new_sev - dx_sym_sev, sev_diag_delay_rv);
+  // ** LOGSPACE IMPL **
+  log_new_sev_dx = log(p_diag_if_sev) +
+    lconv1d(
+      log_diff_exp(log_new_sev, dx_sym_sev),
+      sev_diag_delay_rv
+    );
   
   // cascade from diagnosis
   // as above for symptomatic 
+  // ** NON-LOGSPACE IMPL **
   dx_sev_die = p_die_if_sev * p_die_if_sevt[1:N_days_tot] .* conv1d(
     new_sev - dx_sym_sev,
     sev_prg_delay_rv
   );
+  // ** LOGSPACE IMPL **
+  log_dx_sev_die = log(p_die_if_sev) + log(p_die_if_sevt[1:N_days_tot]) +
+    lconv1d(log_diff_exp(log_new_sev, log_dx_sym_sev), sev_prg_delay_rv);
 
   // TOTAL DIAGNOSED CASES AND DEATHS //
+  // ** NON-LOGSPACE IMPL **
   diag_all   = new_asy_dx + new_sym_dx + new_sev_dx;
+  // ** LOGSPACE IMPL **
+  log_diag_all = log_sum_exp([log_new_asy_dx, log_new_sym_dx, log_new_sev_dx]);
+
+  // ** NON-LOGSPACE IMPL **
   new_die_dx = dx_sym_die + dx_sev_die;
+  // ** LOGSPACE IMPL **
+  log_new_die_dx = log_sum_exp(dx_sym_die, dx_sev_die);
 
   // REPORTING //
   // Calcluate "occur_cas" and "occur_die", which are vectors of diagnosed cases 
@@ -697,25 +754,47 @@ transformed parameters {
   //
   // For cases by date of occurrence, we assume all cases diagnosed more than
   // 60 days from the final day of data.
-  if(obs_cas_rep == 1)
+  if(obs_cas_rep == 1) {                              
+    // ** NON-LOGSPACE IMPL **
     occur_cas = conv1d(diag_all, cas_rep_delay_rv);
-  else
+    // ** LOGSPACE IMPL **
+    log_occur_cas = lconv1d(log_diag_all, cas_rep_delay_rv);
+  } else {
+    // ** NON-LOGSPACE IMPL **
     occur_cas = diag_all .* cas_cum_report_delay_rv;
+    // ** LOGSPACE IMPL **
+    log_occur_cas = log(cas_cum_report_delay_rv) + log_diag_all;
+  }
 
   // reporting delays modeled as described above for cases
-  if(obs_die_rep == 1)
+  if(obs_die_rep == 1) {
+    // ** NON-LOGSPACE IMPL **
     occur_die = conv1d(new_die_dx, die_rep_delay_rv);
-  else
+    // ** LOGSPACE IMPL **
+    log_occur_die = lconv1d(log_new_die_dx, die_rep_delay_rv);
+  } else {
+    // ** NON-LOGSPACE IMPL **
     occur_die = new_die_dx .* die_cum_report_delay_rv;
+    // ** LOGSPACE IMPL **
+    log_occur_die = log(die_cum_report_delay_rv) + log_new_die_dx;
+  }
     
   // compute moving sums
   for(i in 1:N_days_tot) {
     if(i < N_days_av) {
+      // ** NON-LOGSPACE IMPL **
       occur_cas_mvs[i] = 0;
       occur_die_mvs[i] = 0;
+      // ** LOGSPACE IMPL **
+      log_occur_cas_mvs[i] = negative_infinity();
+      log_occur_die_mvs[i] = negative_infinity();
     } else {
+      // ** NON-LOGSPACE IMPL **
       occur_cas_mvs[i] = sum(occur_cas[(i - nda0) : i]);
       occur_die_mvs[i] = sum(occur_die[(i - nda0) : i]);
+      // ** LOGSPACE IMPL **
+      log_occur_cas_mvs[i] = log_sum_exp(occur_cas[(i - nda0) : i]);
+      log_occur_die_mvs[i] = log_sum_exp(occur_die[(i - nda0) : i]);
     }
   }
 
