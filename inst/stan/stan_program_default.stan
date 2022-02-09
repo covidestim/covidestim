@@ -417,6 +417,8 @@ parameters {
   // phi terms for negative b ino imal likelihood function 
   real<lower=0> inv_sqrt_phi_c;
   real<lower=0> inv_sqrt_phi_d;
+  // reinfection probability 
+  real<lower=0,upper=1> p_reinf;
 
   // VACCINE ADJUSTMENT
   simplex[3] prob_vac;
@@ -430,6 +432,7 @@ transformed parameters {
   vector[N_days_tot] log_new_inf;
   // real               pop_uninf;
   real               log_pop_uninf;
+  real               log_pop_sus;
 
   vector<lower=0>[N_days_tot] serial_i_comb;
 
@@ -597,9 +600,10 @@ transformed parameters {
   // modeled with a spline
   Rt0 = spl_basis_rt * spl_par_rt_raw;
   log_pop_uninf = log(pop_size);
+  log_pop_sus   = log(pop_size);
 
   for(i in 1:N_days_tot) {
-    logRt[i] = log(Rt0[i]) + log_pop_uninf - log(pop_size);
+    logRt[i] = log(Rt0[i]) + log_pop_sus - log(pop_size);
 
     if (i > 1) {
       // ** NON-LOGSPACE IMPL **
@@ -623,6 +627,19 @@ transformed parameters {
     //
     // The "better" way
     log_pop_uninf = log_diff_exp(log_pop_uninf, log_new_inf[i]);
+    
+    // Calculate the new population susceptible 
+    // as a function of the log_pop_uninf
+    // ** NON-LOGSPACE IMPL **
+    //     if (pop_uninf < 1) {
+    //   pop_uninf = 1;
+    // }
+    // pop_sus = pop_uninf + p_reinf * (pop_size - pop_uninf) * ifr_omi_rv[i];
+
+    log_pop_sus = log_sum_exp(fmax(0, log_pop_uninf), 
+      log(p_reinf) + 
+      log(pop_size - fmin(exp(log_pop_uninf), pop_size - 1)) + 
+      log(ifr_omi_rv[i]));
 
     if(reinfection > 0 && i > reinf_delay1) {
       // ** NON-LOGSPACE IMPL **
@@ -891,6 +908,9 @@ model {
   // phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
+  
+  // reinfection probability
+  p_reinf              ~ beta(4,32);
 
   // omicron delay 
   omicron_delay        ~ normal(0, sd_omicron_delay);
