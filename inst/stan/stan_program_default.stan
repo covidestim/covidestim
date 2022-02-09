@@ -3,6 +3,32 @@ functions {
     return 6.4 * inv_logit(0.2 * (spline - 7));
   }
 
+  vector vlog_sum_exp(vector a, vector b) {
+    int l = rows(a);
+    vector[l] result;
+
+    if (rows(a) != rows(b))
+      reject("nrow(a) must be equal to nrow(b). lengths were: ", rows(a), ", ", rows(b));
+
+    for (i in 1:l)
+      result[i] = log_sum_exp(a[i], b[i]);
+
+    return result;
+  }
+
+  vector vlog_diff_exp(vector a, vector b) {
+    int l = rows(a);
+    vector[l] result;
+
+    if (rows(a) != rows(b))
+      reject("nrow(a) must be equal to nrow(b). lengths were: ", rows(a), ", ", rows(b));
+
+    for (i in 1:l)
+      result[i] = log_diff_exp(a[i], b[i]);
+
+    return result;
+  }
+
   vector lconv1d(vector lx, vector kernel) {
     int nk = rows(kernel);
     int nx = rows(lx);
@@ -50,7 +76,7 @@ functions {
 
     // 2. Create `K` by turning `kernel` into a `row_vector` and using
     //    `rep_vector()` to make it have the same number of rows as `X`.
-    K = rep_vector(kernel', nx);
+    K = rep_matrix(kernel', nx);
 
     // 3. Add `X + K`.
     S = X + K;
@@ -397,8 +423,10 @@ parameters {
 transformed parameters {
   ///~~~~~~~ Define ~~~~~~~
   // INCIDENCE
-  vector[N_days_tot] new_inf;
-  real               pop_uninf;
+  // vector[N_days_tot] new_inf;
+  vector[N_days_tot] log_new_inf;
+  // real               pop_uninf;
+  real               log_pop_uninf;
 
   vector<lower=0>[N_days_tot] serial_i_comb;
 
@@ -434,32 +462,47 @@ transformed parameters {
   real p_die_if_inf;
 
   // "true" number entering disease state each day
-  vector[N_days_tot] new_sym; 
-  vector[N_days_tot] new_sev;
-  vector[N_days_tot] new_die;
+  // vector[N_days_tot] new_sym; 
+  vector[N_days_tot] log_new_sym; 
+  // vector[N_days_tot] new_sev;
+  vector[N_days_tot] log_new_sev;
+  // vector[N_days_tot] new_die;
+  vector[N_days_tot] log_new_die;
 
   // newly diagnosed
-  vector[N_days_tot] new_asy_dx; 
-  vector[N_days_tot] new_sym_dx; 
-  vector[N_days_tot] new_sev_dx;
+  // vector[N_days_tot] new_asy_dx; 
+  vector[N_days_tot] log_new_asy_dx; 
+  // vector[N_days_tot] new_sym_dx; 
+  vector[N_days_tot] log_new_sym_dx; 
+  // vector[N_days_tot] new_sev_dx;
+  vector[N_days_tot] log_new_sev_dx;
 
   // follow diagnosed cases forward to calculate deaths among diagnosed
-  vector[N_days_tot] dx_sym_sev; 
-  vector[N_days_tot] dx_sym_die; 
-  vector[N_days_tot] dx_sev_die; 
+  // vector[N_days_tot] dx_sym_sev; 
+  vector[N_days_tot] log_dx_sym_sev; 
+  // vector[N_days_tot] dx_sym_die; 
+  vector[N_days_tot] log_dx_sym_die; 
+  // vector[N_days_tot] dx_sev_die; 
+  vector[N_days_tot] log_dx_sev_die; 
 
   // sum to diagnosed cases and deaths
-  vector[N_days_tot] diag_all;
-  vector[N_days_tot] new_die_dx;
+  // vector[N_days_tot] diag_all;
+  vector[N_days_tot] log_diag_all;
+  // vector[N_days_tot] new_die_dx;
+  vector[N_days_tot] log_new_die_dx;
 
   // number of cases and deaths in official record on each day
   // (all diagnosed cases with an additional delay to report) 
-  vector[N_days_tot] occur_cas;
-  vector[N_days_tot] occur_die; 
+  // vector[N_days_tot] occur_cas;
+  vector[N_days_tot] log_occur_cas;
+  // vector[N_days_tot] occur_die; 
+  vector[N_days_tot] log_occur_die; 
 
   // moving sum cases and deaths
-  vector[N_days_tot] occur_cas_mvs;
-  vector[N_days_tot] occur_die_mvs; 
+  // vector[N_days_tot] occur_cas_mvs;
+  // vector[N_days_tot] occur_die_mvs; 
+  vector[N_days_tot] log_occur_cas_mvs;
+  vector[N_days_tot] log_occur_die_mvs; 
 
   // OMICRON DELAY int 
   vector[N_days_tot] ifr_omi_rv;
@@ -533,8 +576,8 @@ transformed parameters {
     // sym_diag_delay_rv = reverse(sym_delay_gammas[2:(Max_delay+1)] - sym_delay_gammas[1:Max_delay]);
     // sev_diag_delay_rv = reverse(sev_delay_gammas[2:(Max_delay+1)] - sev_delay_gammas[1:Max_delay]);
     for(i in 1:Max_delay){
-    sym_diag_delay_rv[1+Max_delay-i] = sym_delay_gammas[i+1] - sym_delay_gammas[i];
-    sev_diag_delay_rv[1+Max_delay-i] = sev_delay_gammas[i+1] - sev_delay_gammas[i];
+      sym_diag_delay_rv[1+Max_delay-i] = sym_delay_gammas[i+1] - sym_delay_gammas[i];
+      sev_diag_delay_rv[1+Max_delay-i] = sev_delay_gammas[i+1] - sev_delay_gammas[i];
     }
 
   }
@@ -554,37 +597,37 @@ transformed parameters {
   spl_par_rt[2:] *= spl_par_rt_tau;
 
   Rt0 = special_logistic_transform(spl_basis_rt * spl_par_rt);
-  pop_uninf = pop_size;
+  log_pop_uninf = log(pop_size);
 
   for(i in 1:N_days_tot) {
     Rt[i] = Rt0[i] * (log_pop_uninf - log(pop_size));
 
     if (i > 1) {
       // ** NON-LOGSPACE IMPL **
-      new_inf[i] = new_inf[i-1] * Rt[i]^(1/serial_i_comb[i]);
+      // new_inf[i] = new_inf[i-1] * Rt[i]^(1/serial_i_comb[i]);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = log_new_inf[i-1] + log(Rt[i]^1/serial_i_comb[i]);
+      log_new_inf[i] = log_new_inf[i-1] + (1/serial_i_comb[i]) * log(Rt[i]);
     }
     else if (i == 1) {
       // ** NON-LOGSPACE IMPL **
-      new_inf[i] =                Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
+      // new_inf[i] = Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = log(Rt[i]^(1/serial_i_comb[i])) + log_new_inf_0
+      log_new_inf[i] = log_new_inf_0 + (1/serial_i_comb[i]) * log(Rt[i]);
     }
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // ** NON-LOGSPACE IMPL **
-    pop_uninf -= new_inf[i];
+    // pop_uninf -= new_inf[i];
     // ** LOGSPACE IMPL **
     // The basic idea:
     // log_pop_uninf = log(exp(log_pop_uninf) - exp(log_new_inf))
     //
     // The "better" way
-    log_pop_uninf = log_diff_exp(log_pop_uninf, log_new_inf);
+    log_pop_uninf = log_diff_exp(log_pop_uninf, log_new_inf[i]);
 
     if(reinfection > 0 && i > reinf_delay1) {
       // ** NON-LOGSPACE IMPL **
-      pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
+      // pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
       // ** LOGSPACE IMPL **
       // 
       // * Derivation: *
@@ -599,7 +642,7 @@ transformed parameters {
 
       if(i > reinf_delay2) {
         // ** NON-LOGSPACE IMPL **
-        pop_uninf += new_inf[i-reinf_delay2] * reinf_prob[2];
+        // pop_uninf += new_inf[i-reinf_delay2] * reinf_prob[2];
         // ** LOGSPACE IMPL **
         log_pop_uninf = log_sum_exp(
           log_pop_uninf,
@@ -608,13 +651,6 @@ transformed parameters {
       }
     }
    // END OF REINFECTION STRATEGIES
-   
-    if (pop_uninf < 1 || is_nan(pop_uninf) || is_inf(pop_uninf)) {
-      // ** NON-LOGSPACE IMPL **
-      pop_uninf = 1;
-      // ** LOGSPACE IMPL **
-      log_pop_uninf = 0;
-    }
   }
   
   // SYMPTOMATIC CASES
@@ -641,23 +677,23 @@ transformed parameters {
   // print(ifr_omi_rv);
 
   // ** NON-LOGSPACE IMPL **
-  new_sym =
-    p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
-    p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
+  // new_sym =
+  //   p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
+  //   p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
   // ** LOGSPACE IMPL **
-  log_new_sym = log_sum_exp(
+  log_new_sym = vlog_sum_exp(
     log(p_sym_if_inft) + lconv1d(log_new_inf + log(1 - ifr_omi_rv), inf_prg_delay_rv),
     log(p_sym_if_inft_omi) + lconv1d(log_new_inf + log(ifr_omi_rv), inf_prg_delay_rv)
   );
 
   // ** NON-LOGSPACE IMPL **
-  new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
+  // new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
   // ** LOGSPACE IMPL **
   log_new_sev = log(p_sev_if_symt) + lconv1d(log_new_sym, sym_prg_delay_rv);
 
 
   // ** NON-LOGSPACE IMPL **
-  new_die = p_die_if_sevt[1:N_days_tot] .* conv1d(new_sev, sev_prg_delay_rv);
+  // new_die = p_die_if_sevt[1:N_days_tot] .* conv1d(new_sev, sev_prg_delay_rv);
   // ** LOGSPACE IMPL **
   log_new_die = log(p_die_if_sevt[1:N_days_tot]) + lconv1d(log_new_sev, sev_prg_delay_rv);
 
@@ -671,10 +707,10 @@ transformed parameters {
   // asymptomatic for the entire course of their infection. 
 
   // ** NON-LOGSPACE IMPL **
-  new_asy_dx = (1 - p_sym_if_inft) .* conv1d(
-    new_inf .* p_diag_if_asy,
-    asy_rec_delay_rv
-  );
+  // new_asy_dx = (1 - p_sym_if_inft) .* conv1d(
+  //   new_inf .* p_diag_if_asy,
+  //   asy_rec_delay_rv
+  // );
   // ** LOGSPACE IMPL **
   log_new_asy_dx = log(1 - p_sym_if_inft) + lconv1d(
     log_new_inf + log(p_diag_if_asy),
@@ -687,7 +723,7 @@ transformed parameters {
   // and some probability that the diagnosis occurred on day j.  
   
   // ** NON-LOGSPACE IMPL **
-  new_sym_dx = conv1d(new_sym .* p_diag_if_sym, sym_diag_delay_rv);
+  // new_sym_dx = conv1d(new_sym .* p_diag_if_sym, sym_diag_delay_rv);
   // ** LOGSPACE IMPL **
   log_new_sym_dx = lconv1d(log(p_diag_if_sym) + log_new_sym, sym_diag_delay_rv);
   
@@ -696,10 +732,10 @@ transformed parameters {
   // at symptomatic eventually die.
 
   // ** NON-LOGSPACE IMPL **
-  dx_sym_sev = p_sev_if_symt .* conv1d(
-    new_sym .* p_diag_if_sym,
-    sym_prg_delay_rv
-  );
+  // dx_sym_sev = p_sev_if_symt .* conv1d(
+  //   new_sym .* p_diag_if_sym,
+  //   sym_prg_delay_rv
+  // );
   // ** LOGSPACE IMPL **
   log_dx_sym_sev = log(p_sev_if_symt) + lconv1d(
     log(p_diag_if_sym) + log_new_sym,
@@ -708,42 +744,48 @@ transformed parameters {
         
   
   // ** NON-LOGSPACE IMPL **
-  dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
+  // dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
   // ** LOGSPACE IMPL **
   log_dx_sym_die = log(p_die_if_sevt[1:N_days_tot]) + lconv1d(log_dx_sym_sev, sev_prg_delay_rv);
         
   // diagnosed at severe 
   // as above for symptomatic 
   // ** NON-LOGSPACE IMPL **
-  new_sev_dx = p_diag_if_sev * conv1d(new_sev - dx_sym_sev, sev_diag_delay_rv);
+  // new_sev_dx = p_diag_if_sev * conv1d(new_sev - dx_sym_sev, sev_diag_delay_rv);
   // ** LOGSPACE IMPL **
   log_new_sev_dx = log(p_diag_if_sev) +
     lconv1d(
-      log_diff_exp(log_new_sev, dx_sym_sev),
+      vlog_diff_exp(log_new_sev, log_dx_sym_sev),
       sev_diag_delay_rv
     );
   
   // cascade from diagnosis
   // as above for symptomatic 
   // ** NON-LOGSPACE IMPL **
-  dx_sev_die = p_die_if_sev * p_die_if_sevt[1:N_days_tot] .* conv1d(
-    new_sev - dx_sym_sev,
-    sev_prg_delay_rv
-  );
+  // dx_sev_die = p_die_if_sev * p_die_if_sevt[1:N_days_tot] .* conv1d(
+  //   new_sev - dx_sym_sev,
+  //   sev_prg_delay_rv
+  // );
   // ** LOGSPACE IMPL **
   log_dx_sev_die = log(p_die_if_sev) + log(p_die_if_sevt[1:N_days_tot]) +
-    lconv1d(log_diff_exp(log_new_sev, log_dx_sym_sev), sev_prg_delay_rv);
+    lconv1d(vlog_diff_exp(log_new_sev, log_dx_sym_sev), sev_prg_delay_rv);
 
   // TOTAL DIAGNOSED CASES AND DEATHS //
   // ** NON-LOGSPACE IMPL **
-  diag_all   = new_asy_dx + new_sym_dx + new_sev_dx;
+  // diag_all   = new_asy_dx + new_sym_dx + new_sev_dx;
   // ** LOGSPACE IMPL **
-  log_diag_all = log_sum_exp([log_new_asy_dx, log_new_sym_dx, log_new_sev_dx]);
+  log_diag_all = vlog_sum_exp(
+    log_new_asy_dx,
+    vlog_sum_exp(
+      log_new_sym_dx,
+      log_new_sev_dx
+    )
+  );
 
   // ** NON-LOGSPACE IMPL **
-  new_die_dx = dx_sym_die + dx_sev_die;
+  // new_die_dx = dx_sym_die + dx_sev_die;
   // ** LOGSPACE IMPL **
-  log_new_die_dx = log_sum_exp(dx_sym_die, dx_sev_die);
+  log_new_die_dx = vlog_sum_exp(log_dx_sym_die, log_dx_sev_die);
 
   // REPORTING //
   // Calcluate "occur_cas" and "occur_die", which are vectors of diagnosed cases 
@@ -756,12 +798,12 @@ transformed parameters {
   // 60 days from the final day of data.
   if(obs_cas_rep == 1) {                              
     // ** NON-LOGSPACE IMPL **
-    occur_cas = conv1d(diag_all, cas_rep_delay_rv);
+    // occur_cas = conv1d(diag_all, cas_rep_delay_rv);
     // ** LOGSPACE IMPL **
     log_occur_cas = lconv1d(log_diag_all, cas_rep_delay_rv);
   } else {
     // ** NON-LOGSPACE IMPL **
-    occur_cas = diag_all .* cas_cum_report_delay_rv;
+    // occur_cas = diag_all .* cas_cum_report_delay_rv;
     // ** LOGSPACE IMPL **
     log_occur_cas = log(cas_cum_report_delay_rv) + log_diag_all;
   }
@@ -769,12 +811,12 @@ transformed parameters {
   // reporting delays modeled as described above for cases
   if(obs_die_rep == 1) {
     // ** NON-LOGSPACE IMPL **
-    occur_die = conv1d(new_die_dx, die_rep_delay_rv);
+    // occur_die = conv1d(new_die_dx, die_rep_delay_rv);
     // ** LOGSPACE IMPL **
     log_occur_die = lconv1d(log_new_die_dx, die_rep_delay_rv);
   } else {
     // ** NON-LOGSPACE IMPL **
-    occur_die = new_die_dx .* die_cum_report_delay_rv;
+    // occur_die = new_die_dx .* die_cum_report_delay_rv;
     // ** LOGSPACE IMPL **
     log_occur_die = log(die_cum_report_delay_rv) + log_new_die_dx;
   }
@@ -783,8 +825,8 @@ transformed parameters {
   for(i in 1:N_days_tot) {
     if(i < N_days_av) {
       // ** NON-LOGSPACE IMPL **
-      occur_cas_mvs[i] = 0;
-      occur_die_mvs[i] = 0;
+      // occur_cas_mvs[i] = 0;
+      // occur_die_mvs[i] = 0;
       // ** LOGSPACE IMPL **
       // [1:N_days_av) == -Inf. These are placeholder values, because these 
       // elements of `log_occur_(cas|die)_mvs` should never actually be used
@@ -793,11 +835,11 @@ transformed parameters {
       log_occur_die_mvs[i] = negative_infinity();
     } else {
       // ** NON-LOGSPACE IMPL **
-      occur_cas_mvs[i] = sum(occur_cas[(i - nda0) : i]);
-      occur_die_mvs[i] = sum(occur_die[(i - nda0) : i]);
+      // occur_cas_mvs[i] = sum(occur_cas[(i - nda0) : i]);
+      // occur_die_mvs[i] = sum(occur_die[(i - nda0) : i]);
       // ** LOGSPACE IMPL **
-      log_occur_cas_mvs[i] = log_sum_exp(occur_cas[(i - nda0) : i]);
-      log_occur_die_mvs[i] = log_sum_exp(occur_die[(i - nda0) : i]);
+      log_occur_cas_mvs[i] = log_sum_exp(log_occur_cas[(i - nda0) : i]);
+      log_occur_die_mvs[i] = log_sum_exp(log_occur_die[(i - nda0) : i]);
     }
   }
 
@@ -858,15 +900,15 @@ model {
   if(pre_period_zero==1){
     if(N_days_before>0){
   
-      if (sum(occur_cas[1:N_days_before]) < 0)
-        reject("`sum(occur_cas[1:N_days_before])` had a negative value");
+      // if (sum(occur_cas[1:N_days_before]) < 0)
+      //   reject("`sum(occur_cas[1:N_days_before])` had a negative value");
 
-      if (sum(occur_die[1:N_days_before]) < 0)
-        reject("`sum(occur_die[1:N_days_before])` had a negative value");
+      // if (sum(occur_die[1:N_days_before]) < 0)
+      //   reject("`sum(occur_die[1:N_days_before])` had a negative value");
 
       // ** NON-LOGSPACE IMPL **
-      target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), phi_cas);
-      target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
+      // target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), phi_cas);
+      // target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
 
       // ** LOGSPACE IMPL **
       target += neg_binomial_2_log_lpmf(
@@ -885,14 +927,14 @@ model {
   // During data
 
   // ** NON-LOGSPACE IMPL **
-  target += neg_binomial_2_lpmf(
-    // `obs_cas` from the first observed day to the last death date
-    obs_cas_mvs[N_days_av:lastCaseDate] |
-      // `occur_cas` from the first observed day (`N_days_before+1`) to the
-      // last death date
-      occur_cas_mvs[N_days_before+N_days_av : N_days_before+lastCaseDate],
-    phi_cas
-  ) ;// Optional, but likely unncessesary: / N_days_av;
+  // target += neg_binomial_2_lpmf(
+  //   // `obs_cas` from the first observed day to the last death date
+  //   obs_cas_mvs[N_days_av:lastCaseDate] |
+  //     // `occur_cas` from the first observed day (`N_days_before+1`) to the
+  //     // last death date
+  //     occur_cas_mvs[N_days_before+N_days_av : N_days_before+lastCaseDate],
+  //   phi_cas
+  // ) ;// Optional, but likely unncessesary: / N_days_av;
 
   // ** LOGSPACE IMPL **
   target += neg_binomial_2_log_lpmf(
@@ -905,14 +947,14 @@ model {
   ) ;// Optional, but likely unncessesary: `- log(N_days_av)`;
 
   // ** NON-LOGSPACE IMPL **
-  target += neg_binomial_2_log_lpmf(
-    // `obs_die` from the first observed day to the last death date
-    obs_die[N_days_av:lastDeathDate] |
-      // `occur_die` from the first observed day (`N_days_before+1`) to the
-      // last death date
-      occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
-    phi_die
-  ); // optional, but likelie unnecessary: / N_days_av;
+  // target += neg_binomial_2_log_lpmf(
+  //   // `obs_die` from the first observed day to the last death date
+  //   obs_die[N_days_av:lastDeathDate] |
+  //     // `occur_die` from the first observed day (`N_days_before+1`) to the
+  //     // last death date
+  //     occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
+  //   phi_die
+  // ); // optional, but likelie unnecessary: / N_days_av;
 
   // ** LOGSPACE IMPL **
   target += neg_binomial_2_log_lpmf(
@@ -927,16 +969,16 @@ model {
 ///////////////////////////////////////////////////////////
 generated quantities {
   // calculate cumulative incidence + sero_positive + pop_infectiousness
-  real                p_die_if_sym;
+  // real                p_die_if_sym;
 
-  vector[N_days_tot]  diag_cases;  
-  vector[N_days_tot]  cumulative_incidence;  
-  vector[N_days_tot]  sero_positive;  
-  vector[N_days_tot]  pop_infectiousness;  
+  // vector[N_days_tot]  diag_cases;  
+  // vector[N_days_tot]  cumulative_incidence;  
+  // vector[N_days_tot]  sero_positive;  
+  // vector[N_days_tot]  pop_infectiousness;  
 
-  vector[Max_delay]   infect_dist_rv;
+  // vector[Max_delay]   infect_dist_rv;
 
-  vector[500]         seropos_dist_rv;
+  // vector[500]         seropos_dist_rv;
 
   // cumulative incidence
   // cumulative_incidence = cumulative_sum(new_inf); 
