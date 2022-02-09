@@ -623,6 +623,7 @@ transformed parameters {
     //
     // The "better" way
     log_pop_uninf = log_diff_exp(log_pop_uninf, log_new_inf[i]);
+    print("i=", i, " Rt0=", Rt0[i], " log_new_inf=", log_new_inf[i], " log_pop_uninf=", log_pop_uninf);
 
     if(reinfection > 0 && i > reinf_delay1) {
       // ** NON-LOGSPACE IMPL **
