@@ -786,6 +786,9 @@ transformed parameters {
       occur_cas_mvs[i] = 0;
       occur_die_mvs[i] = 0;
       // ** LOGSPACE IMPL **
+      // [1:N_days_av) == -Inf. These are placeholder values, because these 
+      // elements of `log_occur_(cas|die)_mvs` should never actually be used
+      // in the moving-average likelihood.
       log_occur_cas_mvs[i] = negative_infinity();
       log_occur_die_mvs[i] = negative_infinity();
     } else {
@@ -861,19 +864,27 @@ model {
       if (sum(occur_die[1:N_days_before]) < 0)
         reject("`sum(occur_die[1:N_days_before])` had a negative value");
 
+      // ** NON-LOGSPACE IMPL **
       target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), phi_cas);
       target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
+
+      // ** LOGSPACE IMPL **
+      target += neg_binomial_2_log_lpmf(
+        0 | log_sum_exp(log_occur_cas[1:N_days_before]),
+        phi_cas
+      );
+
+      target += neg_binomial_2_log_lpmf(
+        0 | log_sum_exp(log_occur_die[1:N_days_before]),
+        phi_die
+      );
     }
   }
 
-  if (min(occur_cas) < 0)
-    reject("`occur_cas` had a negative value");
-
-  if (min(occur_die) < 0)
-    reject("`occur_die` had a negative value");
-
   // LIKELIHOOD
   // During data
+
+  // ** NON-LOGSPACE IMPL **
   target += neg_binomial_2_lpmf(
     // `obs_cas` from the first observed day to the last death date
     obs_cas_mvs[N_days_av:lastCaseDate] |
@@ -883,12 +894,33 @@ model {
     phi_cas
   ) ;// Optional, but likely unncessesary: / N_days_av;
 
-  target += neg_binomial_2_lpmf(
+  // ** LOGSPACE IMPL **
+  target += neg_binomial_2_log_lpmf(
+    // `obs_cas` from the first observed day to the last death date
+    obs_cas_mvs[N_days_av:lastCaseDate] |
+      // `occur_cas` from the first observed day (`N_days_before+1`) to the
+      // last death date
+      log_occur_cas_mvs[N_days_before+N_days_av : N_days_before+lastCaseDate],
+    phi_cas
+  ) ;// Optional, but likely unncessesary: `- log(N_days_av)`;
+
+  // ** NON-LOGSPACE IMPL **
+  target += neg_binomial_2_log_lpmf(
     // `obs_die` from the first observed day to the last death date
     obs_die[N_days_av:lastDeathDate] |
       // `occur_die` from the first observed day (`N_days_before+1`) to the
       // last death date
       occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
+    phi_die
+  ); // optional, but likelie unnecessary: / N_days_av;
+
+  // ** LOGSPACE IMPL **
+  target += neg_binomial_2_log_lpmf(
+    // `obs_die` from the first observed day to the last death date
+    obs_die[N_days_av:lastDeathDate] |
+      // `occur_die` from the first observed day (`N_days_before+1`) to the
+      // last death date
+      log_occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
     phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
 }
@@ -907,26 +939,26 @@ generated quantities {
   vector[500]         seropos_dist_rv;
 
   // cumulative incidence
-  cumulative_incidence = cumulative_sum(new_inf); 
+  // cumulative_incidence = cumulative_sum(new_inf); 
 
-  p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
+  // p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
 
-  diag_cases = new_sym_dx + new_sev_dx; 
-  
- // vector to distribute infectiousness
-  for(i in 1:Max_delay)
-    infect_dist_rv[1+Max_delay-i] = 
-      gamma_cdf(i   , infect_dist_shap, infect_dist_rate) -
-      gamma_cdf(i-1 , infect_dist_shap, infect_dist_rate);
-  
-  // vector to distribute infectiousness seropositives
-  for(i in 1:500)
-    seropos_dist_rv[1+500-i] =
-      1.0 - gamma_cdf(i , seropos_dist_shap, seropos_dist_rate);
-  
-  // infectiousness
-  pop_infectiousness = conv1d(new_inf, infect_dist_rv);
-  
-  // seropositives
-  sero_positive = conv1d(new_inf, seropos_dist_rv);
+  // diag_cases = new_sym_dx + new_sev_dx; 
+  // 
+  // // vector to distribute infectiousness
+  // for(i in 1:Max_delay)
+  //   infect_dist_rv[1+Max_delay-i] = 
+  //     gamma_cdf(i   , infect_dist_shap, infect_dist_rate) -
+  //     gamma_cdf(i-1 , infect_dist_shap, infect_dist_rate);
+  // 
+  // // vector to distribute infectiousness seropositives
+  // for(i in 1:500)
+  //   seropos_dist_rv[1+500-i] =
+  //     1.0 - gamma_cdf(i , seropos_dist_shap, seropos_dist_rate);
+  // 
+  // // infectiousness
+  // pop_infectiousness = conv1d(new_inf, infect_dist_rv);
+  // 
+  // // seropositives
+  // sero_positive = conv1d(new_inf, seropos_dist_rv);
 }
