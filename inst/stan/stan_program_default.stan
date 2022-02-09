@@ -942,15 +942,17 @@ model {
       // target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
 
       // ** LOGSPACE IMPL **
+      if(N_days_av < N_days_before){
       target += neg_binomial_2_log_lpmf(
-        0 | log_sum_exp(log_occur_cas[1:N_days_before]),
+        0 | log_sum_exp(log_occur_cas_mvs[N_days_av:N_days_before]),
         phi_cas
       );
 
       target += neg_binomial_2_log_lpmf(
-        0 | log_sum_exp(log_occur_die[1:N_days_before]),
+        0 | log_sum_exp(log_occur_die_mvs[N_days_av:N_days_before]),
         phi_die
       );
+      }
     }
   }
 
