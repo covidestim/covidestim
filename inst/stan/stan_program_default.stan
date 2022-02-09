@@ -1,6 +1,6 @@
 functions {
   vector special_logistic_transform(vector spline) {
-    return 6.4 * inv_logit(0.2 * (spline - 7));
+    return 6.1 * inv_logit(1.0 * (spline - 1.3));
   }
 
   vector vlog_sum_exp(vector a, vector b) {
@@ -45,7 +45,9 @@ functions {
     //
     // 1. Fill in `X` like usual
     // 2. Create `K` by turning `kernel` into a `row_vector` and using
-    //    `rep_vector()` to make it have the same number of rows as `X`.
+    //    `rep_matrix()` to make it have the same number of rows as `X`. Each
+    //    element of `kernel` is mapped through `log()` so that it's in
+    //    log-space.
     // 3. Add `X + K`
     // 4. Call log_sum_exp on each row of the resulting matrix.
     // 5. Return the resulting vector
@@ -75,8 +77,10 @@ functions {
     }
 
     // 2. Create `K` by turning `kernel` into a `row_vector` and using
-    //    `rep_vector()` to make it have the same number of rows as `X`.
-    K = rep_matrix(kernel', nx);
+    //    `rep_matrix()` to make it have the same number of rows as `X`. Each
+    //    element of `kernel` is mapped through `log()` so that it's in
+    //    log-space.
+    K = rep_matrix(log(kernel)', nx);
 
     // 3. Add `X + K`.
     S = X + K;
@@ -383,8 +387,7 @@ parameters {
   real<lower=3, upper=11> serial_i; // serial interval
   real<lower=0, upper=8>  serial_i_omi; // serial interval
   real<lower=0>           firstRt;
-  vector<lower=-0.8, upper=0.8>[N_spl_par_rt] spl_par_rt_raw;
-  real<lower=0>           spl_par_rt_tau;
+  vector<lower=0>[N_spl_par_rt]    spl_par_rt_raw;
 
   // DISEASE PROGRESSION
   // probability of transitioning between disease states
@@ -432,8 +435,7 @@ transformed parameters {
 
   // Rt spline
   vector[N_days_tot]            Rt0;
-  vector[N_days_tot]            Rt;
-  vector<lower=0>[N_spl_par_rt] spl_par_rt;
+  vector[N_days_tot]            logRt;
   
   // transitions
   vector[N_ifr_adj]  p_die_if_sevt;
@@ -519,7 +521,7 @@ transformed parameters {
     ifr_omi_rv_sev = ifr_omi_rv;
     ifr_omi_rv_die = ifr_omi_rv;
   } else {
-    for (i in 1:N_days_tot){
+    for (i in 1:N_days_tot) {
       ifr_omi_rv[i]     = normal_cdf(i, Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
       ifr_omi_rv_die[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
       ifr_omi_rv_sev[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
@@ -541,7 +543,7 @@ transformed parameters {
   // NATURAL HISTORY CASCADE
   p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
 
-  for( i in 1:N_days_tot){
+  for (i in 1:N_days_tot) {
     p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - ifr_omi_rv_die[i] * (1 - rr_die_if_sev));
     p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - ifr_omi_rv_sev[i] * (1 - rr_sev_if_sym));
     p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
@@ -593,26 +595,23 @@ transformed parameters {
   // NEW INCIDENT CASES
   
   // modeled with a spline
-  spl_par_rt = cumulative_sum(spl_par_rt_raw);
-  spl_par_rt[2:] *= spl_par_rt_tau;
-
-  Rt0 = special_logistic_transform(spl_basis_rt * spl_par_rt);
+  Rt0 = spl_basis_rt * spl_par_rt_raw;
   log_pop_uninf = log(pop_size);
 
   for(i in 1:N_days_tot) {
-    Rt[i] = Rt0[i] * (log_pop_uninf - log(pop_size));
+    logRt[i] = log(Rt0[i]) + log_pop_uninf - log(pop_size);
 
     if (i > 1) {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = new_inf[i-1] * Rt[i]^(1/serial_i_comb[i]);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = log_new_inf[i-1] + (1/serial_i_comb[i]) * log(Rt[i]);
+      log_new_inf[i] = log_new_inf[i-1] + (1/serial_i_comb[i]) * logRt[i];
     }
     else if (i == 1) {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = log_new_inf_0 + (1/serial_i_comb[i]) * log(Rt[i]);
+      log_new_inf[i] = log_new_inf_0 + (1/serial_i_comb[i]) * logRt[i];
     }
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
@@ -652,6 +651,12 @@ transformed parameters {
     }
    // END OF REINFECTION STRATEGIES
   }
+  print("Rt0:");
+  print(Rt0);
+  print("logRt:");
+  print(logRt);
+  print("log_new_inf:");
+  print(log_new_inf);
   
   // SYMPTOMATIC CASES
   // cases entering a state on day i + j - 1: 
@@ -682,8 +687,8 @@ transformed parameters {
   //   p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
   // ** LOGSPACE IMPL **
   log_new_sym = vlog_sum_exp(
-    log(p_sym_if_inft) + lconv1d(log_new_inf + log(1 - ifr_omi_rv), inf_prg_delay_rv),
-    log(p_sym_if_inft_omi) + lconv1d(log_new_inf + log(ifr_omi_rv), inf_prg_delay_rv)
+    log(p_sym_if_inft)     + lconv1d(log_new_inf + log1m(ifr_omi_rv), inf_prg_delay_rv),
+    log(p_sym_if_inft_omi) + lconv1d(log_new_inf + log(ifr_omi_rv),   inf_prg_delay_rv)
   );
 
   // ** NON-LOGSPACE IMPL **
@@ -712,7 +717,7 @@ transformed parameters {
   //   asy_rec_delay_rv
   // );
   // ** LOGSPACE IMPL **
-  log_new_asy_dx = log(1 - p_sym_if_inft) + lconv1d(
+  log_new_asy_dx = log1m(p_sym_if_inft) + lconv1d(
     log_new_inf + log(p_diag_if_asy),
     asy_rec_delay_rv
   );
@@ -746,7 +751,9 @@ transformed parameters {
   // ** NON-LOGSPACE IMPL **
   // dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
   // ** LOGSPACE IMPL **
-  log_dx_sym_die = log(p_die_if_sevt[1:N_days_tot]) + lconv1d(log_dx_sym_sev, sev_prg_delay_rv);
+  log_dx_sym_die =
+    log(p_die_if_sevt[1:N_days_tot]) +
+    lconv1d(log_dx_sym_sev, sev_prg_delay_rv);
         
   // diagnosed at severe 
   // as above for symptomatic 
@@ -853,8 +860,7 @@ model {
   // PRIORS
   log_new_inf_0        ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
 
-  spl_par_rt_raw       ~ normal(0, 1);
-  spl_par_rt_tau       ~ normal(0, 1);
+  spl_par_rt_raw       ~ gamma(2.06, 1.30);
 
   serial_i             ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   serial_i_omi         ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
@@ -894,6 +900,11 @@ model {
 
   // if(N_days_pri_Rt > 0)
   //   logRt[(N_days_tot-N_days_pri_Rt+1) : N_days_tot] ~ normal(0, sd_pri_Rt);
+  
+  print("log_occur_cas:");
+  print(log_occur_cas);
+  print("log_occur_die:");
+  print(log_occur_die);
    
   // LIKELIHOOD
   // Before data
