@@ -146,6 +146,17 @@ functions {
 
     return X * kernel;
   }
+  
+  real inv_logit_sc(real x){
+    real up_bound = .5;
+    real mid_point = .25;
+    real scale = 12;
+    real res;
+    
+    res = up_bound / (1 + exp(-scale * (x - mid_point)));
+    
+    return res;
+  }
 }
 
 data {
@@ -620,8 +631,28 @@ transformed parameters {
     // log_pop_uninf = log(exp(log_pop_uninf) - exp(log_new_inf))
     //
     // The "better" way
-    log_pop_uninf = log_diff_exp(log_pop_uninf, log_new_inf[i]);
-
+    // log_pop_uninf = log_diff_exp(log_pop_uninf, log_new_inf[i]);
+    
+    // Calculate log_pop_uninf, but rescale log_new_inf such that
+    // it cannot be greater than log_pop_uninf.
+    // THe center equation takes the inverse logit of the 
+    // difference between log_new_inf[i] and log_pop_uninf
+    // i.e., if log_new_inf > log_pop_uninf [ > 0];
+    // inverse logit transforms to probability (0 - 1)
+    // Then take the special inv_logit_sc function;
+    // that takes Real numbers and transforms it to a bounded probability 
+    // See function: in this case bounded to ( 0 - .5).
+    // Then backtransform to Real numbers through logit
+    // Then add the log_pop_uninf back, to bring to the realm of 
+    // log_new_inf (that is now bounded).
+    // So finally, the log_diff_exp of log_pop_uninf and 
+    // bounded log_new_inf can be taken
+    log_pop_uninf = log_diff_exp(log_pop_uninf,
+      logit(
+        inv_logit_sc(
+          inv_logit(log_new_inf[i] - log_pop_uninf)
+          )
+          ) + log_pop_uninf);
     // Calculate the new population susceptible 
     // as a function of the log_pop_uninf
     // ** NON-LOGSPACE IMPL **
@@ -639,31 +670,31 @@ transformed parameters {
 
     print("i=", i, " Rt0=", Rt0[i], " log_new_inf=", log_new_inf[i], " log_pop_uninf=", log_pop_uninf);
 
-    if(reinfection > 0 && i > reinf_delay1) {
-      // ** NON-LOGSPACE IMPL **
-      // pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
-      // ** LOGSPACE IMPL **
-      // 
-      // * Derivation: *
-      // pop_uninf = pop_uninf + new_inf[i-reinf_delay1] * reinf_prob[1];
-      // log_pop_uninf = log(exp(log_pop_uninf) + exp(log_new_inf[i-reinf_delay1]) * reinf_prob[1]);
-      // log_pop_uninf = log(exp(log_pop_uninf) + exp(log(reinf_prob[1] + log_new_inf[i-reinf_delay1]));
-      // * Draft: *
-      log_pop_uninf = log_sum_exp(
-        log_pop_uninf,
-        log(reinf_prob[1]) + log_new_inf[i - reinf_delay1]
-      );
-
-      if(i > reinf_delay2) {
-        // ** NON-LOGSPACE IMPL **
-        // pop_uninf += new_inf[i-reinf_delay2] * reinf_prob[2];
-        // ** LOGSPACE IMPL **
-        log_pop_uninf = log_sum_exp(
-          log_pop_uninf,
-          log(reinf_prob[2]) + log_new_inf[i - reinf_delay2]
-        );
-      }
-    }
+    // if(reinfection > 0 && i > reinf_delay1) {
+    //   // ** NON-LOGSPACE IMPL **
+    //   // pop_uninf += new_inf[i-reinf_delay1] * reinf_prob[1];
+    //   // ** LOGSPACE IMPL **
+    //   // 
+    //   // * Derivation: *
+    //   // pop_uninf = pop_uninf + new_inf[i-reinf_delay1] * reinf_prob[1];
+    //   // log_pop_uninf = log(exp(log_pop_uninf) + exp(log_new_inf[i-reinf_delay1]) * reinf_prob[1]);
+    //   // log_pop_uninf = log(exp(log_pop_uninf) + exp(log(reinf_prob[1] + log_new_inf[i-reinf_delay1]));
+    //   // * Draft: *
+    //   log_pop_uninf = log_sum_exp(
+    //     log_pop_uninf,
+    //     log(reinf_prob[1]) + log_new_inf[i - reinf_delay1]
+    //   );
+    // 
+    //   if(i > reinf_delay2) {
+    //     // ** NON-LOGSPACE IMPL **
+    //     // pop_uninf += new_inf[i-reinf_delay2] * reinf_prob[2];
+    //     // ** LOGSPACE IMPL **
+    //     log_pop_uninf = log_sum_exp(
+    //       log_pop_uninf,
+    //       log(reinf_prob[2]) + log_new_inf[i - reinf_delay2]
+    //     );
+    //   }
+    // }
    // END OF REINFECTION STRATEGIES
   }
   print("Rt0:");
