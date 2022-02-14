@@ -1,8 +1,4 @@
 functions {
-  vector special_logistic_transform(vector spline) {
-    return 6.1 * inv_logit(1.0 * (spline - 1.3));
-  }
-
   vector vlog_sum_exp(vector a, vector b) {
     int l = rows(a);
     vector[l] result;
@@ -107,7 +103,6 @@ functions {
     if (nx < nk)
       reject("nrow(x) must be >= nrow(kernel). x had nrow =", nx);
 
-
     // The first `nK-1` rows of the convolution are special, because we don't
     // yet have a full "window" of X entries to take the dot product of against
     // the kernel. We want to handle this case by taking the dot prod of
@@ -151,7 +146,6 @@ functions {
 
     return X * kernel;
   }
-
 }
 
 data {
@@ -166,7 +160,7 @@ data {
   
   int<lower=0> N_ifr_adj;                            // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj;                // ifr_adjustment
-  vector<lower=0>[N_days+N_days_before] ifr_vac_adj; // ifr_vaccine_adjustment
+  vector<lower=0,upper=1>[N_days+N_days_before] ifr_vac_adj; // ifr_vaccine_adjustment
 
   real<lower=0> pri_ifr_decl_OR_a; 
   real<lower=0> pri_ifr_decl_OR_b;
@@ -387,7 +381,7 @@ parameters {
   real<lower=3, upper=11> serial_i; // serial interval
   real<lower=0, upper=8>  serial_i_omi; // serial interval
   real<lower=0>           firstRt;
-  vector<lower=0>[N_spl_par_rt]    spl_par_rt_raw;
+  vector<lower=0>[N_spl_par_rt] spl_par_rt_raw;
 
   // DISEASE PROGRESSION
   // probability of transitioning between disease states
@@ -431,20 +425,20 @@ transformed parameters {
   // vector[N_days_tot] new_inf;
   vector[N_days_tot] log_new_inf;
   // real               pop_uninf;
-  real               log_pop_uninf;
-  real               log_pop_sus;
+  real<lower=0> log_pop_uninf;
+  real<lower=0> log_pop_sus;
 
   vector<lower=0>[N_days_tot] serial_i_comb;
 
   // Rt spline
-  vector[N_days_tot]            Rt0;
-  vector[N_days_tot]            logRt;
+  vector<lower=0>[N_days_tot] Rt0;
+  vector[N_days_tot] logRt;
   
   // transitions
-  vector[N_ifr_adj]  p_die_if_sevt;
-  vector[N_days_tot] p_sev_if_symt;
-  vector[N_days_tot] p_sym_if_inft;  
-  vector[N_days_tot] p_sym_if_inft_omi;
+  vector<lower=0>[N_ifr_adj]  p_die_if_sevt;
+  vector<lower=0>[N_days_tot] p_sev_if_symt;
+  vector<lower=0,upper=1>[N_days_tot] p_sym_if_inft;  
+  vector<lower=0>[N_days_tot] p_sym_if_inft_omi;
 
   // new probability of symptomatic
   real<lower=0> rr_sym_if_inf;
@@ -454,8 +448,8 @@ transformed parameters {
   // DIAGNOSIS AND REPORTING  
   // probability of diagnosis
   vector[N_days_tot] rr_diag_sym_vs_sev;
-  vector[N_days_tot] p_diag_if_asy; 
-  vector[N_days_tot] p_diag_if_sym;
+  vector<lower=0, upper=1>[N_days_tot] p_diag_if_asy; 
+  vector<lower=0, upper=1>[N_days_tot] p_diag_if_sym;
 
   // daily probabilities of diagnosis and report
   // for days 1 to 60 after entering that state
@@ -464,7 +458,7 @@ transformed parameters {
 
   // DISEASE OUTCOMES
   // overall case fatality rate
-  real p_die_if_inf;
+  real<lower=0, upper=1> p_die_if_inf;
 
   // "true" number entering disease state each day
   // vector[N_days_tot] new_sym; 
@@ -510,9 +504,9 @@ transformed parameters {
   vector[N_days_tot] log_occur_die_mvs; 
 
   // OMICRON DELAY int 
-  vector[N_days_tot] ifr_omi_rv;
-  vector[N_days_tot] ifr_omi_rv_sev;
-  vector[N_days_tot] ifr_omi_rv_die;
+  vector<lower=0, upper=1>[N_days_tot] ifr_omi_rv;
+  vector<lower=0, upper=1>[N_days_tot] ifr_omi_rv_sev;
+  vector<lower=0, upper=1>[N_days_tot] ifr_omi_rv_die;
 
   // LIKELIHOOD
   // phi terms for negative binomial likelihood function 
@@ -547,10 +541,10 @@ transformed parameters {
   p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
 
   for (i in 1:N_days_tot) {
-    p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - ifr_omi_rv_die[i] * (1 - rr_die_if_sev));
-    p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - ifr_omi_rv_sev[i] * (1 - rr_sev_if_sym));
-    p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
-    p_sym_if_inft_omi[i] = p_sym_if_inf_omi    * pow(ifr_vac_adj[i], prob_vac[3]);
+    p_die_if_sevt[i]     = p_die_if_sevt[i] .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - ifr_omi_rv_die[i] * (1 - rr_die_if_sev));
+    p_sev_if_symt[i]     = p_sev_if_sym      * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - ifr_omi_rv_sev[i] * (1 - rr_sev_if_sym));
+    p_sym_if_inft[i]     = p_sym_if_inf      * pow(ifr_vac_adj[i], prob_vac[3]);
+    p_sym_if_inft_omi[i] = p_sym_if_inf_omi  * pow(ifr_vac_adj[i], prob_vac[3]);
   }
   
   // DIAGNOSIS // 
@@ -636,10 +630,12 @@ transformed parameters {
     // }
     // pop_sus = pop_uninf + p_reinf * (pop_size - pop_uninf) * ifr_omi_rv[i];
 
-    log_pop_sus = log_sum_exp(fmax(0, log_pop_uninf), 
+    log_pop_sus = log_sum_exp(
+      fmax(0, log_pop_uninf), 
       log(p_reinf) + 
-      log(pop_size - fmin(exp(log_pop_uninf), pop_size - 1)) + 
-      log(ifr_omi_rv[i]));
+        log(pop_size - fmin(exp(log_pop_uninf), pop_size - 1)) + 
+        log(ifr_omi_rv[i])
+    );
 
     print("i=", i, " Rt0=", Rt0[i], " log_new_inf=", log_new_inf[i], " log_pop_uninf=", log_pop_uninf);
 
