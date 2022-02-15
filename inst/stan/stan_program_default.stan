@@ -845,8 +845,8 @@ model {
   
   // PRIORS
   log_new_inf_0        ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
-
-  spl_par_rt_raw       ~ gamma(2.06, 1.30);
+                                   
+  spl_par_rt_raw       ~ gamma(7.5, 7.25);
 
   serial_i             ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   serial_i_omi         ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
