@@ -438,6 +438,7 @@ transformed parameters {
   vector[N_days_tot] log_new_inf;
   // real               pop_uninf;
   real log_pop_sus;
+  real log_pop_uninf;
 
   vector<lower=0>[N_days_tot] serial_i_comb;
 
@@ -605,6 +606,7 @@ transformed parameters {
   // modeled with a spline
   Rt0 = spl_basis_rt * spl_par_rt_raw;
   log_pop_sus = log(pop_size);
+  log_pop_uninf = log(pop_size);
 
   for(i in 1:N_days_tot) {
     logRt[i] = log(Rt0[i]) + log_pop_sus - log(pop_size);
@@ -613,25 +615,23 @@ transformed parameters {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = new_inf[i-1] * Rt[i]^(1/serial_i_comb[i]);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = custom_log_logistic(
-        log_new_inf[i-1] + (1/serial_i_comb[i]) * logRt[i],
-        log_pop_sus
-      );
+      log_new_inf[i] = log_new_inf[i-1] + (1/serial_i_comb[i]) * logRt[i];
     }
     else if (i == 1) {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = custom_log_logistic(
-        log_new_inf_0 + (1/serial_i_comb[i]) * logRt[i],
-        log_pop_sus
-      );
+      log_new_inf[i] = log_new_inf_0 + (1/serial_i_comb[i]) * logRt[i];
     }
+    
+    log_pop_uninf = log_diff_exp(log_pop_uninf,
+      custom_log_logistic(log_new_inf[i], log_pop_uninf)
+      );
 
     log_pop_sus = log_sum_exp(
-      log_diff_exp(log_pop_sus, log_new_inf[i]), 
+      log_pop_uninf, 
       log(p_reinf) + log(ifr_omi_rv[i]) +
-        log_diff_exp(log(pop_size), log_pop_sus) 
+        log_diff_exp(log(pop_size), log_pop_uninf) 
     );
 
     print("i=", i, " Rt0=", Rt0[i], " Rt=", exp(logRt[i]), " log_new_inf=", log_new_inf[i], " log_pop_sus=", log_pop_sus);
