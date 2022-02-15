@@ -19,8 +19,12 @@ functions {
     if (rows(a) != rows(b))
       reject("nrow(a) must be equal to nrow(b). lengths were: ", rows(a), ", ", rows(b));
 
-    for (i in 1:l)
+    for (i in 1:l) {
+      if (b[i] >= a[i])
+        reject("b[i] was greater than a[i]. b[",i,"]=",b[i],", a[",i,"]=", a[i]);
+
       result[i] = log_diff_exp(a[i], b[i]);
+    }
 
     return result;
   }
@@ -146,17 +150,13 @@ functions {
 
     return X * kernel;
   }
-  
-  real custom_log_logistic(real log_val, real log_ceiling) {
 
-    if (log_val < -22)
-      reject("log_val was too small: ", log_val);
+  real custom_softplus_scalar(real log_val, real log_ceiling) {
+    real result;
+    result = log_ceiling + -1*log_sum_exp(0, -1*(log_val - log_ceiling));
 
-    return log_ceiling + log_diff_exp(
-      log2() +
-        log_inv_logit(exp(log2() + log_val - log_ceiling)),
-      0
-    );
+    print("log_result: ", result, " log_val: ", log_val, " log ceiling: ", log_ceiling);
+    return result;
   }
 }
 
@@ -314,8 +314,8 @@ transformed data {
   vector[Max_delay] die_rep_delay_rv;
  
   // Cumulative reporting delays
-  vector[N_days + N_days_before] cas_cum_report_delay_rv; 
-  vector[N_days + N_days_before] die_cum_report_delay_rv; 
+  vector<lower=0>[N_days + N_days_before] cas_cum_report_delay_rv; 
+  vector<lower=0>[N_days + N_days_before] die_cum_report_delay_rv; 
   
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
@@ -606,7 +606,6 @@ transformed parameters {
   // modeled with a spline
   Rt0 = spl_basis_rt * spl_par_rt_raw;
   log_pop_sus = log(pop_size);
-  log_pop_uninf = log(pop_size);
 
   for(i in 1:N_days_tot) {
     logRt[i] = log(Rt0[i]) + log_pop_sus - log(pop_size);
@@ -615,23 +614,25 @@ transformed parameters {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = new_inf[i-1] * Rt[i]^(1/serial_i_comb[i]);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = log_new_inf[i-1] + (1/serial_i_comb[i]) * logRt[i];
+      log_new_inf[i] = custom_softplus_scalar(
+        log_new_inf[i-1] + (1/serial_i_comb[i]) * logRt[i],
+        log_pop_sus
+      );
     }
     else if (i == 1) {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = log_new_inf_0 + (1/serial_i_comb[i]) * logRt[i];
+      log_new_inf[i] = custom_softplus_scalar(
+        log_new_inf_0 + (1/serial_i_comb[i]) * logRt[i],
+        log_pop_sus
+      );
     }
     
-    log_pop_uninf = log_diff_exp(log_pop_uninf,
-      custom_log_logistic(log_new_inf[i], log_pop_uninf)
-      );
-
     log_pop_sus = log_sum_exp(
-      log_pop_uninf, 
+      log_diff_exp(log_pop_sus, log_new_inf[i]), 
       log(p_reinf) + log(ifr_omi_rv[i]) +
-        log_diff_exp(log(pop_size), log_pop_uninf) 
+        log_diff_exp(log(pop_size), log_pop_sus) 
     );
 
     print("i=", i, " Rt0=", Rt0[i], " Rt=", exp(logRt[i]), " log_new_inf=", log_new_inf[i], " log_pop_sus=", log_pop_sus);
