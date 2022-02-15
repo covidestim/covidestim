@@ -436,8 +436,8 @@ transformed parameters {
   // vector[N_days_tot] new_inf;
   vector[N_days_tot] log_new_inf;
   // real               pop_uninf;
-  real<lower=0> log_pop_uninf;
-  real<lower=0> log_pop_sus;
+  real log_pop_uninf;
+  real log_pop_sus;
 
   vector<lower=0>[N_days_tot] serial_i_comb;
 
