@@ -304,14 +304,14 @@ transformed data {
   int<lower=0> nda0 = N_days_av - 1;
 
   // Progression delays
-  vector[Max_delay] inf_prg_delay_rv;
-  vector[Max_delay] asy_rec_delay_rv; 
-  vector[Max_delay] sym_prg_delay_rv;
-  vector[Max_delay] sev_prg_delay_rv;
+  vector<lower=0>[Max_delay] inf_prg_delay_rv;
+  vector<lower=0>[Max_delay] asy_rec_delay_rv; 
+  vector<lower=0>[Max_delay] sym_prg_delay_rv;
+  vector<lower=0>[Max_delay] sev_prg_delay_rv;
  
   // Reporting delays
-  vector[Max_delay] cas_rep_delay_rv;
-  vector[Max_delay] die_rep_delay_rv;
+  vector<lower=0>[Max_delay] cas_rep_delay_rv;
+  vector<lower=0>[Max_delay] die_rep_delay_rv;
  
   // Cumulative reporting delays
   vector<lower=0>[N_days + N_days_before] cas_cum_report_delay_rv; 
@@ -465,8 +465,8 @@ transformed parameters {
 
   // daily probabilities of diagnosis and report
   // for days 1 to 60 after entering that state
-  vector[Max_delay] sym_diag_delay_rv;
-  vector[Max_delay] sev_diag_delay_rv;
+  vector<lower=0>[Max_delay] sym_diag_delay_rv;
+  vector<lower=0>[Max_delay] sev_diag_delay_rv;
 
   // DISEASE OUTCOMES
   // overall case fatality rate
