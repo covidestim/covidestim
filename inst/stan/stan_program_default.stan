@@ -374,6 +374,10 @@ parameters {
   real<lower=3, upper=11> serial_i; // serial interval
   real<lower=0, upper=8>  serial_i_omi; // serial interval
   real<lower=0>           firstRt;
+
+  // The bounds on this vector keep Rt strictly positive and also prevent
+  // any completely insane Rt values from occurring. This seems to help
+  // greatly with initialization
   vector<lower=0, upper=20>[N_spl_par_rt] spl_par_rt_raw;
 
   // DISEASE PROGRESSION
@@ -404,6 +408,7 @@ parameters {
   // phi terms for negative b ino imal likelihood function 
   real<lower=0> inv_sqrt_phi_c;
   real<lower=0> inv_sqrt_phi_d;
+
   // reinfection probability 
   real<lower=0,upper=1> p_reinf;
 
@@ -415,26 +420,37 @@ parameters {
 transformed parameters {
   ///~~~~~~~ Define ~~~~~~~
   // INCIDENCE
-  // vector[N_days_tot] new_inf;
   vector[N_days_tot] log_new_inf;
 
+  // The log of the fraction of the population that is susceptible.
   real<upper=0> log_frac_sus;
-  real<upper=0> log_frac_new_inf; // As a fraction of exp(log_frac_sus)
 
-  // real               pop_uninf;
+  // The fraction of the susceptible population that becomes infected at
+  // a given timestep. This is only used in the infection loop.
+  //
+  // The denominator is effectively `exp(log_frac_sus)`.
+  real<upper=0> log_frac_new_inf;
+
+  // The number of susceptible individuals in the population at any given
+  // point in the loop.
   real log_pop_sus;
 
   vector[N_days_tot] log_serial_i_comb;
 
-  // Rt spline
+  // Rt spline - the product of the spline design matrix and the spline
+  // parameters.
   vector<lower=0>[N_days_tot] Rt0;
+
   vector[N_days_tot] logRt;
   
-  // transitions
-  vector<lower=0>[N_ifr_adj]  p_die_if_sevt;
-  vector<lower=0>[N_days_tot] p_sev_if_symt;
+  // Transitions.
+  //
+  // Whether or not some more of these can be upper-bounded at 1 should be
+  // reviewed.
+  vector<lower=0>[N_ifr_adj]          p_die_if_sevt;
+  vector<lower=0>[N_days_tot]         p_sev_if_symt;
   vector<lower=0,upper=1>[N_days_tot] p_sym_if_inft;  
-  vector<lower=0>[N_days_tot] p_sym_if_inft_omi;
+  vector<lower=0>[N_days_tot]         p_sym_if_inft_omi;
 
   // new probability of symptomatic
   real<lower=0> rr_sym_if_inf;
@@ -509,6 +525,14 @@ transformed parameters {
   real phi_cas;
   real phi_die;
 
+  // Omicron-takeover sigmoid. First defined in realspace, then transformed to
+  // logspace.
+  //
+  // For small values of `i`, `normal_cdf` underflows to 0. Additionally, we
+  // believe that Omicron never takes over 100%. So, we scale the vectors by
+  // `0.95`, then we translate them by 0.001. This ensures that the domain of
+  // the vectors is [0.001, 0.951]. This guarantees that when we use `log()` on
+  // the vectors, they do not go to `-Inf`.
   for (i in 1:N_days_tot) {
     log_ifr_omi_rv[i]     = normal_cdf(i, Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
     log_ifr_omi_rv_die[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
@@ -595,6 +619,11 @@ transformed parameters {
   // modeled with a spline
   Rt0 = spl_basis_rt * spl_par_rt_raw;
   log_pop_sus = log(pop_size);
+
+  // `log_frac_sus` can't be defined as 1, because it's passed directly
+  // to `log1m_exp()` during the course of the infection loop. Instead we
+  // choose a sufficiently similar number so that with the typical population
+  // size of geographies, we will be off by fewer than 1 person.
   log_frac_sus = log(0.9999999999);
 
   for(i in 1:N_days_tot) {
@@ -616,6 +645,9 @@ transformed parameters {
       // new_inf[i] = Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
       // ** LOGSPACE IMPL **
       log_frac_new_inf = custom_softplus_scalar(
+
+        // This could underflow and lead to a divide-by-0 problem, however,
+        // we have not yet seen this occur in practice
         log_new_inf_0 + (1/exp(log_serial_i_comb[i])) * logRt[i],
         log_pop_sus
       );
@@ -623,9 +655,9 @@ transformed parameters {
       log_new_inf[i] = log_frac_new_inf + log_pop_sus;
     }
     
-    // print("[before] i=", i, " log_frac_sus=",log_frac_sus, " log_frac_new_inf=",log_frac_new_inf, " p_reinf=",p_reinf, " log_ifr_omi_rv[i]=", log_ifr_omi_rv[i]);
     // The fraction of the population that's susceptible
     log_frac_sus = log_sum_exp(
+
       // This first term is the fraction of the population that
       // remains after subtracting out the susceptible individuals who were
       // just infected.
@@ -642,47 +674,20 @@ transformed parameters {
       // gets moved to the "susceptible" category.
       log(p_reinf) + log_ifr_omi_rv[i] + log1m_exp(log_frac_sus)
     );
-    //print("[after]  i=", i, " log_frac_sus=",log_frac_sus, " log_frac_new_inf=",log_frac_new_inf, " p_reinf=",p_reinf, " log_ifr_omi_rv[i]=", log_ifr_omi_rv[i]);
 
     log_pop_sus = log_frac_sus + log(pop_size);
-
-    // print("i=", i, " Rt=", exp(logRt[i]), " log_new_inf=", log_new_inf[i], " log_pop_sus=", log_pop_sus, " log_frac_sus=", log_frac_sus, " log_frac_new_inf=", log_frac_new_inf);
   }
 
-  //print("Rt0:");
-  //print(Rt0);
-  //print("logRt:");
-  //print(logRt);
-  //print("log_new_inf:");
-  //print(log_new_inf);
-  
   // SYMPTOMATIC CASES
   // cases entering a state on day i + j - 1: 
   // cases entering previous state on day i * the probability of progression *
   // the probability progression occurred on day j 
-  // print("YO!");
-  // print("spl_par_rt_tau:");
-  // print(spl_par_rt_tau);
-  // print("spl_par_rt_raw:");
-  // print(spl_par_rt_raw);
-  // print("spl_par_rt:");
-  // print(spl_par_rt);
-  // print("serial_i_comb:");
-  // print(serial_i_comb);
-  // print("new_inf:");
-  // print(new_inf);
-  // print("Rt:");
-  // print(Rt);
-  // 
-  // print("inf_prg_delay_rv:");
-  // print(inf_prg_delay_rv);
-  // print("ifr_omi_rv:");
-  // print(ifr_omi_rv);
 
   // ** NON-LOGSPACE IMPL **
   // new_sym =
   //   p_sym_if_inft     .* conv1d(new_inf .* (1 - ifr_omi_rv), inf_prg_delay_rv) +
   //   p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
+  //
   // ** LOGSPACE IMPL **
   log_new_sym = vlog_sum_exp(
     log(p_sym_if_inft)     + lconv1d(log_new_inf + log1m_exp(log_ifr_omi_rv), inf_prg_delay_rv),
@@ -691,54 +696,62 @@ transformed parameters {
 
   // ** NON-LOGSPACE IMPL **
   // new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
+  //
   // ** LOGSPACE IMPL **
   log_new_sev = log(p_sev_if_symt) + lconv1d(log_new_sym, sym_prg_delay_rv);
 
 
   // ** NON-LOGSPACE IMPL **
   // new_die = p_die_if_sevt[1:N_days_tot] .* conv1d(new_sev, sev_prg_delay_rv);
+  //
   // ** LOGSPACE IMPL **
   log_new_die = log(p_die_if_sevt[1:N_days_tot]) + lconv1d(log_new_sev, sev_prg_delay_rv);
 
   // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 
-  // diagnosed at asymptomatic
-  // a diagnosed asymptomatic infection on day i + j - 1
-  // is an asymptomatic case on day i with some probability of diagnosis, 
-  // and some probability that the diagnosis occurred on day j.
-  // we assume asymptomatic diagnosis only occurs among individuals who will be
-  // asymptomatic for the entire course of their infection. 
-
+  // Diagnosed at asymptomatic
+  //
+  // A diagnosed asymptomatic infection on day i + j - 1 is an asymptomatic
+  // case on day i with some probability of diagnosis, and some probability
+  // that the diagnosis occurred on day j.  we assume asymptomatic diagnosis
+  // only occurs among individuals who will be asymptomatic for the entire
+  // course of their infection. 
+  //
   // ** NON-LOGSPACE IMPL **
   // new_asy_dx = (1 - p_sym_if_inft) .* conv1d(
   //   new_inf .* p_diag_if_asy,
   //   asy_rec_delay_rv
   // );
+  //
   // ** LOGSPACE IMPL **
   log_new_asy_dx = log1m(p_sym_if_inft) + lconv1d(
     log_new_inf + log(p_diag_if_asy),
     asy_rec_delay_rv
   );
   
-  // diagnosed at symptomatic
-  // a diagnosed symptomatic (not severe) case on day i + j - 1
+  // Diagnosed at symptomatic
+  //
+  // A diagnosed symptomatic (not severe) case on day i + j - 1
   // is a symptomatic case on day i with some probability of diagnosis
   // and some probability that the diagnosis occurred on day j.  
-  
+  //
   // ** NON-LOGSPACE IMPL **
   // new_sym_dx = conv1d(new_sym .* p_diag_if_sym, sym_diag_delay_rv);
+  //
   // ** LOGSPACE IMPL **
   log_new_sym_dx = lconv1d(log(p_diag_if_sym) + log_new_sym, sym_diag_delay_rv);
   
-  // cascade from diagnosis 
-  // follow diagnosed cases forward to determine how many cases diagnosed
+  // Cascade from diagnosis 
+  //
+  // Follow diagnosed cases forward to determine how many cases diagnosed
   // at symptomatic eventually die.
-
+  //
   // ** NON-LOGSPACE IMPL **
   // dx_sym_sev = p_sev_if_symt .* conv1d(
   //   new_sym .* p_diag_if_sym,
   //   sym_prg_delay_rv
   // );
+  //
   // ** LOGSPACE IMPL **
   log_dx_sym_sev = log(p_sev_if_symt) + lconv1d(
     log(p_diag_if_sym) + log_new_sym,
@@ -748,15 +761,19 @@ transformed parameters {
   
   // ** NON-LOGSPACE IMPL **
   // dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
+  //
   // ** LOGSPACE IMPL **
   log_dx_sym_die =
     log(p_die_if_sevt[1:N_days_tot]) +
     lconv1d(log_dx_sym_sev, sev_prg_delay_rv);
         
-  // diagnosed at severe 
-  // as above for symptomatic 
+  // Diagnosed at severe 
+  //
+  // As above for symptomatic 
+  //
   // ** NON-LOGSPACE IMPL **
   // new_sev_dx = p_diag_if_sev * conv1d(new_sev - dx_sym_sev, sev_diag_delay_rv);
+  //
   // ** LOGSPACE IMPL **
   log_new_sev_dx = log(p_diag_if_sev) +
     lconv1d(
@@ -764,20 +781,27 @@ transformed parameters {
       sev_diag_delay_rv
     );
   
-  // cascade from diagnosis
-  // as above for symptomatic 
+  // Cascade from diagnosis
+  //
+  // As above for symptomatic.
+  //
   // ** NON-LOGSPACE IMPL **
   // dx_sev_die = p_die_if_sev * p_die_if_sevt[1:N_days_tot] .* conv1d(
   //   new_sev - dx_sym_sev,
   //   sev_prg_delay_rv
   // );
+  //
   // ** LOGSPACE IMPL **
-  log_dx_sev_die = log(p_die_if_sev) + log(p_die_if_sevt[1:N_days_tot]) +
+  log_dx_sev_die =
+    log(p_die_if_sev) +
+    log(p_die_if_sevt[1:N_days_tot]) +
     lconv1d(vlog_diff_exp(log_new_sev, log_dx_sym_sev), sev_prg_delay_rv);
 
   // TOTAL DIAGNOSED CASES AND DEATHS //
+  //
   // ** NON-LOGSPACE IMPL **
   // diag_all   = new_asy_dx + new_sym_dx + new_sev_dx;
+  //
   // ** LOGSPACE IMPL **
   log_diag_all = vlog_sum_exp(
     log_new_asy_dx,
@@ -789,6 +813,7 @@ transformed parameters {
 
   // ** NON-LOGSPACE IMPL **
   // new_die_dx = dx_sym_die + dx_sev_die;
+  //
   // ** LOGSPACE IMPL **
   log_new_die_dx = vlog_sum_exp(log_dx_sym_die, log_dx_sev_die);
 
@@ -804,11 +829,13 @@ transformed parameters {
   if(obs_cas_rep == 1) {                              
     // ** NON-LOGSPACE IMPL **
     // occur_cas = conv1d(diag_all, cas_rep_delay_rv);
+    //
     // ** LOGSPACE IMPL **
     log_occur_cas = lconv1d(log_diag_all, cas_rep_delay_rv);
   } else {
     // ** NON-LOGSPACE IMPL **
     // occur_cas = diag_all .* cas_cum_report_delay_rv;
+    //
     // ** LOGSPACE IMPL **
     log_occur_cas = log(cas_cum_report_delay_rv) + log_diag_all;
   }
@@ -817,22 +844,26 @@ transformed parameters {
   if(obs_die_rep == 1) {
     // ** NON-LOGSPACE IMPL **
     // occur_die = conv1d(new_die_dx, die_rep_delay_rv);
+    //
     // ** LOGSPACE IMPL **
     log_occur_die = lconv1d(log_new_die_dx, die_rep_delay_rv);
   } else {
     // ** NON-LOGSPACE IMPL **
     // occur_die = new_die_dx .* die_cum_report_delay_rv;
+    //
     // ** LOGSPACE IMPL **
     log_occur_die = log(die_cum_report_delay_rv) + log_new_die_dx;
   }
     
-  // compute moving sums
+  // Compute moving sums
   for(i in 1:N_days_tot) {
     if(i < N_days_av) {
       // ** NON-LOGSPACE IMPL **
       // occur_cas_mvs[i] = 0;
       // occur_die_mvs[i] = 0;
+      //
       // ** LOGSPACE IMPL **
+      //
       // [1:N_days_av) == -Inf. These are placeholder values, because these 
       // elements of `log_occur_(cas|die)_mvs` should never actually be used
       // in the moving-average likelihood.
@@ -842,6 +873,7 @@ transformed parameters {
       // ** NON-LOGSPACE IMPL **
       // occur_cas_mvs[i] = sum(occur_cas[(i - nda0) : i]);
       // occur_die_mvs[i] = sum(occur_die[(i - nda0) : i]);
+      //
       // ** LOGSPACE IMPL **
       log_occur_cas_mvs[i] = log_sum_exp(log_occur_cas[(i - nda0) : i]);
       log_occur_die_mvs[i] = log_sum_exp(log_occur_die[(i - nda0) : i]);
@@ -864,7 +896,8 @@ model {
   serial_i_omi         ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
 
   // PRIORS: DISEASE PROGRESSION
-  // probability of transitioning from inf -> sym -> sev -> die
+  //
+  // Probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
   p_sym_if_inf_omi     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
@@ -873,55 +906,43 @@ model {
   rr_decl_sev          ~ gamma(pri_rr_decl_sev_a, pri_rr_decl_sev_b);
   rr_decl_die          ~ gamma(pri_rr_decl_die_a, pri_rr_decl_die_b);
   
-  // PRIORS: overall infection fatality rate
+  // PRIORS: Overall infection fatality rate
   p_die_if_inf         ~ beta(pri_p_die_if_inf_a, pri_p_die_if_inf_b);
 
-  // PRIORS: diagnosis    
-  // probabilities of diagnosis
+  // PRIORS: Diagnosis    
+  //
+  // Probabilities of diagnosis
   rr_diag_asy_vs_sym   ~ beta(pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
   spl_par_sym_dx       ~ beta(pri_rr_diag_sym_vs_sev_a,pri_rr_diag_sym_vs_sev_b);
   p_diag_if_sev        ~ beta(pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
 
-  // delay distribution scaling factors
+  // Delay distribution scaling factors
   scale_dx_delay_sym   ~ beta(scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
   
-  // phi  
+  // Phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
   
-  // reinfection probability
+  // Reinfection probability
   p_reinf              ~ beta(4,32);
 
-  // omicron delay 
+  // Omicron delay 
   omicron_delay        ~ normal(0, sd_omicron_delay);
 
-  // prop for vaccine
+  // Prop for vaccine
   prob_vac             ~ dirichlet(rep_vector(5, 3));
 
-  // if(N_days_pri_Rt > 0)
-  //   logRt[(N_days_tot-N_days_pri_Rt+1) : N_days_tot] ~ normal(0, sd_pri_Rt);
-  
-  // print("log_occur_cas:");
-  // print(log_occur_cas);
-  // print("log_occur_die:");
-  // print(log_occur_die);
-   
   // LIKELIHOOD
+  //
   // Before data
   if(pre_period_zero==1){
     if(N_days_before>0){
   
-      // if (sum(occur_cas[1:N_days_before]) < 0)
-      //   reject("`sum(occur_cas[1:N_days_before])` had a negative value");
-
-      // if (sum(occur_die[1:N_days_before]) < 0)
-      //   reject("`sum(occur_die[1:N_days_before])` had a negative value");
-
       // ** NON-LOGSPACE IMPL **
       // target += neg_binomial_2_lpmf( 0 | sum(occur_cas[1:N_days_before]), phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(occur_die[1:N_days_before]), phi_die);
-
+      //
       // ** LOGSPACE IMPL **
       if(N_days_av < N_days_before){
       target += neg_binomial_2_log_lpmf(
@@ -949,7 +970,7 @@ model {
   //     occur_cas_mvs[N_days_before+N_days_av : N_days_before+lastCaseDate],
   //   phi_cas
   // ) ;// Optional, but likely unncessesary: / N_days_av;
-
+  //
   // ** LOGSPACE IMPL **
   target += neg_binomial_2_log_lpmf(
     // `obs_cas` from the first observed day to the last death date
@@ -968,8 +989,8 @@ model {
   //     // last death date
   //     occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
   //   phi_die
-  // ); // optional, but likelie unnecessary: / N_days_av;
-
+  // ); // optional, but likely unnecessary: / N_days_av;
+  //
   // ** LOGSPACE IMPL **
   target += neg_binomial_2_log_lpmf(
     // `obs_die` from the first observed day to the last death date
@@ -978,7 +999,7 @@ model {
       // last death date
       log_occur_die[N_days_before+N_days_av : N_days_before+lastDeathDate],
     phi_die
-  ); // optional, but likelie unnecessary: / N_days_av;
+  ); // optional, but likely unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
