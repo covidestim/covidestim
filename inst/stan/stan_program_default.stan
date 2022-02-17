@@ -133,30 +133,11 @@ functions {
       X[(nk - i + 1):nx, i] = x[1:(nx - nk + i)];
     }
 
-    // for (i in 1:nk) {
-    //   if (is_nan(kernel[i]) || is_inf(kernel[i]))
-    //     reject("kernel[i] was NaN or infinite", i);
-    // }
-
-    // for (i in 1:nx) {
-    //   if (is_nan(x[i]) || is_inf(x[i])) {
-    //     print("array was:");
-    //     print(x);
-    //     print("val was:");
-    //     print(x[i]);
-    //     reject("x[i] was NaN or infinite", i);
-    //   }
-    // }
-
     return X * kernel;
   }
 
   real custom_softplus_scalar(real log_val, real log_ceiling) {
-    real result;
-    result = log_ceiling + -1*log_sum_exp(0, -1*(log_val - log_ceiling));
-
-    print("log_result: ", result, " log_val: ", log_val, " log ceiling: ", log_ceiling);
-    return result;
+    return -1*log_sum_exp(0, -1*(log_val - log_ceiling));
   }
 }
 
@@ -393,7 +374,7 @@ parameters {
   real<lower=3, upper=11> serial_i; // serial interval
   real<lower=0, upper=8>  serial_i_omi; // serial interval
   real<lower=0>           firstRt;
-  vector<lower=0>[N_spl_par_rt] spl_par_rt_raw;
+  vector<lower=0, upper=20>[N_spl_par_rt] spl_par_rt_raw;
 
   // DISEASE PROGRESSION
   // probability of transitioning between disease states
@@ -436,11 +417,14 @@ transformed parameters {
   // INCIDENCE
   // vector[N_days_tot] new_inf;
   vector[N_days_tot] log_new_inf;
+
+  real<upper=0> log_frac_sus;
+  real<upper=0> log_frac_new_inf; // As a fraction of exp(log_frac_sus)
+
   // real               pop_uninf;
   real log_pop_sus;
-  real log_pop_uninf;
 
-  vector<lower=0>[N_days_tot] serial_i_comb;
+  vector[N_days_tot] log_serial_i_comb;
 
   // Rt spline
   vector<lower=0>[N_days_tot] Rt0;
@@ -516,33 +500,38 @@ transformed parameters {
   vector[N_days_tot] log_occur_die_mvs; 
 
   // OMICRON DELAY int 
-  vector<lower=0, upper=1>[N_days_tot] ifr_omi_rv;
-  vector<lower=0, upper=1>[N_days_tot] ifr_omi_rv_sev;
-  vector<lower=0, upper=1>[N_days_tot] ifr_omi_rv_die;
+  vector<upper=0>[N_days_tot] log_ifr_omi_rv;
+  vector<upper=0>[N_days_tot] log_ifr_omi_rv_sev;
+  vector<upper=0>[N_days_tot] log_ifr_omi_rv_die;
 
   // LIKELIHOOD
   // phi terms for negative binomial likelihood function 
   real phi_cas;
   real phi_die;
 
-  if (omicron_adjust == 0) {
-    ifr_omi_rv     = rep_vector(0, N_days_tot);
-    ifr_omi_rv_sev = ifr_omi_rv;
-    ifr_omi_rv_die = ifr_omi_rv;
-  } else {
-    for (i in 1:N_days_tot) {
-      ifr_omi_rv[i]     = normal_cdf(i, Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
-      ifr_omi_rv_die[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
-      ifr_omi_rv_sev[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
-    }
-
-    ifr_omi_rv     *= 0.95;
-    ifr_omi_rv_die *= 0.95;
-    ifr_omi_rv_sev *= 0.95;
+  for (i in 1:N_days_tot) {
+    log_ifr_omi_rv[i]     = normal_cdf(i, Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
+    log_ifr_omi_rv_die[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
+    log_ifr_omi_rv_sev[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
   }
+
+  log_ifr_omi_rv     *= 0.95;
+  log_ifr_omi_rv_die *= 0.95;
+  log_ifr_omi_rv_sev *= 0.95;
+  log_ifr_omi_rv     += 0.001;
+  log_ifr_omi_rv_die += 0.001;
+  log_ifr_omi_rv_sev += 0.001;
+  log_ifr_omi_rv     = log(log_ifr_omi_rv);
+  log_ifr_omi_rv_die = log(log_ifr_omi_rv_die);
+  log_ifr_omi_rv_sev = log(log_ifr_omi_rv_sev);
   
   // compute new serial i, combination of ancestral and omicron
-  serial_i_comb = (serial_i * ifr_omi_rv) + (serial_i_omi * (1 - ifr_omi_rv));
+  for (i in 1:N_days_tot) {
+    log_serial_i_comb[i] = log_sum_exp(
+      log(serial_i) + log_ifr_omi_rv[i],
+      log(serial_i_omi) + log1m_exp(log_ifr_omi_rv[i])
+    );
+  }
   
   // RELATIVE RISKS for omicron adjustment 
   rr_sym_if_inf = p_sym_if_inf_omi / p_sym_if_inf;
@@ -553,8 +542,8 @@ transformed parameters {
   p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
 
   for (i in 1:N_days_tot) {
-    p_die_if_sevt[i]     = p_die_if_sevt[i] .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - ifr_omi_rv_die[i] * (1 - rr_die_if_sev));
-    p_sev_if_symt[i]     = p_sev_if_sym      * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - ifr_omi_rv_sev[i] * (1 - rr_sev_if_sym));
+    p_die_if_sevt[i]     = p_die_if_sevt[i] .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - exp(log_ifr_omi_rv_die[i]) * (1 - rr_die_if_sev));
+    p_sev_if_symt[i]     = p_sev_if_sym      * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - exp(log_ifr_omi_rv_sev[i]) * (1 - rr_sev_if_sym));
     p_sym_if_inft[i]     = p_sym_if_inf      * pow(ifr_vac_adj[i], prob_vac[3]);
     p_sym_if_inft_omi[i] = p_sym_if_inf_omi  * pow(ifr_vac_adj[i], prob_vac[3]);
   }
@@ -606,6 +595,7 @@ transformed parameters {
   // modeled with a spline
   Rt0 = spl_basis_rt * spl_par_rt_raw;
   log_pop_sus = log(pop_size);
+  log_frac_sus = log(0.9999999999);
 
   for(i in 1:N_days_tot) {
     logRt[i] = log(Rt0[i]) + log_pop_sus - log(pop_size);
@@ -614,36 +604,57 @@ transformed parameters {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = new_inf[i-1] * Rt[i]^(1/serial_i_comb[i]);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = custom_softplus_scalar(
-        log_new_inf[i-1] + (1/serial_i_comb[i]) * logRt[i],
+      log_frac_new_inf = custom_softplus_scalar(
+        log_new_inf[i-1] + (1/exp(log_serial_i_comb[i])) * logRt[i],
         log_pop_sus
       );
+
+      log_new_inf[i] = log_frac_new_inf + log_pop_sus;
     }
     else if (i == 1) {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
       // ** LOGSPACE IMPL **
-      log_new_inf[i] = custom_softplus_scalar(
-        log_new_inf_0 + (1/serial_i_comb[i]) * logRt[i],
+      log_frac_new_inf = custom_softplus_scalar(
+        log_new_inf_0 + (1/exp(log_serial_i_comb[i])) * logRt[i],
         log_pop_sus
       );
+
+      log_new_inf[i] = log_frac_new_inf + log_pop_sus;
     }
     
-    log_pop_sus = log_sum_exp(
-      log_diff_exp(log_pop_sus, log_new_inf[i]), 
-      log(p_reinf) + log(ifr_omi_rv[i]) +
-        log_diff_exp(log(pop_size), log_pop_sus) 
+    // print("[before] i=", i, " log_frac_sus=",log_frac_sus, " log_frac_new_inf=",log_frac_new_inf, " p_reinf=",p_reinf, " log_ifr_omi_rv[i]=", log_ifr_omi_rv[i]);
+    // The fraction of the population that's susceptible
+    log_frac_sus = log_sum_exp(
+      // This first term is the fraction of the population that
+      // remains after subtracting out the susceptible individuals who were
+      // just infected.
+      //
+      // Stated as: one minus the fraction of the susceptibles that were just
+      // infected, times the old log_frac_sus.
+      //
+      // This "works" because, as a fraction, we can constrain
+      // `log_frac_new_inf` to be < 0. The implicit "denominator" for
+      // `log_frac_new_inf` is the "old" `log_frac_sus`.
+      log_frac_sus + log1m_exp(log_frac_new_inf),
+    
+      // Second term is the fraction of the "non-susceptible" population that
+      // gets moved to the "susceptible" category.
+      log(p_reinf) + log_ifr_omi_rv[i] + log1m_exp(log_frac_sus)
     );
+    //print("[after]  i=", i, " log_frac_sus=",log_frac_sus, " log_frac_new_inf=",log_frac_new_inf, " p_reinf=",p_reinf, " log_ifr_omi_rv[i]=", log_ifr_omi_rv[i]);
 
-    print("i=", i, " Rt0=", Rt0[i], " Rt=", exp(logRt[i]), " log_new_inf=", log_new_inf[i], " log_pop_sus=", log_pop_sus);
+    log_pop_sus = log_frac_sus + log(pop_size);
+
+    // print("i=", i, " Rt=", exp(logRt[i]), " log_new_inf=", log_new_inf[i], " log_pop_sus=", log_pop_sus, " log_frac_sus=", log_frac_sus, " log_frac_new_inf=", log_frac_new_inf);
   }
 
-  print("Rt0:");
-  print(Rt0);
-  print("logRt:");
-  print(logRt);
-  print("log_new_inf:");
-  print(log_new_inf);
+  //print("Rt0:");
+  //print(Rt0);
+  //print("logRt:");
+  //print(logRt);
+  //print("log_new_inf:");
+  //print(log_new_inf);
   
   // SYMPTOMATIC CASES
   // cases entering a state on day i + j - 1: 
@@ -674,8 +685,8 @@ transformed parameters {
   //   p_sym_if_inft_omi .* conv1d(new_inf .* ifr_omi_rv      , inf_prg_delay_rv);
   // ** LOGSPACE IMPL **
   log_new_sym = vlog_sum_exp(
-    log(p_sym_if_inft)     + lconv1d(log_new_inf + log1m(ifr_omi_rv), inf_prg_delay_rv),
-    log(p_sym_if_inft_omi) + lconv1d(log_new_inf + log(ifr_omi_rv),   inf_prg_delay_rv)
+    log(p_sym_if_inft)     + lconv1d(log_new_inf + log1m_exp(log_ifr_omi_rv), inf_prg_delay_rv),
+    log(p_sym_if_inft_omi) + lconv1d(log_new_inf + log_ifr_omi_rv,            inf_prg_delay_rv)
   );
 
   // ** NON-LOGSPACE IMPL **
@@ -891,10 +902,10 @@ model {
   // if(N_days_pri_Rt > 0)
   //   logRt[(N_days_tot-N_days_pri_Rt+1) : N_days_tot] ~ normal(0, sd_pri_Rt);
   
-  print("log_occur_cas:");
-  print(log_occur_cas);
-  print("log_occur_die:");
-  print(log_occur_die);
+  // print("log_occur_cas:");
+  // print(log_occur_cas);
+  // print("log_occur_die:");
+  // print(log_occur_die);
    
   // LIKELIHOOD
   // Before data
