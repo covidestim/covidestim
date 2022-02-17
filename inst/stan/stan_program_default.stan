@@ -382,16 +382,16 @@ parameters {
 
   // DISEASE PROGRESSION
   // probability of transitioning between disease states
-  real<lower=0, upper=1> p_sym_if_inf;
-  real<lower=0, upper=1> p_sym_if_inf_omi;
-  real<lower=0, upper=1> p_sev_if_sym;
-  real<lower=0, upper=1> p_die_if_sev;
-  real<lower=0>          ifr_decl_OR;
-  real<lower=0>          rr_decl_sev;
-  real<lower=0>          rr_decl_die;
+  real<lower=0, upper=1>  p_sym_if_inf;
+  real<lower=0, upper=1>  p_sym_if_inf_omi;
+  real<lower=0, upper=1>  p_sev_if_sym;
+  real<lower=0, upper=1>  p_die_if_sev;
+  real<lower=0, upper=2>  ifr_decl_OR;
+  real<lower=0, upper=1>  rr_decl_sev;
+  real<lower=0, upper=1>  rr_decl_die;
 
   // OMICRON TAKEOVER
-  real omicron_delay;
+  real<lower=-60, upper=60> omicron_delay;
   
   // DIANGOSIS
   // scaling factor for time to diagnosis
@@ -447,10 +447,10 @@ transformed parameters {
   //
   // Whether or not some more of these can be upper-bounded at 1 should be
   // reviewed.
-  vector<lower=0>[N_ifr_adj]          p_die_if_sevt;
-  vector<lower=0>[N_days_tot]         p_sev_if_symt;
-  vector<lower=0,upper=1>[N_days_tot] p_sym_if_inft;  
-  vector<lower=0>[N_days_tot]         p_sym_if_inft_omi;
+  vector<lower=0,upper=1>[N_ifr_adj]    p_die_if_sevt;
+  vector<lower=0,upper=1.5>[N_days_tot] p_sev_if_symt;
+  vector<lower=0,upper=1>[N_days_tot]   p_sym_if_inft;  
+  vector<lower=0,upper=1>[N_days_tot]   p_sym_if_inft_omi;
 
   // new probability of symptomatic
   real<lower=0> rr_sym_if_inf;
@@ -890,7 +890,8 @@ model {
   // PRIORS
   log_new_inf_0        ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
                                    
-  spl_par_rt_raw       ~ gamma(7.5, 7.25);
+  // spl_par_rt_raw       ~ gamma(7.5, 7.25);
+  spl_par_rt_raw       ~ gamma(5.5, 3.6);
 
   serial_i             ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   serial_i_omi         ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
