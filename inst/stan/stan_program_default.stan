@@ -139,6 +139,19 @@ functions {
   real custom_softplus_scalar(real log_val, real log_ceiling) {
     return -1*log_sum_exp(0, -1*(log_val - log_ceiling));
   }
+
+  vector vcustom_softplus_scalar(vector a, vector b) {
+    int l = rows(a);
+    vector[l] result;
+
+    if (rows(a) != rows(b))
+      reject("nrow(a) must be equal to nrow(b). lengths were: ", rows(a), ", ", rows(b));
+
+    for (i in 1:l)
+      result[i] = custom_softplus_scalar(a[i], b[i]);
+
+    return result;
+  }
 }
 
 data {
@@ -410,7 +423,9 @@ parameters {
   real<lower=0> inv_sqrt_phi_d;
 
   // reinfection probability 
-  real<lower=0,upper=1> p_reinf;
+  // 0.00001 bound on this because we take the log of it and it seemed like
+  // at one point BFGS was setting it to 0?
+  real<lower=0.00001,upper=1> p_reinf;
 
   // VACCINE ADJUSTMENT
   simplex[3] prob_vac;
@@ -447,10 +462,10 @@ transformed parameters {
   //
   // Whether or not some more of these can be upper-bounded at 1 should be
   // reviewed.
-  vector<lower=0,upper=1>[N_ifr_adj]    p_die_if_sevt;
-  vector<lower=0,upper=1.5>[N_days_tot] p_sev_if_symt;
-  vector<lower=0,upper=1>[N_days_tot]   p_sym_if_inft;  
-  vector<lower=0,upper=1>[N_days_tot]   p_sym_if_inft_omi;
+  vector<lower=0,upper=2.5>[N_ifr_adj] p_die_if_sevt;
+  vector<lower=0,upper=2>[N_days_tot]  p_sev_if_symt;
+  vector<lower=0,upper=1>[N_days_tot]  p_sym_if_inft;  
+  vector<lower=0,upper=1>[N_days_tot]  p_sym_if_inft_omi;
 
   // new probability of symptomatic
   real<lower=0> rr_sym_if_inf;
@@ -522,8 +537,8 @@ transformed parameters {
 
   // LIKELIHOOD
   // phi terms for negative binomial likelihood function 
-  real phi_cas;
-  real phi_die;
+  real<lower=0> phi_cas;
+  real<lower=0> phi_die;
 
   // Omicron-takeover sigmoid. First defined in realspace, then transformed to
   // logspace.
@@ -566,10 +581,10 @@ transformed parameters {
   p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
 
   for (i in 1:N_days_tot) {
-    p_die_if_sevt[i]     = p_die_if_sevt[i] .* pow(ifr_vac_adj[i], prob_vac[1]) .* (1 - exp(log_ifr_omi_rv_die[i]) * (1 - rr_die_if_sev));
-    p_sev_if_symt[i]     = p_sev_if_sym      * pow(ifr_vac_adj[i], prob_vac[2]) .* (1 - exp(log_ifr_omi_rv_sev[i]) * (1 - rr_sev_if_sym));
-    p_sym_if_inft[i]     = p_sym_if_inf      * pow(ifr_vac_adj[i], prob_vac[3]);
-    p_sym_if_inft_omi[i] = p_sym_if_inf_omi  * pow(ifr_vac_adj[i], prob_vac[3]);
+    p_die_if_sevt[i]     = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prob_vac[1]) * (1 - exp(log_ifr_omi_rv_die[i]) * (1 - rr_die_if_sev));
+    p_sev_if_symt[i]     = p_sev_if_sym     * pow(ifr_vac_adj[i], prob_vac[2]) * (1 - exp(log_ifr_omi_rv_sev[i]) * (1 - rr_sev_if_sym));
+    p_sym_if_inft[i]     = p_sym_if_inf     * pow(ifr_vac_adj[i], prob_vac[3]);
+    p_sym_if_inft_omi[i] = p_sym_if_inf_omi * pow(ifr_vac_adj[i], prob_vac[3]);
   }
   
   // DIAGNOSIS // 
@@ -643,6 +658,7 @@ transformed parameters {
     else if (i == 1) {
       // ** NON-LOGSPACE IMPL **
       // new_inf[i] = Rt[i]^(1/serial_i_comb[i]) * exp(log_new_inf_0);
+      //
       // ** LOGSPACE IMPL **
       log_frac_new_inf = custom_softplus_scalar(
 
@@ -777,7 +793,13 @@ transformed parameters {
   // ** LOGSPACE IMPL **
   log_new_sev_dx = log(p_diag_if_sev) +
     lconv1d(
-      vlog_diff_exp(log_new_sev, log_dx_sym_sev),
+      vlog_diff_exp(
+        log_new_sev,
+
+        // NEW: Clamping function, to avoid underflow condition. May not work
+        // as intended!
+        log_dx_sym_sev + vcustom_softplus_scalar(log_dx_sym_sev, log_new_sev)
+      ),
       sev_diag_delay_rv
     );
   
@@ -795,7 +817,16 @@ transformed parameters {
   log_dx_sev_die =
     log(p_die_if_sev) +
     log(p_die_if_sevt[1:N_days_tot]) +
-    lconv1d(vlog_diff_exp(log_new_sev, log_dx_sym_sev), sev_prg_delay_rv);
+    lconv1d(
+      vlog_diff_exp(
+        log_new_sev,
+
+        // NEW: Clamping function, to avoid underflow condition. May not work
+        // as intended!
+        log_dx_sym_sev + vcustom_softplus_scalar(log_dx_sym_sev, log_new_sev)
+      ),
+      sev_prg_delay_rv
+    );
 
   // TOTAL DIAGNOSED CASES AND DEATHS //
   //
@@ -946,15 +977,15 @@ model {
       //
       // ** LOGSPACE IMPL **
       if(N_days_av < N_days_before){
-      target += neg_binomial_2_log_lpmf(
-        0 | log_sum_exp(log_occur_cas_mvs[N_days_av:N_days_before]),
-        phi_cas
-      );
+        target += neg_binomial_2_log_lpmf(
+          0 | log_sum_exp(log_occur_cas_mvs[N_days_av:N_days_before]),
+          phi_cas
+        );
 
-      target += neg_binomial_2_log_lpmf(
-        0 | log_sum_exp(log_occur_die_mvs[N_days_av:N_days_before]),
-        phi_die
-      );
+        target += neg_binomial_2_log_lpmf(
+          0 | log_sum_exp(log_occur_die_mvs[N_days_av:N_days_before]),
+          phi_die
+        );
       }
     }
   }
