@@ -419,8 +419,8 @@ parameters {
 
   // LIKELIHOOD 
   // phi terms for negative b ino imal likelihood function 
-  real<lower=0> inv_sqrt_phi_c;
-  real<lower=0> inv_sqrt_phi_d;
+  real<lower=0, upper=1000> inv_sqrt_phi_c;
+  real<lower=0, upper=1000> inv_sqrt_phi_d;
 
   // reinfection probability 
   // 0.00001 bound on this because we take the log of it and it seemed like
