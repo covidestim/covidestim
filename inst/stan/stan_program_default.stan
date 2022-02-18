@@ -798,7 +798,7 @@ transformed parameters {
 
         // NEW: Clamping function, to avoid underflow condition. May not work
         // as intended!
-        log_dx_sym_sev + vcustom_softplus_scalar(log_dx_sym_sev, log_new_sev)
+        log_new_sev + vcustom_softplus_scalar(log_dx_sym_sev, log_new_sev)
       ),
       sev_diag_delay_rv
     );
@@ -823,7 +823,7 @@ transformed parameters {
 
         // NEW: Clamping function, to avoid underflow condition. May not work
         // as intended!
-        log_dx_sym_sev + vcustom_softplus_scalar(log_dx_sym_sev, log_new_sev)
+        log_new_sev + vcustom_softplus_scalar(log_dx_sym_sev, log_new_sev)
       ),
       sev_prg_delay_rv
     );
