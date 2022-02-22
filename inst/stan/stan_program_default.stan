@@ -386,7 +386,7 @@ parameters {
   // Bounds are for BFGS.
   real<lower=-5, upper=log(1000)> log_new_inf_0; // starting intercept
   real<lower=3, upper=11>   serial_i; // serial interval
-  real<lower=1, upper=8>    serial_i_omi; // serial interval
+  // real<lower=1, upper=8>    serial_i_omi; // serial interval
 
   // The bounds on this vector keep Rt strictly positive and also prevent
   // any completely insane Rt values from occurring. This seems to help
@@ -643,8 +643,9 @@ transformed parameters {
   // compute new serial i, combination of ancestral and omicron
   for (i in 1:N_days_tot) {
     log_serial_i_comb[i] = log_sum_exp(
-      log(serial_i) + log_ifr_omi_rv[i],
-      log(serial_i_omi) + log1m_exp(log_ifr_omi_rv[i])
+      log(serial_i) + log1m_exp(log_ifr_omi_rv[i]),
+      log(2.5) + log_ifr_omi_rv[i] // Fixed omicron serial interval @ 2.5 days!
+      // log(serial_i_omi) + log_ifr_omi_rv[i]
     );
   }
   
@@ -999,10 +1000,10 @@ model {
                                    
   spl_par_rt_raw       ~ gamma(4.4, 2.9);
 
-  // spl_par_rt_raw[2:] - spl_par_rt_raw[:N_spl_par_rt-1] ~ std_normal();
+  spl_par_rt_raw[2:] - spl_par_rt_raw[:N_spl_par_rt-1] ~ std_normal();
 
   serial_i             ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
-  serial_i_omi         ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
+  // serial_i_omi         ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
 
   // PRIORS: DISEASE PROGRESSION
   //
