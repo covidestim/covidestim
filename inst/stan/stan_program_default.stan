@@ -383,51 +383,61 @@ transformed data {
 parameters {
   
   // INCIDENCE 
-  real                    log_new_inf_0; // starting intercept
-  real<lower=3, upper=11> serial_i; // serial interval
-  real<lower=0, upper=8>  serial_i_omi; // serial interval
-  real<lower=0>           firstRt;
+  // Bounds are for BFGS.
+  real<lower=-5, upper=log(1000)> log_new_inf_0; // starting intercept
+  real<lower=3, upper=11>   serial_i; // serial interval
+  real<lower=1, upper=8>    serial_i_omi; // serial interval
 
   // The bounds on this vector keep Rt strictly positive and also prevent
   // any completely insane Rt values from occurring. This seems to help
   // greatly with initialization
-  vector<lower=0, upper=20>[N_spl_par_rt] spl_par_rt_raw;
+  vector<lower=0, upper=5>[N_spl_par_rt] spl_par_rt_raw;
 
   // DISEASE PROGRESSION
   // probability of transitioning between disease states
-  real<lower=0, upper=1>  p_sym_if_inf;
-  real<lower=0, upper=1>  p_sym_if_inf_omi;
-  real<lower=0, upper=1>  p_sev_if_sym;
-  real<lower=0, upper=1>  p_die_if_sev;
-  real<lower=0, upper=2>  ifr_decl_OR;
-  real<lower=0, upper=1>  rr_decl_sev;
-  real<lower=0, upper=1>  rr_decl_die;
+  // // Bounds are for BFGS.
+  real<lower=0.001, upper=0.9> p_sym_if_inf;
+  // Bounds are for BFGS.
+  real<lower=0.001, upper=0.9> p_sym_if_inf_omi;
+  // Bounds are for BFGS.
+  real<lower=0.001, upper=0.9> p_sev_if_sym;
+  // Bounds are for BFGS.
+  real<lower=0.001, upper=0.9> p_die_if_sev;
+  real<lower=0, upper=2> ifr_decl_OR;
+  // Bounds are for BFGS.
+  real<lower=0.01, upper=0.3> rr_decl_sev;
+  // Bounds are for BFGS.
+  real<lower=0.0001, upper=0.06> rr_decl_die;
 
   // OMICRON TAKEOVER
   real<lower=-60, upper=60> omicron_delay;
   
   // DIANGOSIS
   // scaling factor for time to diagnosis
-  real<lower=0, upper=1> scale_dx_delay_sym; 
-  real<lower=0, upper=1> scale_dx_delay_sev; 
+  // Bounds are for BFGS.
+  real<lower=0.001, upper=1> scale_dx_delay_sym; 
+  // Bounds are for BFGS.
+  real<lower=0.001, upper=1> scale_dx_delay_sev; 
 
   // probability of diagnosis at each illness state
-  real<lower=0, upper=1> rr_diag_asy_vs_sym; 
-  real<lower=0, upper=1> p_diag_if_sev;
+  // Bounds are for BFGS.
+  real<lower=0.001, upper=0.5> rr_diag_asy_vs_sym; 
+  // Bounds are for BFGS.
+  real<lower=0.001, upper=0.999> p_diag_if_sev;
 
   vector<lower=0, upper=1>[N_spl_par_dx] spl_par_sym_dx;
 
   // LIKELIHOOD 
   // phi terms for negative b ino imal likelihood function 
-  real<lower=0, upper=1000> inv_sqrt_phi_c;
-  real<lower=0, upper=1000> inv_sqrt_phi_d;
+  real<lower=0, upper=15> inv_sqrt_phi_c;
+  real<lower=0, upper=15> inv_sqrt_phi_d;
 
   // reinfection probability 
-  // 0.00001 bound on this because we take the log of it and it seemed like
-  // at one point BFGS was setting it to 0?
-  real<lower=0.00001,upper=1> p_reinf;
+  // Bounds are for BFGS.
+  real<lower=0.001, upper=0.5> p_reinf;
 
   // VACCINE ADJUSTMENT
+  // Bounds are for BFGS.
   simplex[3] prob_vac;
 }
 
@@ -463,7 +473,7 @@ transformed parameters {
   // Whether or not some more of these can be upper-bounded at 1 should be
   // reviewed.
   vector<lower=0,upper=2.5>[N_ifr_adj] p_die_if_sevt;
-  vector<lower=0,upper=2>[N_days_tot]  p_sev_if_symt;
+  vector<lower=0,upper=4>[N_days_tot]  p_sev_if_symt;
   vector<lower=0,upper=1>[N_days_tot]  p_sym_if_inft;  
   vector<lower=0,upper=1>[N_days_tot]  p_sym_if_inft_omi;
 
@@ -540,6 +550,72 @@ transformed parameters {
   real<lower=0> phi_cas;
   real<lower=0> phi_die;
 
+
+  // ========== PRINT PARAMETERS ==============
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  // print("log_new_inf_0:");
+  // print(log_new_inf_0);
+  // print("serial_i:");
+  // print(serial_i);
+  // print("serial_i_omi:");
+  // print(serial_i_omi);
+  // print("spl_par_rt_raw:");
+  // print(spl_par_rt_raw);
+  // print("p_sym_if_inf:");
+  // print(p_sym_if_inf);
+  // print("p_sym_if_inf_omi:");
+  // print(p_sym_if_inf_omi);
+  // print("p_sev_if_sym:");
+  // print(p_sev_if_sym);
+  // print("p_die_if_sev:");
+  // print(p_die_if_sev);
+  // print("ifr_decl_OR:");
+  // print(ifr_decl_OR);
+  // print("rr_decl_sev:");
+  // print(rr_decl_sev);
+  // print("rr_decl_die:");
+  // print(rr_decl_die);
+  // print("omicron_delay:");
+  // print(omicron_delay);
+  // print("scale_dx_delay_sym:");
+  // print(scale_dx_delay_sym);
+  // print("scale_dx_delay_sev:");
+  // print(scale_dx_delay_sev);
+  // print("rr_diag_asy_vs_sym:");
+  // print(rr_diag_asy_vs_sym);
+  // print("p_diag_if_sev:");
+  // print(p_diag_if_sev);
+  // print("spl_par_sym_dx:");
+  // print(spl_par_sym_dx);
+  // print("inv_sqrt_phi_c:");
+  // print(inv_sqrt_phi_c);
+  // print("inv_sqrt_phi_d:");
+  // print(inv_sqrt_phi_d);
+  // print("p_reinf:");
+  // print(p_reinf);
+  // print("prob_vac:");
+  // print(prob_vac);
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  // ====== END PRINT PARAMETERS ==============
+
   // Omicron-takeover sigmoid. First defined in realspace, then transformed to
   // logspace.
   //
@@ -607,8 +683,8 @@ transformed parameters {
     vector[Max_delay+1] sym_delay_gammas;
     vector[Max_delay+1] sev_delay_gammas;
     for (i in 1:Max_delay+1) {
-      sym_delay_gammas[i] = gamma_cdf(i-1 , sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
-      sev_delay_gammas[i] = gamma_cdf(i-1 , sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
+      sym_delay_gammas[i] = gamma_cdf(i-1, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
+      sev_delay_gammas[i] = gamma_cdf(i-1, sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
     }
 
     // Diff and reverse, vectorized
@@ -921,8 +997,9 @@ model {
   // PRIORS
   log_new_inf_0        ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
                                    
-  // spl_par_rt_raw       ~ gamma(7.5, 7.25);
-  spl_par_rt_raw       ~ gamma(5.5, 3.6);
+  spl_par_rt_raw       ~ gamma(4.4, 2.9);
+
+  // spl_par_rt_raw[2:] - spl_par_rt_raw[:N_spl_par_rt-1] ~ std_normal();
 
   serial_i             ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   serial_i_omi         ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
