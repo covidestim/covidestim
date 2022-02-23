@@ -1,5 +1,17 @@
-
 functions {
+
+  // The log beta probability mass of `exp(ltheta)` given alpha parameter `a`
+  // and beta parameter `b`.
+  real beta_log_lpdf(real ltheta, real a, real b) {
+    return (a-1)*ltheta + (b-1)*log1m_exp(ltheta) - lbeta(a, b);
+  }
+
+  // The log beta probability mass of `exp(ltheta)` given alpha parameter `a`
+  // and beta parameter `b`, dropping constant additive terms.
+  real beta_log_lupdf(real ltheta, real a, real b) {
+    return (a-1)*ltheta + (b-1)*log1m_exp(ltheta);
+  }
+
   vector vlog_sum_exp(vector a, vector b) {
     int l = rows(a);
     vector[l] result;
@@ -396,46 +408,39 @@ parameters {
 
   // DISEASE PROGRESSION
   // probability of transitioning between disease states
-  // // Bounds are for BFGS.
-  real<lower=0.001, upper=0.9> p_sym_if_inf;
-  // Bounds are for BFGS.
-  real<lower=0.001, upper=0.9> p_sym_if_inf_omi;
-  // Bounds are for BFGS.
-  real<lower=0.001, upper=0.9> p_sev_if_sym;
-  // Bounds are for BFGS.
-  real<lower=0.001, upper=0.9> p_die_if_sev;
+  real<upper=0> log_p_sym_if_inf;
+  real<upper=0> log_p_sym_if_inf_omi;
+  real<upper=0> log_p_sev_if_sym;
+  real<upper=0> log_p_die_if_sev;
+
   real<lower=0.001, upper=4> ifr_decl_OR;
   // Bounds are for BFGS.
   real<lower=0.01, upper=0.3> rr_decl_sev;
   // Bounds are for BFGS.
-  real<lower=0.0001, upper=0.06> rr_decl_die;
+  real<lower=0.0001, upper=0.25> rr_decl_die;
 
   // OMICRON TAKEOVER
   real<lower=-60, upper=60> omicron_delay;
   
   // DIANGOSIS
   // scaling factor for time to diagnosis
-  // Bounds are for BFGS.
-  real<lower=0.001, upper=0.999> scale_dx_delay_sym; 
-  // Bounds are for BFGS.
-  real<lower=0.001, upper=0.999> scale_dx_delay_sev; 
+  real<upper=0> log_scale_dx_delay_sym; 
+  real<upper=0> log_scale_dx_delay_sev; 
 
   // probability of diagnosis at each illness state
-  // Bounds are for BFGS.
-  real<lower=0.001, upper=0.5> rr_diag_asy_vs_sym; 
-  // Bounds are for BFGS.
-  real<lower=0.001, upper=0.999> p_diag_if_sev;
+  real<upper=0> log_rr_diag_asy_vs_sym; 
+  real<upper=0> log_p_diag_if_sev;
 
   vector<lower=0.001, upper=0.999>[N_spl_par_dx] spl_par_sym_dx;
 
   // LIKELIHOOD 
-  // phi terms for negative b ino imal likelihood function 
+  // phi terms for negative binomimal likelihood function 
   real<lower=0.001, upper=15> inv_sqrt_phi_c;
   real<lower=0.001, upper=15> inv_sqrt_phi_d;
 
   // reinfection probability 
   // Bounds are for BFGS.
-  real<lower=0.001, upper=0.5> p_reinf;
+  real<upper=0> log_p_reinf;
 
   // VACCINE ADJUSTMENT
   // Bounds are for BFGS.
@@ -1004,41 +1009,46 @@ model {
   spl_par_rt_raw[2:] - spl_par_rt_raw[:N_spl_par_rt-1] ~ std_normal();
 
   serial_i             ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
+
+  // Currently FIXING the Omicron serial interval for testing
   // serial_i_omi         ~ gamma(pri_serial_i_omi_shap, pri_serial_i_omi_rate);
 
   // PRIORS: DISEASE PROGRESSION
   //
   // Probability of transitioning from inf -> sym -> sev -> die
-  p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
+  target += beta_log_lupdf(log_p_sym_if_inf, pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
+
+  // Currently TESTING a tighter prior on `p_sym_if_inf_omi`.
+  //
   // p_sym_if_inf_omi     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
-  // TEST PRIOR!
-  p_sym_if_inf_omi     ~ beta(33, 393);
-  p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
-  p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
-  ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
-  rr_decl_sev          ~ gamma(pri_rr_decl_sev_a, pri_rr_decl_sev_b);
-  rr_decl_die          ~ gamma(pri_rr_decl_die_a, pri_rr_decl_die_b);
-  
+  target += beta_log_lupdf(log_p_sym_if_inf_omi, 33, 393);
+  target += beta_log_lupdf(log_p_sev_if_sym, pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
+  target += beta_log_lupdf(log_p_die_if_sev, pri_p_die_if_sev_a, pri_p_die_if_sev_b);
+
   // PRIORS: Overall infection fatality rate
-  p_die_if_inf         ~ beta(pri_p_die_if_inf_a, pri_p_die_if_inf_b);
+  target += beta_log_lupdf(log_p_die_if_inf, pri_p_die_if_inf_a, pri_p_die_if_inf_b);
 
   // PRIORS: Diagnosis    
   //
   // Probabilities of diagnosis
-  rr_diag_asy_vs_sym   ~ beta(pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
-  spl_par_sym_dx       ~ beta(pri_rr_diag_sym_vs_sev_a,pri_rr_diag_sym_vs_sev_b);
-  p_diag_if_sev        ~ beta(pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
+  target += beta_log_lupdf(log_rr_diag_asy_vs_sym, pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
+  target += beta_log_lupdf(log_spl_par_sym_dx, pri_rr_diag_sym_vs_sev_a,pri_rr_diag_sym_vs_sev_b);
+  target += beta_log_lupdf(log_p_diag_if_sev, pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
 
   // Delay distribution scaling factors
-  scale_dx_delay_sym   ~ beta(scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
-  scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
+  target += beta_log_lupdf(log_scale_dx_delay_sym, scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
+  target += beta_log_lupdf(log_scale_dx_delay_sev, scale_dx_delay_sev_a, scale_dx_delay_sev_b);
+  
+  ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
+  rr_decl_sev          ~ gamma(pri_rr_decl_sev_a, pri_rr_decl_sev_b);
+  rr_decl_die          ~ gamma(pri_rr_decl_die_a, pri_rr_decl_die_b);
   
   // Phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
   
   // Reinfection probability
-  p_reinf              ~ beta(4,32);
+  target += beta_log_lupdf(log_p_reinf, 4,32);
 
   // Omicron delay 
   omicron_delay        ~ normal(0, sd_omicron_delay);
