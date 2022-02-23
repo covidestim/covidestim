@@ -1,3 +1,4 @@
+
 functions {
   vector vlog_sum_exp(vector a, vector b) {
     int l = rows(a);
@@ -391,7 +392,7 @@ parameters {
   // The bounds on this vector keep Rt strictly positive and also prevent
   // any completely insane Rt values from occurring. This seems to help
   // greatly with initialization
-  vector<lower=0, upper=5>[N_spl_par_rt] spl_par_rt_raw;
+  vector<lower=0.001, upper=5>[N_spl_par_rt] spl_par_rt_raw;
 
   // DISEASE PROGRESSION
   // probability of transitioning between disease states
@@ -403,7 +404,7 @@ parameters {
   real<lower=0.001, upper=0.9> p_sev_if_sym;
   // Bounds are for BFGS.
   real<lower=0.001, upper=0.9> p_die_if_sev;
-  real<lower=0, upper=2> ifr_decl_OR;
+  real<lower=0.001, upper=4> ifr_decl_OR;
   // Bounds are for BFGS.
   real<lower=0.01, upper=0.3> rr_decl_sev;
   // Bounds are for BFGS.
@@ -415,9 +416,9 @@ parameters {
   // DIANGOSIS
   // scaling factor for time to diagnosis
   // Bounds are for BFGS.
-  real<lower=0.001, upper=1> scale_dx_delay_sym; 
+  real<lower=0.001, upper=0.999> scale_dx_delay_sym; 
   // Bounds are for BFGS.
-  real<lower=0.001, upper=1> scale_dx_delay_sev; 
+  real<lower=0.001, upper=0.999> scale_dx_delay_sev; 
 
   // probability of diagnosis at each illness state
   // Bounds are for BFGS.
@@ -425,12 +426,12 @@ parameters {
   // Bounds are for BFGS.
   real<lower=0.001, upper=0.999> p_diag_if_sev;
 
-  vector<lower=0, upper=1>[N_spl_par_dx] spl_par_sym_dx;
+  vector<lower=0.001, upper=0.999>[N_spl_par_dx] spl_par_sym_dx;
 
   // LIKELIHOOD 
   // phi terms for negative b ino imal likelihood function 
-  real<lower=0, upper=15> inv_sqrt_phi_c;
-  real<lower=0, upper=15> inv_sqrt_phi_d;
+  real<lower=0.001, upper=15> inv_sqrt_phi_c;
+  real<lower=0.001, upper=15> inv_sqrt_phi_d;
 
   // reinfection probability 
   // Bounds are for BFGS.
@@ -1009,7 +1010,9 @@ model {
   //
   // Probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
-  p_sym_if_inf_omi     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
+  // p_sym_if_inf_omi     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
+  // TEST PRIOR!
+  p_sym_if_inf_omi     ~ beta(33, 393);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
