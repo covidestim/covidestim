@@ -2,12 +2,17 @@ functions {
 
   // The log beta probability mass of `exp(ltheta)` given alpha parameter `a`
   // and beta parameter `b`.
+  //
+  // The Stan compiler will automatically generate a function `beta_log_lupdf`
+  // which drops the constant additive term `- lbeta(a, b)`. This compiler-
+  // -generated function is what will be called in the `model{}` block when
+  // incrementing the log-density.
   real beta_log_lpdf(real ltheta, real a, real b) {
     return (a-1)*ltheta + (b-1)*log1m_exp(ltheta) - lbeta(a, b);
   }
 
-  // The log beta probability mass of `exp(ltheta)` given alpha parameter `a`
-  // and beta parameter `b`, dropping constant additive terms.
+  // Included for compatibility with older versions of Stan, which will NOT
+  // automatically generate the `_lupdf` version from the `_lpdf` form!
   real beta_log_lupdf(real ltheta, real a, real b) {
     return (a-1)*ltheta + (b-1)*log1m_exp(ltheta);
   }
@@ -478,21 +483,21 @@ transformed parameters {
   //
   // Whether or not some more of these can be upper-bounded at 1 should be
   // reviewed.
-  vector<lower=0,upper=2.5>[N_ifr_adj] p_die_if_sevt;
-  vector<lower=0,upper=4>[N_days_tot]  p_sev_if_symt;
-  vector<lower=0,upper=1>[N_days_tot]  p_sym_if_inft;  
-  vector<lower=0,upper=1>[N_days_tot]  p_sym_if_inft_omi;
+  vector<upper=log(2.5)>[N_ifr_adj] log_p_die_if_sevt;
+  vector<upper=log(4)>[N_days_tot] log_p_sev_if_symt;
+  vector<upper=0>[N_days_tot] log_p_sym_if_inft;  
+  vector<upper=0>[N_days_tot] log_p_sym_if_inft_omi;  
 
   // new probability of symptomatic
-  real<lower=0> rr_sym_if_inf;
-  real<lower=0> rr_sev_if_sym;
+  real log_rr_sym_if_inf;
+  real log_rr_sev_if_sym;
   real<lower=0> rr_die_if_sev;
   
   // DIAGNOSIS AND REPORTING  
   // probability of diagnosis
   vector[N_days_tot] rr_diag_sym_vs_sev;
-  vector<lower=0, upper=1>[N_days_tot] p_diag_if_asy; 
-  vector<lower=0, upper=1>[N_days_tot] p_diag_if_sym;
+  vector<upper=0>[N_days_tot] log_p_diag_if_asy; 
+  vector<upper=0>[N_days_tot] log_p_diag_if_sym;
 
   // daily probabilities of diagnosis and report
   // for days 1 to 60 after entering that state
@@ -501,7 +506,7 @@ transformed parameters {
 
   // DISEASE OUTCOMES
   // overall case fatality rate
-  real<lower=0, upper=1> p_die_if_inf;
+  real<upper=0> log_p_die_if_inf;
 
   // "true" number entering disease state each day
   // vector[N_days_tot] new_sym; 
@@ -656,18 +661,27 @@ transformed parameters {
   }
   
   // RELATIVE RISKS for omicron adjustment 
-  rr_sym_if_inf = p_sym_if_inf_omi / p_sym_if_inf;
-  rr_sev_if_sym = rr_decl_sev      / rr_sym_if_inf;
+  log_rr_sym_if_inf = log_p_sym_if_inf_omi - log_p_sym_if_inf;
+  log_rr_sev_if_sym = log(rr_decl_sev) - log_rr_sym_if_inf;
   rr_die_if_sev = rr_decl_die      / rr_decl_sev;
 
   // NATURAL HISTORY CASCADE
-  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
+  // p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
+  log_p_die_if_sevt = log_p_die_if_sev + log(ifr_adj_fixed) + log1p(ifr_adj * ifr_decl_OR);
 
   for (i in 1:N_days_tot) {
-    p_die_if_sevt[i]     = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prob_vac[1]) * (1 - exp(log_ifr_omi_rv_die[i]) * (1 - rr_die_if_sev));
-    p_sev_if_symt[i]     = p_sev_if_sym     * pow(ifr_vac_adj[i], prob_vac[2]) * (1 - exp(log_ifr_omi_rv_sev[i]) * (1 - rr_sev_if_sym));
-    p_sym_if_inft[i]     = p_sym_if_inf     * pow(ifr_vac_adj[i], prob_vac[3]);
-    p_sym_if_inft_omi[i] = p_sym_if_inf_omi * pow(ifr_vac_adj[i], prob_vac[3]);
+    // log_p_die_if_sevt[i] = p_die_if_sevt[i] * pow(ifr_vac_adj[i], prob_vac[1]) * (1 - exp(log_ifr_omi_rv_die[i]) * (1 - rr_die_if_sev));
+    log_p_die_if_sevt[i] = log_p_die_if_sevt[i] +
+      prob_vac[1]*log(ifr_vac_adj[i]) +
+      log(1 - exp(log_ifr_omi_rv_die[i]) * (1 - rr_die_if_sev));
+
+    // p_sev_if_symt[i]     = p_sev_if_sym     * pow(ifr_vac_adj[i], prob_vac[2]) * (1 - exp(log_ifr_omi_rv_sev[i]) * (1 - rr_sev_if_sym));
+    log_p_sev_if_symt[i] = log_p_sev_if_sym +
+      prob_vac[2] * log(ifr_vac_adj[i]) +
+      log(1 - exp(log_ifr_omi_rv_sev[i]) * (1 - exp(log_rr_sev_if_sym)));
+
+    log_p_sym_if_inft[i]     = log_p_sym_if_inf     + prob_vac[3]*log(ifr_vac_adj[i]);
+    log_p_sym_if_inft_omi[i] = log_p_sym_if_inf_omi + prob_vac[3]*log(ifr_vac_adj[i]);
   }
   
   // DIAGNOSIS // 
@@ -675,8 +689,8 @@ transformed parameters {
   rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * logit(spl_par_sym_dx));
   
   // probability of diagnosis 
-  p_diag_if_sym = p_diag_if_sev * rr_diag_sym_vs_sev;
-  p_diag_if_asy = p_diag_if_sym * rr_diag_asy_vs_sym; 
+  log_p_diag_if_sym = log_p_diag_if_sev + log(rr_diag_sym_vs_sev);
+  log_p_diag_if_asy = log_p_diag_if_sym + log_rr_diag_asy_vs_sym; 
   
   // DELAYS //
   // Diagnosis Delays
@@ -690,8 +704,8 @@ transformed parameters {
     vector[Max_delay+1] sym_delay_gammas;
     vector[Max_delay+1] sev_delay_gammas;
     for (i in 1:Max_delay+1) {
-      sym_delay_gammas[i] = gamma_cdf(i-1, sym_prg_delay_shap, sym_prg_delay_rate/scale_dx_delay_sym);
-      sev_delay_gammas[i] = gamma_cdf(i-1, sev_prg_delay_shap, sev_prg_delay_rate/scale_dx_delay_sev);
+      sym_delay_gammas[i] = gamma_cdf(i-1, sym_prg_delay_shap, sym_prg_delay_rate/exp(log_scale_dx_delay_sym));
+      sev_delay_gammas[i] = gamma_cdf(i-1, sev_prg_delay_shap, sev_prg_delay_rate/exp(log_scale_dx_delay_sev));
     }
 
     // Diff and reverse, vectorized
@@ -701,14 +715,13 @@ transformed parameters {
       sym_diag_delay_rv[1+Max_delay-i] = sym_delay_gammas[i+1] - sym_delay_gammas[i];
       sev_diag_delay_rv[1+Max_delay-i] = sev_delay_gammas[i+1] - sev_delay_gammas[i];
     }
-
   }
 
   // DEATHS // 
   // infection fatality rate is the product of the probability of death among
   // severely ill individuals, the probability of being severely ill if 
   // symptomatic, and the probability of becoming symptomatic if infected. 
-  p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
+  log_p_die_if_inf = log_p_sym_if_inf + log_p_sev_if_sym + log_p_die_if_sev;
 
   // CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 
@@ -771,7 +784,7 @@ transformed parameters {
     
       // Second term is the fraction of the "non-susceptible" population that
       // gets moved to the "susceptible" category.
-      log(p_reinf) + log_ifr_omi_rv[i] + log1m_exp(log_frac_sus)
+      log_p_reinf + log_ifr_omi_rv[i] + log1m_exp(log_frac_sus)
     );
 
     log_pop_sus = log_frac_sus + log(pop_size);
@@ -789,22 +802,22 @@ transformed parameters {
   //
   // ** LOGSPACE IMPL **
   log_new_sym = vlog_sum_exp(
-    log(p_sym_if_inft)     + lconv1d(log_new_inf + log1m_exp(log_ifr_omi_rv), inf_prg_delay_rv),
-    log(p_sym_if_inft_omi) + lconv1d(log_new_inf + log_ifr_omi_rv,            inf_prg_delay_rv)
+    log_p_sym_if_inft     + lconv1d(log_new_inf + log1m_exp(log_ifr_omi_rv), inf_prg_delay_rv),
+    log_p_sym_if_inft_omi + lconv1d(log_new_inf + log_ifr_omi_rv,            inf_prg_delay_rv)
   );
 
   // ** NON-LOGSPACE IMPL **
   // new_sev = p_sev_if_symt .* conv1d(new_sym, sym_prg_delay_rv);
   //
   // ** LOGSPACE IMPL **
-  log_new_sev = log(p_sev_if_symt) + lconv1d(log_new_sym, sym_prg_delay_rv);
+  log_new_sev = log_p_sev_if_symt + lconv1d(log_new_sym, sym_prg_delay_rv);
 
 
   // ** NON-LOGSPACE IMPL **
   // new_die = p_die_if_sevt[1:N_days_tot] .* conv1d(new_sev, sev_prg_delay_rv);
   //
   // ** LOGSPACE IMPL **
-  log_new_die = log(p_die_if_sevt[1:N_days_tot]) + lconv1d(log_new_sev, sev_prg_delay_rv);
+  log_new_die = log_p_die_if_sevt[1:N_days_tot] + lconv1d(log_new_sev, sev_prg_delay_rv);
 
   // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 
@@ -823,8 +836,8 @@ transformed parameters {
   // );
   //
   // ** LOGSPACE IMPL **
-  log_new_asy_dx = log1m(p_sym_if_inft) + lconv1d(
-    log_new_inf + log(p_diag_if_asy),
+  log_new_asy_dx = log1m_exp(log_p_sym_if_inft) + lconv1d(
+    log_new_inf + log_p_diag_if_asy,
     asy_rec_delay_rv
   );
   
@@ -838,7 +851,7 @@ transformed parameters {
   // new_sym_dx = conv1d(new_sym .* p_diag_if_sym, sym_diag_delay_rv);
   //
   // ** LOGSPACE IMPL **
-  log_new_sym_dx = lconv1d(log(p_diag_if_sym) + log_new_sym, sym_diag_delay_rv);
+  log_new_sym_dx = lconv1d(log_p_diag_if_sym + log_new_sym, sym_diag_delay_rv);
   
   // Cascade from diagnosis 
   //
@@ -852,18 +865,17 @@ transformed parameters {
   // );
   //
   // ** LOGSPACE IMPL **
-  log_dx_sym_sev = log(p_sev_if_symt) + lconv1d(
-    log(p_diag_if_sym) + log_new_sym,
+  log_dx_sym_sev = log_p_sev_if_symt + lconv1d(
+    log_p_diag_if_sym + log_new_sym,
     sym_prg_delay_rv
   );
-        
   
   // ** NON-LOGSPACE IMPL **
   // dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
   //
   // ** LOGSPACE IMPL **
   log_dx_sym_die =
-    log(p_die_if_sevt[1:N_days_tot]) +
+    log_p_die_if_sevt[1:N_days_tot] +
     lconv1d(log_dx_sym_sev, sev_prg_delay_rv);
         
   // Diagnosed at severe 
@@ -874,13 +886,15 @@ transformed parameters {
   // new_sev_dx = p_diag_if_sev * conv1d(new_sev - dx_sym_sev, sev_diag_delay_rv);
   //
   // ** LOGSPACE IMPL **
-  log_new_sev_dx = log(p_diag_if_sev) +
+  log_new_sev_dx = log_p_diag_if_sev +
     lconv1d(
       vlog_diff_exp(
         log_new_sev,
 
         // NEW: Clamping function, to avoid underflow condition. May not work
-        // as intended!
+        // as intended! Further work needed to verify that expected values of
+        // `log_dx_sym_sev` never reach the region of this function where the
+        // clamping behavior becomes strong.
         log_new_sev + vcustom_softplus_scalar(log_dx_sym_sev, log_new_sev)
       ),
       sev_diag_delay_rv
@@ -898,14 +912,16 @@ transformed parameters {
   //
   // ** LOGSPACE IMPL **
   log_dx_sev_die =
-    log(p_die_if_sev) +
-    log(p_die_if_sevt[1:N_days_tot]) +
+    log_p_die_if_sev +
+    log_p_die_if_sevt[1:N_days_tot] +
     lconv1d(
       vlog_diff_exp(
         log_new_sev,
 
         // NEW: Clamping function, to avoid underflow condition. May not work
-        // as intended!
+        // as intended! Further work needed to verify that expected values of
+        // `log_dx_sym_sev` never reach the region of this function where the
+        // clamping behavior becomes strong.
         log_new_sev + vcustom_softplus_scalar(log_dx_sym_sev, log_new_sev)
       ),
       sev_prg_delay_rv
@@ -1032,7 +1048,7 @@ model {
   //
   // Probabilities of diagnosis
   target += beta_log_lupdf(log_rr_diag_asy_vs_sym, pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b);
-  target += beta_log_lupdf(log_spl_par_sym_dx, pri_rr_diag_sym_vs_sev_a,pri_rr_diag_sym_vs_sev_b);
+  spl_par_sym_dx ~ beta(pri_rr_diag_sym_vs_sev_a, pri_rr_diag_sym_vs_sev_b);
   target += beta_log_lupdf(log_p_diag_if_sev, pri_p_diag_if_sev_a, pri_p_diag_if_sev_b);
 
   // Delay distribution scaling factors
