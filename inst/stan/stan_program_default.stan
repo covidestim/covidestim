@@ -483,7 +483,7 @@ transformed parameters {
   //
   // Whether or not some more of these can be upper-bounded at 1 should be
   // reviewed.
-  vector<upper=log(2.5)>[N_ifr_adj] log_p_die_if_sevt;
+  vector<upper=log(4)>[N_ifr_adj] log_p_die_if_sevt;
   vector<upper=log(4)>[N_days_tot] log_p_sev_if_symt;
   vector<upper=0>[N_days_tot] log_p_sym_if_inft;  
   vector<upper=0>[N_days_tot] log_p_sym_if_inft_omi;  
