@@ -1037,7 +1037,7 @@ model {
   // Currently TESTING a tighter prior on `p_sym_if_inf_omi`.
   //
   // p_sym_if_inf_omi     ~ beta(pri_new_p_sym_if_inf_a, pri_new_p_sym_if_inf_b);
-  target += beta_log_lupdf(log_p_sym_if_inf_omi, 33, 393);
+  target += beta_log_lupdf(log_p_sym_if_inf_omi, 5, 50);
   target += beta_log_lupdf(log_p_sev_if_sym, pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   target += beta_log_lupdf(log_p_die_if_sev, pri_p_die_if_sev_a, pri_p_die_if_sev_b);
 
