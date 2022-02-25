@@ -1,4 +1,4 @@
-functions {
+die {
 
   // The log beta probability mass of `exp(ltheta)` given alpha parameter `a`
   // and beta parameter `b`.
@@ -502,7 +502,7 @@ transformed parameters {
   //
   // Whether or not some more of these can be upper-bounded at 1 should be
   // reviewed.
-  vector<upper=log(4)>[N_ifr_adj] log_p_die_if_sevt;
+  vector<upper=log(4)>[N_days_tot] log_p_die_if_sevt;
   vector<upper=log(4)>[N_days_tot] log_p_sev_if_symt;
   vector<upper=0>[N_days_tot] log_p_sym_if_inft;  
   vector<upper=0>[N_days_tot] log_p_sym_if_inft_omi;  
@@ -1084,12 +1084,12 @@ model {
   // ** LOGSPACE IMPL **
   if(N_days_av < N_days_before){
     target += neg_binomial_2_log_lpmf(
-      0 | log_sum_exp(log_occur_cas_mvs[N_days_av:N_days_before]),
+      0 | log_sum_exp(log_occur_cas[N_days_av:N_days_before]),
       phi_cas
     );
 
     target += neg_binomial_2_log_lpmf(
-      0 | log_sum_exp(log_occur_die_mvs[N_days_av:N_days_before]),
+      0 | log_sum_exp(log_occur_die[N_days_av:N_days_before]),
       phi_die
     );
   }
