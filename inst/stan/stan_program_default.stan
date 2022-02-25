@@ -166,6 +166,7 @@ transformed data {
   int<lower=0>           obs_cas_mvs[N_days]; // vector of cases
   int<lower=0>           obs_die_mvs[N_days]; // vector of deaths
   int<lower=0>           nda0 = N_days_av - 1;
+  real pop_sus; 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
   vector[Max_delay]  asy_rec_delay_rv; 
@@ -185,6 +186,7 @@ transformed data {
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
   N_days_tot = N_days + N_days_before; 
+  pop_sus = pop_size *.8;
   // Indexes for convolutions
 for(i in 1:N_days_tot) {
   if(i-Max_delay>0){
@@ -419,11 +421,11 @@ transformed parameters {
   // modeled with a spline
   logRt0 = spl_basis_rt * spl_par_rt;
 
-  pop_uninf = pop_size;
+  pop_uninf = pop_sus;
 
   for(i in 1:N_days_tot) {
 
-    logRt[i] = logRt0[i] + log(pop_uninf/pop_size);
+    logRt[i] = logRt0[i] + log(pop_uninf/pop_sus);
 
     deriv1_log_new_inf[i] = logRt[i]/serial_i;
 
