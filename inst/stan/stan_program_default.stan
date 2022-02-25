@@ -267,7 +267,7 @@ parameters {
   
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
-  real<lower=0, upper=11> serial_i; // serial interval
+  real<lower=0, upper=6> serial_i; // serial interval
   vector[N_spl_par_rt]    spl_par_rt;
 
 // DISEASE PROGRESSION
@@ -425,7 +425,7 @@ transformed parameters {
 
   for(i in 1:N_days_tot) {
 
-    logRt[i] = logRt0[i] + log(pop_uninf/pop_sus);
+    logRt[i] = logRt0[i] + log(pop_uninf/pop_size);
 
     deriv1_log_new_inf[i] = logRt[i]/serial_i;
 
