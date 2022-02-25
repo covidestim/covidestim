@@ -176,12 +176,15 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @examples
 #' cfg <- covidestim(ndays = 50, region = 'New York') + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
-priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b 
+priors_transitions <- function(
+  # p_sym_if_inf = c(5.1430, 3.5360),    # a/b old
+  p_sym_if_inf = c(2.5,10),    # a/b 
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
                                p_die_if_sev = c(28.239, 162.30),    # a/b
-                               p_die_if_inf = c(15.915,3167.1),     # a/b
+                               # p_die_if_inf = c(15.915,3167.1),     # a/b old 
+                               p_die_if_inf = c(2.55,1594),     # a/b
                                ifr_decl_OR  = c(12.031, 8.999),     # shape/rate: this is actually a gamma distribution!!
-                               new_p_sym_if_inf = c(0.2,1.8), # decline symptomatic if infected
+                               new_p_sym_if_inf = c(2.5,10), # decline symptomatic if infected
                                rr_decl_sev = c(20.915,298.79), # decline severe if infected shape/rate (gamma)
                                rr_decl_die = c(15.366,786.32) # decline die if infected shape/rate (gamma)
                                ) {                                 
@@ -256,11 +259,6 @@ priors_transitions <- function(p_sym_if_inf = c(5.1430, 3.5360),    # a/b
 #'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
 #'    modeling the serial interval, the average time (in number of days)
 #'    between successive cases. 
-#'    
-#' @param pri_serial_i_omi A two-element numeric vector containing 
-#'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
-#'    modeling the serial interval under omicron, the average time (in number of days)
-#'    between successive cases. 
 #' 
 #' @param infect_dist A two-element numeric vector containing 
 #'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the 
@@ -282,7 +280,6 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
                                sym_prg_delay = c(1.624, 0.2175), # shap/rate 
                                sev_prg_delay = c(2.061, 0.2277),  # shap/rate
                                asy_rec_delay = c(14   , 2     ),  # shap/rate 
-                               # pri_serial_i  = c(129.1, 22.25 ),  # shap/rate 
                                pri_serial_i  = c(34.615, 11.538),  # shap/rate 
                                infect_dist   = c(8    , 1.241 ),  # shap/rate 
                                seropos_dist  = c(4.41 , 0.042 ) ) {   # shap/rate 
@@ -292,7 +289,6 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
   att(length(sev_prg_delay) == 2)
   att(length(asy_rec_delay) == 2)
   att(length(pri_serial_i) == 2)
-  att(length(pri_serial_i_omi) == 2)
   att(length(infect_dist) == 2)
   att(length(seropos_dist) == 2)
   att(is_nonNegativeReal(inf_prg_delay))
@@ -300,7 +296,6 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
   att(is_nonNegativeReal(sev_prg_delay))
   att(is_nonNegativeReal(asy_rec_delay))
   att(is_nonNegativeReal(pri_serial_i))
-  att(is_nonNegativeReal(pri_serial_i_omi))
   att(is_nonNegativeReal(infect_dist))
   att(is_nonNegativeReal(seropos_dist))
   
@@ -310,7 +305,6 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
     sev_prg_delay,
     asy_rec_delay,
     pri_serial_i,
-    pri_serial_i_omi,
     infect_dist,
     seropos_dist,
     .postfix=c("_shap", "_rate")
