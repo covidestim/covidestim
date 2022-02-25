@@ -673,5 +673,5 @@ generated quantities {
   pop_infectiousness = conv1d(new_inf, infect_dist_rv);
   
   // seropositives
-  sero_positive = conv1d(new_inf, seropos_dist_rv);
+  // sero_positive = conv1d(new_inf, seropos_dist_rv);
 }
