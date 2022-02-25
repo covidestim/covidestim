@@ -1,4 +1,4 @@
-die {
+functions {
 
   // The log beta probability mass of `exp(ltheta)` given alpha parameter `a`
   // and beta parameter `b`.
@@ -297,7 +297,7 @@ data {
 
   // omicron delay
   int<lower=0, upper=1> omicron_adjust;        // 0/1 indicator of whether omicron adjustment should happen
-  real                  Omicron_takeover_mean; // ndays from start date that is Dec 20
+  int                   Omicron_takeover_mean; // ndays from start date that is Dec 20
   real<lower=0>         Omicron_takeover_sd;   // fixed sd for the shape of the omicron takeover. Default: 14
   real<lower=0>         sd_omicron_delay;      // sd of the variation of the mean date: default :10
   
@@ -510,7 +510,7 @@ transformed parameters {
   // new probability of symptomatic
   real log_rr_sym_if_inf;
   real log_rr_sev_if_sym;
-  real<lower=0> rr_die_if_sev;
+  real<lower=0,upper=1> rr_die_if_sev;
   
   // DIAGNOSIS AND REPORTING  
   // probability of diagnosis
@@ -653,7 +653,11 @@ transformed parameters {
   // `0.95`, then we translate them by 0.001. This ensures that the domain of
   // the vectors is [0.001, 0.951]. This guarantees that when we use `log()` on
   // the vectors, they do not go to `-Inf`.
-  for (i in 1:N_days_tot) {
+  log_ifr_omi_rv     = rep_vector(0, N_days_tot);
+  log_ifr_omi_rv_die = rep_vector(0, N_days_tot);
+  log_ifr_omi_rv_sev = rep_vector(0, N_days_tot);
+
+  for (i in (Omicron_takeover_mean - 50):N_days_tot) {
     log_ifr_omi_rv[i]     = normal_cdf(i, Omicron_takeover_mean + omicron_delay,             Omicron_takeover_sd);
     log_ifr_omi_rv_die[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7 + 9, Omicron_takeover_sd);
     log_ifr_omi_rv_sev[i] = normal_cdf(i, Omicron_takeover_mean + omicron_delay + 6 + 7,     Omicron_takeover_sd);
@@ -670,13 +674,16 @@ transformed parameters {
   log_ifr_omi_rv_sev = log(log_ifr_omi_rv_sev);
   
   // compute new serial i, combination of ancestral and omicron
-  for (i in 1:N_days_tot) {
-    log_serial_i_comb[i] = log_sum_exp(
-      log(serial_i) + log1m_exp(log_ifr_omi_rv[i]),
-      log(2.5) + log_ifr_omi_rv[i] // Fixed omicron serial interval @ 2.5 days!
-      // log(serial_i_omi) + log_ifr_omi_rv[i]
+  log_serial_i_comb[1:(Omicron_takeover_mean - 50 - 1)] =
+    rep_vector(log(serial_i), Omicron_takeover_mean  - 50 - 1);
+
+  log_serial_i_comb[(Omicron_takeover_mean - 50):N_days_tot] =
+    vlog_sum_exp(
+      log(serial_i) +
+        log1m_exp(log_ifr_omi_rv[(Omicron_takeover_mean - 50):N_days_tot]),
+      log(2.5) +
+        log_ifr_omi_rv[(Omicron_takeover_mean - 50):N_days_tot] // Fixed omicron serial interval @ 2.5 days!
     );
-  }
   
   // RELATIVE RISKS for omicron adjustment 
   log_rr_sym_if_inf = log_p_sym_if_inf_omi - log_p_sym_if_inf;
