@@ -517,7 +517,7 @@ transformed parameters {
   
   // cascade from diagnosis
   // as above for symptomatic 
-  dx_sev_die = p_die_if_sev * p_die_if_sevt[1:N_days_tot] .* conv1d(
+  dx_sev_die = p_diag_if_sev * p_die_if_sevt[1:N_days_tot] .* conv1d(
     new_sev - dx_sym_sev,
     sev_prg_delay_rv
   );
