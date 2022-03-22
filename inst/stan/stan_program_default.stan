@@ -940,7 +940,7 @@ transformed parameters {
   //
   // ** LOGSPACE IMPL **
   log_dx_sev_die =
-    log_p_die_if_sev +
+    log_p_diag_if_sev +
     log_p_die_if_sevt +
     lconv1d(
       vlog_diff_exp(
