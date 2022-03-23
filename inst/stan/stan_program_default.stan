@@ -439,17 +439,17 @@ parameters {
 
   real<lower=0.001, upper=4> ifr_decl_OR;
   // Bounds are for BFGS.
-  real<lower=0.01, upper=0.3> rr_decl_sev;
+  real<lower=0.01, upper=0.25> rr_decl_sev;
   // Bounds are for BFGS.
-  real<lower=0.0001, upper=0.25> rr_decl_die;
+  real<lower=0.0001, upper=0.12> rr_decl_die;
 
   // OMICRON TAKEOVER
   real<lower=-60, upper=60> omicron_delay;
   
   // DIANGOSIS
   // scaling factor for time to diagnosis
-  real<upper=0> log_scale_dx_delay_sym; 
-  real<upper=0> log_scale_dx_delay_sev; 
+  real<lower=-8, upper=0> log_scale_dx_delay_sym; 
+  real<lower=-8, upper=0> log_scale_dx_delay_sev; 
 
   // probability of diagnosis at each illness state
   real<upper=0> log_rr_diag_asy_vs_sym; 
@@ -502,14 +502,14 @@ transformed parameters {
   //
   // Whether or not some more of these can be upper-bounded at 1 should be
   // reviewed.
-  vector<upper=log(4)>[N_days_tot] log_p_die_if_sevt;
-  vector<upper=log(4)>[N_days_tot] log_p_sev_if_symt;
+  vector<upper=log(8)>[N_days_tot] log_p_die_if_sevt;
+  vector<upper=log(8)>[N_days_tot] log_p_sev_if_symt;
   vector<upper=0>[N_days_tot] log_p_sym_if_inft;  
   vector<upper=0>[N_days_tot] log_p_sym_if_inft_omi;  
 
   // new probability of symptomatic
   real log_rr_sym_if_inf;
-  real log_rr_sev_if_sym;
+  real<upper=0> log_rr_sev_if_sym;
   real<lower=0,upper=1> rr_die_if_sev;
   
   // DIAGNOSIS AND REPORTING  
@@ -687,7 +687,12 @@ transformed parameters {
   
   // RELATIVE RISKS for omicron adjustment 
   log_rr_sym_if_inf = log_p_sym_if_inf_omi - log_p_sym_if_inf;
-  log_rr_sev_if_sym = log(rr_decl_sev) - log_rr_sym_if_inf;
+
+  log_rr_sev_if_sym = custom_softplus_scalar(
+    log(rr_decl_sev) - log_rr_sym_if_inf,
+    0
+  );
+
   rr_die_if_sev = rr_decl_die / rr_decl_sev;
 
   // NATURAL HISTORY CASCADE
