@@ -47,6 +47,7 @@ data {
   
   int<lower=0>           obs_cas[N_days]; // vector of cases
   int<lower=0>           obs_die[N_days]; // vector of deaths
+  int<lower=0>           obs_boost[N_days_tot]; // vector of booster data
   real<lower=0>          pop_size; // population size
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
@@ -439,7 +440,7 @@ transformed parameters {
     new_inf[i] = exp(log_new_inf[i]);
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
-    pop_uninf -= new_inf[i];
+    pop_uninf -= (new_inf[i] + obs_boost[i]);
    
    // END OF REINFECTION STRATEGIES
    
