@@ -184,6 +184,7 @@ transformed data {
   
    int  idx1[N_days + N_days_before];
  int  idx2[N_days + N_days_before];
+ vector[N_days + N_days_before] idx3;
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
   N_days_tot = N_days + N_days_before; 
@@ -197,6 +198,7 @@ for(i in 1:N_days_tot) {
     idx1[i] = 1;
     idx2[i] = Max_delay-i+1;
   }
+  idx3[i] = N_days_tot - i;
 }
 
   // compute the moving sums
@@ -303,6 +305,7 @@ transformed parameters {
   // INCIDENCE
   vector[N_days_tot]      log_new_inf;
   vector[N_days_tot]      new_inf;
+  vector[N_days_tot]      prot_boost;
   vector[N_days_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
   vector[N_spl_par_rt]    spl_par_rt;
@@ -438,9 +441,11 @@ transformed parameters {
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
 
     new_inf[i] = exp(log_new_inf[i]);
+    
+    prot_boost[i] = sum(obs_boost[i] .* .8 *exp(-.008 * idx3[N_days_tot-i:N_days_tot]));
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
-    pop_uninf -= (new_inf[i] + obs_boost[i]);
+    pop_uninf -= (new_inf[i] + prot_boost[i]);
    
    // END OF REINFECTION STRATEGIES
    
