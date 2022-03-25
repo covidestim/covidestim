@@ -47,7 +47,7 @@ data {
   
   int<lower=0>           obs_cas[N_days]; // vector of cases
   int<lower=0>           obs_die[N_days]; // vector of deaths
-  int<lower=0>           obs_boost[N_days_tot]; // vector of booster data
+  int<lower=0>           obs_boost[N_days + N_days_before]; // vector of booster data
   real<lower=0>          pop_size; // population size
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
