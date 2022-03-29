@@ -47,7 +47,7 @@ data {
   
   int<lower=0>           obs_cas[N_days]; // vector of cases
   int<lower=0>           obs_die[N_days]; // vector of deaths
-  int<lower=0>           obs_boost[N_days + N_days_before]; // vector of booster data
+  vector<lower=0>[N_days + N_days_before]        obs_boost; // vector of booster data
   real<lower=0>          pop_size; // population size
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
@@ -198,7 +198,7 @@ for(i in 1:N_days_tot) {
     idx1[i] = 1;
     idx2[i] = Max_delay-i+1;
   }
-  idx3[i] = N_days_tot - i;
+  idx3[i] = N_days_tot-i+1;
 }
 
   // compute the moving sums
@@ -280,7 +280,7 @@ parameters {
   real<lower=0, upper=1>    p_die_if_sev;
   real<lower=0>             ifr_decl_OR;
 // OMICRON TAKEOVER
-real                        omicron_delay;
+// real                        omicron_delay;
   
 // DIANGOSIS
 // scaling factor for time to diagnosis
@@ -308,6 +308,7 @@ transformed parameters {
   vector[N_days_tot]      prot_boost;
   vector[N_days_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
+  real                    ever_inf;
   vector[N_spl_par_rt]    spl_par_rt;
 
   // Rt spline
@@ -431,6 +432,7 @@ transformed parameters {
   logRt0 = spl_basis_rt * spl_par_rt;
 
   pop_uninf = pop_sus;
+  ever_inf = 0;
 
   for(i in 1:N_days_tot) {
 
@@ -441,12 +443,14 @@ transformed parameters {
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
 
     new_inf[i] = exp(log_new_inf[i]);
+
+    ever_inf += new_inf[i];
     
-    prot_boost[i] = sum(obs_boost[i] .* .8 *exp(-.008 * idx3[N_days_tot-i:N_days_tot]));
+    prot_boost[i] = sum(obs_boost[1:i] * 0.8);
 
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
-    pop_uninf -= (new_inf[i] + prot_boost[i]);
-   
+    // pop_uninf = pop_sus - ever_inf + prot_boost[i];
+   pop_uninf -= (new_inf[i] + obs_boost[i]);
    // END OF REINFECTION STRATEGIES
    
     if (pop_uninf < 1) {
