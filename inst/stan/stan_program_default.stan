@@ -271,7 +271,8 @@ parameters {
 // INCIDENCE 
   real                    log_new_inf_0; // starting intercept
   real<lower=0, upper=6> serial_i; // serial interval
-  vector[N_spl_par_rt-1]    spl_par_rt0;
+  // vector[N_spl_par_rt-1]    spl_par_rt0;
+  vector[N_spl_par_rt]    spl_par_rt;
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
@@ -309,7 +310,7 @@ transformed parameters {
   vector[N_days_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
   real                    ever_inf;
-  vector[N_spl_par_rt]    spl_par_rt;
+  // vector[N_spl_par_rt]    spl_par_rt;
 
   // Rt spline
   vector[N_days_tot]      logRt0;
@@ -425,10 +426,10 @@ transformed parameters {
   // NEW INCIDENT CASES
   
   // modeled with a spline
-      spl_par_rt[2:N_spl_par_rt] = spl_par_rt0; 
-  spl_par_rt[1] = (spl_basis_rt[2+N_days_before,2:N_spl_par_rt]-
-                   spl_basis_rt[1+N_days_before,2:N_spl_par_rt]) * spl_par_rt0 / 
-                  (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
+  //     spl_par_rt[2:N_spl_par_rt] = spl_par_rt0; 
+  // spl_par_rt[1] = (spl_basis_rt[2+N_days_before,2:N_spl_par_rt]-
+  //                  spl_basis_rt[1+N_days_before,2:N_spl_par_rt]) * spl_par_rt0 / 
+  //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
 
   pop_uninf = pop_sus;
@@ -577,7 +578,7 @@ model {
   
   // PRIORS
   log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
-  spl_par_rt0            ~ normal(pri_logRt_mu, pri_logRt_sd);
+  spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
   deriv2_spl_par_rt     ~ normal(0, pri_deriv2_spl_par_sd);
