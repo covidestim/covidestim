@@ -182,11 +182,13 @@ genData <- function(N_days, N_days_before = 28,
                     sd_omicron_delay = 10
                     )
 {
-
-  n_spl_par_rt <- max(4,ceiling(N_days/n_spl_rt_knotwidth)) 
-  des_mat_rt_tmp <- splines::bs(1:(N_days), 
-                                df=n_spl_par_rt, degree=3, intercept=T)
-  des_mat_rt <- des_mat_rt_tmp[c(rep(1,N_days_before), 1:N_days),]
+  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/n_spl_rt_knotwidth))
+  des_mat_rt <- splines::bs(1:(N_days + N_days_before), 
+                            df=n_spl_par_rt, degree=3, intercept=T)
+  # n_spl_par_rt <- max(4,ceiling(N_days/n_spl_rt_knotwidth)) 
+  # des_mat_rt_tmp <- splines::bs(1:(N_days), 
+  #                               df=n_spl_par_rt, degree=3, intercept=T)
+  # des_mat_rt <- des_mat_rt_tmp[c(rep(1,N_days_before), 1:N_days),]
   
   n_spl_par_dx <- max(4,ceiling((N_days + N_days_before)/21)) 
   des_mat_dx <- splines::bs(1:(N_days + N_days_before), 
