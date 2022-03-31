@@ -306,12 +306,13 @@ transformed parameters {
   // INCIDENCE
   vector[N_days_tot]      log_new_inf;
   vector[N_days_tot]      new_inf;
-  vector[N_days_tot]      wane_inf;
-  vector[N_days_tot]      prot_boost;
-  vector[N_days_tot]      wane_boost;
+  // vector[N_days_tot]      wane_inf;
+  // vector[N_days_tot]      prot_boost;
+  // vector[N_days_tot]      wane_boost;
   vector[N_days_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
-  real                    ever_inf;
+  // real                    ever_inf;
+  // real                    wane_sus;
   // vector[N_spl_par_rt]    spl_par_rt;
 
   // Rt spline
@@ -435,7 +436,7 @@ transformed parameters {
   logRt0 = spl_basis_rt * spl_par_rt;
 
   pop_uninf = pop_sus;
-  ever_inf = 0;
+  // ever_inf = 0;
 
   for(i in 1:N_days_tot) {
 
@@ -451,7 +452,7 @@ transformed parameters {
     
     // prot_boost[i] = sum(obs_boost[1:i] * 0.8);
     // wane_boost[i] = sum(obs_boost[1:i] * 0.8 .* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]));
-
+    // wane_imm = (1-.8) * exp(-.008 * idx3[N_days_tot-i+1])
     // wane_inf[i] = sum(new_inf[1:i] .* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]));
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // pop_uninf = pop_sus - ever_inf + prot_boost[i];
