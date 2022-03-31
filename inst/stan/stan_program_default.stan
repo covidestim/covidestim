@@ -167,7 +167,7 @@ transformed data {
   int<lower=0>           obs_cas_mvs[N_days]; // vector of cases
   int<lower=0>           obs_die_mvs[N_days]; // vector of deaths
   int<lower=0>           nda0 = N_days_av - 1;
-  real pop_sus; 
+  // real pop_sus; 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
   vector[Max_delay]  asy_rec_delay_rv; 
@@ -188,7 +188,7 @@ transformed data {
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
   N_days_tot = N_days + N_days_before; 
-  pop_sus = pop_size *.8;
+  // pop_sus = pop_size *.8;
   // Indexes for convolutions
 for(i in 1:N_days_tot) {
   if(i-Max_delay>0){
@@ -311,8 +311,9 @@ transformed parameters {
   vector[N_days_tot]      wane_boost;
   vector[N_days_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
+  real                    pop_sus;
   real                    ever_inf;
-  // real                    wane_sus;
+  real                    wane_imm;
   // vector[N_spl_par_rt]    spl_par_rt;
 
   // Rt spline
@@ -435,6 +436,7 @@ transformed parameters {
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
 
+  pop_sus = pop_size * .8;
   pop_uninf = pop_sus;
   ever_inf = 0;
 
@@ -452,7 +454,8 @@ transformed parameters {
     
     // prot_boost[i] = sum(obs_boost[1:i] * 0.8);
     wane_boost[i] = sum(obs_boost[1:i] * 0.8 .* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]));
-    // wane_imm = (1-.8) * exp(-.008 * idx3[N_days_tot-i+1])
+    wane_imm = (1-.8) * exp(-.008 * idx3[N_days_tot-i+1]);
+    pop_sus = pop_size * (1-wane_imm);
     // wane_inf[i] = sum(new_inf[1:i] .* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]));
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // pop_uninf = pop_sus - ever_inf + prot_boost[i];
