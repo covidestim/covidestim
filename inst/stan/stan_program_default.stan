@@ -456,7 +456,11 @@ transformed parameters {
 
     
     // prot_boost[i] = sum(obs_boost[1:i] * 0.8);
-    wane_boost[i] = sum(obs_boost[1:i] .* (.35 * exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .45) );
+    if(i > N_days_before){
+    wane_boost[i] = sum(obs_boost[1:i-N_days_before] .* (.35 * exp(-.008 * idx3[N_days_tot-(i-N_days_before)+1:N_days_tot]) + .45) );
+    } else{
+      wane_boost[i] = obs_boost[1] *.8;
+    }
     wane_imm = .3 * exp(-.008 * idx3[N_days_tot-i+1]) + .2;
     pop_sus = pop_size * (1-wane_imm);
     wane_inf[i] = sum(new_inf[1:i] .* (.75* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .25));
