@@ -198,7 +198,11 @@ for(i in 1:N_days_tot) {
     idx1[i] = 1;
     idx2[i] = Max_delay-i+1;
   }
-  idx3[i] = N_days_tot-i+1;
+  if(i < (N_days_tot - 60)){ ## first 60 days no waning
+  idx3[i] = N_days_tot-60-i;
+  } else {
+    idx3[i] = 1;
+  }
 }
 
   // compute the moving sums
@@ -436,7 +440,7 @@ transformed parameters {
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
 
-  pop_sus = pop_size * .8;
+  pop_sus = pop_size * .5;
   pop_uninf = pop_sus;
   ever_inf = 0;
 
@@ -452,10 +456,10 @@ transformed parameters {
 
     
     // prot_boost[i] = sum(obs_boost[1:i] * 0.8);
-    wane_boost[i] = sum(obs_boost[1:i] * 0.8 .* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]));
-    wane_imm = (1-.8) * exp(-.008 * idx3[N_days_tot-i+1]);
+    wane_boost[i] = sum(obs_boost[1:i] .* (.35 * exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .45) );
+    wane_imm = .3 * exp(-.008 * idx3[N_days_tot-i+1]) + .2;
     pop_sus = pop_size * (1-wane_imm);
-    wane_inf[i] = sum(new_inf[1:i] .* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]));
+    wane_inf[i] = sum(new_inf[1:i] .* (.75* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .25));
     ever_inf += wane_inf[i];
     // ever_inf += new_inf[i];
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
