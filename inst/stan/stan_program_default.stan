@@ -460,11 +460,10 @@ transformed parameters {
     wane_imm = .3 * exp(-.008 * idx3[N_days_tot-i+1]) + .2;
     pop_sus = pop_size * (1-wane_imm);
     wane_inf[i] = sum(new_inf[1:i] .* (.75* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .25));
-    ever_inf += wane_inf[i];
-    // ever_inf += new_inf[i];
+    ever_inf += new_inf[i];
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // pop_uninf = pop_sus - ever_inf + prot_boost[i];
-    pop_uninf = pop_sus - ever_inf + wane_boost[i];
+    pop_uninf = pop_sus - (wane_inf[i] + wane_boost[i]);
    // pop_uninf -= (new_inf[i] + obs_boost[i]);
    // END OF REINFECTION STRATEGIES
    
