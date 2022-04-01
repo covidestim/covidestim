@@ -199,8 +199,8 @@ for(i in 1:N_days_tot) {
     idx1[i] = 1;
     idx2[i] = Max_delay-i+1;
   }
-  if(i < (N_days_tot - 20)){ ## first 60 days no waning
-  idx3[i] = N_days_tot-20-i;
+  if(i < (N_days_tot - 1)){ ## first 60 days no waning
+  idx3[i] = N_days_tot-1-i;
   } else {
     idx3[i] = 1;
   }
