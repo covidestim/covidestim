@@ -185,6 +185,7 @@ transformed data {
    int  idx1[N_days + N_days_before];
  int  idx2[N_days + N_days_before];
  vector[N_days + N_days_before] idx3;
+ real log_new_inf0calc = log(pop_size * .5);
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
   N_days_tot = N_days + N_days_before; 
@@ -594,7 +595,7 @@ transformed parameters {
 model {
   
   // PRIORS
-  log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
+  log_new_inf_0         ~ normal(log_new_inf0calc, pri_log_new_inf_0_sd);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
