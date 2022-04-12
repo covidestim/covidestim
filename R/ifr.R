@@ -51,7 +51,7 @@ get_ifr_raw <- function(region) {
   found_state * found_county$ifr_OR
 }
 
-gen_ifr_adjustments <- function(first_date, N_days_before, region,
+gen_ifr_adjustments <- function(first_date, N_weeks_before, region,
                                 omicron = FALSE) {
   # The next several lines add state/county-specific IFR data to the
   # configuration passed to Stan. These lines have to be defined inside 
@@ -59,44 +59,44 @@ gen_ifr_adjustments <- function(first_date, N_days_before, region,
   # which is not known until the user adds `input_cases()/input_deaths()` to
   # the model configuration.
   ymd <- lubridate::ymd
-
+  
   ifr_adj_start <- first_date - 
-    lubridate::days(N_days_before)  # Burn-in period
+    lubridate::weeks(N_weeks_before)  # Burn-in period
   
   # time-invariant IFR adjustment accounting for state- and county-level
   # factors, representing an odds-ratio applied to the national average IFR
   ifr_adj_fixed <- get_ifr_raw(region) 
-
+  
   # reduction in IFR over the course of 2020 due to improvements in care.
   # Operationalized as 1 minus a Normal CDF, with max slope in June 1, 
   # and sd = 45 days. Vector created from ifr_adj_start to end 2022.
   ifr_adj_df <- tibble::tibble(
-    date  = seq.Date(ifr_adj_start, ymd('2022-12-31'), by = '1 day'),
+    date  = seq.Date(ifr_adj_start, ymd('2022-12-31'), by = '1 week'),
     value = 1 - pnorm(
-        ifr_adj_start : ymd("2022-12-31"),
-        ymd("2020-5-1"),
-        21
-      )
+      as.numeric(seq.Date(ifr_adj_start, ymd("2022-12-31"), by = '1 week')),
+      ymd("2020-5-1"),
+      21
+    )
   )
   # reduction in IFR over the course of December 2021 due to Omicron.
   # Operationalized as a Normal CDF, with max slope on December 20, 2021, 
   # and sd = 14 days. Vector created from ifr_adj_start to end 2022.
   ifr_omi_df <- tibble::tibble(
-    date  = seq.Date(ifr_adj_start, ymd('2022-12-31'), by = '1 day'),
+    date  = seq.Date(ifr_adj_start, ymd('2022-12-31'), by = '1 week'),
     value = pnorm(
-        ifr_adj_start : ymd("2022-12-31"),
-        ymd("2021-12-20"),
-        14
-      )
+      as.numeric(seq.Date(ifr_adj_start, ymd("2022-12-31"), by = '1 week')),
+      ymd("2021-12-20"),
+      14
+    )
   )
-
+  
   ifr_adj <- dplyr::pull(ifr_adj_df, value)
   ifr_omi <- dplyr::pull(ifr_omi_df, value)
- 
-   if(omicron == FALSE){
+  
+  if(omicron == FALSE){
     ifr_omi <- rep(0, length(ifr_omi))
   }
-
+  
   list(
     ifr_adj_fixed = ifr_adj_fixed,
     ifr_adj       = ifr_adj,
@@ -104,4 +104,5 @@ gen_ifr_adjustments <- function(first_date, N_days_before, region,
     N_ifr_adj     = length(ifr_adj)
   )
 }
+
 

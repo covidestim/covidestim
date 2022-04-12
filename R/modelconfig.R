@@ -65,8 +65,10 @@ modelconfig_add.input <- function(rightside, leftside) {
   )
   
   att(
-    length(d[[1]]$date) == cfg$N_days,
-    msg = glue("Number of observations in {names(d)} ({length(d[[1]]$date)}) was not equal to N_days ({cfg$N_days})")
+    # length(d[[1]]$date) == cfg$N_days,
+    # msg = glue("Number of observations in {names(d)} ({length(d[[1]]$date)}) was not equal to N_days ({cfg$N_days})")
+    length(d[[1]]$date) == cfg$N_weeks,
+    msg = glue("Number of observations in {names(d)} ({length(d[[1]]$date)}) was not equal to N_weeks ({cfg$N_weeks})")
   )
 
   if (preexisting_inputs) {
@@ -86,13 +88,13 @@ modelconfig_add.input <- function(rightside, leftside) {
   if("lastDeathDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastDeathDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
-    cfg$lastDeathDate <- as.numeric(diff)
+    cfg$lastDeathDate <- as.numeric(diff)%/%7
   } 
 
   if("lastCaseDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastCaseDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
-    cfg$lastCaseDate <- as.numeric(diff)
+    cfg$lastCaseDate <- as.numeric(diff)%/%7
   } 
 
   data_key <- names(d)
@@ -118,7 +120,8 @@ modelconfig_add.input <- function(rightside, leftside) {
   # the model configuration.
   ifr_adjustments <- gen_ifr_adjustments(
     first_date    = cfg$first_date %>% as.Date(origin = '1970-01-01'),
-    N_days_before = cfg$N_days_before,
+    N_weeks_before = cfg$N_weeks_before,
+    # N_days_before = cfg$N_days_before,
     region        = cfg$region,
     omicron       = cfg$omicron
   )
@@ -132,7 +135,8 @@ modelconfig_add.input <- function(rightside, leftside) {
   # pre-fill the ifr_vaccine_adjustment with ones, such that
   # the length of ifr_vac_adj matches N_ifr_adj
   if (data_key == "ifr_vac_adj"){
-  prefill <- rep(1, cfg$N_days_before)
+  # prefill <- rep(1, cfg$N_days_before)
+  prefill <- rep(1, cfg$N_weeks_before)
   cfg$ifr_vac_adj   = c(prefill, cfg$ifr_vac_adj)
   }
 
@@ -170,9 +174,11 @@ validate.modelconfig <- function(cfg) {
 
 }
 
-genData <- function(N_days, N_days_before = 28,
-                    N_days_av = 7, pop_size = 1e12, #new default value
-                    n_spl_rt_knotwidth = 10, 
+genData <- function(#N_days, N_days_before = 28,
+                    N_weeks, N_weeks_before = 28/7,
+                    # N_days_av = 7, 
+                    pop_size = 1e12, #new default value
+                    n_spl_rt_knotwidth = 2, 
                     region, nRt, sdRt = 1,
                     reinf_delay = c(30,180),
                     reinf_prob = c(.2,.5),
@@ -182,16 +188,16 @@ genData <- function(N_days, N_days_before = 28,
                     sd_omicron_delay = 10
                     )
 {
-  n_spl_par_rt <- max(4,ceiling((N_days + N_days_before)/n_spl_rt_knotwidth))
-  des_mat_rt <- splines::bs(1:(N_days + N_days_before), 
+  n_spl_par_rt <- max(4,ceiling((N_weeks + N_weeks_before)/n_spl_rt_knotwidth))
+  des_mat_rt <- splines::bs(1:(N_weeks + N_weeks_before), 
                             df=n_spl_par_rt, degree=3, intercept=T)
   # n_spl_par_rt <- max(4,ceiling(N_days/n_spl_rt_knotwidth)) 
   # des_mat_rt_tmp <- splines::bs(1:(N_days), 
   #                               df=n_spl_par_rt, degree=3, intercept=T)
   # des_mat_rt <- des_mat_rt_tmp[c(rep(1,N_days_before), 1:N_days),]
   
-  n_spl_par_dx <- max(4,ceiling((N_days + N_days_before)/21)) 
-  des_mat_dx <- splines::bs(1:(N_days + N_days_before), 
+  n_spl_par_dx <- max(4,ceiling((N_weeks + N_weeks_before)/3)) 
+  des_mat_dx <- splines::bs(1:(N_weeks + N_weeks_before), 
                          df=n_spl_par_dx, degree=3, intercept=T) 
   
   # The first set of components of 'datList'
@@ -199,8 +205,9 @@ genData <- function(N_days, N_days_before = 28,
     .homonyms = "error", # Ensure that no keys are entered twice
 
     #n days of data to model 
-    N_days = as.integer(N_days),
-
+    # N_days = as.integer(N_days),
+    N_weeks = as.integer(N_weeks),
+    
     # Region being modeled. Must be a state name, or a FIPS code, passed as
     # a string.
     region = region,
@@ -227,13 +234,13 @@ genData <- function(N_days, N_days_before = 28,
     reinf_delay2    = reinf_delay[2], 
 
     #n days to model before start of data
-    N_days_before = as.integer(N_days_before),
-    
+    # N_days_before = as.integer(N_days_before),
+    N_weeks_before = as.integer(N_weeks_before),
     #max delay to allow the model to consider. 30 is recommended. 
-    Max_delay = 30, 
+    Max_delay = ceiling(30/7), 
 
     # moving average for likelihood function 
-    N_days_av = N_days_av,
+    # N_days_av = N_days_av,
     
     # Whether to assume no reported cases and deats before the data (0 = no, 1 = yes) 
     pre_period_zero = 1,
@@ -255,8 +262,10 @@ genData <- function(N_days, N_days_before = 28,
     # data.
     Omicron_takeover_mean = NA,
     # last death date is initiated here; gets updated as deaths data gets added
-    lastDeathDate = N_days,
-    lastCaseDate  = N_days,
+    lastDeathWeek = N_weeks,
+    lastCaseWeek  = N_weeks,
+    # lastDeathDate = N_days,
+    # lastCaseDate  = N_days,
     
     # Rt and new infections
     pri_log_new_inf_0_mu = 0,
