@@ -91,7 +91,7 @@ covidestim <- function(
                        pop_size = 1e12,
                        chains = 3, 
                        iter = 2000, 
-                       nspl_rt_knotwidth = 10,
+                       nspl_rt_knotwidth = 1,
                        thin = 1, 
                        seed = 42,
                        adapt_delta = 0.98, 
