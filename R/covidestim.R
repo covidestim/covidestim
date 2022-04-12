@@ -83,8 +83,11 @@ NULL
 #'
 #' @importFrom magrittr %>%
 #' @export
-covidestim <- function(ndays, 
-                       ndays_before = 28,
+covidestim <- function(
+  # ndays, 
+  #                      ndays_before = 28,
+  nweeks, 
+                       nweeks_before = 4,
                        pop_size = 1e12,
                        chains = 3, 
                        iter = 2000, 
@@ -104,17 +107,20 @@ covidestim <- function(ndays,
                       Omicron_takeover_sd = 14,
                       sd_omicron_delay = 10) {
 
-  att(is.numeric(ndays), ndays >= 1)
+  # att(is.numeric(ndays), ndays >= 1)
+  att(is.numeric(nweeks), nweeks >= 1)
   att(is.logical(omicron_adjust))
   att(all(reinf_prob > 0))
 #  att(sum(reinf_prob <= 1))
 
   defaultConfig(
-    N_days = ndays,
-    N_days_before = ndays_before,
+    # N_days = ndays,
+    # N_days_before = ndays_before,
+    N_weeks = nweeks,
+    N_weeks_before = nweeks_before,
     pop_size = pop_size,
     n_spl_rt_knotwidth = nspl_rt_knotwidth,
-    N_days_av = window.length,
+    # N_days_av = window.length,
     region = region,
     nRt = nRt,
     sdRt = sdRt,
@@ -128,7 +134,9 @@ covidestim <- function(ndays,
 
   # All user-specified config-related things must be specified above this line
   # to avoid double-validation/no-validation
-  if (!missing(ndays) || !missing(ndays_before))
+  # if (!missing(ndays) || !missing(ndays_before))
+  #   validate.modelconfig(config)
+  if (!missing(nweeks) || !missing(nweeks_before))
     validate.modelconfig(config)
 
   list(

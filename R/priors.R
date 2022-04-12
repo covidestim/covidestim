@@ -276,11 +276,11 @@ priors_transitions <- function(
 #' @examples
 #' cfg <- covidestim(ndays = 50, region = 'New York') + priors_progression(inf_prg_delay = c(4, 1))
 #' @export
-priors_progression <- function(inf_prg_delay = c(3.413, 0.6051), # shap/rate
-                               sym_prg_delay = c(1.624, 0.2175), # shap/rate 
-                               sev_prg_delay = c(2.061, 0.2277),  # shap/rate
-                               asy_rec_delay = c(14   , 2     ),  # shap/rate 
-                               pri_serial_i  = c(34.615, 11.538),  # shap/rate 
+priors_progression <- function(inf_prg_delay = c(3.413, 0.6051*7), # shap/rate
+                               sym_prg_delay = c(1.624, 0.2175*7), # shap/rate 
+                               sev_prg_delay = c(2.061, 0.2277*7),  # shap/rate
+                               asy_rec_delay = c(14   , 2     *7),  # shap/rate 
+                               pri_serial_i  = c(34.615, 11.538*7),  # shap/rate 
                                infect_dist   = c(8    , 1.241 ),  # shap/rate 
                                seropos_dist  = c(4.41 , 0.042 ) ) {   # shap/rate 
 
@@ -400,8 +400,8 @@ priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
 #'     die_rep_delay = c(2.7, 3)  # Mean = ~1 day
 #'   )
 #' @export
-priors_reporting_delays <- function(cas_rep_delay = c(2.2,1),
-                                    die_rep_delay = c(2.2,1)) {
+priors_reporting_delays <- function(cas_rep_delay = c(2.2,1*7),
+                                    die_rep_delay = c(2.2,1*7)) {
   
   att(length(cas_rep_delay) == 2)
   att(length(die_rep_delay) == 2)
