@@ -648,9 +648,14 @@ transformed parameters {
 
   // reporting delays modeled as described above for cases
   if(obs_die_rep == 1)
-    occur_die = conv1d(new_die_dx, die_rep_delay_rv);
+    occur_die = conv1d(new_sev_dx, die_rep_delay_rv);
   else
-    occur_die = new_die_dx .* die_cum_report_delay_rv;
+    occur_die = new_sev_dx .* die_cum_report_delay_rv;
+  // // reporting delays modeled as described above for cases
+  // if(obs_die_rep == 1)
+  //   occur_die = conv1d(new_die_dx, die_rep_delay_rv);
+  // else
+  //   occur_die = new_die_dx .* die_cum_report_delay_rv;
     
   // compute moving sums
     // compute the moving sums
@@ -772,10 +777,10 @@ model {
 
   target += neg_binomial_2_lpmf(
     // `obs_die` from the first observed day to the last death date
-    obs_die[1:lastDeathWeek] |
+    obs_die_mvs[1:lastDeathWeek] |
       // `occur_die` from the first observed day (`N_days_before+1`) to the
       // last death date
-      occur_die[N_weeks_before+1 : N_weeks_before+lastDeathWeek],
+      occur_die_mvs[N_weeks_before+1 : N_weeks_before+lastDeathWeek],
     phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
 }
