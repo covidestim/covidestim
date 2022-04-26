@@ -203,7 +203,7 @@ transformed data {
    int  idx1[N_weeks + N_weeks_before];
  int  idx2[N_weeks + N_weeks_before];
  vector[N_weeks + N_weeks_before] idx3;
- real log_new_inf0calc = log(pop_size * .5);
+ // real log_new_inf0calc = log(pop_size * .5);
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
   // N_days_tot = N_days + N_days_before; 
@@ -566,15 +566,15 @@ transformed parameters {
   // cases entering a state on day i + j - 1: 
   // cases entering previous state on day i * the probability of progression *
   // the probability progression occurred on day j 
-  print("YO!");
-  print("spl_par_rt:");
-  print(spl_par_rt);
-  print("Rt:");
-  print(Rt);
-  print("new_inf:");
-  print(new_inf);
-  print("inf_prg_delay_rv:");
-  print(inf_prg_delay_rv);
+  // print("YO!");
+  // print("spl_par_rt:");
+  // print(spl_par_rt);
+  // print("Rt:");
+  // print(Rt);
+  // print("new_inf:");
+  // print(new_inf);
+  // print("inf_prg_delay_rv:");
+  // print(inf_prg_delay_rv);
   
   new_sym =
     p_sym_if_inft     .* conv1d(new_inf , inf_prg_delay_rv);
@@ -681,7 +681,8 @@ transformed parameters {
 model {
   
   // PRIORS
-  log_new_inf_0         ~ normal(log_new_inf0calc, pri_log_new_inf_0_sd);
+  log_new_inf_0         ~ normal(pri_log_new_inf_0_mu, pri_log_new_inf_0_sd);
+  // log_new_inf_0         ~ normal(log_new_inf0calc, pri_log_new_inf_0_sd);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
