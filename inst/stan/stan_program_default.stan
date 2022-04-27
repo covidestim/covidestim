@@ -54,6 +54,7 @@ data {
   // vector<lower=0>[N_days + N_days_before]        obs_boost; // vector of booster data
   vector<lower=0>[N_weeks + N_weeks_before]        obs_boost; // vector of booster data
   real<lower=0>          pop_size; // population size
+  real<lower=0>          start_p_sus; // starting fraction susceptible
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
@@ -507,7 +508,7 @@ transformed parameters {
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
 
-  pop_sus = pop_size * .5;
+  pop_sus = pop_size * start_p_sus;
   pop_uninf = pop_sus;
   ever_inf = 0;
 
@@ -527,15 +528,18 @@ transformed parameters {
     // if(i > N_days_before){
     // wane_boost[i] = sum(obs_boost[1:i-N_days_before] .* (.35 * exp(-.008 * idx3[N_days_tot-(i-N_days_before)+1:N_days_tot]) + .45) );
     if(i > N_weeks_before){
-    wane_boost[i] = sum(obs_boost[1:i-N_weeks_before] .* (.35 * exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7) + .45) );
+    // wane_boost[i] = sum(obs_boost[1:i-N_weeks_before] .* (.35 * exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7) + .45) );
+    wane_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.0058 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7)) );
     } else{
       wane_boost[i] = obs_boost[1] *.8;
     }
     // wane_imm = .3 * exp(-.008 * idx3[N_days_tot-i+1]) + .2;
-    wane_imm = .3 * exp(-.008 * idx3[N_weeks_tot-i+1]*7) + .2;
+    // wane_imm = .15 * exp(-.008 * idx3[N_weeks_tot-i+1]*7) + .1; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
+    wane_imm = exp(-.0058 * idx3[N_weeks_tot-i+1]*7) ; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
+    // wane_imm = 0;
     pop_sus = pop_size * (1-wane_imm);
     // wane_inf[i] = sum(new_inf[1:i] .* (.75* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .25));
-    wane_inf[i] = sum(new_inf[1:i] .* (.75* exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot] * 7) + .25));
+    wane_inf[i] = sum(new_inf[1:i] .* ( exp(-.0058 * idx3[N_weeks_tot-i+1:N_weeks_tot] * 7)));
     ever_inf += new_inf[i];
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // pop_uninf = pop_sus - ever_inf + prot_boost[i];
