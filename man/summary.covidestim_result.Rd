@@ -23,47 +23,115 @@ A \code{data.frame} with the following variables:
 
   \itemize{
     \item \code{date}
-    \item \code{cases.fitted}, \code{cases.fitted.lo},
-      \code{cases.fitted.hi}: Median and 95\% interval around fitted case
-      data.
+
+      Date as a \code{Date} vector.
+
+    \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}
+
+      Estimate of the effective reproductive number (\eqn{R_t}).
+      \emph{Median and 95\% interval, ℝ}.
+    
+    \item \code{infections}, \code{infections.lo}, \code{infections.hi}
+
+      The number of modeled infections that occurred on date \code{date}.
+      This includes infections that may never cause symptoms, as well as
+      infections which will never show up in case reports (will never be
+      diagnosed). Being indexed by date-of-occurrence, reporting lag is
+      absent from this outcome.  \emph{Median and 95\% interval, ℝ}.
 
     \item \code{cum.incidence}, \code{cum.incidence.lo},
-      \code{cum.incidence.hi}: Median and 95\% interval around cumulative 
-      incidence data.
+      \code{cum.incidence.hi}
+      
+      The number of modeled cumulative infections (not cases, or diagnoses)
+      that have occurred by the end of date \code{date}.  \emph{Median and
+      95\% interval, ℝ}.
+
+    \item
+      \code{diagnoses}, \code{diagnoses.lo}, \code{diagnoses.hi}
+
+      The number of modeled diagnoses that occurred on date \code{date}.
+      This is the sum of:
+
+      \itemize{
+        \item New asmptomatic diagnoses on date \code{date}, \emph{plus:}
+        \item New diagnoses of symptomatic, non-severe individuals on date
+          \code{date}, \emph{plus:}
+        \item New diagnoses of severe individuals on date \code{date}.
+      }
+
+      \emph{Median and 95\% interval, ℝ}.
+
+    \item \code{cases.fitted}, \code{cases.fitted.lo},
+      \code{cases.fitted.hi}
+
+      The number of modeled case reports for date \code{date}. This will
+      \strong{always} differ from the number of observed cases: it is the
+      model's approximation of how many case reports should have been filed
+      that day. This outcome reflects underascertainment, and the full delay
+      structure downstream of infection events. Note: infection events are
+      tabulated by the \code{infections[.lo/.hi]} outcomes.  \emph{Median
+      and 95\% interval, ℝ}.
+
+    \item \code{symptomatic}, \code{symptomatic.lo}, \code{symptomatic.hi}
+
+       The number of modeled transitions of infected individuals into the
+       infected, symptomatic health state on date \code{date}. This takes
+       into account the probability of becoming symptomatic and the delay
+       between infection and presentation of symptoms. \emph{Median and 95\%
+       interval, ℝ}.
+
+    \item \code{symptomatic.diagnosed}, \code{symptomatic.diagnosed.lo},
+      \code{symptomatic.diagnosed.hi}
+
+       The number of modeled diagnoses of symptomatic individuals occurring
+       on date \code{date}. The difference between this outcome and
+       the \code{diagnoses} outcome is that \code{diagnoses} includes
+       modeled diagnoses of asymptomatic individuals. \emph{Median and 95\%
+       interval, ℝ}.
+
+    \item \code{severe}, \code{severe.lo}, \code{severe.hi}
+
+      The number of transitions into the "severe" health state on date
+      \code{date}. The "severe" state is defined as disease that would merit
+      hospitalization.  This outcome is not intended to model observational
+      data detailing the number of COVID-positive hospital admissions or
+      COVID-primary-cause hospital admissions. \emph{Median and 95\%
+      interval, ℝ}.
+
+    \item \code{deaths}, \code{deaths.lo}, \code{deaths.hi}
+
+      The number of modeled deaths for date \code{date}. The number of
+      deaths estimated to have occurred on date \code{date} and does not
+      account for reporting delays. \emph{Median and 95\% interval, ℝ}.
 
     \item \code{deaths.fitted}, \code{deaths.fitted.lo},
-      \code{deaths.fitted.hi}: Median and 95\% interval around fitted deaths
-      data.
+      \code{deaths.fitted.hi}
 
-    \item \code{deaths}, \code{deaths.lo}, \code{deaths.hi}: Median and 95\%
-      interval around estimated deaths/day, by date of death.
+        The number of modeled death reports for a date \code{date}. This
+        will always differ from the number of observed deaths for that same
+        date, because \code{deaths.fitted} is approximating how many death
+        reports should exist for that date.  \emph{Median and 95\% interval,
+        ℝ}.
 
-    \item \code{infections}, \code{infections.lo}, \code{infections.hi}:
-      Median and 95\% interval around estimated infections/day, by date of
-      infection.
+    \item \code{data.available}
 
-    \item \code{severe}, \code{severe.lo}, \code{severe.hi}: Median and 95\%
-       interval around the number of individuals who transitioned into the
-       "severe" health state on a particular day. The "severe" state is
-       defined as disease that would merit hospitalization.
+      Was there input data available for date \code{date}? This should be
+      \code{TRUE}, except for the first month of estimates. \emph{logical}.
 
-    \item \code{symptomatic}, \code{symptomatic.lo}, \code{symptomatic.hi}:
-       Median and 95\% interval around the estimate of the quantity of
-       individuals who became symtomatic on a particular day.
-
-    \item \code{data.available}: \code{TRUE/FALSE} for whether input data
-      was available on that particular day.
-
-    \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}: Estimate of the effective 
-    reproductive number (Rt), with 95\% CIs.
-    
     \item \code{sero.positive}, \code{sero.positive.lo}, 
-    \code{sero.positive.hi}: Estimate of the number of seropositive
-    individuals, with 95\% CIs.
+    \code{sero.positive.hi}
+
+      The number of individuals in the population who are modeled as being
+      seropositive. This is an unreliable outcome that we don't recommend
+      using. \emph{Median and 95\% interval, ℝ}.
     
     \item \code{pop.infectiousness}, \code{pop.infectiousness.lo}, 
-    \code{pop.infectiousness.hi}: Estimate of the relative level of viral 
-    shedding in the community, with 95\% CIs.
+    \code{pop.infectiousness.hi}
+
+      Meant to be an estimate of infectiousness
+      of the population for comparison with wastewater data. This is an
+      unreliable outcome that we don't recommend using. \emph{Median and
+      95\% interval, ℝ}.
   }
 }
 \description{

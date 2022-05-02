@@ -6,7 +6,7 @@
 \alias{input_vaccines}
 \title{Input observational data}
 \usage{
-input_cases(data, type = "reported")
+input_cases(data, type = "reported", lastCaseDate = NULL)
 
 input_deaths(data, type = "reported", lastDeathDate = NULL)
 
