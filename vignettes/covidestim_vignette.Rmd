@@ -45,10 +45,12 @@ Input data and model configuration options are rolled up into a model configurat
 ```{r}
 cases  <- example_nyc_data('cases')
 deaths <- example_nyc_data('deaths')
+RR     <- example_nyc_data('RR')
 
 cfg <- covidestim(ndays = nrow(cases), region = 'New York') +
   input_cases(cases) +
-  input_deaths(deaths)
+  input_deaths(deaths) + 
+  input_vaccines(RR)
 
 print(cfg)
 ```
