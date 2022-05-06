@@ -61,3 +61,20 @@ reference:
   desc: Covidestim provides an example NYC dataset to try running the model with.
 - contents:
   - example_nyc_data
+
+- title: internal
+- contents:
+  - build_priors
+  - covidestim-package
+  - covidestim_add.priors
+  - defaultConfig
+  - get_ifr_raw
+  - modelconfig
+  - modelconfig_add.priors
+  - +.modelconfig
+  - priors_diagnosis
+  - priors_diagnosis_delays_scale
+  - priors_progression
+  - priors_reporting_delays
+  - priors_transitions
+  - summaryEpi
