@@ -54,7 +54,7 @@ data {
   // vector<lower=0>[N_days + N_days_before]        obs_boost; // vector of booster data
   vector<lower=0>[N_weeks + N_weeks_before]        obs_boost; // vector of booster data
   real<lower=0>          pop_size; // population size
-  real<lower=0>          start_p_sus; // starting fraction susceptible
+  real<lower=0,upper=1>          start_p_imm; // starting fraction immune
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
@@ -359,9 +359,9 @@ transformed parameters {
   vector[N_weeks_tot]      wane_boost;
   vector[N_weeks_tot]      deriv1_log_new_inf;
   real                    pop_uninf;
-  real                    pop_sus;
+  vector[N_weeks_tot]     pop_sus;
   real                    ever_inf;
-  real                    wane_imm;
+  vector[N_weeks_tot]     wane_imm;
   // vector[N_spl_par_rt]    spl_par_rt;
 
   // Rt spline
@@ -507,9 +507,9 @@ transformed parameters {
   //                  spl_basis_rt[1+N_days_before,2:N_spl_par_rt]) * spl_par_rt0 / 
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
-
-  pop_sus = pop_size * start_p_sus;
-  pop_uninf = pop_sus;
+  wane_imm[1] = pop_size * start_p_imm;
+  pop_sus[1] = pop_size * (1 - start_p_imm);
+  pop_uninf = pop_sus[1];
   ever_inf = 0;
 
   // for(i in 1:N_days_tot) {
@@ -529,21 +529,21 @@ transformed parameters {
     // wane_boost[i] = sum(obs_boost[1:i-N_days_before] .* (.35 * exp(-.008 * idx3[N_days_tot-(i-N_days_before)+1:N_days_tot]) + .45) );
     if(i > N_weeks_before){
     // wane_boost[i] = sum(obs_boost[1:i-N_weeks_before] .* (.35 * exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7) + .45) );
-    wane_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.0058 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7)) );
+    wane_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7)) );
     } else{
       wane_boost[i] = obs_boost[1] *.8;
     }
     // wane_imm = .3 * exp(-.008 * idx3[N_days_tot-i+1]) + .2;
     // wane_imm = .15 * exp(-.008 * idx3[N_weeks_tot-i+1]*7) + .1; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
-    wane_imm = exp(-.0058 * idx3[N_weeks_tot-i+1]*7) ; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
+    wane_imm[i] = pop_size * start_p_imm * exp(-.008 * idx3[N_weeks_tot-i+1]*7) ; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
     // wane_imm = 0;
-    pop_sus = pop_size * (1-wane_imm);
+    pop_sus[i] = pop_size - wane_imm[i];
     // wane_inf[i] = sum(new_inf[1:i] .* (.75* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .25));
-    wane_inf[i] = sum(new_inf[1:i] .* ( exp(-.0058 * idx3[N_weeks_tot-i+1:N_weeks_tot] * 7)));
+    wane_inf[i] = sum(new_inf[1:i] .* ( exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot] * 7)));
     ever_inf += new_inf[i];
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // pop_uninf = pop_sus - ever_inf + prot_boost[i];
-    pop_uninf = pop_sus - (wane_inf[i] + wane_boost[i]);
+    pop_uninf = pop_sus[i] - (wane_inf[i] + wane_boost[i]);
    // pop_uninf -= (new_inf[i] + obs_boost[i]);
    // END OF REINFECTION STRATEGIES
    
