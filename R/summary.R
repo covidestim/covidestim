@@ -69,21 +69,31 @@
 summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE) {
 
   # Used for dealing with indices and dates
-  ndays        <- ccr$config$N_days
-  ndays_before <- ccr$config$N_days_before
-  ndays_total  <- ndays_before + ndays
+  nweeks        <- ccr$config$N_weeks
+  nweeks_before <- ccr$config$N_weeks_before
+  nweeks_total  <- nweeks_before + nweeks
   start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
 
   # Dates an index and converts it to a date
-  toDate <- function(idx) start_date + lubridate::days(idx - 1 - ndays_before)
+  toDate <- function(idx) start_date + lubridate::weeks(idx - 1 - nweeks_before)
 
   # Mappings between names in Stan and variable names in the output `df`
   c(
     "new_inf"              = "infections",
     "Rt"                   = "Rt",
     "occur_cas"            = "cases.fitted",
+    "occur_hosp"           = "severe.fitted",
     "occur_die"            = "deaths.fitted",
     "cumulative_incidence" = "cum.incidence",
+    "cumulative_immunoexposed" = "cum.immunoexposed",
+    "first_inf"            = "first.infections",
+    "pop_sus"              = "pop.susceptible",
+    "pop_sus_severe"       = "pop.susceptible.severe",
+    "eff_prot_inf"         = "eff.prot.inf",
+    "eff_prot_inf_vax"     = "eff.prot.vax",
+    "eff_prot_inf_vax_boost"  = "eff.prot_inf.vax.boost",
+    "eff_prot_vax"         = "eff.prot.vax",
+    "eff_prot_vax_boost"   = "eff.prot.vax.boost",    
     "new_sym"              = "symptomatic",
     "new_sev"              = "severe",
     "new_die"              = "deaths",
@@ -91,9 +101,10 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "diag_cases"           = "symptomatic.diagnosed", 
     "diag_all"             = "diagnoses",
     "sero_positive"        = "sero.positive",
-    "pop_infectiousness"   = "pop.infectiousness"
+    "fit_to_wastewater"    = "fit.to.wastewater"
   ) -> params
 
+  
   if ("optimizer" %in% ccr$flags)
     return(summaryOptimizer(ccr, toDate, params, start_date))
 

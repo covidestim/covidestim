@@ -42,7 +42,9 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg  <- leftside
   d    <- rightside
 
-  integer_keys <- c("obs_cas", "obs_die", "ifr_vac_adj")
+  integer_keys <- c("obs_cas", "obs_die", 
+                    "obs_boost", "obs_hosp",
+                    "ifr_vac_adj")
   keys         <- integer_keys
 
   # Create a list of any existing data
@@ -79,11 +81,6 @@ modelconfig_add.input <- function(rightside, leftside) {
 
   # Update the first
   cfg$first_date  <- min(cfg$first_date, min(d[[1]]$date), na.rm=TRUE)
-
-  # Update the `Omicron_takeover_mean`
-  cfg$Omicron_takeover_mean <- as.integer(
-    as.Date('2021-12-20') - as.Date(cfg$first_date, origin = '1970-01-01') + 1
-  )
   
   if("lastDeathDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastDeathDate")
@@ -100,7 +97,9 @@ modelconfig_add.input <- function(rightside, leftside) {
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
 
-  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep", "ifr_vac_adj_rep")) {
+  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep", 
+                           "obs_boost_rep", "obs_hosp_rep", 
+                           "ifr_vac_adj_rep")) {
     if(data_type_key == "ifr_vac_adj_rep"){
       cfg[[data_key]] <- d[[1]]$observation 
     } else {
@@ -121,14 +120,11 @@ modelconfig_add.input <- function(rightside, leftside) {
   ifr_adjustments <- gen_ifr_adjustments(
     first_date    = cfg$first_date %>% as.Date(origin = '1970-01-01'),
     N_weeks_before = cfg$N_weeks_before,
-    # N_days_before = cfg$N_days_before,
-    region        = cfg$region,
-    omicron       = cfg$omicron
-  )
+    region        = cfg$region
+    )
 
   # Assign the results of the call to the `cfg` object
   cfg$ifr_adj       = ifr_adjustments$ifr_adj
-  cfg$ifr_omi       = ifr_adjustments$ifr_omi
   cfg$ifr_adj_fixed = ifr_adjustments$ifr_adj_fixed
   cfg$N_ifr_adj     = ifr_adjustments$N_ifr_adj
   
@@ -153,14 +149,20 @@ print.inputs <- function(cfg, .tab = FALSE) {
     ifelse(is.null(cfg$obs_cas), '[ x ]', glue('[{frmtr(cfg$obs_cas)}]'))
   status_deaths <-
     ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_die)}]'))
-  status_vaccines <-
+  status_boost <-
+    ifelse(is.null(cfg$obs_boost), '[ x ]', glue('[{frmtr(cfg$obs_boost)}]'))
+  status_hospi <-
+    ifelse(is.null(cfg$obs_hosp), '[ x ]', glue('[{frmtr(cfg$obs_hosp)}]'))
+  status_rr <-
     ifelse(is.null(cfg$ifr_vac_adj), '[ x ]', glue('[{frmtr(cfg$ifr_vac_adj)}]'))
 
 'Inputs:
 
 {t}{status_cases}\tCases
 {t}{status_deaths}\tDeaths
-{t}{status_vaccines}\tVaccines
+{t}{status_boost}\tBooster
+{t}{status_hospi}\tHospitalizations
+{t}{status_rr}\tRRvaccines
 ' -> msg
 
   cat(glue(msg))
@@ -174,28 +176,18 @@ validate.modelconfig <- function(cfg) {
 
 }
 
-genData <- function(#N_days, N_days_before = 28,
-                    N_weeks, N_weeks_before = 28/7,
-                    # N_days_av = 7, 
+genData <- function(N_weeks, N_weeks_before = 28/7,
                     pop_size = 1e12, #new default value
                     n_spl_rt_knotwidth = 2, 
-                    region, nRt, sdRt = 1,
-                    reinf_delay = c(30,180),
-                    reinf_prob = c(.2,.5),
-                    reinfection = FALSE,
-                    omicron_adjust = FALSE,
-                    Omicron_takeover_sd = 14,
-                    sd_omicron_delay = 10
+                    region,
+                    cum_p_inf_init,
+                    start_p_imm
                     )
 {
   n_spl_par_rt <- max(4,ceiling((N_weeks + N_weeks_before)/n_spl_rt_knotwidth))
   des_mat_rt <- splines::bs(1:(N_weeks + N_weeks_before), 
                             df=n_spl_par_rt, degree=3, intercept=T)
-  # n_spl_par_rt <- max(4,ceiling(N_days/n_spl_rt_knotwidth)) 
-  # des_mat_rt_tmp <- splines::bs(1:(N_days), 
-  #                               df=n_spl_par_rt, degree=3, intercept=T)
-  # des_mat_rt <- des_mat_rt_tmp[c(rep(1,N_days_before), 1:N_days),]
-  
+
   n_spl_par_dx <- max(4,ceiling((N_weeks + N_weeks_before)/3)) 
   des_mat_dx <- splines::bs(1:(N_weeks + N_weeks_before), 
                          df=n_spl_par_dx, degree=3, intercept=T) 
@@ -211,6 +203,8 @@ genData <- function(#N_days, N_days_before = 28,
     # Region being modeled. Must be a state name, or a FIPS code, passed as
     # a string.
     region = region,
+    start_p_imm = start_p_imm,
+    cum_p_inf_init = cum_p_inf_init,
 
     # These next three variables are NULLed because they aren't defined here.
     # They get defined when an input_*() is added, because it's there that
@@ -219,24 +213,11 @@ genData <- function(#N_days, N_days_before = 28,
     ifr_omi       = NULL,
     ifr_adj_fixed = NULL,
     N_ifr_adj     = NULL,
-    N_days_pri_Rt = nRt,
-    sd_pri_Rt     = sdRt,
-    omicron       = omicron_adjust,
-    omicron_adjust = as.numeric(omicron_adjust),
-    sd_omicron_delay = sd_omicron_delay,
-    Omicron_takeover_sd = Omicron_takeover_sd,
-    
-    
-    # Reinfection parameters
-    reinfection    = as.numeric(reinfection),
-    reinf_prob     = c(reinf_prob,0,0)[1:2],
-    reinf_delay1    = reinf_delay[1], 
-    reinf_delay2    = reinf_delay[2], 
 
     #n days to model before start of data
     # N_days_before = as.integer(N_days_before),
     N_weeks_before = as.integer(N_weeks_before),
-    #max delay to allow the model to consider. 30 is recommended. 
+    #max delay to allow the model to consider. 30 days is recommended; 5 weeks 
     Max_delay = ceiling(30/7), 
 
     # moving average for likelihood function 
@@ -250,22 +231,18 @@ genData <- function(#N_days, N_days_before = 28,
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
+    obs_hosp = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day
+    obs_boost = NULL, # vector of int by date. should have 0s if no event that day
     # the ifr_vaccine adjustment data
     ifr_vac_adj = NULL,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
-    # index corresponding to the midpoint of Omicron takeover (50% takeover),
-    # currently corresponds to 2021-12-20, is set when the user adds input data
-    # since that is when we find out what date corresponds to the first day of
-    # data.
-    Omicron_takeover_mean = NA,
     # last death date is initiated here; gets updated as deaths data gets added
     lastDeathWeek = N_weeks,
     lastCaseWeek  = N_weeks,
-    # lastDeathDate = N_days,
-    # lastCaseDate  = N_days,
+
     
     # Rt and new infections
     pri_log_new_inf_0_mu = 0,
@@ -284,10 +261,14 @@ genData <- function(#N_days, N_days_before = 28,
 
     # indicates whether case or death data are being used 
     cas_yes = as.integer(1), 
+    hosp_yes = as.integer(1), 
     die_yes = as.integer(1), 
+    boost_yes = as.integer(1), 
     
     obs_cas_rep = as.integer(0),      # This ~means FALSE in stan
+    obs_hosp_rep = as.integer(0),     # This ~means FALSE in stan
     obs_die_rep = as.integer(0),      # This ~means FALSE in stan
+    obs_boost_rep = as.integer(0),      # This ~means FALSE in stan
     ifr_vac_adj_rep = as.integer(0),  # This ~means FALSE in stan
   )
 
