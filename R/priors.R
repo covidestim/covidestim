@@ -281,8 +281,8 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051*7), # shap/rate
                                sev_prg_delay = c(2.061, 0.2277*7),  # shap/rate
                                asy_rec_delay = c(14   , 2     *7),  # shap/rate 
                                pri_serial_i  = c(34.615, 11.538*7),  # shap/rate 
-                               infect_dist   = c(8    , 1.241 ),  # shap/rate 
-                               seropos_dist  = c(4.41 , 0.042 ) ) {   # shap/rate 
+                               infect_dist   = c(8    , 1.241*7 ),  # shap/rate 
+                               seropos_dist  = c(4.41 , 0.042*7 ) ) {   # shap/rate 
 
   att(length(inf_prg_delay) == 2)
   att(length(sym_prg_delay) == 2)

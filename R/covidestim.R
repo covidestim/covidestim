@@ -32,10 +32,10 @@ NULL
 #' @param thin A positive integer to specify period for saving samples, as
 #'   passed to \code{\link[rstan]{sampling}}. Modify this only if you intend
 #'   to inspect raw iterations data returned by \code{\link[rstan]{sampling}}.
-#' @param ndays A positive integer. The number of days of input data being
-#'   modeled. This should always be set to the number of days in your input
+#' @param nweeks A positive integer. The number of weeks of input data being
+#'   modeled. This should always be set to the number of weeks in your input
 #'   data.
-#' @param ndays_before A positive integer. How many days before the first day
+#' @param nweeks_before A positive integer. How many weeks before the first week
 #'   of model data should be modeled? A higher number will produce estimates
 #'   that go farther back in time, however, those estimates will contain more
 #'   and more uncertainty.
@@ -46,19 +46,8 @@ NULL
 #'   sampling or in BFGS.
 #' @param region A string. The FIPS code (for U.S. counties) or state name
 #'   (e.g. \code{New York}) being modeled. Required.
-#' @param nRt A positive integer. How many days of Rt (measured from last day)
-#'    should be penalized?
-#' @param sdRt A number. The standard deviation of the Rt penalty.
-#' @param reinf_prob a vector of length 1 or 2. The fractions of the 
-#'    infections to be put back in the Susceptible pool on day 1 and 180
-#'    after infection. Example: c(.5, .2) 50% of new infections is immediately
-#'    available for reinfection; an additional 20% is available after 180 days.
-#' @param reinf_delay a vector of length 2. The days on which the reinf_prob of
-#'    infections are put back in the Susceptible pool. Example: c(30, 180),
-#'    the reinf_prob[1] fraction of infections are available for reinfection on
-#'    day 30, and reinf_prob[2] of the infections are available for reinfection
-#'    on day 180.
-#' @param reinfection logical. Should reinfection be allowed?
+#' @param nspl_rt_knotwidth An integer. The knotwidth to use for the spline of 
+#' Rt.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to
 #' \code{\link{run.covidestim}} or \code{\link{runOptimizer.covidestim}} to execute the model, as
@@ -83,10 +72,7 @@ NULL
 #'
 #' @importFrom magrittr %>%
 #' @export
-covidestim <- function(
-  # ndays, 
-  #                      ndays_before = 28,
-  nweeks, 
+covidestim <- function(nweeks, 
                        nweeks_before = 4,
                        pop_size = 1e12,
                        chains = 3, 
@@ -98,38 +84,17 @@ covidestim <- function(
                        max_treedepth = 14,
                        window.length = 7,
                        region,
-                       nRt = 0,
-                       sdRt = 1,
-                       reinf_delay = c(30,180),
-                      reinf_prob = c(.2,.5),
-                      reinfection = FALSE,
-                      omicron_adjust = FALSE,
-                      Omicron_takeover_sd = 14,
-                      sd_omicron_delay = 10) {
+                       start_p_imm,
+                       cum_p_inf_init) {
 
-  # att(is.numeric(ndays), ndays >= 1)
   att(is.numeric(nweeks), nweeks >= 1)
-  att(is.logical(omicron_adjust))
-  att(all(reinf_prob > 0))
-#  att(sum(reinf_prob <= 1))
 
   defaultConfig(
-    # N_days = ndays,
-    # N_days_before = ndays_before,
     N_weeks = nweeks,
     N_weeks_before = nweeks_before,
     pop_size = pop_size,
     n_spl_rt_knotwidth = nspl_rt_knotwidth,
-    # N_days_av = window.length,
-    region = region,
-    nRt = nRt,
-    sdRt = sdRt,
-    reinf_delay = reinf_delay,
-    reinf_prob = reinf_prob,
-    reinfection = reinfection,
-    omicron_adjust = omicron_adjust,
-    Omicron_takeover_sd = Omicron_takeover_sd,
-    sd_omicron_delay = sd_omicron_delay
+    region = region
     ) -> config
 
   # All user-specified config-related things must be specified above this line
@@ -178,6 +143,34 @@ get_pop <- function(region) {
     stop(glue::glue("Found more than set of population data for region {region}!"))
 
   found$pop
+}
+#' Immunity and cumulative infections (fraction) estimates for US states and counties 
+#'
+#' Returns December 1, 2021 covidestim estimates of state or county effective protection
+#' and fraction of the population ever infected.
+#'
+#' @param region A string with the state name, or the FIPS code
+#'
+#' @return State/county population as a numeric, or an error
+#'
+#' @examples
+#' get_imm_init('Connecticut')
+#' get_imm_init('09009')
+#'
+#' @export
+get_imm_init <- function(region) {
+  found <- dplyr::filter(imm_state, location == region)
+
+  if (nrow(found) == 0)
+    found <- dplyr::filter(imm_county, location == region)
+
+  if (nrow(found) == 0)
+    stop(glue::glue("Could not find immunity data for region {region}!"))
+
+  if (nrow(found) > 1)
+    stop(glue::glue("Found more than set of immunity data for region {region}!"))
+
+  found
 }
 
 
@@ -436,8 +429,18 @@ runOptimizer.covidestim <- function(cc,
     "new_inf",
     "Rt",
     "occur_cas",
+    "occur_hosp",
     "occur_die",
     "cumulative_incidence",
+    "cumulative_immunoexposed",
+    "first_inf",
+    "pop_sus",
+    "pop_sus_severe",
+    "eff_prot_inf",
+    "eff_prot_inf_vax",
+    "eff_prot_inf_vax_boost",
+    "eff_prot_vax",
+    "eff_prot_vax_boost",
     "new_sym",
     "new_sev",
     "new_die",
@@ -445,7 +448,7 @@ runOptimizer.covidestim <- function(cc,
     "diag_cases",
     "diag_all",
     "sero_positive",
-    "pop_infectiousness"
+    "fit_to_wastewater"
   ) -> essential_vars
 
   # c(
