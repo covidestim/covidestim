@@ -24,43 +24,8 @@
 #'
 #'       Date as a \code{Date} vector.
 #'
-#'     \item \code{Rt}, \code{Rt.lo}, \code{Rt.hi}
-#'
-#'       Estimate of the effective reproductive number (\eqn{R_t}).
-#'       \emph{Median and 95\% interval, ℝ}.
-#'     
-#'     \item \code{infections}, \code{infections.lo}, \code{infections.hi}
-#'
-#'       The number of modeled infections that occurred on date \code{date}.
-#'       This includes infections that may never cause symptoms, as well as
-#'       infections which will never show up in case reports (will never be
-#'       diagnosed). Being indexed by date-of-occurrence, reporting lag is
-#'       absent from this outcome.  \emph{Median and 95\% interval, ℝ}.
-#'
-#'     \item \code{cum.incidence}, \code{cum.incidence.lo},
-#'       \code{cum.incidence.hi}
-#'       
-#'       The number of modeled cumulative infections (not cases, or diagnoses)
-#'       that have occurred by the end of date \code{date}.  \emph{Median and
-#'       95\% interval, ℝ}.
-#'
-#'     \item
-#'       \code{diagnoses}, \code{diagnoses.lo}, \code{diagnoses.hi}
-#'
-#'       The number of modeled diagnoses that occurred on date \code{date}.
-#'       This is the sum of:
-#'
-#'       \itemize{
-#'         \item New asmptomatic diagnoses on date \code{date}, \emph{plus:}
-#'         \item New diagnoses of symptomatic, non-severe individuals on date
-#'           \code{date}, \emph{plus:}
-#'         \item New diagnoses of severe individuals on date \code{date}.
-#'       }
-#'
-#'       \emph{Median and 95\% interval, ℝ}.
-#'
-#'     \item \code{cases.fitted}, \code{cases.fitted.lo},
-#'       \code{cases.fitted.hi}
+#'     \item \code{cases_fitted}, \code{cases_fitted_p2_5},
+#'       \code{cases_fitted_p97_5}
 #'
 #'       The number of modeled case reports for date \code{date}. This is the
 #'       model's expected number of filed case reports on date \code{date}.
@@ -70,70 +35,205 @@
 #'       away), and reporting delay (not all diagnoses are reported right
 #'       away). (Cf. \strong{diagnoses} is the modeled number of cases
 #'       (diagnosed infections) on date \code{date}, while
-#'       \strong{cases.fitted} is the modeled number of \strong{reported} cases
-#'       on date \code{date}).  \emph{Median and 95\% interval, ℝ}.
+#'       \strong{cases_fitted} is the modeled number of \strong{reported} cases
+#'       on date \code{date}).
+#'
+#'       \emph{Median and 95\% interval, ℝ}.
 #
-#'     \item \code{symptomatic}, \code{symptomatic.lo}, \code{symptomatic.hi}
+#'     \item \code{cumulative_immunoexposed},
+#'       \code{cumulative_immunoexposed_p2_5},
+#'       \code{cumulative_immunoexposed_p97_5}
 #'
-#'        The number of modeled transitions of infected individuals into the
-#'        infected, symptomatic health state on date \code{date}. This takes
-#'        into account the probability of becoming symptomatic and the delay
-#'        between infection and presentation of symptoms. \emph{Median and 95\%
-#'        interval, ℝ}.
+#'       Description of the parameter.
+#'       
+#'       \emph{Median and 95\% interval, ℝ}
 #'
-#'     \item \code{symptomatic.diagnosed}, \code{symptomatic.diagnosed.lo},
-#'       \code{symptomatic.diagnosed.hi}
+#'     \item \code{cumulative_infections}, \code{cumulative_infections_p2_5},
+#'       \code{cumulative_infections_p97_5}
+#'       
+#'       The number of modeled cumulative infections (not cases, or diagnoses)
+#'       that have occurred by the end of date \code{date}.
 #'
-#'        The number of modeled diagnoses of symptomatic individuals occurring
-#'        on date \code{date}. The difference between this outcome and
-#'        the \code{diagnoses} outcome is that \code{diagnoses} includes
-#'        modeled diagnoses of asymptomatic individuals. \emph{Median and 95\%
-#'        interval, ℝ}.
+#'       \emph{Median and 95\% interval, ℝ}.
 #'
-#'     \item \code{severe}, \code{severe.lo}, \code{severe.hi}
+#'     \item \code{deaths}, \code{deaths_p2_5}, \code{deaths_p97_5}
+#'
+#'       The number of modeled deaths for date \code{date}. The number of
+#'       deaths estimated to have occurred on date \code{date} and does not
+#'       account for reporting delays.
+#'
+#'       \emph{Median and 95\% interval, ℝ}.
+#'
+#'     \item \code{deaths_diagnosed}, \code{deaths_diagnosed_p2_5},
+#'       \code{deaths_diagnosed_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{deaths_fitted}, \code{deaths_fitted_p2_5},
+#'       \code{deaths_fitted_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{deaths_fitted}, \code{deaths_fitted_p2_5},
+#'       \code{deaths_fitted_p97_5}
+#'
+#'       The number of modeled death reports for a date \code{date}. This
+#'       will always differ from the number of observed deaths for that same
+#'       date, because \code{deaths_fitted} is approximating how many death
+#'       reports should exist for that date.
+#'
+#'       \emph{Median and 95\% interval, ℝ}.
+#'
+#'     \item
+#'       \code{diagnoses}, \code{diagnoses_p2_5}, \code{diagnoses_p97_5}
+#'
+#'       The number of modeled diagnoses that occurred on date \code{date}.
+#'       This is the sum of:
+#'
+#'       \itemize{
+#'         \item New asymptomatic diagnoses on date \code{date}, \emph{plus:}
+#'         \item New diagnoses of symptomatic, non-severe individuals on date
+#'           \code{date}, \emph{plus:}
+#'         \item New diagnoses of severe individuals on date \code{date}.
+#'       }
+#'
+#'       \emph{Median and 95\% interval, ℝ}.
+#'
+#'     \item \code{effective_protection_inf},
+#'       \code{effective_protection_inf_p2_5},
+#'       \code{effective_protection_inf_p97_5}
+#'
+#'       Description of the parameter.
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{effective_protection_inf_vax_boost},
+#'       \code{effective_protection_inf_vax_boost_p2_5},
+#'       \code{effective_protection_inf_vax_boost_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{effective_protection_inf_vax},
+#'       \code{effective_protection_inf_vax_p2_5},
+#'       \code{effective_protection_inf_vax_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{effective_protection_vax_boost},
+#'       \code{effective_protection_vax_boost_p2_5},
+#'       \code{effective_protection_vax_boost_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{effective_protection_vax},
+#'       \code{effective_protection_vax_p2_5},
+#'       \code{effective_protection_vax_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{first_inf}, \code{first_inf_p2_5}, \code{first_inf_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{fit_to_wastewater}, \code{fit_to_wastewater_p2_5},
+#'       \code{fit_to_wastewater_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{infections}, \code{infections_p2_5}, \code{infections_p97_5}
+#'
+#'       The number of modeled infections that occurred on date \code{date}.
+#'       This includes infections that may never cause symptoms, as well as
+#'       infections which will never show up in case reports (will never be
+#'       diagnosed). Being indexed by date-of-occurrence, reporting lag is
+#'       absent from this outcome.  \emph{Median and 95\% interval, ℝ}.
+#'
+#'     \item \code{pop_susceptible}, \code{pop_susceptible_p2_5},
+#'       \code{pop_susceptible_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{pop_susceptible_severe}, \code{pop_susceptible_severe_p2_5},
+#'       \code{pop_susceptible_severe_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{Rt}, \code{Rt_p2_5}, \code{Rt_p97_5}
+#'
+#'       Estimate of the effective reproductive number (\eqn{R_t}).
+#'
+#'       \emph{Median and 95\% interval, ℝ}.
+#'     
+#'     \item \code{sero_positive}, \code{sero_positive_p2_5}, 
+#'       \code{sero_positive_p97_5}
+#'
+#'       The number of individuals in the population who are modeled as being
+#'       seropositive. This is an unreliable outcome that we don't recommend
+#'       using.
+#'
+#'       \emph{Median and 95\% interval, ℝ}.
+#'     
+#'     \item \code{severe_fitted}, \code{severe_fitted_p2_5},
+#'       \code{severe_fitted_p97_5}
+#'
+#'       Description of the parameter.
+#'
+#'       \emph{Median and 95\% interval, ℝ}
+#'
+#'     \item \code{severe}, \code{severe_p2_5}, \code{severe_p97_5}
 #'
 #'       The number of transitions into the "severe" health state on date
 #'       \code{date}. The "severe" state is defined as disease that would merit
 #'       hospitalization.  This outcome is not intended to model observational
 #'       data detailing the number of COVID-positive hospital admissions or
-#'       COVID-primary-cause hospital admissions. \emph{Median and 95\%
-#'       interval, ℝ}.
+#'       COVID-primary-cause hospital admissions.
 #'
-#'     \item \code{deaths}, \code{deaths.lo}, \code{deaths.hi}
+#'       \emph{Median and 95\% interval, ℝ}.
 #'
-#'       The number of modeled deaths for date \code{date}. The number of
-#'       deaths estimated to have occurred on date \code{date} and does not
-#'       account for reporting delays. \emph{Median and 95\% interval, ℝ}.
+#'     \item \code{symptomatic_diagnosed}, \code{symptomatic_diagnosed_p2_5},
+#'       \code{symptomatic_diagnosed_p97_5}
 #'
-#'     \item \code{deaths.fitted}, \code{deaths.fitted.lo},
-#'       \code{deaths.fitted.hi}
+#'       The number of modeled diagnoses of symptomatic individuals occurring
+#'       on date \code{date}. The difference between this outcome and
+#'       the \code{diagnoses} outcome is that \code{diagnoses} includes
+#'       modeled diagnoses of asymptomatic individuals.
 #'
-#'         The number of modeled death reports for a date \code{date}. This
-#'         will always differ from the number of observed deaths for that same
-#'         date, because \code{deaths.fitted} is approximating how many death
-#'         reports should exist for that date.  \emph{Median and 95\% interval,
-#'         ℝ}.
+#'       \emph{Median and 95\% interval, ℝ}.
+#'
+#'     \item \code{symptomatic}, \code{symptomatic_p2_5}, \code{symptomatic_p97_5}
+#'
+#'       The number of modeled transitions of infected individuals into the
+#'       infected, symptomatic health state on date \code{date}. This takes
+#'       into account the probability of becoming symptomatic and the delay
+#'       between infection and presentation of symptoms.
+#'
+#'       \emph{Median and 95\% interval, ℝ}.
 #'
 #'     \item \code{data.available}
 #'
 #'       Was there input data available for date \code{date}? This should be
-#'       \code{TRUE}, except for the first month of estimates. \emph{logical}.
+#'       \code{TRUE}, except for the first month of estimates.
 #'
-#'     \item \code{sero.positive}, \code{sero.positive.lo}, 
-#'     \code{sero.positive.hi}
-#'
-#'       The number of individuals in the population who are modeled as being
-#'       seropositive. This is an unreliable outcome that we don't recommend
-#'       using. \emph{Median and 95\% interval, ℝ}.
-#'     
-#'     \item \code{pop.infectiousness}, \code{pop.infectiousness.lo}, 
-#'     \code{pop.infectiousness.hi}
-#'
-#'       Meant to be an estimate of infectiousness
-#'       of the population for comparison with wastewater data. This is an
-#'       unreliable outcome that we don't recommend using. \emph{Median and
-#'       95\% interval, ℝ}.
-#'   }
+#'       \emph{logical}.
 #'
 #' @export
 #' @importFrom magrittr %>%
@@ -143,36 +243,36 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   nweeks        <- ccr$config$N_weeks
   nweeks_before <- ccr$config$N_weeks_before
   nweeks_total  <- nweeks_before + nweeks
-  start_date   <- as.Date(ccr$config$first_date, origin = '1970-01-01')
+  start_date    <- as.Date(ccr$config$first_date, origin = '1970-01-01')
 
   # Dates an index and converts it to a date
   toDate <- function(idx) start_date + lubridate::weeks(idx - 1 - nweeks_before)
 
   # Mappings between names in Stan and variable names in the output `df`
   c(
-    "infections"                         = "infections",
-    "Rt"                                 = "Rt",
     "cases_fitted"                       = "cases_fitted",
-    "severe_fitted"                      = "severe_fitted",
-    "deaths_fitted"                      = "deaths_fitted",
-    "cumulative_infections"              = "cumulative_infections",
     "cumulative_immunoexposed"           = "cumulative_immunoexposed",
-    "first_inf"                          = "first_infections",
-    "pop_susceptible"                    = "pop_susceptible",
-    "pop_susceptible_severe"             = "pop_susceptible_severe",
-    "effective_protection_inf"           = "effective_protection_inf",
-    "effective_protection_inf_vax"       = "effective_protection_vax",
-    "effective_protection_inf_vax_boost" = "effective_protection_inf_vax_boost",
-    "effective_protection_vax"           = "effective_protection_vax",
-    "effective_protection_vax_boost"     = "effective_protection_vax_boost",
-    "symptomatic"                        = "symptomatic",
-    "severe"                             = "severe",
+    "cumulative_infections"              = "cumulative_infections",
     "deaths"                             = "deaths",
     "deaths_diagnosed"                   = "deaths_diagnosed",
-    "symptomatic_diagnosed"              = "symptomatic_diagnosed",
+    "deaths_fitted"                      = "deaths_fitted",
     "diagnoses"                          = "diagnoses",
+    "effective_protection_inf"           = "effective_protection_inf",
+    "effective_protection_inf_vax_boost" = "effective_protection_inf_vax_boost",
+    "effective_protection_inf_vax"       = "effective_protection_vax",
+    "effective_protection_vax_boost"     = "effective_protection_vax_boost",
+    "effective_protection_vax"           = "effective_protection_vax",
+    "first_inf"                          = "first_infections",
+    "fit_to_wastewater"                  = "fit_to_wastewater",
+    "infections"                         = "infections",
+    "pop_susceptible"                    = "pop_susceptible",
+    "pop_susceptible_severe"             = "pop_susceptible_severe",
+    "Rt"                                 = "Rt",
     "sero_positive"                      = "sero_positive",
-    "fit_to_wastewater"                  = "fit_to_wastewater"
+    "severe_fitted"                      = "severe_fitted",
+    "severe"                             = "severe",
+    "symptomatic_diagnosed"              = "symptomatic_diagnosed",
+    "symptomatic"                        = "symptomatic"
   ) -> params
 
   
