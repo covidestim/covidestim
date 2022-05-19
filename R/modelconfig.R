@@ -246,8 +246,8 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
 
     
     # Rt and new infections
-    pri_log_new_inf_0_mu = 0,
-    pri_log_new_inf_0_sd = 10,
+    pri_log_infections_0_mu = 0,
+    pri_log_infections_0_sd = 10,
     pri_logRt_mu = 0, # intercept for logRt
     pri_logRt_sd = 3.0, # sd of intercept for logRt
     pri_inf_imported_mu = 0,   # imported infections
