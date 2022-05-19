@@ -228,7 +228,7 @@
 #'
 #'       \emph{Median and 95\% interval, ℝ}.
 #'
-#'     \item \code{data.available}
+#'     \item \code{data_available}
 #'
 #'       Was there input data available for date \code{date}? This should be
 #'       \code{TRUE}, except for the first month of estimates.
@@ -280,7 +280,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     return(summaryOptimizer(ccr, toDate, params, start_date))
 
   # Used for renaming quantiles output by Stan
-  quantile_names <- c("2.5%" = ".lo", "50%" = "", "97.5%" = ".hi")
+  quantile_names <- c("2.5%" = "_p2_5", "50%" = "", "97.5%" = "_p97_5")
 
   # This creates the list of `pars` that gets passed to `rstan::summary`
   # by enumerating all combs of varnames and indices
@@ -324,7 +324,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     ) %>%
     # Cast everything back out
     tidyr::spread(key = "variable", value = "value") %>%
-    dplyr::mutate(data.available = date >= start_date)
+    dplyr::mutate(data_available = date >= start_date)
 
   d <- stan_extracts
 
@@ -429,11 +429,11 @@ summaryOptimizer <- function(ccr, toDate, params, start_date) {
     # Sort result columns in alphabetical order to maintain parity with
     # original `summary` implementation
     dplyr::select(order(colnames(.))) %>%
-    # Add dates and data.available column
+    # Add dates and data_available column
     dplyr::mutate(
       date = toDate(1:dplyr::n()),
-      data.available = date >= start_date
+      data_available = date >= start_date
     ) %>%
     # Maintain parity with order in original `summary` implementation
-    dplyr::select(date, everything(), data.available)
+    dplyr::select(date, everything(), data_available)
 }
