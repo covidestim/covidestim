@@ -385,7 +385,7 @@ summaryEpi <- function(ccr) {
   ) -> pars_of_interest
 
   # Used for renaming quantiles output by Stan
-  quantile_names <- c("2.5%" = ".lo", "50%" = "median", "97.5%" = ".hi")
+  quantile_names <- c("2.5%" = "_p2_5", "50%" = "median", "97.5%" = "_p97_5")
 
   rstan::summary(
     ccr$result,
@@ -411,9 +411,9 @@ summaryOptimizer <- function(ccr, toDate, params, start_date) {
   # sampler produces the results that are being processed), we need to have
   # NA-valued confidence intervals. This also makes sharing a DB table with
   # sampler-generated results much easier. The next few lines create the
-  # neccessary "*.lo" and "*.hi" NA-valued columns
-  params.lo <- paste0(params, ".lo")
-  params.hi <- paste0(params, ".hi")
+  # neccessary "*_p2_5" and "*_p97_5" NA-valued columns
+  params.lo <- paste0(params, "_p2_5")
+  params.hi <- paste0(params, "_p97_5")
 
   nullParams <- as.list(rep(NA, 2*length(params))) %>%
     stats::setNames(c(params.lo, params.hi))
