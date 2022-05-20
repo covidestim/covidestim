@@ -53,7 +53,7 @@ data {
   int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
   int<lower=0>           obs_die[N_weeks]; // vector of deaths
   // vector<lower=0>[N_days + N_days_before]        obs_boost; // vector of booster data
-  vector<lower=0>[N_weeks + N_weeks_before]        obs_boost; // vector of booster data
+  vector<lower=0>[N_weeks]        obs_boost; // vector of booster data
   real<lower=0>          pop_size; // population size
   real<lower=0,upper=1>          start_p_imm; // starting fraction immune
   real<lower=0,upper=1>   cum_p_inf_init; // starting fraction ever infected
@@ -363,7 +363,7 @@ transformed parameters {
   vector[N_weeks_tot]      deriv1_log_new_inf;
   vector[N_weeks_tot]      new_inf;
   vector[N_weeks_tot]      first_inf;
-  real                    pop_uninf;
+  vector[N_weeks_tot]      pop_uninf;
   real                    ever_inf;
   vector[N_weeks_tot]     pop_sus;
   vector[N_weeks_tot]     pop_prot_init;
@@ -520,33 +520,37 @@ transformed parameters {
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
   
-  pop_uninf = pop_size * (1 - cum_p_inf_init); // initial uninfected population
+  pop_uninf[1] = pop_size * (1.0 - cum_p_inf_init); // initial uninfected population
   ever_inf = pop_size * cum_p_inf_init; // initial ever infected population
-  pop_sus[1] = pop_size * (1 - start_p_imm); // initial susceptible population
+  pop_sus[1] = pop_size * (1.0 - start_p_imm); // initial susceptible population
   pop_prot_init[1] = pop_size * start_p_imm; // initial (waning) protection from vax/inf/boost
 
   // for(i in 1:N_days_tot) {
   for(i in 1:N_weeks_tot) {
+   if(i > 1){
+     pop_uninf[i] = pop_uninf[i-1] - first_inf[i-1];
+       pop_sus[i] = pop_size - eff_prot[i-1];
+   }
 
-    logRt[i] = logRt0[i] + log(pop_uninf/pop_size);
+    logRt[i] = logRt0[i] + log(pop_sus[i]/pop_size);
 
     deriv1_log_new_inf[i] = logRt[i]/serial_i;
 
     log_new_inf[i] = sum(deriv1_log_new_inf[1:i]) + log_new_inf_0;
 
     new_inf[i] = exp(log_new_inf[i]);
+    first_inf[i] = new_inf[i] * (pop_uninf[i] / pop_sus[i]); 
 
     // new infections; proportionally divided over never infected and waned protection from previous infection
-    first_inf[i] = new_inf[i] * (pop_uninf / pop_sus[i]); 
-    pop_uninf -= first_inf[i];
-    ever_inf += first_inf[i];
+    // pop_uninf -= first_inf[i];
+    // ever_inf += first_inf[i];
     // prot_boost[i] = sum(obs_boost[1:i] * 0.8);
     // if(i > N_days_before){
     // wane_boost[i] = sum(obs_boost[1:i-N_days_before] .* (.35 * exp(-.008 * idx3[N_days_tot-(i-N_days_before)+1:N_days_tot]) + .45) );
     if(i > N_weeks_before){
     // wane_boost[i] = sum(obs_boost[1:i-N_weeks_before] .* (.35 * exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7) + .45) );
     pop_prot_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7)) );
-    } else{
+    }    else{
       pop_prot_boost[i] = obs_boost[1] *.8;
     }
     // wane_imm = .3 * exp(-.008 * idx3[N_days_tot-i+1]) + .2;
@@ -560,14 +564,12 @@ transformed parameters {
     eff_prot[i] = pop_prot_init[i] + pop_prot_inf[i] + pop_prot_boost[i];
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // pop_uninf = pop_sus - ever_inf + prot_boost[i];
-    pop_sus[i] = pop_size - eff_prot[i];
    // pop_uninf -= (new_inf[i] + obs_boost[i]);
    // END OF REINFECTION STRATEGIES
-   
-    if (pop_uninf < 1) {
-      // print("WARNING pop_uninf preliminary value was ", pop_uninf);
-      pop_uninf = 1;
-    }
+    // if (pop_uninf < 1) {
+    //   // print("WARNING pop_uninf preliminary value was ", pop_uninf);
+    //   pop_uninf = 1;
+    // }
     if (pop_sus[i] < 1) {
       // print("WARNING pop_uninf preliminary value was ", pop_uninf);
       pop_sus[i] = 1;
@@ -591,15 +593,17 @@ transformed parameters {
   // cases entering a state on day i + j - 1: 
   // cases entering previous state on day i * the probability of progression *
   // the probability progression occurred on day j 
-  // print("YO!");
+  print("YO!");
   // print("spl_par_rt:");
   // print(spl_par_rt);
+  // print("logRt0:");
+  // print(logRt0);
   // print("Rt:");
   // print(Rt);
-  // print("new_inf:");
-  // print(new_inf);
-  // print("inf_prg_delay_rv:");
-  // print(inf_prg_delay_rv);
+  print("new_inf:");
+  print(new_inf);
+  print("inf_prg_delay_rv:");
+  print(inf_prg_delay_rv);
   
   new_sym =
     p_sym_if_inft     .* conv1d(new_inf , inf_prg_delay_rv);
@@ -835,7 +839,7 @@ generated quantities {
   // 
   vector[Max_delay]   infect_dist_rv;
   // 
-  vector[500]         seropos_dist_rv;
+  vector[Max_delay]         seropos_dist_rv;
 
   // cumulative incidence
   cumulative_incidence = cumulative_sum(new_inf); 
@@ -859,8 +863,8 @@ generated quantities {
       gamma_cdf(i-1 , infect_dist_shap, infect_dist_rate);
  //  
   // vector to distribute infectiousness seropositives
-  for(i in 1:100)
-    seropos_dist_rv[1+100-i] =
+  for(i in 1:Max_delay)
+    seropos_dist_rv[1+Max_delay-i] =
       1.0 - gamma_cdf(i , seropos_dist_shap, seropos_dist_rate);
  //  
   // infectiousness
