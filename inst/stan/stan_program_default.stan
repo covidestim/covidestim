@@ -593,17 +593,17 @@ transformed parameters {
   // cases entering a state on day i + j - 1: 
   // cases entering previous state on day i * the probability of progression *
   // the probability progression occurred on day j 
-  print("YO!");
-  // print("spl_par_rt:");
-  // print(spl_par_rt);
-  // print("logRt0:");
-  // print(logRt0);
-  // print("Rt:");
-  // print(Rt);
-  print("new_inf:");
-  print(new_inf);
-  print("inf_prg_delay_rv:");
-  print(inf_prg_delay_rv);
+  // print("YO!");
+  // // print("spl_par_rt:");
+  // // print(spl_par_rt);
+  // // print("logRt0:");
+  // // print(logRt0);
+  // // print("Rt:");
+  // // print(Rt);
+  // print("new_inf:");
+  // print(new_inf);
+  // print("inf_prg_delay_rv:");
+  // print(inf_prg_delay_rv);
   
   new_sym =
     p_sym_if_inft     .* conv1d(new_inf , inf_prg_delay_rv);
