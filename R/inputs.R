@@ -161,7 +161,7 @@ input_rr <- function(data, type = "reported") {
 #' @export
 input_hosp <- function(data, type = "reported") {
   validate_input(data, type)
-  structure(list(hospi=data), class='input', date_type = type)
+  structure(list(obs_hosp=data), class='input', date_type = type)
 }
 
 
@@ -169,6 +169,6 @@ input_hosp <- function(data, type = "reported") {
 #' @export
 input_boost <- function(data, type = "reported") {
   validate_input(data, type)
-  structure(list(boost=data), class='input', date_type = type)
+  structure(list(obs_boost=data), class='input', date_type = type)
 }
 
