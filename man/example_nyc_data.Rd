@@ -24,7 +24,7 @@ during this period
 cfg <- covidestim(ndays = 120, region = 'New York') +
   input_cases(example_nyc_data('cases')) +
   input_deaths(example_nyc_data('deaths')) +
-  input_vaccines(example_nyc_data('RR'))
+  input_rr(example_nyc_data('RR'))
 
 \dontrun{
   result <- run(cfg)
