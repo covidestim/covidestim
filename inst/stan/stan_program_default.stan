@@ -52,7 +52,6 @@ data {
   int<lower=0>           obs_cas[N_weeks]; // vector of cases
   int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
   int<lower=0>           obs_die[N_weeks]; // vector of deaths
-  // vector<lower=0>[N_days + N_days_before]        obs_boost; // vector of booster data
   vector<lower=0>[N_weeks]        obs_boost; // vector of booster data
   real<lower=0>          pop_size; // population size
   real<lower=0,upper=1>          start_p_imm; // starting fraction immune
@@ -529,6 +528,8 @@ transformed parameters {
   ever_inf = pop_size * cum_p_inf_init; // initial ever infected population
   pop_susceptible[1] = pop_size * (1.0 - start_p_imm); // initial susceptible population
   population_protection_init[1] = pop_size * start_p_imm; // initial (waning) protection from vax/inf/boost
+                                                          //
+
 
   // for(i in 1:N_days_tot) {
   for(i in 1:N_weeks_tot) {
