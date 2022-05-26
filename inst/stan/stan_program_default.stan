@@ -369,7 +369,7 @@ transformed parameters {
   vector[N_weeks_tot]      deriv1_log_infections;
   vector[N_weeks_tot]      infections;
   vector[N_weeks_tot]      first_infections;
-  real                    pop_uninf;
+  vector[N_weeks_tot]     pop_uninf;
   real                    ever_inf;
   vector[N_weeks_tot]     pop_susceptible;
   vector[N_weeks_tot]     population_protection_init;
@@ -536,11 +536,11 @@ transformed parameters {
   // for(i in 1:N_days_tot) {
   for(i in 1:N_weeks_tot) {
    if(i > 1){
-     pop_uninf[i] = pop_uninf[i-1] - first_inf[i-1];
-       pop_sus[i] = pop_size - eff_prot[i-1];
+     pop_uninf[i] = pop_uninf[i-1] - first_infections[i-1];
+       pop_susceptible[i] = pop_size - effective_protection[i-1];
    }
 
-    logRt[i] = logRt0[i] + log(pop_sus[i]/pop_size);
+    logRt[i] = logRt0[i] + log(pop_susceptible[i]/pop_size);
 
     deriv1_log_infections[i] = logRt[i]/serial_i;
 
@@ -549,7 +549,7 @@ transformed parameters {
     infections[i] = exp(log_infections[i]);
 
     // new infections; proportionally divided over never infected and waned protection from previous infection
-    first_infections[i] = infections[i] * (pop_uninf / pop_susceptible[i]); 
+    first_infections[i] = infections[i] * (pop_uninf[i] / pop_susceptible[i]); 
     // prot_boost[i] = sum(obs_boost[1:i] * 0.8);
     // if(i > N_days_before){
     // wane_boost[i] = sum(obs_boost[1:i-N_days_before] .* (.35 * exp(-.008 * idx3[N_days_tot-(i-N_days_before)+1:N_days_tot]) + .45) );
