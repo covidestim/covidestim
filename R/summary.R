@@ -25,6 +25,7 @@
 #'       Date as a \code{Date} vector.
 #'
 #'     \item \code{cases_fitted}, \code{cases_fitted_p2_5},
+#'       \code{cases_fitted_p25}, \code{cases_fitted_p75},
 #'       \code{cases_fitted_p97_5}
 #'
 #'       The number of modeled case reports for date \code{date}. This is the
@@ -38,47 +39,54 @@
 #'       \strong{cases_fitted} is the modeled number of \strong{reported} cases
 #'       on date \code{date}).
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #
 #'     \item \code{cumulative_immunoexposed},
 #'       \code{cumulative_immunoexposed_p2_5},
+#'       \code{cumulative_immunoexposed_p25},
+#'       \code{cumulative_immunoexposed_p75},
 #'       \code{cumulative_immunoexposed_p97_5}
 #'
 #'       Description of the parameter.
 #'       
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{cumulative_infections}, \code{cumulative_infections_p2_5},
+#'       \code{cumulative_infections_p25}, \code{cumulative_infections_p75},
 #'       \code{cumulative_infections_p97_5}
 #'       
 #'       The number of modeled cumulative infections (not cases, or diagnoses)
 #'       that have occurred by the end of date \code{date}.
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'
-#'     \item \code{deaths}, \code{deaths_p2_5}, \code{deaths_p97_5}
+#'     \item \code{deaths}, \code{deaths_p2_5}, \code{deaths_p25},
+#'       \code{deaths_p75}, \code{deaths_p97_5}
 #'
 #'       The number of modeled deaths for date \code{date}. The number of
 #'       deaths estimated to have occurred on date \code{date} and does not
 #'       account for reporting delays.
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'
 #'     \item \code{deaths_diagnosed}, \code{deaths_diagnosed_p2_5},
+#'       \code{deaths_diagnosed_p25}, \code{deaths_diagnosed_p75},
 #'       \code{deaths_diagnosed_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{deaths_fitted}, \code{deaths_fitted_p2_5},
+#'       \code{deaths_fitted_p25}, \code{deaths_fitted_p75},
 #'       \code{deaths_fitted_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{deaths_fitted}, \code{deaths_fitted_p2_5},
+#'       \code{deaths_fitted_p25}, \code{deaths_fitted_p75},
 #'       \code{deaths_fitted_p97_5}
 #'
 #'       The number of modeled death reports for a date \code{date}. This
@@ -86,10 +94,10 @@
 #'       date, because \code{deaths_fitted} is approximating how many death
 #'       reports should exist for that date.
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'
-#'     \item
-#'       \code{diagnoses}, \code{diagnoses_p2_5}, \code{diagnoses_p97_5}
+#'     \item \code{diagnoses}, \code{diagnoses_p2_5}, \code{diagnoses_p25},
+#'       \code{diagnoses_p75}, \code{diagnoses_p97_5}
 #'
 #'       The number of modeled diagnoses that occurred on date \code{date}.
 #'       This is the sum of:
@@ -101,105 +109,126 @@
 #'         \item New diagnoses of severe individuals on date \code{date}.
 #'       }
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'
 #'     \item \code{effective_protection_inf},
 #'       \code{effective_protection_inf_p2_5},
+#'       \code{effective_protection_inf_p25},
+#'       \code{effective_protection_inf_p75},
 #'       \code{effective_protection_inf_p97_5}
 #'
 #'       Description of the parameter.
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{effective_protection_inf_vax_boost},
 #'       \code{effective_protection_inf_vax_boost_p2_5},
+#'       \code{effective_protection_inf_vax_boost_p25},
+#'       \code{effective_protection_inf_vax_boost_p75},
 #'       \code{effective_protection_inf_vax_boost_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{effective_protection_inf_vax},
 #'       \code{effective_protection_inf_vax_p2_5},
+#'       \code{effective_protection_inf_vax_p25},
+#'       \code{effective_protection_inf_vax_p75},
 #'       \code{effective_protection_inf_vax_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{effective_protection_vax_boost},
 #'       \code{effective_protection_vax_boost_p2_5},
+#'       \code{effective_protection_vax_boost_p25},
+#'       \code{effective_protection_vax_boost_p75},
 #'       \code{effective_protection_vax_boost_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{effective_protection_vax},
 #'       \code{effective_protection_vax_p2_5},
+#'       \code{effective_protection_vax_p25},
+#'       \code{effective_protection_vax_p75},
 #'       \code{effective_protection_vax_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
-#'     \item \code{first_inf}, \code{first_inf_p2_5}, \code{first_inf_p97_5}
+#'     \item \code{first_inf}, \code{first_inf_p2_5}, \code{first_inf_p25},
+#'       \code{first_inf_p75}, \code{first_inf_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{fit_to_wastewater}, \code{fit_to_wastewater_p2_5},
+#'       \code{fit_to_wastewater_p25}, \code{fit_to_wastewater_p75},
 #'       \code{fit_to_wastewater_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
-#'     \item \code{infections}, \code{infections_p2_5}, \code{infections_p97_5}
+#'     \item \code{infections}, \code{infections_p2_5}, \code{infections_p25},
+#'       \code{infections_p75}, \code{infections_p97_5}
 #'
 #'       The number of modeled infections that occurred on date \code{date}.
 #'       This includes infections that may never cause symptoms, as well as
 #'       infections which will never show up in case reports (will never be
 #'       diagnosed). Being indexed by date-of-occurrence, reporting lag is
-#'       absent from this outcome.  \emph{Median and 95\% interval, ℝ}.
+#'       absent from this outcome.
+#'
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'
 #'     \item \code{pop_susceptible}, \code{pop_susceptible_p2_5},
+#'       \code{pop_susceptible_p25}, \code{pop_susceptible_p75},
 #'       \code{pop_susceptible_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
 #'     \item \code{pop_susceptible_severe}, \code{pop_susceptible_severe_p2_5},
+#'       \code{pop_susceptible_severe_p25}, \code{pop_susceptible_severe_p75},
 #'       \code{pop_susceptible_severe_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
-#'     \item \code{Rt}, \code{Rt_p2_5}, \code{Rt_p97_5}
+#'     \item \code{Rt}, \code{Rt_p2_5}, \code{Rt_p25}, \code{Rt_p75},
+#'       \code{Rt_p97_5}
 #'
 #'       Estimate of the effective reproductive number (\eqn{R_t}).
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'     
-#'     \item \code{sero_positive}, \code{sero_positive_p2_5}, 
+#'     \item \code{sero_positive}, \code{sero_positive_p2_5},
+#'       \code{sero_positive_p25}, \code{sero_positive_p75},
 #'       \code{sero_positive_p97_5}
 #'
 #'       The number of individuals in the population who are modeled as being
 #'       seropositive. This is an unreliable outcome that we don't recommend
 #'       using.
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'     
 #'     \item \code{severe_fitted}, \code{severe_fitted_p2_5},
+#'       \code{severe_fitted_p25}, \code{severe_fitted_p75},
 #'       \code{severe_fitted_p97_5}
 #'
 #'       Description of the parameter.
 #'
-#'       \emph{Median and 95\% interval, ℝ}
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}
 #'
-#'     \item \code{severe}, \code{severe_p2_5}, \code{severe_p97_5}
+#'     \item \code{severe}, \code{severe_p2_5}, \code{severe_p25},
+#'       \code{severe_p75}, \code{severe_p97_5}
 #'
 #'       The number of transitions into the "severe" health state on date
 #'       \code{date}. The "severe" state is defined as disease that would merit
@@ -207,9 +236,10 @@
 #'       data detailing the number of COVID-positive hospital admissions or
 #'       COVID-primary-cause hospital admissions.
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'
 #'     \item \code{symptomatic_diagnosed}, \code{symptomatic_diagnosed_p2_5},
+#'       \code{symptomatic_diagnosed_p25}, \code{symptomatic_diagnosed_p75},
 #'       \code{symptomatic_diagnosed_p97_5}
 #'
 #'       The number of modeled diagnoses of symptomatic individuals occurring
@@ -217,16 +247,18 @@
 #'       the \code{diagnoses} outcome is that \code{diagnoses} includes
 #'       modeled diagnoses of asymptomatic individuals.
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'
-#'     \item \code{symptomatic}, \code{symptomatic_p2_5}, \code{symptomatic_p97_5}
+#'     \item \code{symptomatic}, \code{symptomatic_p2_5},
+#'       \code{symptomatic_p25}, \code{symptomatic_p75},
+#'       \code{symptomatic_p97_5}
 #'
 #'       The number of modeled transitions of infected individuals into the
 #'       infected, symptomatic health state on date \code{date}. This takes
 #'       into account the probability of becoming symptomatic and the delay
 #'       between infection and presentation of symptoms.
 #'
-#'       \emph{Median and 95\% interval, ℝ}.
+#'       \emph{Median, 50\% interval, and 95\% interval, ℝ}.
 #'
 #'     \item \code{data_available}
 #'
@@ -262,7 +294,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "effective_protection_inf_vax"       = "effective_protection_vax",
     "effective_protection_vax_boost"     = "effective_protection_vax_boost",
     "effective_protection_vax"           = "effective_protection_vax",
-    "first_inf"                          = "first_infections",
+    "first_infections"                   = "first_infections",
     "fit_to_wastewater"                  = "fit_to_wastewater",
     "infections"                         = "infections",
     "pop_susceptible"                    = "pop_susceptible",
@@ -280,7 +312,13 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     return(summaryOptimizer(ccr, toDate, params, start_date))
 
   # Used for renaming quantiles output by Stan
-  quantile_names <- c("2.5%" = "_p2_5", "50%" = "", "97.5%" = "_p97_5")
+  quantile_names <- c(
+    "2.5%"  = "_p2_5",
+    "25%"   = "_p25",
+    "50%"   = "",
+    "75%"   = "_p75",
+    "97.5%" = "_p97_5"
+  )
 
   # This creates the list of `pars` that gets passed to `rstan::summary`
   # by enumerating all combs of varnames and indices
@@ -293,7 +331,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   rstan::summary(
     ccr$result,
     pars = pars,
-    probs = c(0.025, 0.5, 0.975)
+    probs = c(0.025, 0.25, 0.5, 0.75, 0.975)
   )$summary %>% # Get rid of the per-chain summaries by indexing into `$summary`
     as.data.frame %>%
     tibble::as_tibble(rownames = "parname") -> melted
@@ -385,7 +423,13 @@ summaryEpi <- function(ccr) {
   ) -> pars_of_interest
 
   # Used for renaming quantiles output by Stan
-  quantile_names <- c("2.5%" = "_p2_5", "50%" = "median", "97.5%" = "_p97_5")
+  quantile_names <- c(
+    "2.5%"  = "_p2_5",
+    "25%"   = "_p25",
+    "50%"   = "",
+    "75%"   = "_p75",
+    "97.5%" = "_p97_5"
+  )
 
   rstan::summary(
     ccr$result,
@@ -412,11 +456,13 @@ summaryOptimizer <- function(ccr, toDate, params, start_date) {
   # NA-valued confidence intervals. This also makes sharing a DB table with
   # sampler-generated results much easier. The next few lines create the
   # neccessary "*_p2_5" and "*_p97_5" NA-valued columns
-  params.lo <- paste0(params, "_p2_5")
-  params.hi <- paste0(params, "_p97_5")
+  params.2_5  <- paste0(params, "_p2_5")
+  params.25   <- paste0(params, "_p25")
+  params.75   <- paste0(params, "_p75")
+  params.97_5 <- paste0(params, "_p97_5")
 
-  nullParams <- as.list(rep(NA, 2*length(params))) %>%
-    stats::setNames(c(params.lo, params.hi))
+  nullParams <- as.list(rep(NA, 4*length(params))) %>%
+    stats::setNames(c(params.2_5, params.25, params.75, params.97_5))
 
   # ccr$result is a list keyed on Stan param name, each value is a numeric
   # vector of equal length.
