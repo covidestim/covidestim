@@ -90,14 +90,14 @@ covidestim <- function(nweeks,
   att(is.numeric(nweeks), nweeks >= 1)
 
   defaultConfig(
-    N_weeks = nweeks,
-    N_weeks_before = nweeks_before,
-    pop_size = pop_size,
+    N_weeks            = nweeks,
+    N_weeks_before     = nweeks_before,
+    pop_size           = pop_size,
     n_spl_rt_knotwidth = nspl_rt_knotwidth,
-    region = region,
-    start_p_imm = start_p_imm,
-    cum_p_inf_init = cum_p_inf_init
-    ) -> config
+    region             = region,
+    start_p_imm        = start_p_imm,
+    cum_p_inf_init     = cum_p_inf_init
+  ) -> config
 
   # All user-specified config-related things must be specified above this line
   # to avoid double-validation/no-validation
