@@ -580,17 +580,6 @@ transformed parameters {
       // print("WARNING pop_uninf preliminary value was ", pop_uninf);
       pop_susceptible[i] = 1;
     }
-    print("pop_susceptible[i]:");
-    print(pop_susceptible[i]);
-    print("effective_protection[i]:");
-    print(effective_protection[i]);
-    print("population_protection_inf[i]:");
-    print(population_protection_inf[i]);
-    print("population_protection_init[i]:");
-    print(population_protection_init[i]);
-    print("population_protection_boost[i]:");
-    print(population_protection_boost[i]);
-    print("--");
   }
   
   Rt = exp(logRt); 
