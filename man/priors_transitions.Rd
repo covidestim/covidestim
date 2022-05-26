@@ -5,12 +5,12 @@
 \title{Priors for transitions}
 \usage{
 priors_transitions(
-  p_sym_if_inf = c(5.143, 3.536),
+  p_sym_if_inf = c(2.5, 10),
   p_sev_if_sym = c(1.8854, 20.002),
   p_die_if_sev = c(28.239, 162.3),
-  p_die_if_inf = c(15.915, 3167.1),
+  p_die_if_inf = c(2.55, 1594),
   ifr_decl_OR = c(12.031, 8.999),
-  new_p_sym_if_inf = c(32.906, 393.51),
+  new_p_sym_if_inf = c(2.5, 10),
   rr_decl_sev = c(20.915, 298.79),
   rr_decl_die = c(15.366, 786.32)
 )

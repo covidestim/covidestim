@@ -5,33 +5,28 @@
 \title{Configure a Covidestim run on a set of priors and input data}
 \usage{
 covidestim(
-  ndays,
-  ndays_before = 28,
+  nweeks,
+  nweeks_before = 4,
   pop_size = 1e+12,
   chains = 3,
   iter = 2000,
-  nspl_rt_knotwidth = 10,
+  nspl_rt_knotwidth = 1,
   thin = 1,
   seed = 42,
   adapt_delta = 0.98,
   max_treedepth = 14,
   window.length = 7,
   region,
-  nRt = 7,
-  sdRt = 1,
-  reinf_delay = 180,
-  reinf_prob = NULL,
-  omicron_adjust = FALSE,
-  Omicron_takeover_sd = 14,
-  sd_omicron_delay = 10
+  start_p_imm,
+  cum_p_inf_init
 )
 }
 \arguments{
-\item{ndays}{A positive integer. The number of days of input data being
-modeled. This should always be set to the number of days in your input
+\item{nweeks}{A positive integer. The number of weeks of input data being
+modeled. This should always be set to the number of weeks in your input
 data.}
 
-\item{ndays_before}{A positive integer. How many days before the first day
+\item{nweeks_before}{A positive integer. How many weeks before the first week
 of model data should be modeled? A higher number will produce estimates
 that go farther back in time, however, those estimates will contain more
 and more uncertainty.}
@@ -46,6 +41,9 @@ important as the population ever infected approaches the population size.}
 \item{iter}{The number of iterations to run during NUTS sampling, as passed
 to \code{\link[rstan]{sampling}}.}
 
+\item{nspl_rt_knotwidth}{An integer. The knotwidth to use for the spline of
+Rt.}
+
 \item{thin}{A positive integer to specify period for saving samples, as
 passed to \code{\link[rstan]{sampling}}. Modify this only if you intend
 to inspect raw iterations data returned by \code{\link[rstan]{sampling}}.}
@@ -55,16 +53,6 @@ sampling or in BFGS.}
 
 \item{region}{A string. The FIPS code (for U.S. counties) or state name
 (e.g. \code{New York}) being modeled. Required.}
-
-\item{nRt}{A positive integer. How many days of Rt (measured from last day)
-should be penalized?}
-
-\item{sdRt}{A number. The standard deviation of the Rt penalty.}
-
-\item{reinf_prob}{NULL or vector of length 1 or 2. The fractions of the
-infections to be put back in the Susceptible pool on day 1 and 180
-after infection. Example: c(.5, .2) 50\% of new infections is immediately
-available for reinfection; an additional 20\% is available after 180 days.}
 }
 \value{
 An S3 object of type \code{covidestim}. This can be passed to
