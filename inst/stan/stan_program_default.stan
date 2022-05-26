@@ -142,6 +142,8 @@ data {
   // probabilities of progression inf -> sym -> sev -> die
   real<lower=0> pri_p_sym_if_inf_a; 
   real<lower=0> pri_p_sym_if_inf_b;
+  real<lower=0> pri_new_p_sym_if_inf_a; 
+  real<lower=0> pri_new_p_sym_if_inf_b;
   real<lower=0> pri_p_sev_if_sym_a;
   real<lower=0> pri_p_sev_if_sym_b;
   real<lower=0> pri_p_die_if_sev_a;
@@ -578,6 +580,17 @@ transformed parameters {
       // print("WARNING pop_uninf preliminary value was ", pop_uninf);
       pop_susceptible[i] = 1;
     }
+    print("pop_susceptible[i]:");
+    print(pop_susceptible[i]);
+    print("effective_protection[i]:");
+    print(effective_protection[i]);
+    print("population_protection_inf[i]:");
+    print(population_protection_inf[i]);
+    print("population_protection_init[i]:");
+    print(population_protection_init[i]);
+    print("population_protection_boost[i]:");
+    print(population_protection_boost[i]);
+    print("--");
   }
   
   Rt = exp(logRt); 
