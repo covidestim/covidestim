@@ -191,7 +191,7 @@ transformed data {
   int<lower=0>           obs_cas_mvs[N_weeks]; // vector of cases
   int<lower=0>           obs_hosp_mvs[N_weeks]; // vector of hospitalizations
   // int<lower=0>           obs_die_mvs[N_weeks]; // vector of deaths
-  // real susceptible_pvl; 
+  // real susceptible_prvl; 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
   vector[Max_delay]  asy_rec_delay_rv; 
@@ -219,7 +219,7 @@ transformed data {
   // case or death 
   // N_days_tot = N_days + N_days_before; 
   N_weeks_tot = N_weeks + N_weeks_before; 
-  // susceptible_pvl = pop_size *.8;
+  // susceptible_prvl = pop_size *.8;
   // Indexes for convolutions
 // for(i in 1:N_days_tot) {
 for(i in 1:N_weeks_tot) {
@@ -371,11 +371,11 @@ transformed parameters {
   vector[N_weeks_tot]      infections_premiere;
   vector[N_weeks_tot]     num_uninf;
   real                    ever_inf;
-  vector[N_weeks_tot]     susceptible_pvl;
+  vector[N_weeks_tot]     susceptible_prvl;
   vector[N_weeks_tot]     population_protection_init;
   vector[N_weeks_tot]      population_protection_inf;
   vector[N_weeks_tot]      population_protection_boost;
-  vector[N_weeks_tot]      effective_protection_pvl;
+  vector[N_weeks_tot]      effective_protection_prvl;
   //vector[N_weeks_tot]      prot_boost;
   // vector[N_spl_par_rt]    spl_par_rt;
 
@@ -528,7 +528,7 @@ transformed parameters {
   
   num_uninf[1] = pop_size * (1.0 - cum_p_inf_init); // initial uninfected population
   ever_inf = pop_size * cum_p_inf_init; // initial ever infected population
-  susceptible_pvl[1] = pop_size * (1.0 - start_p_imm); // initial susceptible population
+  susceptible_prvl[1] = pop_size * (1.0 - start_p_imm); // initial susceptible population
   population_protection_init[1] = pop_size * start_p_imm; // initial (waning) protection from vax/inf/boost
                                                           //
 
@@ -537,10 +537,10 @@ transformed parameters {
   for(i in 1:N_weeks_tot) {
    if(i > 1){
      num_uninf[i] = num_uninf[i-1] - infections_premiere[i-1];
-       susceptible_pvl[i] = pop_size - effective_protection_pvl[i-1];
+       susceptible_prvl[i] = pop_size - effective_protection_prvl[i-1];
    }
 
-    logRt[i] = logRt0[i] + log(susceptible_pvl[i]/pop_size);
+    logRt[i] = logRt0[i] + log(susceptible_prvl[i]/pop_size);
 
     deriv1_log_infections[i] = logRt[i]/serial_i;
 
@@ -549,7 +549,7 @@ transformed parameters {
     infections[i] = exp(log_infections[i]);
 
     // new infections; proportionally divided over never infected and waned protection from previous infection
-    infections_premiere[i] = infections[i] * (num_uninf[i] / susceptible_pvl[i]); 
+    infections_premiere[i] = infections[i] * (num_uninf[i] / susceptible_prvl[i]); 
     // prot_boost[i] = sum(obs_boost[1:i] * 0.8);
     // if(i > N_days_before){
     // wane_boost[i] = sum(obs_boost[1:i-N_days_before] .* (.35 * exp(-.008 * idx3[N_days_tot-(i-N_days_before)+1:N_days_tot]) + .45) );
@@ -563,11 +563,11 @@ transformed parameters {
     // wane_imm = .15 * exp(-.008 * idx3[N_weeks_tot-i+1]*7) + .1; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
     population_protection_init[i] = pop_size * start_p_imm * exp(-.008 * idx3[N_weeks_tot-i+1]*7) ; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
     // wane_imm = 0;
-    // susceptible_pvl[i] = pop_size - wane_imm[i];
+    // susceptible_prvl[i] = pop_size - wane_imm[i];
     // wane_inf[i] = sum(infections[1:i] .* (.75* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .25));
     population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot] * 7)));
     // ever_inf += infections[i];
-    effective_protection_pvl[i] = population_protection_init[i] + population_protection_inf[i] + population_protection_boost[i];
+    effective_protection_prvl[i] = population_protection_init[i] + population_protection_inf[i] + population_protection_boost[i];
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // num_uninf = pop_sus - ever_inf + prot_boost[i];
    // num_uninf -= (new_inf[i] + obs_boost[i]);
@@ -576,9 +576,9 @@ transformed parameters {
     //   // print("WARNING num_uninf preliminary value was ", num_uninf);
     //   num_uninf = 1;
     // }
-    if (susceptible_pvl[i] < 1) {
+    if (susceptible_prvl[i] < 1) {
       // print("WARNING num_uninf preliminary value was ", num_uninf);
-      susceptible_pvl[i] = 1;
+      susceptible_prvl[i] = 1;
     }
   }
   
@@ -822,18 +822,18 @@ model {
 generated quantities {
   // calculate cumulative incidence + seropositive + pop_infectiousness
   real                p_die_if_sym;
-  vector[N_weeks_tot] susceptible_severe_pvl;
-  vector[N_weeks_tot] effective_protection_inf_pvl;
-  vector[N_weeks_tot] effective_protection_inf_vax_pvl;
-  vector[N_weeks_tot] effective_protection_inf_vax_boost_pvl;
-  vector[N_weeks_tot] effective_protection_vax_pvl;
-  vector[N_weeks_tot] effective_protection_vax_boost_pvl;
-  vector[N_weeks_tot] fitted_wastewater_pvl;
+  vector[N_weeks_tot] susceptible_severe_prvl;
+  vector[N_weeks_tot] effective_protection_inf_prvl;
+  vector[N_weeks_tot] effective_protection_inf_vax_prvl;
+  vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
+  vector[N_weeks_tot] effective_protection_vax_prvl;
+  vector[N_weeks_tot] effective_protection_vax_boost_prvl;
+  vector[N_weeks_tot] fitted_wastewater_prvl;
   vector[N_weeks_tot] immunoexposed_cumulative;
 
   vector[N_weeks_tot]  diag_cases;
   vector[N_weeks_tot]  infections_cumulative;  
-  vector[N_weeks_tot]  seropositive_pvl;
+  vector[N_weeks_tot]  seropositive_prvl;
   // vector[N_days_tot]  pop_infectiousness;  
   // 
   vector[Max_delay]   infect_dist_rv;
@@ -845,11 +845,11 @@ generated quantities {
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
   // immunoexposed_cumulative = infections_cumulative;
-  // effective_protection_inf_pvl = population_protection_inf;
-  // effective_protection_inf_vax_pvl = population_protection_inf;
-  // effective_protection_inf_vax_boost_pvl = population_protection_inf;
-  // effective_protection_vax_pvl = population_protection_init;
-  // effective_protection_vax_boost_pvl = population_protection_boost;
+  // effective_protection_inf_prvl = population_protection_inf;
+  // effective_protection_inf_vax_prvl = population_protection_inf;
+  // effective_protection_inf_vax_boost_prvl = population_protection_inf;
+  // effective_protection_vax_prvl = population_protection_init;
+  // effective_protection_vax_boost_prvl = population_protection_boost;
   
   p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
 
@@ -867,9 +867,9 @@ generated quantities {
       1.0 - gamma_cdf(i , seropos_dist_shap, seropos_dist_rate);
  //  
   // infectiousness
-  // fitted_wastewater_pvl = conv1d(infections, infect_dist_rv);
+  // fitted_wastewater_prvl = conv1d(infections, infect_dist_rv);
 
   // seropositives
-  seropositive_pvl = conv1d(infections, seropos_dist_rv);
+  seropositive_prvl = conv1d(infections, seropos_dist_rv);
 }
 
