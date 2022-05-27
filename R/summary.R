@@ -52,35 +52,35 @@
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{effective_protection_inf_pvl}}, \code{effective_protection_inf_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_inf_prvl}}, \code{effective_protection_inf_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{effective_protection_inf_vax_boost_pvl}}, \code{effective_protection_inf_vax_boost_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_inf_vax_boost_prvl}}, \code{effective_protection_inf_vax_boost_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{effective_protection_inf_vax_pvl}}, \code{effective_protection_inf_vax_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_inf_vax_prvl}}, \code{effective_protection_inf_vax_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{effective_protection_vax_boost_pvl}}, \code{effective_protection_vax_boost_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_vax_boost_prvl}}, \code{effective_protection_vax_boost_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{effective_protection_vax_pvl}}, \code{effective_protection_vax_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_vax_prvl}}, \code{effective_protection_vax_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
@@ -108,7 +108,7 @@
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{fitted_wastewater_pvl}}, \code{fitted_wastewater_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{fitted_wastewater_prvl}}, \code{fitted_wastewater_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
@@ -150,7 +150,7 @@
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{seropositive_pvl}}, \code{seropositive_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{seropositive_prvl}}, \code{seropositive_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
@@ -164,14 +164,14 @@
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{susceptible_pvl}}, \code{susceptible_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{susceptible_prvl}}, \code{susceptible_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
-#'     \item \bold{\code{susceptible_severe_pvl}}, \code{susceptible_severe_pvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{susceptible_severe_prvl}}, \code{susceptible_severe_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
 #'       Description of the parameter.
 #'
@@ -207,29 +207,29 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
 
   # Mappings between names in Stan and variable names in the output `df`
   c(
-    "deaths"                                 = "deaths",
-    "deaths_of_diagnosed"                    = "deaths_of_diagnosed",
-    "diagnoses"                              = "diagnoses",
-    "diagnoses_of_symptomatic"               = "diagnoses_of_symptomatic",
-    "effective_protection_inf_pvl"           = "effective_protection_inf_pvl",
-    "effective_protection_inf_vax_boost_pvl" = "effective_protection_inf_vax_boost_pvl",
-    "effective_protection_inf_vax_pvl"       = "effective_protection_inf_vax_pvl",
-    "effective_protection_vax_boost_pvl"     = "effective_protection_vax_boost_pvl",
-    "effective_protection_vax_pvl"           = "effective_protection_vax_pvl",
-    "fitted_cases"                           = "fitted_cases",
-    "fitted_deaths"                          = "fitted_deaths",
-    "fitted_hospitalizations"                = "fitted_hospitalizations",
-    "fitted_wastewater_pvl"                  = "fitted_wastewater_pvl",
-    "immunoexposed_cumulative"               = "immunoexposed_cumulative",
-    "infections_cumulative"                  = "infections_cumulative",
-    "infections"                             = "infections",
-    "infections_premiere"                    = "infections_premiere",
-    "r_t"                                    = "r_t",
-    "seropositive_pvl"                       = "seropositive_pvl",
-    "severe"                                 = "severe",
-    "susceptible_pvl"                        = "susceptible_pvl",
-    "susceptible_severe_pvl"                 = "susceptible_severe_pvl",
-    "symptomatic"                            = "symptomatic"
+    "deaths"                                  = "deaths",
+    "deaths_of_diagnosed"                     = "deaths_of_diagnosed",
+    "diagnoses"                               = "diagnoses",
+    "diagnoses_of_symptomatic"                = "diagnoses_of_symptomatic",
+    "effective_protection_inf_prvl"           = "effective_protection_inf_prvl",
+    "effective_protection_inf_vax_boost_prvl" = "effective_protection_inf_vax_boost_prvl",
+    "effective_protection_inf_vax_prvl"       = "effective_protection_inf_vax_prvl",
+    "effective_protection_vax_boost_prvl"     = "effective_protection_vax_boost_prvl",
+    "effective_protection_vax_prvl"           = "effective_protection_vax_prvl",
+    "fitted_cases"                            = "fitted_cases",
+    "fitted_deaths"                           = "fitted_deaths",
+    "fitted_hospitalizations"                 = "fitted_hospitalizations",
+    "fitted_wastewater_prvl"                  = "fitted_wastewater_prvl",
+    "immunoexposed_cumulative"                = "immunoexposed_cumulative",
+    "infections_cumulative"                   = "infections_cumulative",
+    "infections"                              = "infections",
+    "infections_premiere"                     = "infections_premiere",
+    "r_t"                                     = "r_t",
+    "seropositive_prvl"                       = "seropositive_prvl",
+    "severe"                                  = "severe",
+    "susceptible_prvl"                        = "susceptible_prvl",
+    "susceptible_severe_prvl"                 = "susceptible_severe_prvl",
+    "symptomatic"                             = "symptomatic"
   ) -> params
 
   
