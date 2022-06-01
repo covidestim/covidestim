@@ -26,162 +26,198 @@
 #'
 #'     \item \bold{\code{deaths}}, \code{deaths} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The number deaths estimated to occur on date 
+#'       \code{date}. 
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{deaths_of_diagnosed}}, \code{deaths_of_diagnosed} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The number of diagnosed deaths estimated to occur on date \code{date}.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{diagnoses}}, \code{diagnoses} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The number of diagnoses estimated to occur on date \code{date}.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{diagnoses_of_symptomatic}}, \code{diagnoses_of_symptomatic} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The number of diagnoses of symptomatic individuals estimated to occur on date \code{date}.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{effective_protection_inf_prvl}}, \code{effective_protection_inf_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The estimated fraction of the population on date \code{date} with 
+#'       effective protection against infection with a history of infection (but 
+#'       no vaccinations).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{effective_protection_inf_vax_boost_prvl}}, \code{effective_protection_inf_vax_boost_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
-#'
+#'       The estimated fraction of the population on date \code{date} with 
+#'       effective protection against infection, with a history of infection,
+#'       vaccination and a booster shot.
+#'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{effective_protection_inf_vax_prvl}}, \code{effective_protection_inf_vax_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
-#'
+#'       The estimated fraction of the population on date \code{date} with 
+#'       effective protection against infection, with a history of infection and
+#'       vaccination (but no booster shot).
+#'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{effective_protection_vax_boost_prvl}}, \code{effective_protection_vax_boost_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The estimated fraction of the population on date \code{date} with 
+#'       effective protection against infection with a history of vaccination
+#'       and a booster shot (but no infection).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{effective_protection_vax_prvl}}, \code{effective_protection_vax_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The estimated fraction of the population on date \code{date} with 
+#'       effective protection against infection with a history of vaccination
+#'       (but no booster shot or infection).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{fitted_cases}}, \code{fitted_cases} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The number of modeled case reports for a date \code{date}. This takes
+#'       the delay from diagnosis to report into account and thus is approximating 
+#'       how many case reports should exist for this date.
+#'       This estimate is used to fit against the observed data (reported diagnoses).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{fitted_deaths}}, \code{fitted_deaths} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
-#'
+#'       The number of modeled death reports for a date \code{date}.  This takes
+#'       the delay from death to report into account and thus is approximating 
+#'       how many death reports should exist for this date.
+#'       This estimate is used to fit against the observed data (reported deaths).
+#'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{fitted_hospitalizations}}, \code{fitted_hospitalizations} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The number of modeled hospitalization reports for a date \code{date}.  This takes
+#'       the delay from hospitalization to report into account and thus is approximating 
+#'       how many admission reports should exist for this date.
+#'       This estimate is used to fit against the observed data (reported hospital admissions).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{fitted_wastewater_prvl}}, \code{fitted_wastewater_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
-#'
+#'       To be developed -- a modeled estimate that resembles the wastewater data;
+#'       a measure of infectiousness in the population on date \code{date}.
+#'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{immunoexposed_cumulative}}, \code{immunoexposed_cumulative} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The estimated fraction of the population on date \code{date} with 
+#'       historic immunological exposure (infection and/or vaccination).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{infections_cumulative}}, \code{infections_cumulative} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The estimated cumulative number of infections on date \code{date}.
+#'       This includes both first and repeat infections and can therefore exceed the 
+#'       population size.       
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{infections}}, \code{infections} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The number of infections estimated to occur on date \code{date}. 
+#'       This includes both first and repeat infections.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{infections_premiere}}, \code{infections_premiere} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The number of first infections estimated to occur on date \code{date}.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{r_t}}, \code{r_t} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       Estimate of the effective reproductive number (\eqn{R_t}).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{seropositive_prvl}}, \code{seropositive_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
-#'
+#'       The number of individuals in the population who are modeled as being
+#'       seropositive. This is an unreliable outcome that we don't recommend
+#'       using. 
+#'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{severe}}, \code{severe} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
-#'
+#'       The number of transitions into the "severe" health state on date
+#'       \code{date}. The "severe" state is defined as disease that would merit
+#'       hospitalization. 
+#'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{susceptible_prvl}}, \code{susceptible_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
+#'       The fraction of the population on date \code{date} that is susceptible
+#'       to SARS-CoV-2 infection, i.e., the fraction of the population that has
+#'       \emph{no} effective protection.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{susceptible_severe_prvl}}, \code{susceptible_severe_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
-#'
+#'       The fraction of the population on date \code{date} that is susceptible
+#'       to developing severe disease from a SARS-CoV-2 infection. This is a 
+#'       subset from \code{susceptible_prvl}.
+#'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
 #'     \item \bold{\code{symptomatic}}, \code{symptomatic} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
 #'
-#'       Description of the parameter.
-#'
+#'        The number of modeled transitions of infected individuals into the
+#'        infected, symptomatic health state on date \code{date}. This takes
+#'        into account the probability of becoming symptomatic and the delay
+#'        between infection and presentation of symptoms. 
+#'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, RRR}.
 #'
@@ -207,29 +243,29 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
 
   # Mappings between names in Stan and variable names in the output `df`
   c(
-    "deaths"                                  = "deaths",
-    "deaths_of_diagnosed"                     = "deaths_of_diagnosed",
-    "diagnoses"                               = "diagnoses",
-    "diagnoses_of_symptomatic"                = "diagnoses_of_symptomatic",
-    "effective_protection_inf_prvl"           = "effective_protection_inf_prvl",
-    "effective_protection_inf_vax_boost_prvl" = "effective_protection_inf_vax_boost_prvl",
-    "effective_protection_inf_vax_prvl"       = "effective_protection_inf_vax_prvl",
-    "effective_protection_vax_boost_prvl"     = "effective_protection_vax_boost_prvl",
-    "effective_protection_vax_prvl"           = "effective_protection_vax_prvl",
-    "fitted_cases"                            = "fitted_cases",
-    "fitted_deaths"                           = "fitted_deaths",
-    "fitted_hospitalizations"                 = "fitted_hospitalizations",
-    "fitted_wastewater_prvl"                  = "fitted_wastewater_prvl",
-    "immunoexposed_cumulative"                = "immunoexposed_cumulative",
-    "infections_cumulative"                   = "infections_cumulative",
-    "infections"                              = "infections",
-    "infections_premiere"                     = "infections_premiere",
-    "r_t"                                     = "r_t",
-    "seropositive_prvl"                       = "seropositive_prvl",
-    "severe"                                  = "severe",
-    "susceptible_prvl"                        = "susceptible_prvl",
-    "susceptible_severe_prvl"                 = "susceptible_severe_prvl",
-    "symptomatic"                             = "symptomatic"
+    "deaths"                                 = "deaths",
+    "deaths_of_diagnosed"                    = "deaths_of_diagnosed",
+    "diagnoses"                              = "diagnoses",
+    "diagnoses_of_symptomatic"               = "diagnoses_of_symptomatic",
+    "effective_protection_inf_prvl"          = "effective_protection_inf_prvl",
+    "effective_protection_inf_vax_boost_prvl"= "effective_protection_inf_vax_boost_prvl",
+    "effective_protection_inf_vax_prvl"      = "effective_protection_inf_vax_prvl",
+    "effective_protection_vax_boost_prvl"    = "effective_protection_vax_boost_prvl",
+    "effective_protection_vax_prvl"          = "effective_protection_vax_prvl",
+    "fitted_cases"                           = "fitted_cases",
+    "fitted_deaths"                          = "fitted_deaths",
+    "fitted_hospitalizations"                = "fitted_hospitalizations",
+    "fitted_wastewater_prvl"                 = "fitted_wastewater_prvl",
+    "immunoexposed_cumulative"               = "immunoexposed_cumulative",
+    "infections_cumulative"                  = "infections_cumulative",
+    "infections"                             = "infections",
+    "infections_premiere"                    = "infections_premiere",
+    "r_t"                                    = "r_t",
+    "seropositive_prvl"                      = "seropositive_prvl",
+    "severe"                                 = "severe",
+    "susceptible_prvl"                       = "susceptible_prvl",
+    "susceptible_severe_prvl"                = "susceptible_severe_prvl",
+    "symptomatic"                            = "symptomatic"
   ) -> params
 
   
