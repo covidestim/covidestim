@@ -1,9 +1,8 @@
 #' Summarize a Covidestim run
 #'
 #' Returns a \code{data.frame} summarizing a Covidestim model run. Note that if
-#' \code{\link{runOptimizer.covidestim}} is used, all \code{*.(lo|hi)}
-#' variables will be \code{NA}-valued, because BFGS does not generate
-#' confidence intervals.
+#' \code{\link{runOptimizer.covidestim}} is used, all \code{*_p(2_5|25|75|97_5)}
+#' variables will be \code{NA}-valued: the optimizer does not produce intervals.
 #'
 #' @param ccr A \code{covidestim_result} object
 #'
@@ -24,202 +23,239 @@
 #'
 #'       Date as a \code{Date} vector.
 #'
-#'     \item \bold{\code{deaths}}, \code{deaths} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{deaths}}, \code{deaths} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
 #'       The number deaths estimated to occur on date 
 #'       \code{date}. 
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{deaths_of_diagnosed}}, \code{deaths_of_diagnosed} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{deaths_of_diagnosed}}, \code{deaths_of_diagnosed} +
+#'       (\code{_p2_5}, \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The number of diagnosed deaths estimated to occur on date \code{date}.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{diagnoses}}, \code{diagnoses} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{diagnoses}}, \code{diagnoses} + (\code{_p2_5},
+#'       \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The number of diagnoses estimated to occur on date \code{date}.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{diagnoses_of_symptomatic}}, \code{diagnoses_of_symptomatic} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{diagnoses_of_symptomatic}},
+#'       \code{diagnoses_of_symptomatic} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
-#'       The number of diagnoses of symptomatic individuals estimated to occur on date \code{date}.
-#'
-#'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
-#'
-#'     \item \bold{\code{effective_protection_inf_prvl}}, \code{effective_protection_inf_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
-#'
-#'       The estimated fraction of the population on date \code{date} with 
-#'       effective protection against infection with a history of infection (but 
-#'       no vaccinations).
+#'       The number of diagnoses of symptomatic individuals estimated to occur
+#'       on date \code{date}.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{effective_protection_inf_vax_boost_prvl}}, \code{effective_protection_inf_vax_boost_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_inf_prvl}},
+#'       \code{effective_protection_inf_prvl} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
+#'
+#'       The estimated fraction of the population on date \code{date} with
+#'       effective protection against infection with a history of infection
+#'       (but no vaccinations).
+#'
+#'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
+#'         interval, ℝ}.
+#'
+#'     \item \bold{\code{effective_protection_inf_vax_boost_prvl}},
+#'       \code{effective_protection_inf_vax_boost_prvl} + (\code{_p2_5},
+#'       \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The estimated fraction of the population on date \code{date} with 
 #'       effective protection against infection, with a history of infection,
 #'       vaccination and a booster shot.
 #'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{effective_protection_inf_vax_prvl}}, \code{effective_protection_inf_vax_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_inf_vax_prvl}},
+#'       \code{effective_protection_inf_vax_prvl} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
-#'       The estimated fraction of the population on date \code{date} with 
-#'       effective protection against infection, with a history of infection and
-#'       vaccination (but no booster shot).
+#'       The estimated fraction of the population on date \code{date} with
+#'       effective protection against infection, with a history of infection
+#'       and vaccination (but no booster shot).
 #'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{effective_protection_vax_boost_prvl}}, \code{effective_protection_vax_boost_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_vax_boost_prvl}},
+#'       \code{effective_protection_vax_boost_prvl} + (\code{_p2_5},
+#'       \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The estimated fraction of the population on date \code{date} with 
 #'       effective protection against infection with a history of vaccination
 #'       and a booster shot (but no infection).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{effective_protection_vax_prvl}}, \code{effective_protection_vax_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{effective_protection_vax_prvl}},
+#'       \code{effective_protection_vax_prvl} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
 #'       The estimated fraction of the population on date \code{date} with 
 #'       effective protection against infection with a history of vaccination
 #'       (but no booster shot or infection).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{fitted_cases}}, \code{fitted_cases} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{fitted_cases}}, \code{fitted_cases} + (\code{_p2_5},
+#'       \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The number of modeled case reports for a date \code{date}. This takes
-#'       the delay from diagnosis to report into account and thus is approximating 
-#'       how many case reports should exist for this date.
-#'       This estimate is used to fit against the observed data (reported diagnoses).
+#'       the delay from diagnosis to report into account and thus is
+#'       approximating how many case reports should exist for this date. This
+#'       estimate is used to fit against the observed data (reported
+#'       diagnoses).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{fitted_deaths}}, \code{fitted_deaths} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{fitted_deaths}}, \code{fitted_deaths} + (\code{_p2_5},
+#'       \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
-#'       The number of modeled death reports for a date \code{date}.  This takes
-#'       the delay from death to report into account and thus is approximating 
-#'       how many death reports should exist for this date.
-#'       This estimate is used to fit against the observed data (reported deaths).
+#'       The number of modeled death reports for a date \code{date}.  This
+#'       takes the delay from death to report into account and thus is
+#'       approximating how many death reports should exist for this date.  This
+#'       estimate is used to fit against the observed data (reported deaths).
 #'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{fitted_hospitalizations}}, \code{fitted_hospitalizations} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{fitted_hospitalizations}},
+#'       \code{fitted_hospitalizations} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
-#'       The number of modeled hospitalization reports for a date \code{date}.  This takes
-#'       the delay from hospitalization to report into account and thus is approximating 
-#'       how many admission reports should exist for this date.
-#'       This estimate is used to fit against the observed data (reported hospital admissions).
+#'       The number of modeled hospitalization reports for a date \code{date}.
+#'       This takes the delay from hospitalization to report into account and
+#'       thus is approximating how many admission reports should exist for this
+#'       date.  This estimate is used to fit against the observed data
+#'       (reported hospital admissions).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{fitted_wastewater_prvl}}, \code{fitted_wastewater_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{fitted_wastewater_prvl}},
+#'       \code{fitted_wastewater_prvl} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
-#'       To be developed -- a modeled estimate that resembles the wastewater data;
-#'       a measure of infectiousness in the population on date \code{date}.
+#'       To be developed - a modeled estimate that resembles the wastewater
+#'       data; a measure of infectiousness in the population on date
+#'       \code{date}.
 #'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{immunoexposed_cumulative}}, \code{immunoexposed_cumulative} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{immunoexposed_cumulative}},
+#'       \code{immunoexposed_cumulative} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
 #'       The estimated fraction of the population on date \code{date} with 
 #'       historic immunological exposure (infection and/or vaccination).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{infections_cumulative}}, \code{infections_cumulative} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{infections_cumulative}}, \code{infections_cumulative}
+#'       + (\code{_p2_5}, \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The estimated cumulative number of infections on date \code{date}.
-#'       This includes both first and repeat infections and can therefore exceed the 
-#'       population size.       
+#'       This includes both first and repeat infections and can therefore
+#'       exceed the population size.       
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{infections}}, \code{infections} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{infections}}, \code{infections} + (\code{_p2_5},
+#'       \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The number of infections estimated to occur on date \code{date}. 
 #'       This includes both first and repeat infections.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{infections_premiere}}, \code{infections_premiere} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{infections_premiere}}, \code{infections_premiere} +
+#'       (\code{_p2_5}, \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The number of first infections estimated to occur on date \code{date}.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{r_t}}, \code{r_t} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{r_t}}, \code{r_t} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
 #'       Estimate of the effective reproductive number (\eqn{R_t}).
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{seropositive_prvl}}, \code{seropositive_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{seropositive_prvl}}, \code{seropositive_prvl} +
+#'       (\code{_p2_5}, \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The number of individuals in the population who are modeled as being
 #'       seropositive. This is an unreliable outcome that we don't recommend
 #'       using. 
 #'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{severe}}, \code{severe} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{severe}}, \code{severe} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
 #'       The number of transitions into the "severe" health state on date
 #'       \code{date}. The "severe" state is defined as disease that would merit
 #'       hospitalization. 
 #'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{susceptible_prvl}}, \code{susceptible_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{susceptible_prvl}}, \code{susceptible_prvl} +
+#'       (\code{_p2_5}, \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
 #'       The fraction of the population on date \code{date} that is susceptible
 #'       to SARS-CoV-2 infection, i.e., the fraction of the population that has
 #'       \emph{no} effective protection.
 #'
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{susceptible_severe_prvl}}, \code{susceptible_severe_prvl} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{susceptible_severe_prvl}},
+#'       \code{susceptible_severe_prvl} + (\code{_p2_5}, \code{_p25},
+#'       \code{_p75}, \code{_p97_5})
 #'
 #'       The fraction of the population on date \code{date} that is susceptible
 #'       to developing severe disease from a SARS-CoV-2 infection. This is a 
 #'       subset from \code{susceptible_prvl}.
 #'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
-#'     \item \bold{\code{symptomatic}}, \code{symptomatic} + (\code{p2_5}, \code{p25}, \code{p75}, \code{p97_5})
+#'     \item \bold{\code{symptomatic}}, \code{symptomatic} + (\code{_p2_5},
+#'       \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
-#'        The number of modeled transitions of infected individuals into the
-#'        infected, symptomatic health state on date \code{date}. This takes
-#'        into account the probability of becoming symptomatic and the delay
-#'        between infection and presentation of symptoms. 
+#'       The number of modeled transitions of infected individuals into the
+#'       infected, symptomatic health state on date \code{date}. This takes
+#'       into account the probability of becoming symptomatic and the delay
+#'       between infection and presentation of symptoms. 
 #'       
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, RRR}.
+#'         interval, ℝ}.
 #'
 #'     \item \bold{\code{data_available}}
 #'
@@ -227,6 +263,7 @@
 #'       \code{TRUE}, except for the first month of estimates.
 #'
 #'       \emph{logical}.
+#'   }
 #'
 #' @export
 #' @importFrom magrittr %>%
