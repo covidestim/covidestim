@@ -769,7 +769,7 @@ model {
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_days_before]), phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_days_before]), phi_die);
       target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_weeks_before]), phi_cas);
-      target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before]), phi_hosp);
+      target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
     }
   }
 
@@ -811,10 +811,10 @@ model {
 // this is still to adjust in the future and add a lastHospiWeek variable
   target += neg_binomial_2_lpmf(
     // `obs_die` from the first observed day to the last death date
-    obs_hosp_mvs[1:lastCaseWeek] |
+    obs_hosp_mvs[5:lastCaseWeek] |
       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
       // last death date
-      fitted_hospitalizations_mvs[N_weeks_before+1 : N_weeks_before+lastCaseWeek],
+      fitted_hospitalizations_mvs[N_weeks_before+5 : N_weeks_before+lastCaseWeek],
     phi_hosp
   ); // optional, but likelie unnecessary: / N_days_av;
 }
