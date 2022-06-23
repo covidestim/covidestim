@@ -540,6 +540,10 @@ transformed parameters {
        susceptible_prvl[i] = pop_size - effective_protection_prvl[i-1];
    }
 
+    if (susceptible_prvl[i] < 1) {
+      // print("WARNING num_uninf preliminary value was ", num_uninf);
+      susceptible_prvl[i] = 1;
+    }
     logRt[i] = logRt0[i] + log(susceptible_prvl[i]/pop_size);
 
     deriv1_log_infections[i] = logRt[i]/serial_i;
@@ -576,10 +580,6 @@ transformed parameters {
     //   // print("WARNING num_uninf preliminary value was ", num_uninf);
     //   num_uninf = 1;
     // }
-    if (susceptible_prvl[i] < 1) {
-      // print("WARNING num_uninf preliminary value was ", num_uninf);
-      susceptible_prvl[i] = 1;
-    }
   }
   
   r_t = exp(logRt); 
