@@ -81,7 +81,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     input_boost(get_input("boost")) +
     input_hosp(get_input("hospi"))
 
-  result_optimizer <- runner_optimizer(cfg, cores = 1, tries = 10)
+  result_optimizer <- runner_optimizer(cfg, cores = 1, tries = 25)
   cli_alert_success("Optimizer complete. Log-posterior values:")
 
   run_summary <- summary(result_optimizer$result)
