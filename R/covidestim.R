@@ -347,6 +347,7 @@ runOptimizer.covidestim <- function(cc,
       algorithm = "BFGS",
       seed      = seed,
       iter      = iter,
+      tol_obj   = 1e-10,
       as_vector = FALSE, # Otherwise you get a sloppy list structure
       ...
     ) -> result
