@@ -41,6 +41,9 @@ runner_optimizer <- quietly(covidestim::runOptimizer)
 output_alert <- function(name, fname)
   cli_alert_info("Writing {name} to {.file {fname}}")
 
+append_in <- function(lst, where, key, val)
+  purrr::modify_in(lst, where, function(x) { x[[key]]<-val; x})
+
 input_df_colspec <- rlang::list2(
   !!args$key := col_character(),
   date        = col_date(),
@@ -52,7 +55,8 @@ d <- read_csv(args$input, col_types = input_df_colspec) %>%
   group_by(across(all_of(args$key)))
 
 cli_alert_info("Reading metadata from {.file {args$metadata}}")
-metadata <- read_json(args$metadata, simplifyVector = TRUE)
+# Read metadata into a list, keyed on `args$key` ("state" or "fips")
+metadata <- read_json(args$metadata) %>% setNames(., map_chr(., args$key))
 
 cli_alert_info("Tracts in this process:")
 cli_ul(d[, args$key] %>% unique)
@@ -66,7 +70,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
 
   imminits <- get_imm_init(region)
 
-  cfg <- covidestim(
+  covidestim_config_options <- list(
     nweeks         = nrow(input_data),
     seed           = sample.int(.Machine$integer.max, 1),
     region         = region,
@@ -74,14 +78,17 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     start_p_imm    = imminits$start_p_imm,
     pop_size       = get_pop(region),
     nweeks_before  = 4
-  ) +
+  )
+
+  cfg <- do.call(covidestim, covidestim_config_options) +
     input_cases(get_input("cases")) +
     input_deaths(get_input("deaths")) +
     input_rr(get_input("RR")) + 
     input_boost(get_input("boost")) +
     input_hosp(get_input("hospi"))
 
-  result_optimizer <- runner_optimizer(cfg, cores = 1, tries = 25)
+  tries <- 25
+  result_optimizer <- runner_optimizer(cfg, cores = 1, tries = tries)
   cli_alert_success("Optimizer complete. Log-posterior values:")
 
   run_summary <- summary(result_optimizer$result)
@@ -100,6 +107,15 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
 
     cli_alert_info("Returning best optimizer result; sampler will not run")
 
+    run_metadata <- list(optimizing = list(
+      covidestim_config_options = covidestim_config_options,
+      warnings = warnings_optimizer,
+      optvals  = opt_vals,
+      tries    = tries
+    ))
+
+    metadata <<- append_in(metadata, region, "run", run_metadata)
+
     return(list(
       run_summary = bind_cols(!!args$key := region, run_summary),
       warnings    = bind_cols(!!args$key := region, warnings = warnings_optimizer),
@@ -109,12 +125,24 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     ))
   }
 
-  cli_alert_info("Sampler starting at {lubridate::now()}")
+  start <- lubridate::now()
+  cli_alert_info("Sampler starting at {start}")
   result <- runner_sampler(cfg, cores = as.numeric(args$cpus))
-  cli_alert_success("Sampler ends at {lubridate::now()}")
+  end <- lubridate::now()
+  cli_alert_success("Sampler ends at {end}")
 
   run_summary <- summary(result$result)
   warnings_sampler <- result$warnings
+
+  run_metadata <- list(sampling = list(
+    covidestim_config_options = covidestim_config_options,
+    warnings = warnings_sampler,
+
+    # Unit of `duration` is seconds
+    timing = list(start = start, end = end, duration = as.numeric(end - start))
+  ))
+
+  metadata <<- append_in(metadata, region, "run", run_metadata)
 
   # Error on treedepth warning, or any divergent transitions warning
   # indicating >= 10 divergent transitions
@@ -156,7 +184,11 @@ if (!is.null(args$save_method)) {
 
 if (!is.null(args$save_metadata)) {
   output_alert("metadata", args$save_metadata)
-  write_json(metadata, args$save_metadata, null = "null")
+  write_json(
+    unname(metadata),
+    args$save_metadata,
+    null = 'null', auto_unbox = T
+  )
 }
 
 if (!is.null(args$raw)) {
