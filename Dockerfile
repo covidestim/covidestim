@@ -29,6 +29,9 @@ ENV PATH /opt/covidestim/bin:$PATH
 # Enable O3 compilation
 RUN Rscript /tmp/covidestim-install/O3-enable.R 
 
+# Install dbstan:master
+RUN r -e "remotes::install_github('covidestim/dbstan')"
+
 RUN r -e "remotes::install_deps('/tmp/covidestim-install')" \
   && R CMD INSTALL --preclean "/tmp/covidestim-install" \
   && rm -rf /tmp/covidestim-install
