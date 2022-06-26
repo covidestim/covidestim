@@ -109,8 +109,8 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
 
     run_metadata <- list(optimizing = list(
       covidestim_config_options = covidestim_config_options,
-      warnings = warnings_optimizer,
-      optvals  = opt_vals,
+      warnings = I(warnings_optimizer),
+      optvals  = I(opt_vals),
       tries    = tries
     ))
 
@@ -136,7 +136,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
 
   run_metadata <- list(sampling = list(
     covidestim_config_options = covidestim_config_options,
-    warnings = warnings_sampler,
+    warnings = I(warnings_sampler),
 
     # Unit of `duration` is seconds
     timing = list(start = start, end = end, duration = as.numeric(end - start))
