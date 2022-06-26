@@ -2,7 +2,7 @@
 'covidestim-batch
 
 Usage:
-  covidestim-batch --input <path> --key <key> --metadata <path> [--attempts <num>] [--always-sample] [--always-optimize] [--cpus <num>] --save-summary <path> [--save-warning <path>] [--save-optvals <path>] [--save-method <path>] [--save-metadata <path>] [--save-raw <path>] 
+  covidestim-batch --input <path> --key <key> --metadata <path> [--attempts <num>] [--always-sample] [--always-optimize] [--cpus <num>] --save-summary <path> [--save-warning <path>] [--save-optvals <path>] [--save-method <path>] [--save-metadata <path>] [--save-raw <path>] [--dbstan-insert]
   covidestim-batch (-h | --help)
   covidestim-batch --version
 
@@ -20,9 +20,15 @@ Options:
   --save-method <path>    Where to save a CSV of which method was ultimately used
   --save-metadata <path>  Where to save a JSON of metadata
   --save-raw <path>       Where to save an RDS archive of each result
+  --dbstan-insert         Insert sampled `stanfit` objects into a dbstan database
   -h --help  Show this screen.
   --version  Show version.
 
+The following environment variables must be set to use `--dbstan-insert`:
+- COVIDESTIM_DBSTAN_HOST
+- COVIDESTIM_DBSTAN_USER
+- COVIDESTIM_DBSTAN_PASS
+- COVIDESTIM_DBSTAN_DBNAME
 ' -> doc
 
 suppressPackageStartupMessages({
@@ -30,6 +36,7 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(jsonlite)
   library(cli)
+  library(dbstan)
 })
 library(covidestim)
 
@@ -43,6 +50,17 @@ output_alert <- function(name, fname)
 
 append_in <- function(lst, where, key, val)
   purrr::modify_in(lst, where, function(x) { x[[key]]<-val; x})
+
+conn <- NULL
+if (args$dbstan_insert)
+  conn <- DBI::dbConnect(
+    RPostgres::Postgres(),
+    host     = Sys.getenv("COVIDESTIM_DBSTAN_HOST"),
+    user     = Sys.getenv("COVIDESTIM_DBSTAN_USER"),
+    password = Sys.getenv("COVIDESTIM_DBSTAN_PASS"),
+    dbname   = Sys.getenv("COVIDESTIM_DBSTAN_DBNAME")
+  )
+
 
 input_df_colspec <- rlang::list2(
   !!args$key := col_character(),
@@ -134,12 +152,19 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
   run_summary <- summary(result$result)
   warnings_sampler <- result$warnings
 
+  dbstan_id <- NULL
+  if (args$dbstan_insert) {
+    dbstan_id <- stanfit_insert(result$result$result, conn, includeSamples = T)
+    cli_alert_success("{.code dbstan} id is {.code {dbstan_id}}")
+  }
+
   run_metadata <- list(sampling = list(
     covidestim_config_options = covidestim_config_options,
     warnings = I(warnings_sampler),
 
     # Unit of `duration` is seconds
-    timing = list(start = start, end = end, duration = as.numeric(end - start))
+    timing = list(start = start, end = end, duration = as.numeric(end - start)),
+    dbstan_id = dbstan_id
   ))
 
   metadata <<- append_in(metadata, region, "run", run_metadata)
