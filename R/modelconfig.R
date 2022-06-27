@@ -85,13 +85,19 @@ modelconfig_add.input <- function(rightside, leftside) {
   if("lastDeathDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastDeathDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
-    cfg$lastDeathDate <- as.numeric(diff)%/%7
+    cfg$lastDeathWeek <- as.numeric(diff)%/%7
+  } 
+
+    if("lastHospDate" %in% names(attributes(d))){
+    lastDate <- attr(d, "lastHospDate")
+    diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
+    cfg$lastHospWeek <- as.numeric(diff)%/%7
   } 
 
   if("lastCaseDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastCaseDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
-    cfg$lastCaseDate <- as.numeric(diff)%/%7
+    cfg$lastCaseWeek <- as.numeric(diff)%/%7
   } 
 
   data_key <- names(d)
@@ -240,8 +246,9 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
-    # last death date is initiated here; gets updated as deaths data gets added
+    # last death date and hosp date are initiated here; gets updated as deaths data gets added
     lastDeathWeek = N_weeks,
+    lastHospWeek  = N_weeks,
     lastCaseWeek  = N_weeks,
 
     
