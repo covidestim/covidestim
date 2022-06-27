@@ -122,6 +122,9 @@ data {
   // is there a last obeserved deaths data day?
   // int<lower=0> lastDeathDate;
   int<lower=0> lastDeathWeek;
+  
+    // is there a last obeserved hospitalizations data day?
+  int<lower=0> lastHospWeek;
 
   // is there a last obeserved case data day?
   // int<lower=0> lastCaseDate;
@@ -811,10 +814,10 @@ model {
 // this is still to adjust in the future and add a lastHospiWeek variable
   target += neg_binomial_2_lpmf(
     // `obs_die` from the first observed day to the last death date
-    obs_hosp_mvs[5:lastCaseWeek] |
+    obs_hosp_mvs[5:lastHospWeek] |
       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
       // last death date
-      fitted_hospitalizations_mvs[N_weeks_before+5 : N_weeks_before+lastCaseWeek],
+      fitted_hospitalizations_mvs[N_weeks_before+5 : N_weeks_before+lastHospWeek],
     phi_hosp
   ); // optional, but likelie unnecessary: / N_days_av;
 }

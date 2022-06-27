@@ -103,7 +103,10 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     input_deaths(get_input("deaths")) +
     input_rr(get_input("RR")) + 
     input_boost(get_input("boost")) +
-    input_hosp(get_input("hospi"))
+    input_hosp(get_input("hospi"), 
+               ##### PLACE HOLDER TO SELECT THE lastHopDate from the metadata
+               ##### lastHospDate =  metadata[[state == state]]$lastHospDate)
+    )
 
   tries <- 25
   result_optimizer <- runner_optimizer(cfg, cores = 1, tries = tries)
