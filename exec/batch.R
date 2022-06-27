@@ -154,7 +154,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
 
   dbstan_id <- NULL
   if (args$dbstan_insert) {
-    dbstan_id <- stanfit_insert(result$result$result, conn, includeSamples = T)
+    dbstan_id <- stanfit_insert(result$result$result, conn, include_samples = T)
     cli_alert_success("{.code dbstan} id is {.code {dbstan_id}}")
   }
 
