@@ -65,7 +65,12 @@ if (args$dbstan_insert)
 input_df_colspec <- rlang::list2(
   !!args$key := col_character(),
   date        = col_date(),
-  .default    = col_number()
+  cases       = col_number(),
+  deaths      = col_number(),
+  RR          = col_number(),
+  hospi       = col_number(),
+  boost       = col_number(),
+  missing_hosp= col_logical()
 ) %>% do.call(cols, .)
 
 cli_alert_info("Reading input data from {.file {args$input}}")
@@ -98,15 +103,14 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     nweeks_before  = 4
   )
 
+  lastHospDate <- as.Date(metadata[[region]]$lastHospDate)
+
   cfg <- do.call(covidestim, covidestim_config_options) +
     input_cases(get_input("cases")) +
     input_deaths(get_input("deaths")) +
     input_rr(get_input("RR")) + 
     input_boost(get_input("boost")) +
-    input_hosp(get_input("hospi"), 
-               ##### PLACE HOLDER TO SELECT THE lastHopDate from the metadata
-               ##### lastHospDate =  metadata[[state == state]]$lastHospDate)
-    )
+    input_hosp(get_input("hospi"), lastHospDate = lastHospDate)
 
   tries <- 25
   result_optimizer <- runner_optimizer(cfg, cores = 1, tries = tries)
