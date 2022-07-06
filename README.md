@@ -64,7 +64,8 @@ library(covidestim)
 # Set up a model on 120 days of example NYC data
 cfg <- covidestim(ndays = 120, region = 'New York', pop_size = get_pop('New York')) +
   input_cases(example_nyc_data('cases')) +
-  input_deaths(example_nyc_data('deaths'))
+  input_deaths(example_nyc_data('deaths'))+
+  input_vaccines(example_nyc_data('RR'))
 
 result <- run(cfg)
 
