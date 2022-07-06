@@ -73,7 +73,7 @@ operator (see examples).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">priors_reporting_delays</span><span class="op">(</span>cas_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.2</span>, <span class="fl">1</span><span class="op">)</span>, die_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">priors_reporting_delays</span><span class="op">(</span>cas_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.2</span>, <span class="fl">1</span><span class="op">)</span>, die_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,27 +84,32 @@ and rate for a gamma distribution describing the delay (in days) in case
 reporting.  Shape and rate are parameterized with a lognormal prior where
 the log of the input value is the median and the variance is 0.5. Based on
 average delay reported in Santa Clara County, CA on 8 April 2020.</p></dd>
+
+
 <dt>die_rep_delay</dt>
 <dd><p>A two-element numeric vector containing the mean shape
 and rate for a gamma distribution describing delay (in days) in death
 reporting.  Shape and rate are parameterized with a lognormal prior where
 the log of the input value is the median and the variance is 0.5. Based on
 average delay reported in Santa Clara County, CA on 8 April 2020.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An S3 object of class 'priors'</p>
+    
+
+<p>An S3 object of class 'priors'</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># If you believe that cases are generally reported one day after the date of</span></span>
-<span class="r-in"><span class="co"># the test, and deaths one day after the event:</span></span>
-<span class="r-in"><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">120</span>, region <span class="op">=</span> <span class="st">'09009'</span>, pop_size<span class="op">=</span><span class="fu"><a href="get_pop.html">get_pop</a></span><span class="op">(</span><span class="st">'09009'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span class="r-in">  <span class="fu">priors_reporting_delays</span><span class="op">(</span></span>
-<span class="r-in">    cas_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.7</span>, <span class="fl">3</span><span class="op">)</span>, <span class="co"># Mean = ~1 day</span></span>
-<span class="r-in">    die_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.7</span>, <span class="fl">3</span><span class="op">)</span>  <span class="co"># Mean = ~1 day</span></span>
-<span class="r-in">  <span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># If you believe that cases are generally reported one day after the date of</span></span></span>
+<span class="r-in"><span><span class="co"># the test, and deaths one day after the event:</span></span></span>
+<span class="r-in"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">120</span>, region <span class="op">=</span> <span class="st">'09009'</span>, pop_size<span class="op">=</span><span class="fu"><a href="get_pop.html">get_pop</a></span><span class="op">(</span><span class="st">'09009'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">priors_reporting_delays</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    cas_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.7</span>, <span class="fl">3</span><span class="op">)</span>, <span class="co"># Mean = ~1 day</span></span></span>
+<span class="r-in"><span>    die_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.7</span>, <span class="fl">3</span><span class="op">)</span>  <span class="co"># Mean = ~1 day</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -119,7 +124,7 @@ average delay reported in Santa Clara County, CA on 8 April 2020.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

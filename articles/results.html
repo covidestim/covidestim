@@ -116,86 +116,86 @@
 </h3>
 <p><code>extracted</code> contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of samples from the paremeter. All three chains have been mixed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">output</span><span class="op">[[</span><span class="st">"extracted"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                      Length Class  Mode   </span>
-<span class="co">## log_new_inf_0           900 -none- numeric</span>
-<span class="co">## deriv1_log_new_inf   117000 -none- numeric</span>
-<span class="co">## p_sym_if_inf            900 -none- numeric</span>
-<span class="co">## p_sev_if_sym            900 -none- numeric</span>
-<span class="co">## p_die_if_sev            900 -none- numeric</span>
-<span class="co">## scale_dx_delay_sym      900 -none- numeric</span>
-<span class="co">## scale_dx_delay_sev      900 -none- numeric</span>
-<span class="co">## cas_rep_delay_shap      900 -none- numeric</span>
-<span class="co">## cas_rep_delay_rate      900 -none- numeric</span>
-<span class="co">## die_rep_delay_shap      900 -none- numeric</span>
-<span class="co">## die_rep_delay_rate      900 -none- numeric</span>
-<span class="co">## p_diag_if_sym           900 -none- numeric</span>
-<span class="co">## p_diag_if_sev           900 -none- numeric</span>
-<span class="co">## weekend_eff             900 -none- numeric</span>
-<span class="co">## inv_sqrt_phi_c          900 -none- numeric</span>
-<span class="co">## inv_sqrt_phi_d          900 -none- numeric</span>
-<span class="co">## log_new_inf          117900 -none- numeric</span>
-<span class="co">## new_inf              117900 -none- numeric</span>
-<span class="co">## deriv2_log_new_inf   116100 -none- numeric</span>
-<span class="co">## sym_diag_delay        54000 -none- numeric</span>
-<span class="co">## sev_diag_delay        54000 -none- numeric</span>
-<span class="co">## cas_rep_delay         54000 -none- numeric</span>
-<span class="co">## die_rep_delay         54000 -none- numeric</span>
-<span class="co">## cas_cum_report_delay  54000 -none- numeric</span>
-<span class="co">## die_cum_report_delay  54000 -none- numeric</span>
-<span class="co">## p_die_if_sym            900 -none- numeric</span>
-<span class="co">## new_sym              117900 -none- numeric</span>
-<span class="co">## new_sev              117900 -none- numeric</span>
-<span class="co">## new_die              117900 -none- numeric</span>
-<span class="co">## new_sym_dx           117900 -none- numeric</span>
-<span class="co">## dx_sym_sev           117900 -none- numeric</span>
-<span class="co">## dx_sym_die           117900 -none- numeric</span>
-<span class="co">## new_sev_dx           117900 -none- numeric</span>
-<span class="co">## dx_sev_die           117900 -none- numeric</span>
-<span class="co">## new_die_dx           117900 -none- numeric</span>
-<span class="co">## diag_all             117900 -none- numeric</span>
-<span class="co">## occur_cas            117900 -none- numeric</span>
-<span class="co">## occur_die            117900 -none- numeric</span>
-<span class="co">## phi_cas                 900 -none- numeric</span>
-<span class="co">## phi_die                 900 -none- numeric</span>
-<span class="co">## cumulative_incidence 117900 -none- numeric</span>
-<span class="co">## lp__                    900 -none- numeric</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">output</span><span class="op">[[</span><span class="st">"extracted"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                      Length Class  Mode   </span></span>
+<span><span class="co">## log_new_inf_0           900 -none- numeric</span></span>
+<span><span class="co">## deriv1_log_new_inf   117000 -none- numeric</span></span>
+<span><span class="co">## p_sym_if_inf            900 -none- numeric</span></span>
+<span><span class="co">## p_sev_if_sym            900 -none- numeric</span></span>
+<span><span class="co">## p_die_if_sev            900 -none- numeric</span></span>
+<span><span class="co">## scale_dx_delay_sym      900 -none- numeric</span></span>
+<span><span class="co">## scale_dx_delay_sev      900 -none- numeric</span></span>
+<span><span class="co">## cas_rep_delay_shap      900 -none- numeric</span></span>
+<span><span class="co">## cas_rep_delay_rate      900 -none- numeric</span></span>
+<span><span class="co">## die_rep_delay_shap      900 -none- numeric</span></span>
+<span><span class="co">## die_rep_delay_rate      900 -none- numeric</span></span>
+<span><span class="co">## p_diag_if_sym           900 -none- numeric</span></span>
+<span><span class="co">## p_diag_if_sev           900 -none- numeric</span></span>
+<span><span class="co">## weekend_eff             900 -none- numeric</span></span>
+<span><span class="co">## inv_sqrt_phi_c          900 -none- numeric</span></span>
+<span><span class="co">## inv_sqrt_phi_d          900 -none- numeric</span></span>
+<span><span class="co">## log_new_inf          117900 -none- numeric</span></span>
+<span><span class="co">## new_inf              117900 -none- numeric</span></span>
+<span><span class="co">## deriv2_log_new_inf   116100 -none- numeric</span></span>
+<span><span class="co">## sym_diag_delay        54000 -none- numeric</span></span>
+<span><span class="co">## sev_diag_delay        54000 -none- numeric</span></span>
+<span><span class="co">## cas_rep_delay         54000 -none- numeric</span></span>
+<span><span class="co">## die_rep_delay         54000 -none- numeric</span></span>
+<span><span class="co">## cas_cum_report_delay  54000 -none- numeric</span></span>
+<span><span class="co">## die_cum_report_delay  54000 -none- numeric</span></span>
+<span><span class="co">## p_die_if_sym            900 -none- numeric</span></span>
+<span><span class="co">## new_sym              117900 -none- numeric</span></span>
+<span><span class="co">## new_sev              117900 -none- numeric</span></span>
+<span><span class="co">## new_die              117900 -none- numeric</span></span>
+<span><span class="co">## new_sym_dx           117900 -none- numeric</span></span>
+<span><span class="co">## dx_sym_sev           117900 -none- numeric</span></span>
+<span><span class="co">## dx_sym_die           117900 -none- numeric</span></span>
+<span><span class="co">## new_sev_dx           117900 -none- numeric</span></span>
+<span><span class="co">## dx_sev_die           117900 -none- numeric</span></span>
+<span><span class="co">## new_die_dx           117900 -none- numeric</span></span>
+<span><span class="co">## diag_all             117900 -none- numeric</span></span>
+<span><span class="co">## occur_cas            117900 -none- numeric</span></span>
+<span><span class="co">## occur_die            117900 -none- numeric</span></span>
+<span><span class="co">## phi_cas                 900 -none- numeric</span></span>
+<span><span class="co">## phi_die                 900 -none- numeric</span></span>
+<span><span class="co">## cumulative_incidence 117900 -none- numeric</span></span>
+<span><span class="co">## lp__                    900 -none- numeric</span></span></code></pre>
 <p>In this format, it’s possible to view the time series of estimates within a single iteration.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># a matrix of new infection point estimates for each timepoint, iteration</span>
-<span class="va">new_sym</span> <span class="op">&lt;-</span> <span class="va">output</span><span class="op">[[</span><span class="st">"extracted"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">new_sym</span>
-<span class="co"># view first 8 iterations, first 5 days</span>
-<span class="va">new_sym</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
-<pre><code><span class="co">##           </span>
-<span class="co">## iterations         [,1]        [,2]        [,3]       [,4]</span>
-<span class="co">##       [1,] 5.000831e-03 0.085774934 0.338419803 0.74767701</span>
-<span class="co">##       [2,] 2.759352e-02 0.471483881 1.832557686 3.93464305</span>
-<span class="co">##       [3,] 1.236652e-02 0.209725612 0.793641668 1.64612047</span>
-<span class="co">##       [4,] 1.700063e-04 0.002945658 0.012050677 0.02808664</span>
-<span class="co">##       [5,] 9.283942e-04 0.015940230 0.063102423 0.13984681</span>
-<span class="co">##       [6,] 7.966206e-05 0.001393664 0.005899647 0.01451118</span>
-<span class="co">##       [7,] 8.527537e-03 0.146649289 0.584590739 1.31825915</span>
-<span class="co">##       [8,] 2.317722e-03 0.039494329 0.152152961 0.32462729</span>
-<span class="co">##           </span>
-<span class="co">## iterations       [,5]</span>
-<span class="co">##       [1,] 1.22779122</span>
-<span class="co">##       [2,] 6.18706202</span>
-<span class="co">##       [3,] 2.48977357</span>
-<span class="co">##       [4,] 0.04920852</span>
-<span class="co">##       [5,] 0.23017528</span>
-<span class="co">##       [6,] 0.02744720</span>
-<span class="co">##       [7,] 2.24049591</span>
-<span class="co">##       [8,] 0.51045805</span></code></pre>
+<code class="sourceCode R"><span><span class="co"># a matrix of new infection point estimates for each timepoint, iteration</span></span>
+<span><span class="va">new_sym</span> <span class="op">&lt;-</span> <span class="va">output</span><span class="op">[[</span><span class="st">"extracted"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">new_sym</span></span>
+<span><span class="co"># view first 8 iterations, first 5 days</span></span>
+<span><span class="va">new_sym</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##           </span></span>
+<span><span class="co">## iterations         [,1]        [,2]        [,3]       [,4]</span></span>
+<span><span class="co">##       [1,] 5.000831e-03 0.085774934 0.338419803 0.74767701</span></span>
+<span><span class="co">##       [2,] 2.759352e-02 0.471483881 1.832557686 3.93464305</span></span>
+<span><span class="co">##       [3,] 1.236652e-02 0.209725612 0.793641668 1.64612047</span></span>
+<span><span class="co">##       [4,] 1.700063e-04 0.002945658 0.012050677 0.02808664</span></span>
+<span><span class="co">##       [5,] 9.283942e-04 0.015940230 0.063102423 0.13984681</span></span>
+<span><span class="co">##       [6,] 7.966206e-05 0.001393664 0.005899647 0.01451118</span></span>
+<span><span class="co">##       [7,] 8.527537e-03 0.146649289 0.584590739 1.31825915</span></span>
+<span><span class="co">##       [8,] 2.317722e-03 0.039494329 0.152152961 0.32462729</span></span>
+<span><span class="co">##           </span></span>
+<span><span class="co">## iterations       [,5]</span></span>
+<span><span class="co">##       [1,] 1.22779122</span></span>
+<span><span class="co">##       [2,] 6.18706202</span></span>
+<span><span class="co">##       [3,] 2.48977357</span></span>
+<span><span class="co">##       [4,] 0.04920852</span></span>
+<span><span class="co">##       [5,] 0.23017528</span></span>
+<span><span class="co">##       [6,] 0.02744720</span></span>
+<span><span class="co">##       [7,] 2.24049591</span></span>
+<span><span class="co">##       [8,] 0.51045805</span></span></code></pre>
 <p>This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections over the first week of data.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># create a data frame with the final 7 days from the model </span>
-<span class="va">new_sym_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">new_sym</span><span class="op">[</span>,<span class="fl">29</span><span class="op">:</span><span class="fl">35</span><span class="op">]</span><span class="op">)</span> 
-<span class="co"># compute the row average </span>
-<span class="va">new_sym_df</span><span class="op">$</span><span class="va">avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">new_sym_df</span><span class="op">)</span><span class="op">/</span><span class="fl">7</span>
-<span class="co"># calculate the mean and 95% uncertainty bounds</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">new_sym_df</span><span class="op">$</span><span class="va">avg</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,  <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##      2.5%       50%     97.5% </span>
-<span class="co">##  66.93261 126.27501 368.72355</span></code></pre>
+<code class="sourceCode R"><span><span class="co"># create a data frame with the final 7 days from the model </span></span>
+<span><span class="va">new_sym_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">new_sym</span><span class="op">[</span>,<span class="fl">29</span><span class="op">:</span><span class="fl">35</span><span class="op">]</span><span class="op">)</span> </span>
+<span><span class="co"># compute the row average </span></span>
+<span><span class="va">new_sym_df</span><span class="op">$</span><span class="va">avg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">new_sym_df</span><span class="op">)</span><span class="op">/</span><span class="fl">7</span></span>
+<span><span class="co"># calculate the mean and 95% uncertainty bounds</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">new_sym_df</span><span class="op">$</span><span class="va">avg</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,  <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##      2.5%       50%     97.5% </span></span>
+<span><span class="co">##  66.93261 126.27501 368.72355</span></span></code></pre>
 <p><code>extracted</code> is generally useful for cases where it’s necessary to compute an average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals).</p>
 </div>
 <div class="section level3">
@@ -203,28 +203,28 @@
 </h3>
 <p><code>summary</code> contains the point estimate and uncertainty bounds for every parameter in the model. The number in brackets indicates the inex day of the estimate. <code>summary</code> also contains information about model fit, including the effective sample size and Rhat estimates.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output</span><span class="op">[[</span><span class="st">"summary"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                              mean     se_mean        sd       2.5%</span>
-<span class="co">## log_new_inf_0         -0.09407199 0.124892339 1.7422593 -3.4863638</span>
-<span class="co">## deriv1_log_new_inf[1]  0.09878696 0.007698155 0.1555521 -0.2177846</span>
-<span class="co">## deriv1_log_new_inf[2]  0.09810893 0.007726969 0.1467691 -0.1901038</span>
-<span class="co">## deriv1_log_new_inf[3]  0.10165363 0.007604998 0.1381510 -0.1704727</span>
-<span class="co">## deriv1_log_new_inf[4]  0.10310780 0.007564192 0.1332101 -0.1565756</span>
-<span class="co">## deriv1_log_new_inf[5]  0.10713639 0.007379831 0.1261482 -0.1348862</span>
-<span class="co">##                                25%        50%       75%     97.5%</span>
-<span class="co">## log_new_inf_0         -1.335545023 0.06478394 1.1358392 3.1786627</span>
-<span class="co">## deriv1_log_new_inf[1] -0.005289537 0.10252738 0.1994855 0.3871890</span>
-<span class="co">## deriv1_log_new_inf[2] -0.002556148 0.09851323 0.1934680 0.3815958</span>
-<span class="co">## deriv1_log_new_inf[3]  0.013838110 0.10828554 0.1967466 0.3597289</span>
-<span class="co">## deriv1_log_new_inf[4]  0.015198660 0.10588400 0.1922527 0.3604025</span>
-<span class="co">## deriv1_log_new_inf[5]  0.022216874 0.10796443 0.1893202 0.3602236</span>
-<span class="co">##                          n_eff     Rhat</span>
-<span class="co">## log_new_inf_0         194.6050 1.013847</span>
-<span class="co">## deriv1_log_new_inf[1] 408.2993 1.003926</span>
-<span class="co">## deriv1_log_new_inf[2] 360.7869 1.005759</span>
-<span class="co">## deriv1_log_new_inf[3] 329.9968 1.008112</span>
-<span class="co">## deriv1_log_new_inf[4] 310.1340 1.008822</span>
-<span class="co">## deriv1_log_new_inf[5] 292.1928 1.008697</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output</span><span class="op">[[</span><span class="st">"summary"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                              mean     se_mean        sd       2.5%</span></span>
+<span><span class="co">## log_new_inf_0         -0.09407199 0.124892339 1.7422593 -3.4863638</span></span>
+<span><span class="co">## deriv1_log_new_inf[1]  0.09878696 0.007698155 0.1555521 -0.2177846</span></span>
+<span><span class="co">## deriv1_log_new_inf[2]  0.09810893 0.007726969 0.1467691 -0.1901038</span></span>
+<span><span class="co">## deriv1_log_new_inf[3]  0.10165363 0.007604998 0.1381510 -0.1704727</span></span>
+<span><span class="co">## deriv1_log_new_inf[4]  0.10310780 0.007564192 0.1332101 -0.1565756</span></span>
+<span><span class="co">## deriv1_log_new_inf[5]  0.10713639 0.007379831 0.1261482 -0.1348862</span></span>
+<span><span class="co">##                                25%        50%       75%     97.5%</span></span>
+<span><span class="co">## log_new_inf_0         -1.335545023 0.06478394 1.1358392 3.1786627</span></span>
+<span><span class="co">## deriv1_log_new_inf[1] -0.005289537 0.10252738 0.1994855 0.3871890</span></span>
+<span><span class="co">## deriv1_log_new_inf[2] -0.002556148 0.09851323 0.1934680 0.3815958</span></span>
+<span><span class="co">## deriv1_log_new_inf[3]  0.013838110 0.10828554 0.1967466 0.3597289</span></span>
+<span><span class="co">## deriv1_log_new_inf[4]  0.015198660 0.10588400 0.1922527 0.3604025</span></span>
+<span><span class="co">## deriv1_log_new_inf[5]  0.022216874 0.10796443 0.1893202 0.3602236</span></span>
+<span><span class="co">##                          n_eff     Rhat</span></span>
+<span><span class="co">## log_new_inf_0         194.6050 1.013847</span></span>
+<span><span class="co">## deriv1_log_new_inf[1] 408.2993 1.003926</span></span>
+<span><span class="co">## deriv1_log_new_inf[2] 360.7869 1.005759</span></span>
+<span><span class="co">## deriv1_log_new_inf[3] 329.9968 1.008112</span></span>
+<span><span class="co">## deriv1_log_new_inf[4] 310.1340 1.008822</span></span>
+<span><span class="co">## deriv1_log_new_inf[5] 292.1928 1.008697</span></span></code></pre>
 <p>While <code>summary</code> can be easily converted to a dataframe, we recommend using helper functions with covidestim.</p>
 </div>
 </div>
@@ -247,7 +247,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

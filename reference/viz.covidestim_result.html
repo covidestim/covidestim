@@ -63,8 +63,8 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for covidestim_result</span>
-<span class="fu">viz</span><span class="op">(</span><span class="va">ccr</span>, renderPDF <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for covidestim_result</span></span>
+<span><span class="fu">viz</span><span class="op">(</span><span class="va">ccr</span>, renderPDF <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -72,15 +72,23 @@
     <dl><dt>ccr</dt>
 <dd><p>The result of calling <code>run</code>. An object of class
 <code>covidestim_result</code>.</p></dd>
+
+
 <dt>renderPDF</dt>
 <dd><p>If <code>FALSE</code>, figures are returned as a list of
 <code>ggplot</code> objects. If a string, a <code>pdf</code> will be rendered to that
 location, and and the list of <code>ggplot</code> objects will still be
 returned.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the following keys:</p><ul><li><p><code>observedVsFitted</code> A <code>ggplot</code> of input cases/deaths data, and the
+    
+
+<p>A list with the following keys:</p>
+
+
+<ul><li><p><code>observedVsFitted</code> A <code>ggplot</code> of input cases/deaths data, and the
 fit of the model to that data.</p></li>
 <li><p><code>infectionsAndCases</code> A <code>ggplot</code> of estimated daily infections,
 compared to reported/observed cases.</p></li>
@@ -103,7 +111,7 @@ quantities being plotted</p></div>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

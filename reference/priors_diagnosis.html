@@ -71,11 +71,11 @@ below. The return value of this function must be added to a
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">priors_diagnosis</span><span class="op">(</span>
-  rr_diag_asy_vs_sym <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">18</span><span class="op">)</span>,
-  rr_diag_sym_vs_sev <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,
-  p_diag_if_sev <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">5</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">priors_diagnosis</span><span class="op">(</span></span>
+<span>  rr_diag_asy_vs_sym <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">18</span><span class="op">)</span>,</span>
+<span>  rr_diag_sym_vs_sev <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  p_diag_if_sev <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -87,19 +87,26 @@ modeling the rate ratio of diagnosis among asymptomatic versus symptomatic,
 but non-"severe" infections.</p>
 <p>Lowering the mean of this prior would reflect a belief that even fewer
 asymptomatic indivivduals are diagnosed than currently assumed.</p></dd>
+
+
 <dt>rr_diag_sym_vs_sev</dt>
 <dd><p>A two-element numeric vector containing
 <code>c(alpha, beta)</code> parameters/hyperpriors of a Beta distribution
 modeling the rate ratio of diagnosis at the symptomatic vs severe stage of
 infection.</p></dd>
+
+
 <dt>p_diag_if_sev</dt>
 <dd><p>A two-element numeric vector containing <code>c(alpha,
   beta)</code> parameters/hyperpriors of a Beta distribution modeling the
 probability of being diagnosed if severely ill.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An S3 object of class 'priors'</p>
+    
+
+<p>An S3 object of class 'priors'</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -109,7 +116,7 @@ is used for the probability of diagnosis if severely ill.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">50</span>, region <span class="op">=</span> <span class="st">'New York'</span><span class="op">)</span> <span class="op">+</span> <span class="fu">priors_diagnosis</span><span class="op">(</span>p_diag_if_sev <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">50</span>, region <span class="op">=</span> <span class="st">'New York'</span><span class="op">)</span> <span class="op">+</span> <span class="fu">priors_diagnosis</span><span class="op">(</span>p_diag_if_sev <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -124,7 +131,7 @@ is used for the probability of diagnosis if severely ill.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

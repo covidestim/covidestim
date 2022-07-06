@@ -69,27 +69,36 @@ confidence intervals.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for covidestim_result</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ccr</span>, include.before <span class="op">=</span> <span class="cn">TRUE</span>, index <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for covidestim_result</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ccr</span>, include.before <span class="op">=</span> <span class="cn">TRUE</span>, index <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ccr</dt>
 <dd><p>A <code>covidestim_result</code> object</p></dd>
+
+
 <dt>include.before</dt>
 <dd><p>A logical scalar. Include estimations that fall in the
 period before the first day of input data? (This period is of length
 <code>ndays_before</code> as passed to <code>covidestim</code>). If  <code>TRUE</code>, any
 elements of variables which do not have values for this "before" period
 will be represented as <code>NA</code>.</p></dd>
+
+
 <dt>index</dt>
 <dd><p>A logical scalar. If <code>TRUE</code>, will include a variable
 <code>index</code> in the output, with range <code>1:(ndays_before + ndays)</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>data.frame</code> with the following variables:</p><ul><li><p><code>date</code></p>
+    
+
+<p>A <code>data.frame</code> with the following variables:</p>
+<p></p>
+<ul><li><p><code>date</code></p>
 <p>Date as a <code>Date</code> vector.</p></li>
 <li><p><code>Rt</code>, <code>Rt.lo</code>, <code>Rt.hi</code></p>
 <p>Estimate of the effective reproductive number (\(R_t\)).
@@ -181,7 +190,7 @@ will be represented as <code>NA</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -73,15 +73,15 @@ following arguments can be passed to create different priors:</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">priors_progression</span><span class="op">(</span>
-  inf_prg_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.413</span>, <span class="fl">0.6051</span><span class="op">)</span>,
-  sym_prg_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.624</span>, <span class="fl">0.2175</span><span class="op">)</span>,
-  sev_prg_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.061</span>, <span class="fl">0.2277</span><span class="op">)</span>,
-  asy_rec_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">14</span>, <span class="fl">2</span><span class="op">)</span>,
-  pri_serial_i <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">129.1</span>, <span class="fl">22.25</span><span class="op">)</span>,
-  infect_dist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">1.241</span><span class="op">)</span>,
-  seropos_dist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4.41</span>, <span class="fl">0.042</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">priors_progression</span><span class="op">(</span></span>
+<span>  inf_prg_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.413</span>, <span class="fl">0.6051</span><span class="op">)</span>,</span>
+<span>  sym_prg_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.624</span>, <span class="fl">0.2175</span><span class="op">)</span>,</span>
+<span>  sev_prg_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.061</span>, <span class="fl">0.2277</span><span class="op">)</span>,</span>
+<span>  asy_rec_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">14</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  pri_serial_i <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">129.1</span>, <span class="fl">22.25</span><span class="op">)</span>,</span>
+<span>  infect_dist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">1.241</span><span class="op">)</span>,</span>
+<span>  seropos_dist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4.41</span>, <span class="fl">0.042</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -95,6 +95,8 @@ infection to sypmtom onset.</p>
 <em>Annals of Internal Medicine</em>, <b>172</b>(9), 577--582.
 ISSN 0003-4819, 1539-3704, <a href="https://doi.org/10.7326/M20-0504" class="external-link">doi:10.7326/M20-0504</a>
 , <a href="https://www.acpjournals.org/doi/10.7326/M20-0504" class="external-link">https://www.acpjournals.org/doi/10.7326/M20-0504</a>.</p></dd>
+
+
 <dt>sym_prg_delay</dt>
 <dd><p>A two-element numeric vector containing <code>c(shape, rate)</code>
 parameters/hyperpriors of a Gamma distribution modeling the time (in
@@ -104,6 +106,8 @@ number of days) from symptom onset to severe disease.</p>
 <em>The Lancet</em>, <b>395</b>(10229), 1054--1062.
 ISSN 01406736, <a href="https://doi.org/10.1016/S0140-6736%2820%2930566-3" class="external-link">doi:10.1016/S0140-6736(20)30566-3</a>
 , <a href="https://linkinghub.elsevier.com/retrieve/pii/S0140673620305663" class="external-link">https://linkinghub.elsevier.com/retrieve/pii/S0140673620305663</a>.</p></dd>
+
+
 <dt>sev_prg_delay</dt>
 <dd><p>A two-element numeric vector containing
 <code>c(shape, rate)</code> parameters/hyperpriors of a Gamma distribution
@@ -114,37 +118,50 @@ death.</p>
 <em>Journal of Clinical Medicine</em>, <b>9</b>(2), 538.
 ISSN 2077-0383, <a href="https://doi.org/10.3390/jcm9020538" class="external-link">doi:10.3390/jcm9020538</a>
 , <a href="https://www.mdpi.com/2077-0383/9/2/538" class="external-link">https://www.mdpi.com/2077-0383/9/2/538</a>.</p></dd>
+
+
 <dt>asy_rec_delay</dt>
 <dd><p>A two-element numeric vector containing
 <code>c(shape,rate)</code> parameters/hyperpriors of a Gamma distribution
 modeling the time (in number of days) from infection to recovery for
 individuals who never develop symptoms.</p></dd>
+
+
 <dt>pri_serial_i</dt>
 <dd><p>A two-element numeric vector containing
 <code>c(shape,rate)</code> parameters/hyperpriors of a Gamma distribution
 modeling the serial interval, the average time (in number of days)
 between successive cases.</p></dd>
+
+
 <dt>infect_dist</dt>
 <dd><p>A two-element numeric vector containing
 <code>c(shape,rate)</code> parameters/hyperpriors of a Gamma distribution modeling the
 changes of infectiousness, following initial infection. The PDF of this
 distribution can be thought of as describing how infectious an individual
 is, as a function of time (in days).</p></dd>
+
+
 <dt>seropos_dist</dt>
 <dd><p>A two-element numeric vector containing
 <code>c(shape,rate)</code> parameters/hyperpriors of a Gamma distribution modeling the
 time (in days) to seroreversion, following initial infection. We do not
 recommend modifying this value, as it is an experimental feature, and not
 used in the core model.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An S3 object of class <code>priors</code></p>
+    
+
+<p>An S3 object of class <code>priors</code></p>
+
+
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">50</span>, region <span class="op">=</span> <span class="st">'New York'</span><span class="op">)</span> <span class="op">+</span> <span class="fu">priors_progression</span><span class="op">(</span>inf_prg_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">50</span>, region <span class="op">=</span> <span class="st">'New York'</span><span class="op">)</span> <span class="op">+</span> <span class="fu">priors_progression</span><span class="op">(</span>inf_prg_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -159,7 +176,7 @@ used in the core model.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

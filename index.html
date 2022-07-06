@@ -115,33 +115,34 @@
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h1>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Currently, Covidestim is not availble on CRAN</span>
-<span class="co"># install.packages("covidestim")</span>
-
-<span class="co"># Install the development version from GitHub. This requires that the</span>
-<span class="co"># 'devtools' package be installed.</span>
-<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"covidestim/covidestim"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Currently, Covidestim is not availble on CRAN</span></span>
+<span><span class="co"># install.packages("covidestim")</span></span>
+<span></span>
+<span><span class="co"># Install the development version from GitHub. This requires that the</span></span>
+<span><span class="co"># 'devtools' package be installed.</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"covidestim/covidestim"</span><span class="op">)</span></span></code></pre></div>
 <p><code>rstan</code>, <em>covidestim</em>’s key dependency, has a dependency on Google’s V8 JS library. V8 often proves troublesome to install. If you experience problems, see <a href="https://github.com/stan-dev/rstan/issues/831" class="external-link">this GitHub issue</a> for solutions. Or, just use our Docker container, linked below.</p>
 </div>
 <div class="section level1">
 <h1 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h1>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://covidestim.org" class="external-link">covidestim</a></span><span class="op">)</span>
-
-<span class="co"># Set up a model on 120 days of example NYC data</span>
-<span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">120</span>, region <span class="op">=</span> <span class="st">'New York'</span>, pop_size <span class="op">=</span> <span class="fu"><a href="reference/get_pop.html">get_pop</a></span><span class="op">(</span><span class="st">'New York'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="reference/input_cases.html">input_cases</a></span><span class="op">(</span><span class="fu"><a href="reference/example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'cases'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="reference/input_cases.html">input_deaths</a></span><span class="op">(</span><span class="fu"><a href="reference/example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'deaths'</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span><span class="va">cfg</span><span class="op">)</span>
-
-<span class="co"># Get a data.frame of all timeseries outcomes, and some overview plots</span>
-<span class="va">resultSummary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
-<span class="va">resultGraphs</span>  <span class="op">&lt;-</span> <span class="fu">viz</span><span class="op">(</span><span class="va">result</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://covidestim.org" class="external-link">covidestim</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Set up a model on 120 days of example NYC data</span></span>
+<span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">120</span>, region <span class="op">=</span> <span class="st">'New York'</span>, pop_size <span class="op">=</span> <span class="fu"><a href="reference/get_pop.html">get_pop</a></span><span class="op">(</span><span class="st">'New York'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/input_cases.html">input_cases</a></span><span class="op">(</span><span class="fu"><a href="reference/example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'cases'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/input_cases.html">input_deaths</a></span><span class="op">(</span><span class="fu"><a href="reference/example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'deaths'</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/input_cases.html">input_vaccines</a></span><span class="op">(</span><span class="fu"><a href="reference/example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'RR'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span><span class="va">cfg</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get a data.frame of all timeseries outcomes, and some overview plots</span></span>
+<span><span class="va">resultSummary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="va">resultGraphs</span>  <span class="op">&lt;-</span> <span class="fu">viz</span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level1">
 <h1 id="changelog">Changelog<a class="anchor" aria-label="anchor" href="#changelog"></a>
@@ -216,7 +217,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

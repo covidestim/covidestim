@@ -63,17 +63,19 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">input_cases</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span>, lastCaseDate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="fu">input_deaths</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span>, lastDeathDate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="fu">input_vaccines</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">input_cases</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span>, lastCaseDate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">input_deaths</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span>, lastDeathDate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">input_vaccines</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code> as described below.</p></dd>
+
+
 <dt>type</dt>
 <dd><p>A string, either <code>"reported"</code> or <code>"occurred"</code>.</p>
 <p><code>"reported"</code> applies to the following situations:</p><ul><li><p>Case or death data where the count for a particular day
@@ -93,6 +95,7 @@ died. Note that, if the deaths data represent the day an individual's
 death was first reported as a SARS-Cov-2-related death, that data
 should be passed with <code>type = "reported"</code>, instead.</p></li>
 </ul></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -123,7 +126,7 @@ Assertions attempt to enforce this specification.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -73,22 +73,29 @@ a strong correlate to longer runtime.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for covidestim</span>
-<span class="fu">run</span><span class="op">(</span><span class="va">cc</span>, cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for covidestim</span></span>
+<span><span class="fu">run</span><span class="op">(</span><span class="va">cc</span>, cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>cc</dt>
 <dd><p>A valid <code><a href="covidestim.html">covidestim</a></code> configuration</p></dd>
+
+
 <dt>cores</dt>
 <dd><p>A number. How many cores to use to execute runs.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Extra arguments, passed on to <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">sampling</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An S3 object of class <code>covidestim_result</code> containing the
+    
+
+<p>An S3 object of class <code>covidestim_result</code> containing the
 configuration used to run the model, the raw Stan results, the extracted
 result as produced by <code><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html" class="external-link">extract</a></code>, and the summarized
 results as produced by <code><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html" class="external-link">extract</a></code>.</p>
@@ -113,17 +120,17 @@ as runOptimizer. It is significantly faster, but lacks CI's.</p><table class="ta
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Note that this configuration is improper as it uses New York City</span></span>
-<span class="r-in"><span class="co"># case/death data, but uses Manhattan's FIPS code ('36061') and population size.</span></span>
-<span class="r-in"><span class="co"># (for demonstration purposes only!)</span></span>
-<span class="r-in"><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">120</span>, seed <span class="op">=</span> <span class="fl">42</span>, region <span class="op">=</span> <span class="st">'36061'</span>, pop_size <span class="op">=</span> <span class="fl">1.63e6</span><span class="op">)</span> <span class="op">+</span></span>
-<span class="r-in">  <span class="fu"><a href="input_cases.html">input_cases</a></span><span class="op">(</span><span class="fu"><a href="example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'cases'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span class="r-in">  <span class="fu"><a href="input_cases.html">input_deaths</a></span><span class="op">(</span><span class="fu"><a href="example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'deaths'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span><span class="va">cfg</span>, cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Note that this configuration is improper as it uses New York City</span></span></span>
+<span class="r-in"><span><span class="co"># case/death data, but uses Manhattan's FIPS code ('36061') and population size.</span></span></span>
+<span class="r-in"><span><span class="co"># (for demonstration purposes only!)</span></span></span>
+<span class="r-in"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="covidestim.html">covidestim</a></span><span class="op">(</span>ndays <span class="op">=</span> <span class="fl">120</span>, seed <span class="op">=</span> <span class="fl">42</span>, region <span class="op">=</span> <span class="st">'36061'</span>, pop_size <span class="op">=</span> <span class="fl">1.63e6</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="input_cases.html">input_cases</a></span><span class="op">(</span><span class="fu"><a href="example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'cases'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="input_cases.html">input_deaths</a></span><span class="op">(</span><span class="fu"><a href="example_nyc_data.html">example_nyc_data</a></span><span class="op">(</span><span class="st">'deaths'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span><span class="va">cfg</span>, cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -138,7 +145,7 @@ as runOptimizer. It is significantly faster, but lacks CI's.</p><table class="ta
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
