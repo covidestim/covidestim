@@ -534,7 +534,10 @@ transformed parameters {
   ever_inf = pop_size * cum_p_inf_init; // initial ever infected population
   susceptible_prvl[1] = pop_size * (1.0 - start_p_imm); // initial susceptible population
   population_protection_init[1] = pop_size * start_p_imm; // initial (waning) protection from vax/inf/boost
-  effective_protection_inf_prvl[1] = pop_size * start_p_imm;  // initial effective protected 
+  effective_protection_inf_prvl[1] = pop_size * start_p_imm;  //
+  // effective_protection_inf_prvl[1] = pop_size * cum_p_inf_init;  //
+  // effective protection from infections; for the first timepoint include everyone
+  // with a historic infection; 
 
 
   // for(i in 1:N_days_tot) {
@@ -574,10 +577,12 @@ transformed parameters {
     population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot] * 7)));
     // ever_inf += infections[i];
     effective_protection_prvl[i] = population_protection_init[i] + population_protection_inf[i] + population_protection_boost[i];
-    effective_protection_inf_prvl[i] = population_protection_init[i] + population_protection_inf[i];
-
+    if( i < N_weeks_tot){
+    effective_protection_inf_prvl[i+1] = population_protection_init[i] + population_protection_inf[i];
+}
     // new infections; proportionally divided over never infected and waned protection from previous infection
-    infections_premiere[i] = infections[i] * (num_uninf[i] / (pop_size - effective_protection_inf_prvl[i])); 
+    // infections_premiere[i] = infections[i] * (num_uninf[i] / ((pop_size - effective_protection_inf_prvl[i]))); 
+    infections_premiere[i] = infections[i] * (num_uninf[i] / ((pop_size - effective_protection_inf_prvl[i]) + num_uninf[i]));
     //CHOOSE ONE OF THE REINFECTION STRATEGIES
     // num_uninf = pop_sus - ever_inf + prot_boost[i];
    // num_uninf -= (new_inf[i] + obs_boost[i]);
@@ -847,7 +852,7 @@ generated quantities {
   vector[Max_delay]         seropos_dist_rv;
 
   // cumulative incidence
-  infections_cumulative = cumulative_sum(infections); 
+  infections_cumulative = cumulative_sum(infections) + cum_p_inf_init; 
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
   // immunoexposed_cumulative = infections_cumulative;
