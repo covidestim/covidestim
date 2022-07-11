@@ -33,14 +33,14 @@ viz.covidestim_result <- function(ccr, renderPDF = FALSE) {
   run_summary <- summary(ccr)
 
   first_date <- as.Date(ccr$config$first_date, origin = '1970-01-01')
-  ndays      <- ccr$config$N_days
+  nweeks      <- ccr$config$N_weeks
 
 
   # Kind of hack-y way to get the "input data frame"
   dplyr::bind_cols(
-    date = seq(first_date, first_date + lubridate::days(ndays - 1), by = '1 day'),
+    date = seq(first_date, first_date + lubridate::weeks(nweeks - 1), by = '1 week'),
     cases = ccr$config$obs_cas,
-    deaths = ccr$config$obs_die
+    hosp = ccr$config$obs_hosp
   ) -> input_data
 
   # Plot the two main graphs
@@ -64,10 +64,11 @@ viz_RtEstim <- function(run_summary) {
       size = 0.5,
       show.legend = FALSE
     ) +
-    geom_line(aes(y = Rt), na.rm = TRUE) + 
-    geom_ribbon(aes(y = Rt, ymin=Rt.lo, ymax=Rt.hi), alpha=0.3, na.rm = TRUE) +
-    scale_x_date(date_breaks = '1 week',
-                 date_labels = "%b %d",
+    geom_line(aes(y = r_t), na.rm = TRUE) + 
+    geom_ribbon(aes(y = r_t, ymin=r_t_p2_5, ymax=r_t_p97_5), alpha=0.3, na.rm = TRUE) +
+    geom_ribbon(aes(y = r_t, ymin=r_t_p25, ymax=r_t_p75), alpha=0.3, na.rm = TRUE) +
+    scale_x_date(date_breaks = '1 month',
+                 date_labels = "%b",
                  minor_breaks = NULL) +
     scale_y_log10(breaks = c(0.5, 0.7, 1, 1.5, 2, 3, 4, 5),
                   minor_breaks = NULL) +
@@ -92,7 +93,7 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
   custom_logscale <- scale_y_continuous(
     name = "Count (log scale)",
     trans = "log1p",
-    labels = scales::label_number_si(),
+    labels = scales::label_number(scale_cut = cut_short_scale()),
     breaks = function(l) c(0, scales::breaks_log(n=5)(c(1, l[2]))),
     minor_breaks = NULL
   )
@@ -101,18 +102,26 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
     geom_point(data = input_data, aes(y = cases, color = "ocas"),  size = rel(0.6)) + 
     geom_line(data  = input_data, aes(y = cases, color = "ocas")) + 
 
-    geom_point(data = input_data, aes(y = deaths, color = "odth"), size = rel(0.6)) + 
-    geom_line(data  = input_data, aes(y = deaths, color = "odth")) + 
+    geom_point(data = input_data, aes(y = hosp, color = "ohsp"), size = rel(0.6)) + 
+    geom_line(data  = input_data, aes(y = hosp, color = "ohsp")) + 
 
-    geom_line(aes(y = cases.fitted, color = "fcas")) + 
+    geom_line(aes(y = fitted_cases, color = "fcas")) + 
     geom_ribbon(
-      aes(ymin = cases.fitted.lo, ymax = cases.fitted.hi, color = "fcas"),
+      aes(ymin = fitted_cases_p2_5, ymax = fitted_cases_p97_5, color = "fcas"),
+      alpha = 0.3, linetype = 'dashed'
+    ) +
+    geom_ribbon(
+      aes(ymin = fitted_cases_p25, ymax = fitted_cases_p75, color = "fcas"),
       alpha = 0.3, linetype = 'dashed'
     ) +
 
-    geom_line(aes(y = deaths.fitted)) + 
+    geom_line(aes(y = fitted_hospitalizations)) + 
     geom_ribbon(
-      aes(ymin = deaths.fitted.lo, ymax = deaths.fitted.hi, color = "fdth"),
+      aes(ymin =fitted_hospitalizations_p2_5, ymax = fitted_hospitalizations_p97_5, color = "fhsp"),
+      alpha = 0.3, linetype = 'dashed'
+    ) +
+    geom_ribbon(
+      aes(ymin =fitted_hospitalizations_p25, ymax = fitted_hospitalizations_p75, color = "fhsp"),
       alpha = 0.3, linetype = 'dashed'
     ) +
 
@@ -120,9 +129,9 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
     scale_color_manual(
       values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
       labels = c("ocas" = "Observed Cases",
-                 "odth" = "Observed Deaths",
+                 "ohsp" = "Observed Hospitalizations",
                  "fcas" = "Fitted Cases",
-                 "fdth" = "Fitted Deaths"),
+                 "fhsp" = "Fitted Hospitalizations"),
       guide = guide_legend(
         override.aes = list(
           linetype = c(rep("solid", 2), rep("dashed", 2))
@@ -130,11 +139,11 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
         nrow = 2
       )
     ) +
-    scale_x_date(date_breaks = '1 week',
-                 date_labels = "%b %d",
+    scale_x_date(date_breaks = '1 month',
+                 date_labels = "%b",
                  minor_breaks = NULL) +
     labs(x = NULL,
-         title = "Observed and Fitted Cases and Deaths",
+         title = "Observed and Fitted Cases and Hospitalizations",
          color = "") +
     theme_linedraw() +
     theme(
@@ -157,7 +166,12 @@ viz_all_cases_to_data <- function(run_summary, input_data) {
               aes(y = cases, color = "ocas")) +
     geom_line(aes(y = infections, color = "ninf")) + 
     geom_ribbon(
-      aes(ymin = infections.lo, ymax = infections.hi),
+      aes(ymin = infections_p2_5, ymax = infections_p97_5),
+      alpha=0.3,
+      linetype = 2
+    ) +
+    geom_ribbon(
+      aes(ymin = infections_p25, ymax = infections_p75),
       alpha=0.3,
       linetype = 2
     ) +
@@ -172,8 +186,8 @@ viz_all_cases_to_data <- function(run_summary, input_data) {
       minor_breaks = NULL,
       limits = c(0, NA)
     ) +
-    scale_x_date(date_breaks = '1 week',
-                 date_labels = "%b %d",
+    scale_x_date(date_breaks = '1 month',
+                 date_labels = "%b",
                  minor_breaks = NULL) +
     labs(
       x = NULL,
@@ -197,22 +211,23 @@ viz_all_cases_to_data <- function(run_summary, input_data) {
 viz_modeled_cases <- function(cc, fit_to_data, diag, deltas) {
 
   first_date <- as.Date(cc$config$first_date, origin = '1970-01-01')
-
+  nweeks      <- ccr$config$N_weeks
+  
   ggplot2::ggplot(
     mapping = aes(x     = first_date + lubridate::days(day - 1),
                   y     = median,
                   color = outcome)
   ) + 
-    geom_line(data = filter(fit_to_data, outcome == "occur_cas")) + 
+    geom_line(data = filter(fit_to_data, outcome == "fitted_cases")) + 
     geom_ribbon(
-      data = filter(fit_to_data, outcome == "occur_cas"),
+      data = filter(fit_to_data, outcome == "fitted_cases"),
       aes(ymin=lo, ymax=hi),
       linetype = 2,
       alpha=0.2
     ) +
-    geom_line(data = filter(diag, outcome == "diag_all")) +
+    geom_line(data = filter(diag, outcome == "diagnoses")) +
     geom_ribbon(
-      data = filter(diag, outcome == "diag_all"),
+      data = filter(diag, outcome == "diagnoses"),
       aes(ymin=lo, ymax=hi),
       linetype = 2,
       alpha=0.2
@@ -232,20 +247,20 @@ viz_modeled_cases <- function(cc, fit_to_data, diag, deltas) {
       minor_breaks = NULL,
       limits = c(0, NA)
     ) +
-    scale_x_date(date_breaks = '1 week',
-                 date_labels = "%b %d",
+    scale_x_date(date_breaks = '1 month',
+                 date_labels = "%b",
                  minor_breaks = NULL) +
     scale_color_manual(
       values = c('#fc8d62','#66c2a5','#8da0cb'), 
-      breaks = c("diag_all", "occur_cas"),
-      labels = c("diag_all" = "Modeled Diagnosed Cases", 
-                 "occur_cas" = "Fitted Reported Cases")) +
+      breaks = c("diagnoses", "fitted_cases"),
+      labels = c("diagnoses" = "Modeled Diagnosed Cases", 
+                 "fitted_cases" = "Fitted Reported Cases")) +
     # scale_color_manual(
     #   values = c('#fc8d62','#66c2a5','#8da0cb'), 
-    #   breaks = c("new_inf", "diag_all", "occur_cas"),
+    #   breaks = c("new_inf", "diagnoses", "fitted_cases"),
     #   labels = c("new_inf" = "Modeled New Infections",
-    #              "diag_all" = "Modeled Diagnosed Cases", 
-    #              "occur_cas" = "Fitted Reported Cases")) +
+    #              "diagnoses" = "Modeled Diagnosed Cases", 
+    #              "fitted_cases" = "Fitted Reported Cases")) +
     labs(x = NULL,
          y = "Count",
          # title = "Modeled New Infections, Diagnosed Cases, and Reported COVID-19 Cases",
