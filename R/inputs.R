@@ -62,9 +62,12 @@ reformat_dates <- function(vec) vec
 #' There are two types of observational data that can be used with Covidestim:
 #'
 #' \itemize{
-#'   \item Case data, detailing the number of new cases each day
+#'   \item Case data, detailing the number of new cases each week
 #'   \item Death data, detailing the number of confirmed Covid-19 deaths each
-#'   day
+#'   week
+#'   \item Hospitalizations data, detailing the number of hospital admissions each week
+#'   \item Booster data, detailing the number of booster shots adminsitered each week
+#'   \item RR data, detailing the Relative Risk IFR adjustment that the model needs to account for.
 #' }
 #'
 #' All input data to Covidestim is expected to be a
@@ -73,7 +76,7 @@ reformat_dates <- function(vec) vec
 #' \code{\link[base]{Date}}. The second column, \code{observations}, must be a
 #' non-negative numeric vector.
 #'
-#' Missing values in cases and deaths data should be imputed before running the model.
+#' Missing values in cases, hospitalizations, booster, RR and deaths data should be imputed before running the model.
 #' The date range of all sets of data passed to \code{\link{covidestim}} must be
 #' equivalent, with one observation each day, and no gaps in the data.
 #' Assertions attempt to enforce this specification.
@@ -83,14 +86,10 @@ reformat_dates <- function(vec) vec
 #' 
 #'   \code{"reported"} applies to the following situations:
 #'   \itemize{
-#'     \item Case or death data where the count for a particular day
+#'     \item Case, death, hospitalizatons, booster or RR data where the count for a particular day
 #'     represents the number of cases or deaths that were reported publicly on
-#'     that day (for example, as of June 1st, 2020, this is the type of data
-#'       reported by the New York Times'
-#'        \href{https://github.com/nytimes/covid-19-data}{covid-19-data}
-#'       repository, and by the
-#'       \href{https://covidtracking.org}{Covid Tracking Project}.
-#'     \item Cases or deaths data where the count for a particular day is the 
+#'     that day for the following week.
+#'     \item Cases, death, hospitalizatons, booster or RR data where the count for a particular day is the 
 #'       number of cases or deaths received from hospital reports, or
 #'       diagnostic laboratories, accumulated across a particular region
 #'   }

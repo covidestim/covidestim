@@ -4,7 +4,7 @@ Real-time estimates of the true size and trajectory of local COVID-19 epidemics
 are key metrics to guide policy responses. *covidestim* is a Bayesian
 nowcasting approach that explicitly accounts for reporting delays and secular
 changes in case ascertainment to generate real-time estimates of COVID-19
-epidemiology on the basis of reported cases and deaths. Using this approach, we
+epidemiology on the basis of reported cases and hospitalizations. Using this approach, we
 can estimate time trends for a number of important outcomes:
 
 - Infections (including infections that were never diagnosed)
@@ -61,12 +61,15 @@ solutions. Or, just use our Docker container, linked below.
 ```r
 library(covidestim)
 
-# Set up a model on 120 days of example NYC data
-cfg <- covidestim(ndays = 120, region = 'New York', pop_size = get_pop('New York')) +
-  input_cases(example_nyc_data('cases')) +
-  input_deaths(example_nyc_data('deaths'))
+# Set up a model on 31 weeks of Connecticut data, starting December 2, 2021.
+cfg <- covidestim(nweeks = 31, region = 'Connecticut', pop_size = get_pop('Connecticut')) +
+  input_cases(example_ct_data('cases')) +
+  input_deaths(example_ct_data('deaths')) + 
+  input_boost(example_ct_data('boost')) +
+  input_hosp(example_ct_data('hospi')) 
 
 result <- run(cfg)
+resOptimizer <- runOptimizer(cfg)
 
 # Get a data.frame of all timeseries outcomes, and some overview plots
 resultSummary <- summary(result)

@@ -63,12 +63,16 @@ NULL
 #' @seealso \url{https://mc-stan.org/docs/2_18/reference-manual/reproducibility-chapter.html}
 #'
 #' @examples
-#' # Note that this configuration is improper as it uses New York City
-#' # case/death data, but uses Manhattan's FIPS code and population size.
-#' # (for demonstration purposes only!)
-#' covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
-#'   input_cases(example_nyc_data('cases')) +
-#'   input_deaths(example_nyc_data('deaths'))
+#' cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+#'    pop = get_pop("Connecticut"),
+#'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
+#'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+#'   input_cases(example_ct_data('cases')) +
+#'   input_deaths(example_ct_data('deaths')) +
+#'   input_rr(example_ct_data('RR')) + 
+#'   input_hosp(example_ct_data('hosp')) +
+#'   input_boost(example_ct_data('boost'))
+#'   
 #'
 #' @importFrom magrittr %>%
 #' @export
@@ -219,12 +223,16 @@ run <- function(...) UseMethod('run')
 #' @seealso [runOptimizer.covidestim]
 #'
 #' @examples
-#' # Note that this configuration is improper as it uses New York City
-#' # case/death data, but uses Manhattan's FIPS code ('36061') and population size.
-#' # (for demonstration purposes only!)
-#' cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
-#'   input_cases(example_nyc_data('cases')) +
-#'   input_deaths(example_nyc_data('deaths'))
+#' cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+#'    pop = get_pop("Connecticut"),
+#'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
+#'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+#'   input_cases(example_ct_data('cases')) +
+#'   input_deaths(example_ct_data('deaths')) +
+#'   input_rr(example_ct_data('RR')) + 
+#'   input_hosp(example_ct_data('hosp')) +
+#'   input_boost(example_ct_data('boost'))
+#'   
 #' 
 #' \dontrun{
 #' result <- run(cfg, cores = 2)
@@ -306,12 +314,15 @@ runOptimizer <- function(...) UseMethod('runOptimizer')
 #' @seealso [run.covidestim]
 #'
 #' @examples
-#' # Note that this configuration is improper as it uses New York City
-#' # case/death data, but uses Manhattan's FIPS code ('36061') and population size.
-#' # (for demonstration purposes only!)
-#' cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
-#'   input_cases(example_nyc_data('cases')) +
-#'   input_deaths(example_nyc_data('deaths'))
+#' cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+#'    pop = get_pop("Connecticut"),
+#'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
+#'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+#'   input_cases(example_ct_data('cases')) +
+#'   input_deaths(example_ct_data('deaths')) +
+#'   input_rr(example_ct_data('RR')) + 
+#'   input_hosp(example_ct_data('hosp')) +
+#'   input_boost(example_ct_data('boost'))
 #' 
 #' \dontrun{
 #' result <- runOptimizer(cfg, cores = 2)
@@ -504,7 +515,7 @@ Chains:\t{cc$chains}
 Iterations:\t{cc$iter}
 Warmup runs:\t{cc$warmup}
 Priors: Valid
-ndays:\t{cc$config$N_days}
+nweeks:\t{cc$config$N_weeks}
 
 
 ' -> model_summary
