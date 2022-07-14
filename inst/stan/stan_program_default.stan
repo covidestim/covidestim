@@ -867,7 +867,7 @@ if(effective_protection_inf_prvl[i] > pop_size){
 
 }
   // cumulative incidence
-  infections_cumulative = cumulative_sum(infections) + cum_p_inf_init; 
+  infections_cumulative = cumulative_sum(infections) + (cum_p_inf_init*pop_size); 
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
   // immunoexposed_cumulative = infections_cumulative;
