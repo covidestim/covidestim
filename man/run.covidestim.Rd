@@ -47,12 +47,16 @@ as \link{runOptimizer}. It is significantly faster, but lacks CI's.\tabular{llll
 }
 }
 \examples{
-# Note that this configuration is improper as it uses New York City
-# case/death data, but uses Manhattan's FIPS code ('36061') and population size.
-# (for demonstration purposes only!)
-cfg <- covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
-  input_cases(example_nyc_data('cases')) +
-  input_deaths(example_nyc_data('deaths'))
+cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+   pop = get_pop("Connecticut"),
+   start_p_imm = get_imm_init("Connecticut")$start_p_imm,
+   cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+  input_cases(example_ct_data('cases')) +
+  input_deaths(example_ct_data('deaths')) +
+  input_rr(example_ct_data('RR')) + 
+  input_hosp(example_ct_data('hosp')) +
+  input_boost(example_ct_data('boost'))
+  
 
 \dontrun{
 result <- run(cfg, cores = 2)
