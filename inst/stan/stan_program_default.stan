@@ -679,11 +679,10 @@ transformed parameters {
   else
     fitted_cases = diagnoses .* cas_cum_report_delay_rv;
 
-  // reporting delays modeled as described above for cases
-  if(obs_hosp_rep == 1)
-    fitted_hospitalizations = conv1d(diagnoses_severe, die_rep_delay_rv);
-  else
-    fitted_hospitalizations = diagnoses_severe .* die_cum_report_delay_rv;
+// the hospitalizations data is reported by date of occurance;
+// and does not have a reporting delay (the data is reported delayed and 
+// is therefore always up to date). 
+fitted_hospitalizations = diagnoses_severe;
   // reporting delays modeled as described above for cases
   if(obs_die_rep == 1)
     fitted_deaths = conv1d(deaths_of_diagnosed, die_rep_delay_rv);
