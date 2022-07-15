@@ -19,7 +19,7 @@
 #'   input_cases(example_ct_data('cases')) +
 #'   input_deaths(example_ct_data('deaths')) +
 #'   input_rr(example_ct_data('RR')) + 
-#'   input_hosp(example_ct_data('hospi')) +
+#'   input_hosp(example_ct_data('hosp')) +
 #'   input_boost(example_ct_data('boost'))
 #'
 #' \dontrun{
@@ -28,7 +28,7 @@
 #'
 #' @export
 example_ct_data <- function(type = 'cases') {
-  att(type %in% c("cases", "deaths", "RR", "boost", "hospi"))
+  att(type %in% c("cases", "deaths", "RR", "boost", "hosp"))
 
   dplyr::transmute(
     ct_data, # This is an object from `data-raw/`
