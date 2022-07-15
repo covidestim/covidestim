@@ -529,10 +529,19 @@ transformed parameters {
   //                  spl_basis_rt[1+N_days_before,2:N_spl_par_rt]) * spl_par_rt0 / 
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
-  
   ever_inf = pop_size * cum_p_inf_init; // initial ever infected population
-  susceptible_prvl[1] = pop_size * (1.0 - start_p_imm); // initial susceptible population
   population_protection_init[1] = pop_size * start_p_imm; // initial (waning) protection from vax/inf/boost
+  if(N_weeks_before > 0){
+    // if there are before weeks modeled, the initial effective protection
+    // equals the population that will never be infected by the start date of the data
+    // i.e., the date for which the cum_p_inf_init and start_p_imm are reported.
+    effective_protection_prvl[1] = pop_size * (1 - cum_p_inf_init);
+  } else {
+    // if there are no before weeks modeled, the initial effecive protection is 
+    // the complete immune population
+    effective_protection_prvl[1] = pop_size * start_p_imm;
+  }
+  susceptible_prvl[1] = pop_size - effective_protection_prvl[1];
   // effective_protection_inf_prvl[1] = pop_size * cum_p_inf_init;  //
   // effective protection from infections; for the first timepoint include everyone
   // with a historic infection; 
@@ -560,18 +569,27 @@ transformed parameters {
     // if(i > N_days_before){
     // wane_boost[i] = sum(obs_boost[1:i-N_days_before] .* (.35 * exp(-.008 * idx3[N_days_tot-(i-N_days_before)+1:N_days_tot]) + .45) );
     if(i > N_weeks_before){
+      // for the observed data weeks, population protection is calculated for the 
+      // waning of the initial immunity since the observed data started;
+      // waning of booster immunity since the observed data started;
+      // waning of the modeled infections since the observed data started 
+      // (note that any infections prior to this date are implicitly included in the start_p_imm)
     // wane_boost[i] = sum(obs_boost[1:i-N_weeks_before] .* (.35 * exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7) + .45) );
-    population_protection_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7)) );
-    }    else{
-      population_protection_boost[i] = obs_boost[1] *.8;
+    population_protection_init[i] = pop_size * start_p_imm * exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1]*7) ; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
+    population_protection_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1:N_weeks_tot]*7)) );
+    population_protection_inf[i] = sum(infections[N_weeks_before +1:i] .* ( exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1:N_weeks_tot] * 7)));
+    } else {
+      // for the before period, population protected is only the sum of the initial population protected (never infected prior to start date)
+      // and those infected before the start of the data.
+population_protection_init[i] = pop_size * (1 - cum_p_inf_init);
+population_protection_boost[i] = 0;
+population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks_before-i+1:N_weeks_before] * 7)));
     }
     // wane_imm = .3 * exp(-.008 * idx3[N_days_tot-i+1]) + .2;
     // wane_imm = .15 * exp(-.008 * idx3[N_weeks_tot-i+1]*7) + .1; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
-    population_protection_init[i] = pop_size * start_p_imm * exp(-.008 * idx3[N_weeks_tot-i+1]*7) ; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
     // wane_imm = 0;
     // susceptible_prvl[i] = pop_size - wane_imm[i];
     // wane_inf[i] = sum(infections[1:i] .* (.75* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .25));
-    population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot] * 7)));
     // ever_inf += infections[i];
     effective_protection_prvl[i] = population_protection_init[i] + population_protection_inf[i] + population_protection_boost[i];
 
@@ -866,7 +884,8 @@ if(effective_protection_inf_prvl[i] > pop_size){
 
 }
   // cumulative incidence
-  infections_cumulative = cumulative_sum(infections) + (cum_p_inf_init*pop_size); 
+  // cumulative incidence is only calculated for the data weeks! any prior infections are added through cum_p_inf_init.
+  infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) + (cum_p_inf_init*pop_size); 
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
   // immunoexposed_cumulative = infections_cumulative;
