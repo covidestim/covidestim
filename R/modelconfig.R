@@ -158,7 +158,7 @@ print.inputs <- function(cfg, .tab = FALSE) {
     ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_die)}]'))
   status_boost <-
     ifelse(is.null(cfg$obs_boost), '[ x ]', glue('[{frmtr(cfg$obs_boost)}]'))
-  status_hosp <-
+  status_hospi <-
     ifelse(is.null(cfg$obs_hosp), '[ x ]', glue('[{frmtr(cfg$obs_hosp)}]'))
   status_rr <-
     ifelse(is.null(cfg$ifr_vac_adj), '[ x ]', glue('[{frmtr(cfg$ifr_vac_adj)}]'))
@@ -168,7 +168,7 @@ print.inputs <- function(cfg, .tab = FALSE) {
 {t}{status_cases}\tCases
 {t}{status_deaths}\tDeaths
 {t}{status_boost}\tBooster
-{t}{status_hosp}\tHospitalizations
+{t}{status_hospi}\tHospitalizations
 {t}{status_rr}\tRRvaccines
 ' -> msg
 
@@ -188,7 +188,8 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
                     n_spl_rt_knotwidth = 2, 
                     region,
                     cum_p_inf_init,
-                    start_p_imm
+                    start_p_imm,
+                    input_df
                     )
 {
   n_spl_par_rt <- max(4,ceiling((N_weeks + N_weeks_before)/n_spl_rt_knotwidth))
