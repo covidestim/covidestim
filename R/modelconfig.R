@@ -38,9 +38,9 @@ modelconfig_add.priors <- function(rightside, leftside) {
   structure(cfg, class = "modelconfig")
 }
 
-modelconfig_add.input <- function(rightside, leftside) {
-  cfg  <- leftside
-  d    <- rightside
+add_input_data <- function(cfg, input_df) {
+  cfg  <- cfg
+  d    <- input_df
 
   integer_keys <- c("obs_cas", "obs_die", 
                     "obs_boost", "obs_hosp",
