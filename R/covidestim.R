@@ -89,7 +89,8 @@ covidestim <- function(nweeks,
                        window.length = 7,
                        region,
                        start_p_imm,
-                       cum_p_inf_init) {
+                       cum_p_inf_init,
+                       input_df) {
 
   att(is.numeric(nweeks), nweeks >= 1)
 
@@ -100,7 +101,8 @@ covidestim <- function(nweeks,
     n_spl_rt_knotwidth = nspl_rt_knotwidth,
     region             = region,
     start_p_imm        = start_p_imm,
-    cum_p_inf_init     = cum_p_inf_init
+    cum_p_inf_init     = cum_p_inf_init,
+    input_df           = input_df  
   ) -> config
 
   # All user-specified config-related things must be specified above this line
@@ -525,4 +527,6 @@ nweeks:\t{cc$config$N_weeks}
   cat(substituted_string)
 
   print.modelconfig(cc)
+}
+
 }
