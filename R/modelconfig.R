@@ -200,6 +200,14 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
   des_mat_dx <- splines::bs(1:(N_weeks + N_weeks_before), 
                          df=n_spl_par_dx, degree=3, intercept=T) 
   
+  validate_df(df)
+  
+  obs_cas = (df[['case']])
+  obs_hosp = (df[['hospi']])
+  obs_die = (df[['deaths']])
+  obs_boost = (df[['boost']])
+  ifr_vac_adj = (df[['RR']])
+  
   # The first set of components of 'datList'
   config <- rlang::dots_list(
     .homonyms = "error", # Ensure that no keys are entered twice
@@ -238,12 +246,12 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     pop_size = pop_size, 
     
     # vectors of event counts; default to 0 if no input
-    obs_cas = NULL, # vector of int by date. should have 0s if no event that day
-    obs_hosp = NULL, # vector of int by date. should have 0s if no event that day
-    obs_die = NULL, # vector of int by date. should have 0s if no event that day
-    obs_boost = NULL, # vector of int by date. should have 0s if no event that day
+    obs_cas = obs_cas, # vector of int by date. should have 0s if no event that day
+    obs_hosp = obs_hosp, # vector of int by date. should have 0s if no event that day
+    obs_die = obs_die, # vector of int by date. should have 0s if no event that day
+    obs_boost = obs_boost, # vector of int by date. should have 0s if no event that day
     # the ifr_vaccine adjustment data
-    ifr_vac_adj = NULL,
+    ifr_vac_adj = ifr_vac_adj,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
