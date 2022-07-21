@@ -202,6 +202,11 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
   
   validate_df(input_df)
   
+  obs_cas = (df[['case']])
+  obs_hosp = (df[['hospi']])
+  obs_die = (df[['deaths']])
+  obs_boost = (df[['boost']])
+  ifr_vac_adj = (df[['RR']])
   
   # The first set of components of 'datList'
   config <- rlang::dots_list(
