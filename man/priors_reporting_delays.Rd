@@ -4,7 +4,10 @@
 \alias{priors_reporting_delays}
 \title{Fixed distributions on reporting delays}
 \usage{
-priors_reporting_delays(cas_rep_delay = c(2.2, 1), die_rep_delay = c(2.2, 1))
+priors_reporting_delays(
+  cas_rep_delay = c(2.2, 1 * 7),
+  die_rep_delay = c(2.2, 1 * 7)
+)
 }
 \arguments{
 \item{cas_rep_delay}{A two-element numeric vector containing the mean shape

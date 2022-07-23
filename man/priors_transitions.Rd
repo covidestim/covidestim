@@ -5,11 +5,14 @@
 \title{Priors for transitions}
 \usage{
 priors_transitions(
-  p_sym_if_inf = c(5.143, 3.536),
+  p_sym_if_inf = c(2.5, 10),
   p_sev_if_sym = c(1.8854, 20.002),
   p_die_if_sev = c(28.239, 162.3),
-  p_die_if_inf = c(15.915, 3167.1),
-  ifr_decl_OR = c(12.031, 8.999)
+  p_die_if_inf = c(2.55, 1594),
+  ifr_decl_OR = c(12.031, 8.999),
+  new_p_sym_if_inf = c(2.5, 10),
+  rr_decl_sev = c(20.915, 298.79),
+  rr_decl_die = c(15.366, 786.32)
 )
 }
 \arguments{
@@ -57,7 +60,23 @@ Source for default value: \insertRef{ODriscoll_Nature_2020}{covidestim}}
   rate)} parameters/hyperpriors of a Gamma distribution modeling the
 elevated IFR in early 2020, relative to the present. Default value
 represents an IFR 30\% higher in March of 2020, with 95\% interval 10-50\%
-higher.
+higher.}
+
+\item{new_p_sym_if_inf}{A two-element numeric vector containing \code{c(alpha,
+  beta)} parameters/hyperpriors of a Beta distribution modeling the
+new probability of symptomatic if infected after Dec 2021 (omicron). Default value
+represents a p_sym_if_inf of 7\%, with 95\% interval 5-10\%
+higher.}
+
+\item{rr_decl_sev}{A two-element numeric vector containing \code{c(shape,
+  rate)} parameters/hyperpriors of a Gamma distribution modeling the
+decline in infection hospitalization ratio after Dec 2021 (omicron). Default value
+represents an IFR in Dec 2021 7.5\% of before, with 95\% interval 4-10\%.}
+
+\item{rr_decl_die}{A two-element numeric vector containing \code{c(shape,
+  rate)} parameters/hyperpriors of a Gamma distribution modeling the
+decline in IFR in after Dec 2021 (omicron). Default value
+represents an IFR 2\% March of 2020, with 95\% interval 1-3\%.
 
 Source for default value: Expert opinion}
 }

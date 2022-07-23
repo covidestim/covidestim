@@ -5,25 +5,28 @@
 \title{Configure a Covidestim run on a set of priors and input data}
 \usage{
 covidestim(
-  ndays,
-  ndays_before = 28,
+  nweeks,
+  nweeks_before = 4,
   pop_size = 1e+12,
   chains = 3,
   iter = 2000,
+  nspl_rt_knotwidth = 1,
   thin = 1,
   seed = 42,
   adapt_delta = 0.98,
   max_treedepth = 14,
   window.length = 7,
-  region
+  region,
+  start_p_imm,
+  cum_p_inf_init
 )
 }
 \arguments{
-\item{ndays}{A positive integer. The number of days of input data being
-modeled. This should always be set to the number of days in your input
+\item{nweeks}{A positive integer. The number of weeks of input data being
+modeled. This should always be set to the number of weeks in your input
 data.}
 
-\item{ndays_before}{A positive integer. How many days before the first day
+\item{nweeks_before}{A positive integer. How many weeks before the first week
 of model data should be modeled? A higher number will produce estimates
 that go farther back in time, however, those estimates will contain more
 and more uncertainty.}
@@ -37,6 +40,9 @@ important as the population ever infected approaches the population size.}
 
 \item{iter}{The number of iterations to run during NUTS sampling, as passed
 to \code{\link[rstan]{sampling}}.}
+
+\item{nspl_rt_knotwidth}{An integer. The knotwidth to use for the spline of
+Rt.}
 
 \item{thin}{A positive integer to specify period for saving samples, as
 passed to \code{\link[rstan]{sampling}}. Modify this only if you intend
@@ -69,12 +75,16 @@ to \code{\link{run.covidestim}} (for NUTS) or
 \code{\link{runOptimizer.covidestim}} (for BFGS).
 }
 \examples{
-# Note that this configuration is improper as it uses New York City
-# case/death data, but uses Manhattan's FIPS code and population size.
-# (for demonstration purposes only!)
-covidestim(ndays = 120, seed = 42, region = '36061', pop_size = 1.63e6) +
-  input_cases(example_nyc_data('cases')) +
-  input_deaths(example_nyc_data('deaths'))
+cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+   pop = get_pop("Connecticut"),
+   start_p_imm = get_imm_init("Connecticut")$start_p_imm,
+   cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+  input_cases(example_ct_data('cases')) +
+  input_deaths(example_ct_data('deaths')) +
+  input_rr(example_ct_data('RR')) + 
+  input_hosp(example_ct_data('hosp')) +
+  input_boost(example_ct_data('boost'))
+  
 
 }
 \seealso{

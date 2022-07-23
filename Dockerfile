@@ -12,22 +12,28 @@ RUN wget -O - https://deb.nodesource.com/setup_14.x | bash - \
         && apt-get install -y libnode-dev \
         && rm -rf /var/lib/apt/lists/*
 
+COPY ./exec /opt/covidestim/bin
+
+# Make scripts executable
+RUN chmod a+rx /opt/covidestim/bin/*
+
 # All future commands are run as 'rstudio' user
 USER rstudio
 
 # Copy over the GitHub repo
 COPY --chown=rstudio . /tmp/covidestim-install/
 
+# Set $PATH to include /opt/covidestim/bin
+ENV PATH /opt/covidestim/bin:$PATH
+
 # Enable O3 compilation
 RUN Rscript /tmp/covidestim-install/O3-enable.R 
 
-RUN r -e "remotes::install_deps('/tmp/covidestim-install')"
+# Install dbstan:master
+RUN r -e "remotes::install_github('covidestim/dbstan')"
 
-# Now install covidestim
-# RUN r -e "devtools::install('/tmp/covidestim-install')" \
-#   && rm -rf /tmp/covidestim-install
-
-RUN R CMD INSTALL --preclean "/tmp/covidestim-install" \
+RUN r -e "remotes::install_deps('/tmp/covidestim-install')" \
+  && R CMD INSTALL --preclean "/tmp/covidestim-install" \
   && rm -rf /tmp/covidestim-install
 
 CMD ["R"]

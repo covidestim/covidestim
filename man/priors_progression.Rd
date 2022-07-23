@@ -5,13 +5,13 @@
 \title{Fixed values on delay to progression}
 \usage{
 priors_progression(
-  inf_prg_delay = c(3.413, 0.6051),
-  sym_prg_delay = c(1.624, 0.2175),
-  sev_prg_delay = c(2.061, 0.2277),
-  asy_rec_delay = c(14, 2),
-  pri_serial_i = c(129.1, 22.25),
-  infect_dist = c(8, 1.241),
-  seropos_dist = c(4.41, 0.042)
+  inf_prg_delay = c(3.413, 0.6051 * 7),
+  sym_prg_delay = c(1.624, 0.2175 * 7),
+  sev_prg_delay = c(2.061, 0.2277 * 7),
+  asy_rec_delay = c(14, 2 * 7),
+  pri_serial_i = c(34.615, 11.538 * 7),
+  infect_dist = c(8, 1.241 * 7),
+  seropos_dist = c(4.41, 0.042 * 7)
 )
 }
 \arguments{

@@ -24,33 +24,46 @@ library(covidestim)
 ## Running the model 
 ### Data
 
-We will demonstrate how to use the covidestim package using data from the early
-NYC epidemic that the package makes available through the `example_nyc_data()`
-function.
+We will demonstrate how to use the covidestim package using data from the first 
+6 months of 2022 in Connecticut. These data are available through 
+the `example_ct_data()` function; and pre-loading the immunity and infection data
+can be done using the `get_imm_init()` function.
 
-Users can use case and/or death data with the model. Each data type should be
-entered as its own dataframe with two columns: `date` and `observation`.
+Users need to specify case, hospitalizations and booster data to run this model.
+In addition, a vector of RR adjustments needs to be specified.
+Each data type should be entered as its own dataframe with two columns: `date` and `observation`.
 
 ```{r}
-head(example_nyc_data('cases'))
-head(example_nyc_data('deaths'))
+head(example_ct_data('cases'))
+head(example_ct_data('hosp'))
+head(example_ct_data('RR'))
+head(example_ct_data('boost'))
 ```
+
+```{r}
+get_imm_init("Connectictut")
+``` 
 
 ### Generate a model configuration 
 
-Input data and model run options are summarized into a covidestim configuration with the function call `?covidestim`. Users must specify the number of days of data in the input data. More information on data input can be accessed at `?input_cases` and `?input_deaths`. Printing the result of `covidestim()` will produce a summary of model run conditions, priors, and data inputs. 
+Input data and model run options are summarized into a covidestim configuration with the function call `?covidestim`. Users must specify the number of days of data in the input data. More information on data input can be accessed at `?input_cases`, `?input_hosp`, `?input_RR` and `?input_boost`. Printing the result of `covidestim()` will produce a summary of model run conditions, priors, and data inputs. 
 
 Input data and model configuration options are rolled up into a model configuration object as follows:
 
 ```{r}
-cases  <- example_nyc_data('cases')
-deaths <- example_nyc_data('deaths')
-RR     <- example_nyc_data('RR')
+cases  <- example_ct_data('cases')
+hosp   <- example_ct_data('hosp')
+RR     <- example_ct_data('RR')
+boost  <- example_ct_data('boost')
 
-cfg <- covidestim(ndays = nrow(cases), region = 'New York') +
+imm_init <- get_imm_init("Connecticut")
+cfg <- covidestim(nweeks = nrow(cases), region = 'Connecticut',
+                  start_p_imm = imm_init$start_p_imm,
+                  cum_p_inf_init = imm_init$cum_p_inf_init) +
   input_cases(cases) +
-  input_deaths(deaths) + 
-  input_vaccines(RR)
+  input_hosp(hosp) + 
+  input_RR(RR) + 
+  input_boost(boost)
 
 print(cfg)
 ```
@@ -58,13 +71,16 @@ print(cfg)
 There are a few possible variations on this:
 
 1. Custom priors can be set by adding them, just as `input_cases()` and
-   `input_deaths()` were added.
+   `input_hosp()` etc. were added.
 
 2. A population size can be set, to make the model aware of an upper bound on
    how many individuals could be infected.
 
-3. `input_cases()` and `input_deaths()` can accept a second parameter, `type`, to
+3. `input_cases()` and `input_hosp()` can accept an optional parameter, `type`, to
    specify if the data is organized by date-of-report, or date-of-event.
+   
+4. `input_cases()` and `input_hosp()` can accept an optional parameter, 
+    `last[Case/Hosp]Date`, to specify the last date of the observed data.
 
 If you set custom priors, be sure to check the output of `print(cfg)` to see
 that your prior is present in the configuration.
@@ -85,6 +101,8 @@ result <- runOptimizer(cfg)
 Typically, BFGS will occasionally fail to converge. This is what causes the
 non-zero return codes. `runOptimizer.covidestim()` will automatically exclude these, and 
 select the BFGS run that maximizes the posterior.
+Inspect `?runOptimizer.covidestim()` to see the additional tuning parameters to this function.
+For example, the number of `tries` can be set, as well as the `timeout` to be used in these tries.
 
 ## Accessing model output 
 
@@ -99,8 +117,12 @@ they need.
 
 A covidestim object can be easily converted to a summary data frame with the
 `?summary.covidestim_result` function. Each row of the data frame is a date. Each
-column of the data frame is a value of interest. Variables appened with .hi or
-.lo indicate the 0.975 and 0.025 quantiles, respectively.
+column of the data frame is a value of interest. There are 5 columns for each variable
+of interest, the point estimate of that variable, and the 0.025, 0.25, 0.75 and 0.975 
+quantiles; for which the variable name is appended with `_p<interval>`.
+Note that the optimizer algorithm (`runOptimizer.covidestim()`),
+does not generate credible intervals; the summary function will return `NA` for 
+the quantile outcomes.
 
 ```{r}
 result.summary <- summary(result)
@@ -116,7 +138,8 @@ plots <- viz(result)
 ```
 
 The figure 'observedVsFitted' plots the observed cases and deaths (the input
-data) against the modeled values for reported cases and deaths. Because `runOptimzier.covidestim_result()`
+data) against the modeled values for reported cases and hospitalizations.
+Because `runOptimzier.covidestim_result()`
 does not have CI's, there will be a warning relating to the `NA`-valued CI columns
 that are present in the output.
 
