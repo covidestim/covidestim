@@ -37,9 +37,6 @@ operator (see examples)."><meta property="og:image" content="/logo.png"><!-- mat
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
-    </li>
-    <li>
       <a href="../articles/results.html">Results Object</a>
     </li>
   </ul></li>
@@ -73,7 +70,10 @@ operator (see examples).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">priors_reporting_delays</span><span class="op">(</span>cas_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.2</span>, <span class="fl">1</span><span class="op">)</span>, die_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">priors_reporting_delays</span><span class="op">(</span></span>
+<span>  cas_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.2</span>, <span class="fl">1</span> <span class="op">*</span> <span class="fl">7</span><span class="op">)</span>,</span>
+<span>  die_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.2</span>, <span class="fl">1</span> <span class="op">*</span> <span class="fl">7</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -110,6 +110,7 @@ average delay reported in Santa Clara County, CA on 8 April 2020.</p></dd>
 <span class="r-in"><span>    cas_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.7</span>, <span class="fl">3</span><span class="op">)</span>, <span class="co"># Mean = ~1 day</span></span></span>
 <span class="r-in"><span>    die_rep_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.7</span>, <span class="fl">3</span><span class="op">)</span>  <span class="co"># Mean = ~1 day</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in covidestim(ndays = 120, region = "09009", pop_size = get_pop("09009")):</span> unused argument (ndays = 120)</span>
 </code></pre></div>
     </div>
   </div>
@@ -124,7 +125,7 @@ average delay reported in Santa Clara County, CA on 8 April 2020.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

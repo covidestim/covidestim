@@ -32,9 +32,6 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
-    </li>
-    <li>
       <a href="../articles/results.html">Results Object</a>
     </li>
   </ul></li>
@@ -73,9 +70,13 @@
           <p class="section-desc"></p><p>Covidestim expects two data sources to be present - case data, and death data. These functions allow adding these data sources to the model configuration.</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="input_cases.html">input_cases()</a></code> <code><a href="input_cases.html">input_deaths()</a></code> <code><a href="input_cases.html">input_vaccines()</a></code> </p>
+          <p><code><a href="input_cases.html">input_cases()</a></code> <code><a href="input_cases.html">input_deaths()</a></code> <code><a href="input_cases.html">input_rr()</a></code> <code><a href="input_cases.html">input_hosp()</a></code> <code><a href="input_cases.html">input_boost()</a></code> </p>
         </td>
         <td><p>Input observational data</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_imm_init.html">get_imm_init()</a></code> </p>
+        </td>
+        <td><p>Immunity and cumulative infections (fraction) estimates for US states and counties</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h3 id="custom-priors">Custom priors <a href="#custom-priors" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p><p>These functions allow customization of model priors. By default, Covidestim comes with a complete set of priors, which have been tailed for estimation of U.S. counties and states. However, these functions make it possible to override the default parameterizations of the prior distributions, within certain constraints. This allows you to conduct exploratory modeling of other geographies, or test the effect of different priors on estimates.</p>
@@ -193,12 +194,12 @@
         <td><p>Visualize results of a Covidestim run</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="example-data">Example data <a href="#example-data" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Covidestim provides an example NYC dataset to try running the model with.</p>
+          <p class="section-desc"></p><p>Covidestim provides an example dataset to try running the model with.</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="example_nyc_data.html">example_nyc_data()</a></code> </p>
+          <p><code><a href="example_ct_data.html">example_ct_data()</a></code> </p>
         </td>
-        <td><p>Example NYC case/death data</p></td>
+        <td><p>Example CT case/death data</p></td>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="build_priors.html">build_priors()</a></code> </p>
         </td>
@@ -270,7 +271,7 @@ the addition operator</p></td>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -32,9 +32,6 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/covidestim_vignette.html">Using Covidestim</a>
-    </li>
-    <li>
       <a href="../articles/results.html">Results Object</a>
     </li>
   </ul></li>
@@ -67,7 +64,11 @@
 <span></span>
 <span><span class="fu">input_deaths</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span>, lastDeathDate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">input_vaccines</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">input_rr</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">input_hosp</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span>, lastHospDate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">input_boost</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"reported"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,14 +79,10 @@
 
 <dt>type</dt>
 <dd><p>A string, either <code>"reported"</code> or <code>"occurred"</code>.</p>
-<p><code>"reported"</code> applies to the following situations:</p><ul><li><p>Case or death data where the count for a particular day
+<p><code>"reported"</code> applies to the following situations:</p><ul><li><p>Case, death, hospitalizatons, booster or RR data where the count for a particular day
 represents the number of cases or deaths that were reported publicly on
-that day (for example, as of June 1st, 2020, this is the type of data
-reported by the New York Times'
-<a href="https://github.com/nytimes/covid-19-data" class="external-link">covid-19-data</a>
-repository, and by the
-<a href="https://covidtracking.org" class="external-link">Covid Tracking Project</a>.</p></li>
-<li><p>Cases or deaths data where the count for a particular day is the
+that day for the following week.</p></li>
+<li><p>Cases, death, hospitalizatons, booster or RR data where the count for a particular day is the
 number of cases or deaths received from hospital reports, or
 diagnostic laboratories, accumulated across a particular region</p></li>
 </ul><p><code>"occurred"</code> applies to the following situations:</p><ul><li><p>Data where counts represent the number of cases or deaths that
@@ -100,15 +97,18 @@ should be passed with <code>type = "reported"</code>, instead.</p></li>
     <div id="details">
     <h2>Details</h2>
     <p>There are two types of observational data that can be used with Covidestim:</p>
-<ul><li><p>Case data, detailing the number of new cases each day</p></li>
+<ul><li><p>Case data, detailing the number of new cases each week</p></li>
 <li><p>Death data, detailing the number of confirmed Covid-19 deaths each
-day</p></li>
+week</p></li>
+<li><p>Hospitalizations data, detailing the number of hospital admissions each week</p></li>
+<li><p>Booster data, detailing the number of booster shots adminsitered each week</p></li>
+<li><p>RR data, detailing the Relative Risk IFR adjustment that the model needs to account for.</p></li>
 </ul><p>All input data to Covidestim is expected to be a
 <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code> of two variables. One variable, <code>date</code>,
 must be a vector of type <code><a href="https://rdrr.io/r/base/DateTimeClasses.html" class="external-link">POSIXct</a></code> or
 <code><a href="https://rdrr.io/r/base/Dates.html" class="external-link">Date</a></code>. The second column, <code>observations</code>, must be a
 non-negative numeric vector.</p>
-<p>Missing values in cases and deaths data should be imputed before running the model.
+<p>Missing values in cases, hospitalizations, booster, RR and deaths data should be imputed before running the model.
 The date range of all sets of data passed to <code><a href="covidestim.html">covidestim</a></code> must be
 equivalent, with one observation each day, and no gaps in the data.
 Assertions attempt to enforce this specification.</p>
@@ -126,7 +126,7 @@ Assertions attempt to enforce this specification.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

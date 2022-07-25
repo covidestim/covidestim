@@ -4,9 +4,6 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/covidestim_vignette.html</loc>
-  </url>
-  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -34,10 +31,13 @@
     <loc>/reference/defaultConfig.html</loc>
   </url>
   <url>
-    <loc>/reference/example_nyc_data.html</loc>
+    <loc>/reference/example_ct_data.html</loc>
   </url>
   <url>
     <loc>/reference/get_ifr_raw.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_imm_init.html</loc>
   </url>
   <url>
     <loc>/reference/get_pop.html</loc>
