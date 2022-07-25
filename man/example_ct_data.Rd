@@ -28,7 +28,7 @@ cfg <- covidestim(nweeks = 32, region = 'Connecticut',
   input_cases(example_ct_data('cases')) +
   input_deaths(example_ct_data('deaths')) +
   input_rr(example_ct_data('RR')) + 
-  input_hosp(example_ct_data('hospi')) +
+  input_hosp(example_ct_data('hosp')) +
   input_boost(example_ct_data('boost'))
 
 \dontrun{
