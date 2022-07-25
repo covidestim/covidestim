@@ -57,11 +57,6 @@ reference:
   - summary.covidestim_result
   - starts_with("viz")
 
-- title: Example data
-  desc: Covidestim provides an example NYC dataset to try running the model with.
-- contents:
-  - example_nyc_data
-
 - title: internal
 - contents:
   - build_priors
