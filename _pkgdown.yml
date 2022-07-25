@@ -9,6 +9,7 @@ reference:
   desc: Covidestim expects two data sources to be present - case data, and death data. These functions allow adding these data sources to the model configuration.
 - contents:
   - starts_with("input")
+  - get_imm_init
 
 - subtitle: Custom priors
   desc: |
@@ -56,6 +57,11 @@ reference:
 - contents:
   - summary.covidestim_result
   - starts_with("viz")
+
+- title: Example data
+  desc: Covidestim provides an example dataset to try running the model with.
+- contents:
+  - example_ct_data
 
 - title: internal
 - contents:

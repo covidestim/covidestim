@@ -150,6 +150,7 @@ get_pop <- function(region) {
 
   found$pop
 }
+
 #' Immunity and cumulative infections (fraction) estimates for US states and counties 
 #'
 #' Returns December 1, 2021 covidestim estimates of state or county effective protection
