@@ -20,102 +20,126 @@ Covidestim uses Bayesian inference to estiamte incident cases. The model is run 
 We make use of the rstan functions [`summary()`](https://mc-stan.org/rstan/reference/stanfit-method-summary.html) and  [`extract()`](https://mc-stan.org/rstan/reference/stanfit-method-extract.html) to pull model results of interest for easy visualization and analysis. 
 
 ### Extracted
-`extracted` contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of samples from the paremeter. All three chains have been mixed. 
+`extracted` contains the point estimate for every parameter value in every iteration after warm-up. It is a named list, where every element is an array of samples from the parameter. All three chains have been mixed. 
 
 ```r
-summary(output[["extracted"]])
+summary(resultSampler[["extracted"]])
 ```
 
 ```
-##                      Length Class  Mode   
-## log_new_inf_0           900 -none- numeric
-## deriv1_log_new_inf   117000 -none- numeric
-## p_sym_if_inf            900 -none- numeric
-## p_sev_if_sym            900 -none- numeric
-## p_die_if_sev            900 -none- numeric
-## scale_dx_delay_sym      900 -none- numeric
-## scale_dx_delay_sev      900 -none- numeric
-## cas_rep_delay_shap      900 -none- numeric
-## cas_rep_delay_rate      900 -none- numeric
-## die_rep_delay_shap      900 -none- numeric
-## die_rep_delay_rate      900 -none- numeric
-## p_diag_if_sym           900 -none- numeric
-## p_diag_if_sev           900 -none- numeric
-## weekend_eff             900 -none- numeric
-## inv_sqrt_phi_c          900 -none- numeric
-## inv_sqrt_phi_d          900 -none- numeric
-## log_new_inf          117900 -none- numeric
-## new_inf              117900 -none- numeric
-## deriv2_log_new_inf   116100 -none- numeric
-## sym_diag_delay        54000 -none- numeric
-## sev_diag_delay        54000 -none- numeric
-## cas_rep_delay         54000 -none- numeric
-## die_rep_delay         54000 -none- numeric
-## cas_cum_report_delay  54000 -none- numeric
-## die_cum_report_delay  54000 -none- numeric
-## p_die_if_sym            900 -none- numeric
-## new_sym              117900 -none- numeric
-## new_sev              117900 -none- numeric
-## new_die              117900 -none- numeric
-## new_sym_dx           117900 -none- numeric
-## dx_sym_sev           117900 -none- numeric
-## dx_sym_die           117900 -none- numeric
-## new_sev_dx           117900 -none- numeric
-## dx_sev_die           117900 -none- numeric
-## new_die_dx           117900 -none- numeric
-## diag_all             117900 -none- numeric
-## occur_cas            117900 -none- numeric
-## occur_die            117900 -none- numeric
-## phi_cas                 900 -none- numeric
-## phi_die                 900 -none- numeric
-## cumulative_incidence 117900 -none- numeric
-## lp__                    900 -none- numeric
+##                                        Length Class  Mode   
+## log_infections_0                          2001 -none- numeric
+## serial_i                                  2001 -none- numeric
+## spl_par_rt                               70035 -none- numeric
+## p_sym_if_inf                              2001 -none- numeric
+## new_p_sym_if_inf                          2001 -none- numeric
+## p_sev_if_sym                              2001 -none- numeric
+## p_die_if_sev                              2001 -none- numeric
+## ifr_decl_OR                               2001 -none- numeric
+## scale_dx_delay_sym                        2001 -none- numeric
+## scale_dx_delay_sev                        2001 -none- numeric
+## rr_diag_asy_vs_sym                        2001 -none- numeric
+## p_diag_if_sev                             2001 -none- numeric
+## spl_par_sym_dx                           24012 -none- numeric
+## inv_sqrt_phi_c                            2001 -none- numeric
+## inv_sqrt_phi_h                            2001 -none- numeric
+## prob_vac                                  6003 -none- numeric
+## log_infections                           70035 -none- numeric
+## deriv1_log_infections                    70035 -none- numeric
+## infections                               70035 -none- numeric
+## ever_inf                                  2001 -none- numeric
+## susceptible_prvl                         70035 -none- numeric
+## population_protection_init               70035 -none- numeric
+## population_protection_inf                70035 -none- numeric
+## population_protection_boost              70035 -none- numeric
+## effective_protection_prvl                70035 -none- numeric
+## logRt0                                   70035 -none- numeric
+## logRt                                    70035 -none- numeric
+## r_t                                      70035 -none- numeric
+## deriv1_spl_par_rt                        68034 -none- numeric
+## deriv2_spl_par_rt                        66033 -none- numeric
+## p_die_if_sevt                           122061 -none- numeric
+## p_sev_if_symt                            70035 -none- numeric
+## p_sym_if_inft                            70035 -none- numeric
+## rr_diag_sym_vs_sev                       70035 -none- numeric
+## p_diag_if_asy                            70035 -none- numeric
+## p_diag_if_sym                            70035 -none- numeric
+## sym_diag_delay_rv                        10005 -none- numeric
+## sev_diag_delay_rv                        10005 -none- numeric
+## p_die_if_inf                              2001 -none- numeric
+## symptomatic                              70035 -none- numeric
+## severe                                   70035 -none- numeric
+## deaths                                   70035 -none- numeric
+## new_asy_dx                               70035 -none- numeric
+## diagnoses_of_symptomatic                 70035 -none- numeric
+## diagnoses_severe                         70035 -none- numeric
+## dx_sym_sev                               70035 -none- numeric
+## dx_sym_die                               70035 -none- numeric
+## dx_sev_die                               70035 -none- numeric
+## diagnoses                                70035 -none- numeric
+## deaths_of_diagnosed                      70035 -none- numeric
+## fitted_cases                             70035 -none- numeric
+## fitted_hospitalizations                  70035 -none- numeric
+## fitted_deaths                            70035 -none- numeric
+## fitted_cases_mvs                         70035 -none- numeric
+## fitted_hospitalizations_mvs              70035 -none- numeric
+## fitted_deaths_mvs                        70035 -none- numeric
+## phi_cas                                   2001 -none- numeric
+## phi_hosp                                  2001 -none- numeric
+## infections_premiere                      70035 -none- numeric
+## num_uninf                                70035 -none- numeric
+## p_die_if_sym                              2001 -none- numeric
+## susceptible_severe_prvl                  70035 -none- numeric
+## effective_protection_inf_prvl            70035 -none- numeric
+## effective_protection_inf_vax_prvl        70035 -none- numeric
+## effective_protection_inf_vax_boost_prvl  70035 -none- numeric
+## effective_protection_vax_prvl            70035 -none- numeric
+## effective_protection_vax_boost_prvl      70035 -none- numeric
+## fitted_wastewater_prvl                   70035 -none- numeric
+## immunoexposed_cumulative                 70035 -none- numeric
+## diag_cases                               70035 -none- numeric
+## infections_cumulative                    70035 -none- numeric
+## seropositive_prvl                        70035 -none- numeric
+## infect_dist_rv                           10005 -none- numeric
+## seropos_dist_rv                          10005 -none- numeric
+## lp__                                      2001 -none- numeric
 ```
 In this format, it's possible to view the time series of estimates within a single iteration. 
 
 ```r
 # a matrix of new infection point estimates for each timepoint, iteration
-new_sym <- output[["extracted"]]$new_sym
+symptomatic <- resultSampler[["extracted"]]$symptomatic
 # view first 8 iterations, first 5 days
-new_sym[1:8, 1:5]
+symptomatic[1:8, 1:5]
 ```
 
 ```
 ##           
-## iterations         [,1]        [,2]        [,3]       [,4]
-##       [1,] 5.000831e-03 0.085774934 0.338419803 0.74767701
-##       [2,] 2.759352e-02 0.471483881 1.832557686 3.93464305
-##       [3,] 1.236652e-02 0.209725612 0.793641668 1.64612047
-##       [4,] 1.700063e-04 0.002945658 0.012050677 0.02808664
-##       [5,] 9.283942e-04 0.015940230 0.063102423 0.13984681
-##       [6,] 7.966206e-05 0.001393664 0.005899647 0.01451118
-##       [7,] 8.527537e-03 0.146649289 0.584590739 1.31825915
-##       [8,] 2.317722e-03 0.039494329 0.152152961 0.32462729
-##           
-## iterations       [,5]
-##       [1,] 1.22779122
-##       [2,] 6.18706202
-##       [3,] 2.48977357
-##       [4,] 0.04920852
-##       [5,] 0.23017528
-##       [6,] 0.02744720
-##       [7,] 2.24049591
-##       [8,] 0.51045805
+## iterations        [,1]       [,2]      [,3]      [,4]      [,5]
+##       [1,]   20.915638   83.52655  279.6354   852.035  1545.863
+##       [2,]  465.373843 1219.99343 2224.2171  3279.559  3376.376
+##       [3,]  315.124743  933.95830 2414.2607  5708.108  8962.015
+##       [4,] 3578.576732 5496.18261 7867.6441 10448.528 10017.251
+##       [5,]   11.749233  113.76340  563.1696  1722.781  2395.676
+##       [6,]   59.485646  184.21509  520.2122  1407.977  2548.258
+##       [7,]   30.221652  197.02279  871.2315  2549.490  4633.613
+##       [8,]    9.974706  169.39580 1302.0273  4821.392  7332.001
+##
 ```
 This functionality is particularly useful for calculating an average with quantile-based bounds across multiple days of data. For example, we can calculate the average number of new infections over the first week of data. 
 
 ```r
 # create a data frame with the final 7 days from the model 
-new_sym_df <- as.data.frame(new_sym[,29:35]) 
+symptomatic_df <- as.data.frame(symptomatic[,29:35]) 
 # compute the row average 
-new_sym_df$avg <- rowSums(new_sym_df)/7
+symptomatic_df$avg <- rowSums(symptomatic_df)/7
 # calculate the mean and 95% uncertainty bounds
-quantile(new_sym_df$avg, probs = c(0.025,  0.5, 0.975))
+quantile(symptomatic_df$avg, probs = c(0.025,  0.5, 0.975))
 ```
 
 ```
-##      2.5%       50%     97.5% 
-##  66.93261 126.27501 368.72355
+##       2.5%       50%     97.5% 
+##   5742.445 13795.639 31927.407 
 ```
 `extracted` is generally useful for cases where it's necessary to compute an average across multiple timepoints or when a user would like to represent uncertainty with non-quantile-based intervals (e.g. highest density intervals). 
 
@@ -123,30 +147,24 @@ quantile(new_sym_df$avg, probs = c(0.025,  0.5, 0.975))
 `summary` contains the point estimate and uncertainty bounds for every parameter in the model. The number in brackets indicates the inex day of the estimate. `summary` also contains information about model fit, including the effective sample size and Rhat estimates. 
 
 ```r
-head(output[["summary"]])
+head(resultSampler[["summary"]])
 ```
 
 ```
-##                              mean     se_mean        sd       2.5%
-## log_new_inf_0         -0.09407199 0.124892339 1.7422593 -3.4863638
-## deriv1_log_new_inf[1]  0.09878696 0.007698155 0.1555521 -0.2177846
-## deriv1_log_new_inf[2]  0.09810893 0.007726969 0.1467691 -0.1901038
-## deriv1_log_new_inf[3]  0.10165363 0.007604998 0.1381510 -0.1704727
-## deriv1_log_new_inf[4]  0.10310780 0.007564192 0.1332101 -0.1565756
-## deriv1_log_new_inf[5]  0.10713639 0.007379831 0.1261482 -0.1348862
-##                                25%        50%       75%     97.5%
-## log_new_inf_0         -1.335545023 0.06478394 1.1358392 3.1786627
-## deriv1_log_new_inf[1] -0.005289537 0.10252738 0.1994855 0.3871890
-## deriv1_log_new_inf[2] -0.002556148 0.09851323 0.1934680 0.3815958
-## deriv1_log_new_inf[3]  0.013838110 0.10828554 0.1967466 0.3597289
-## deriv1_log_new_inf[4]  0.015198660 0.10588400 0.1922527 0.3604025
-## deriv1_log_new_inf[5]  0.022216874 0.10796443 0.1893202 0.3602236
-##                          n_eff     Rhat
-## log_new_inf_0         194.6050 1.013847
-## deriv1_log_new_inf[1] 408.2993 1.003926
-## deriv1_log_new_inf[2] 360.7869 1.005759
-## deriv1_log_new_inf[3] 329.9968 1.008112
-## deriv1_log_new_inf[4] 310.1340 1.008822
-## deriv1_log_new_inf[5] 292.1928 1.008697
+##                      mean    se_mean         sd       2.5%       25%      50%
+## log_infections_0 4.002962 0.12482804 3.36767658 -2.5922594 1.7065459 4.093178
+## serial_i         0.503513 0.00233125 0.07175278  0.3761696 0.4538342 0.497454
+## spl_par_rt[1]    1.739605 0.02301083 0.64869189  0.4892591 1.3109598 1.732197
+## spl_par_rt[2]    1.619298 0.01891424 0.51494689  0.6535037 1.2765966 1.609727
+## spl_par_rt[3]    1.492020 0.01511776 0.40208886  0.7496523 1.2159287 1.480105
+## spl_par_rt[4]    1.352475 0.01156291 0.30566562  0.7823028 1.1401596 1.345936
+##                       75%      97.5%    n_eff      Rhat
+## log_infections_0 6.289483 10.4427742 727.8409 1.0002831
+## serial_i         0.550803  0.6577614 947.3268 1.0020477
+## spl_par_rt[1]    2.173038  3.0171986 794.7166 0.9998344
+## spl_par_rt[2]    1.964727  2.6432368 741.2200 0.9998162
+## spl_par_rt[3]    1.757841  2.3007235 707.4070 1.0001236
+## spl_par_rt[4]    1.556165  1.9627454 698.8092 1.0009470
+##
 ```
 While `summary` can be easily converted to a dataframe, we recommend using helper functions with covidestim. 
