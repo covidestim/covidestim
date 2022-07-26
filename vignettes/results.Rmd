@@ -1,6 +1,6 @@
 ---
 title: "Results Object"
-author: "Melanie H. Chitwood, Marcus Russi" 
+author: "Melanie H. Chitwood, Marcus Russi, Fayette Klaassen" 
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Results Object}

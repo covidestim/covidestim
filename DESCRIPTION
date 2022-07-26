@@ -9,7 +9,11 @@ Authors@R:
       person("Melanie", "Chitwood",
              role = c("aut"),
              email = "melanie.chitwood@yale.edu",
-             comment = c(ORCID = "0000-0002-9289-5694")))
+             comment = c(ORCID = "0000-0002-9289-5694")),
+      person("Fayette", "Klaassen",
+             role = c("aut"),
+             email = "fklaassen@hsph.harvard.edu",
+             comment = c(ORCID = "0000-0002-9488-2571")))
 Description: covidestim is a Bayesian nowcasting approach that explicitly
   accounts for reporting delays and secular changes in case ascertainment to
   generate real-time estimates of COVID-19 epidemiology on the basis of reported

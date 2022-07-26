@@ -96,6 +96,7 @@ detailed history of major changes [here](https://www.covidestim.org/updates.pdf)
   [Nextflow](https://nextflow.io/) routine for batch execution of _covidestim_
   in an HPC or cloud environment.
 * [Read our preprint](https://www.medrxiv.org/content/10.1101/2020.06.17.20133983v1)
+* [Read oour paper, estimating immunity in the US through 2021](https://academic.oup.com/cid/advance-article/doi/10.1093/cid/ciac438/6611479?login=false)
 * [Ask a question](mailto:marcus.russi@yale.edu?subject=covidestim)
 * [Use our U.S. state/county model results](https://covidestim.org), updated
   daily. The latest results can be downloaded as a `.csv` from a stable URL.
