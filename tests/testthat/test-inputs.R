@@ -43,26 +43,30 @@ test_that("duplicate dates don't work", {
 
 test_that("example data validates", {
 
-  d_cases  <- example_nyc_data("cases")
-  d_deaths <- example_nyc_data("deaths")
+  d_cases  <- example_ct_data("cases")
+  d_deaths <- example_ct_data("deaths")
 
-  ndays <- nrow(d_cases)
-
+  nweeks <- nrow(d_cases)
+  imm_init <- get_imm_init("Connecticut")
+  
   expect_silent(icas <- input_cases(d_cases))
   expect_silent(idth <- input_deaths(d_deaths))
 
   expect_silent(
-    covidestim(ndays = ndays, ndays_before = 10, region = 'New York') +
+    covidestim(nweeks = nrow(d_cases), region = 'Connecticut',
+               start_p_imm = imm_init$start_p_imm,
+               cum_p_inf_init = imm_init$cum_p_inf_init) +
       icas + idth
   )
 })
 
 test_that("obs/rep causes change to underlying Stan configuration", {
 
-  d_cases  <- example_nyc_data("cases")
-  ndays <- nrow(d_cases)
-
-  d_deaths <- example_nyc_data("deaths")
+  d_cases  <- example_ct_data("cases")
+  nweeks <- nrow(d_cases)
+  imm_init <- get_imm_init("Connecticut")
+  
+  d_deaths <- example_ct_data("deaths")
 
   # Configure things as reported
   expect_silent(icas     <- input_cases(d_cases))
@@ -74,22 +78,30 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + icas
+    cfg <- covidestim(nweeks = nrow(d_cases), region = 'Connecticut',
+               start_p_imm = imm_init$start_p_imm,
+               cum_p_inf_init = imm_init$cum_p_inf_init) + icas
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + idth
+    cfg <- covidestim(nweeks = nrow(d_cases), region = 'Connecticut',
+                      start_p_imm = imm_init$start_p_imm,
+                      cum_p_inf_init = imm_init$cum_p_inf_init) + idth
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + icas + idth
+    cfg <- covidestim(nweeks = nrow(d_cases), region = 'Connecticut',
+                      start_p_imm = imm_init$start_p_imm,
+                      cum_p_inf_init = imm_init$cum_p_inf_init) + icas + idth
   )
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + idth + icas
+    cfg <- covidestim(nweeks = nrow(d_cases), region = 'Connecticut',
+                      start_p_imm = imm_init$start_p_imm,
+                      cum_p_inf_init = imm_init$cum_p_inf_init) + idth + icas
   )
 
   # You should be able to see the `*_rep` flags set now
@@ -98,7 +110,9 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York')
+    cfg <- covidestim(nweeks = nrow(d_cases), region = 'Connecticut',
+                      start_p_imm = imm_init$start_p_imm,
+                      cum_p_inf_init = imm_init$cum_p_inf_init)
   )
 
   #############################################################################
@@ -115,7 +129,9 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
   # Everything should succeed
   expect_silent(
-    cfg <- covidestim(ndays = ndays, ndays_before = 10, region = 'New York') + icas + idth
+    cfg <- covidestim(nweeks = nrow(d_cases), region = 'Connecticut',
+                      start_p_imm = imm_init$start_p_imm,
+                      cum_p_inf_init = imm_init$cum_p_inf_init) + icas + idth
   )
 
   # You should be able to see the `*_rep` flags UNset now
@@ -125,8 +141,8 @@ test_that("obs/rep causes change to underlying Stan configuration", {
 
 test_that("bad `type` arguments don't validate to valid input objects", {
 
-  d_cases  <- example_nyc_data("cases")
-  d_deaths <- example_nyc_data("deaths")
+  d_cases  <- example_ct_data("cases")
+  d_deaths <- example_ct_data("deaths")
 
   # Configure things as reported
   expect_error(icas <- input_cases(d_cases,  type = "LOL"))
