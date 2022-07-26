@@ -92,5 +92,7 @@ numbers. The return value of this function must be added to a
 \code{covidestim} object using the addition operator (see examples).
 }
 \examples{
-cfg <- covidestim(ndays = 50, region = 'New York') + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
+cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+cum_p_inf_init = .5, start_p_imm = .5) + 
+priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 }

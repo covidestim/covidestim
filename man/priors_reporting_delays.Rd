@@ -11,13 +11,13 @@ priors_reporting_delays(
 }
 \arguments{
 \item{cas_rep_delay}{A two-element numeric vector containing the mean shape
-and rate for a gamma distribution describing the delay (in days) in case
+and rate for a gamma distribution describing the delay (in weeks) in case
 reporting.  Shape and rate are parameterized with a lognormal prior where
 the log of the input value is the median and the variance is 0.5. Based on
 average delay reported in Santa Clara County, CA on 8 April 2020.}
 
 \item{die_rep_delay}{A two-element numeric vector containing the mean shape
-and rate for a gamma distribution describing delay (in days) in death
+and rate for a gamma distribution describing delay (in weeks) in death
 reporting.  Shape and rate are parameterized with a lognormal prior where
 the log of the input value is the median and the variance is 0.5. Based on
 average delay reported in Santa Clara County, CA on 8 April 2020.}
@@ -36,9 +36,10 @@ operator (see examples).
 \examples{
 # If you believe that cases are generally reported one day after the date of
 # the test, and deaths one day after the event:
-cfg <- covidestim(ndays = 120, region = '09009', pop_size=get_pop('09009')) +
+cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+cum_p_inf_init = .5, start_p_imm = .5) +
   priors_reporting_delays(
-    cas_rep_delay = c(2.7, 3), # Mean = ~1 day
-    die_rep_delay = c(2.7, 3)  # Mean = ~1 day
+    cas_rep_delay = c(2.7, 3*7), # Mean = ~1 day
+    die_rep_delay = c(2.7, 3*7)  # Mean = ~1 day
   )
 }

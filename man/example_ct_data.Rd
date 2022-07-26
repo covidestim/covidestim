@@ -21,7 +21,7 @@ Only one type of data will be returned at a time.
 }
 \examples{
 
-cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+cfg <- covidestim(nweeks = 31, region = 'Connecticut',
    pop = get_pop("Connecticut"),
    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +

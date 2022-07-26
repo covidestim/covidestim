@@ -53,6 +53,13 @@ sampling or in BFGS.}
 
 \item{region}{A string. The FIPS code (for U.S. counties) or state name
 (e.g. \code{New York}) being modeled. Required.}
+
+\item{start_p_imm}{A probability (number between 0 and 1). The starting
+fraction of the population with immunity against the Omicron variant.
+Required.}
+
+\item{cum_p_inf_init}{A probability (number between o and 1). The starting
+fraction of the population that has ever been infected. Required.}
 }
 \value{
 An S3 object of type \code{covidestim}. This can be passed to
@@ -75,7 +82,7 @@ to \code{\link{run.covidestim}} (for NUTS) or
 \code{\link{runOptimizer.covidestim}} (for BFGS).
 }
 \examples{
-cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+cfg <- covidestim(nweeks = 31, region = 'Connecticut',
    pop = get_pop("Connecticut"),
    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +

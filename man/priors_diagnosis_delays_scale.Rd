@@ -41,5 +41,7 @@ to a \code{covidestim} object using the addition operator (see examples).
 Boundary avoiding priors are used by default.
 }
 \examples{
-cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
+cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+cum_p_inf_init = .5, start_p_imm = .5) + 
+priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
 }

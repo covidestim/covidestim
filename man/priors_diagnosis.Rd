@@ -43,5 +43,7 @@ Boundary avoiding priors are used by default; a weakly informative prior
 is used for the probability of diagnosis if severely ill.
 }
 \examples{
-cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis(p_diag_if_sev = c(2, 2))
+cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+cum_p_inf_init = .5, start_p_imm = .5) + 
+priors_diagnosis(p_diag_if_sev = c(2, 2))
 }

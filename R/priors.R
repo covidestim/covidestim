@@ -174,7 +174,9 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #'
 #' @return An S3 object of class \code{priors}
 #' @examples
-#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_transitions(p_sym_if_inf = c(0.5, 0.2))
+#' cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+#' cum_p_inf_init = .5, start_p_imm = .5) + 
+#' priors_transitions(p_sym_if_inf = c(0.5, 0.2))
 #' @export
 priors_transitions <- function(
   # p_sym_if_inf = c(5.1430, 3.5360),    # a/b old
@@ -239,42 +241,44 @@ priors_transitions <- function(
 #'
 #' @param sym_prg_delay A two-element numeric vector containing \code{c(shape, rate)}
 #'   parameters/hyperpriors of a Gamma distribution modeling the time (in
-#'   number of days) from symptom onset to severe disease. 
+#'   number of weeks) from symptom onset to severe disease. 
 #'
 #' Source for default value: \insertRef{zhou_clinical_2020}{covidestim}
 #'
 #' @param sev_prg_delay A two-element numeric vector containing
 #'   \code{c(shape, rate)} parameters/hyperpriors of a Gamma distribution
-#'   modeling the time (in number of days) from onset of severe symptoms to
+#'   modeling the time (in number of weeks) from onset of severe symptoms to
 #'   death. 
 #'   
 #' Source for default value: \insertRef{linton_incubation_2020}{covidestim}
 #' 
 #' @param asy_rec_delay A two-element numeric vector containing 
 #'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
-#'    modeling the time (in number of days) from infection to recovery for
+#'    modeling the time (in number of weeks) from infection to recovery for
 #'    individuals who never develop symptoms.
 #'    
 #' @param pri_serial_i A two-element numeric vector containing 
 #'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
-#'    modeling the serial interval, the average time (in number of days)
+#'    modeling the serial interval, the average time (in number of weeks)
 #'    between successive cases. 
 #' 
 #' @param infect_dist A two-element numeric vector containing 
 #'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the 
 #'    changes of infectiousness, following initial infection. The PDF of this
 #'    distribution can be thought of as describing how infectious an individual
-#'    is, as a function of time (in days).
+#'    is, as a function of time (in weeks).
 #'    
 #' @param seropos_dist A two-element numeric vector containing 
 #'    \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the 
-#'    time (in days) to seroreversion, following initial infection. We do not
+#'    time (in weeks) to seroreversion, following initial infection. We do not
 #'    recommend modifying this value, as it is an experimental feature, and not
 #'    used in the core model.
 #' 
 #' @return An S3 object of class \code{priors}
 #' @examples
-#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_progression(inf_prg_delay = c(4, 1))
+#' cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+#' cum_p_inf_init = .5, start_p_imm = .5) + 
+#' priors_progression(inf_prg_delay = c(4, 1))
 #' @export
 priors_progression <- function(inf_prg_delay = c(3.413, 0.6051*7), # shap/rate
                                sym_prg_delay = c(1.624, 0.2175*7), # shap/rate 
@@ -345,7 +349,9 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051*7), # shap/rate
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis(p_diag_if_sev = c(2, 2))
+#' cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+#' cum_p_inf_init = .5, start_p_imm = .5) + 
+#' priors_diagnosis(p_diag_if_sev = c(2, 2))
 #' @export
 priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
                              rr_diag_sym_vs_sev = c(2  , 2  ), # a/b
@@ -379,13 +385,13 @@ priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
 #' operator (see examples).     
 #'
 #' @param cas_rep_delay A two-element numeric vector containing the mean shape
-#'   and rate for a gamma distribution describing the delay (in days) in case
+#'   and rate for a gamma distribution describing the delay (in weeks) in case
 #'   reporting.  Shape and rate are parameterized with a lognormal prior where
 #'   the log of the input value is the median and the variance is 0.5. Based on
 #'   average delay reported in Santa Clara County, CA on 8 April 2020. 
 #'
 #' @param die_rep_delay A two-element numeric vector containing the mean shape
-#'   and rate for a gamma distribution describing delay (in days) in death
+#'   and rate for a gamma distribution describing delay (in weeks) in death
 #'   reporting.  Shape and rate are parameterized with a lognormal prior where
 #'   the log of the input value is the median and the variance is 0.5. Based on
 #'   average delay reported in Santa Clara County, CA on 8 April 2020. 
@@ -394,10 +400,11 @@ priors_diagnosis <- function(rr_diag_asy_vs_sym = c(2  ,18  ), # a/b
 #' @examples
 #' # If you believe that cases are generally reported one day after the date of
 #' # the test, and deaths one day after the event:
-#' cfg <- covidestim(ndays = 120, region = '09009', pop_size=get_pop('09009')) +
+#' cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+#' cum_p_inf_init = .5, start_p_imm = .5) +
 #'   priors_reporting_delays(
-#'     cas_rep_delay = c(2.7, 3), # Mean = ~1 day
-#'     die_rep_delay = c(2.7, 3)  # Mean = ~1 day
+#'     cas_rep_delay = c(2.7, 3*7), # Mean = ~1 day
+#'     die_rep_delay = c(2.7, 3*7)  # Mean = ~1 day
 #'   )
 #' @export
 priors_reporting_delays <- function(cas_rep_delay = c(2.2,1*7),
@@ -450,7 +457,9 @@ priors_reporting_delays <- function(cas_rep_delay = c(2.2,1*7),
 #'
 #' @return An S3 object of class 'priors'
 #' @examples
-#' cfg <- covidestim(ndays = 50, region = 'New York') + priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
+#' cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+#' cum_p_inf_init = .5, start_p_imm = .5) + 
+#' priors_diagnosis_delays_scale(dx_delay_sym = c(0.5, 0.1))
 #' @export
 priors_diagnosis_delays_scale <- function(dx_delay_sym = c(2,2),
                                           dx_delay_sev = c(2,2)) {

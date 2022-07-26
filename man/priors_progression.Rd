@@ -23,36 +23,36 @@ Source for default value: \insertRef{lauer_incubation_2020}{covidestim}}
 
 \item{sym_prg_delay}{A two-element numeric vector containing \code{c(shape, rate)}
 parameters/hyperpriors of a Gamma distribution modeling the time (in
-number of days) from symptom onset to severe disease.
+number of weeks) from symptom onset to severe disease.
 
 Source for default value: \insertRef{zhou_clinical_2020}{covidestim}}
 
 \item{sev_prg_delay}{A two-element numeric vector containing
 \code{c(shape, rate)} parameters/hyperpriors of a Gamma distribution
-modeling the time (in number of days) from onset of severe symptoms to
+modeling the time (in number of weeks) from onset of severe symptoms to
 death.
 
 Source for default value: \insertRef{linton_incubation_2020}{covidestim}}
 
 \item{asy_rec_delay}{A two-element numeric vector containing
 \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
-modeling the time (in number of days) from infection to recovery for
+modeling the time (in number of weeks) from infection to recovery for
 individuals who never develop symptoms.}
 
 \item{pri_serial_i}{A two-element numeric vector containing
 \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution
-modeling the serial interval, the average time (in number of days)
+modeling the serial interval, the average time (in number of weeks)
 between successive cases.}
 
 \item{infect_dist}{A two-element numeric vector containing
 \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the
 changes of infectiousness, following initial infection. The PDF of this
 distribution can be thought of as describing how infectious an individual
-is, as a function of time (in days).}
+is, as a function of time (in weeks).}
 
 \item{seropos_dist}{A two-element numeric vector containing
 \code{c(shape,rate)} parameters/hyperpriors of a Gamma distribution modeling the
-time (in days) to seroreversion, following initial infection. We do not
+time (in weeks) to seroreversion, following initial infection. We do not
 recommend modifying this value, as it is an experimental feature, and not
 used in the core model.}
 }
@@ -68,5 +68,7 @@ to a \code{covidestim} object using the addition operator (see examples). The
 following arguments can be passed to create different priors:
 }
 \examples{
-cfg <- covidestim(ndays = 50, region = 'New York') + priors_progression(inf_prg_delay = c(4, 1))
+cfg <- covidestim(nweeks = 31, region = 'Connecticut', 
+cum_p_inf_init = .5, start_p_imm = .5) + 
+priors_progression(inf_prg_delay = c(4, 1))
 }

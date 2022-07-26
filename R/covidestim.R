@@ -48,6 +48,11 @@ NULL
 #'   (e.g. \code{New York}) being modeled. Required.
 #' @param nspl_rt_knotwidth An integer. The knotwidth to use for the spline of 
 #' Rt.
+#' @param start_p_imm A probability (number between 0 and 1). The starting 
+#'    fraction of the population with immunity against the Omicron variant.
+#'    Required.
+#' @param cum_p_inf_init A probability (number between o and 1). The starting
+#'    fraction of the population that has ever been infected. Required.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to
 #' \code{\link{run.covidestim}} or \code{\link{runOptimizer.covidestim}} to execute the model, as
@@ -63,7 +68,7 @@ NULL
 #' @seealso \url{https://mc-stan.org/docs/2_18/reference-manual/reproducibility-chapter.html}
 #'
 #' @examples
-#' cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+#' cfg <- covidestim(nweeks = 31, region = 'Connecticut',
 #'    pop = get_pop("Connecticut"),
 #'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
 #'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
@@ -224,7 +229,7 @@ run <- function(...) UseMethod('run')
 #' @seealso [runOptimizer.covidestim]
 #'
 #' @examples
-#' cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+#' cfg <- covidestim(nweeks = 31, region = 'Connecticut',
 #'    pop = get_pop("Connecticut"),
 #'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
 #'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
@@ -315,7 +320,7 @@ runOptimizer <- function(...) UseMethod('runOptimizer')
 #' @seealso [run.covidestim]
 #'
 #' @examples
-#' cfg <- covidestim(nweeks = 32, region = 'Connecticut',
+#' cfg <- covidestim(nweeks = 31, region = 'Connecticut',
 #'    pop = get_pop("Connecticut"),
 #'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
 #'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +

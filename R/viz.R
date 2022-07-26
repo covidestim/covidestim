@@ -93,7 +93,7 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
   custom_logscale <- scale_y_continuous(
     name = "Count (log scale)",
     trans = "log1p",
-    labels = scales::label_number(scale_cut = cut_short_scale()),
+    labels = scales::label_number(scale_cut = scales::cut_short_scale()),
     breaks = function(l) c(0, scales::breaks_log(n=5)(c(1, l[2]))),
     minor_breaks = NULL
   )
@@ -181,7 +181,7 @@ viz_all_cases_to_data <- function(run_summary, input_data) {
     ) +
     scale_y_continuous(
       trans = scales::pseudo_log_trans(base = 10),
-      labels = scales::label_number_si(),
+      labels = scales::label_number(scale_cut = scales::cut_short_scale()),
       breaks = c(0, 10^(1:6)),
       minor_breaks = NULL,
       limits = c(0, NA)
@@ -241,7 +241,7 @@ viz_modeled_cases <- function(cc, fit_to_data, diag, deltas) {
     # ) +
     scale_y_continuous(
       trans = scales::pseudo_log_trans(base = 10),
-      labels = scales::label_number_si(),
+      labels = scales::label_number(scale_cut = scales::cut_short_scale()),
       # breaks = function(lims) c(0, scales::breaks_log(n = 5)(1, lims[2])),
       breaks = 10^(1:6),
       minor_breaks = NULL,
