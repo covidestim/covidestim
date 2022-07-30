@@ -200,7 +200,7 @@ run <- function(...) UseMethod('run')
 #'
 #' When running in an interactive/TTY environment (like Rstudio, Radian, or the
 #' R terminal), progress messages from \code{rstan} will be displayed,
-#' indicatng how many iterations each chain has completed. When running in
+#' indicating how many iterations each chain has completed. When running in
 #' other environments, for instance on a cluster, \code{rstan} will produce 
 #' no output until the end of sampling.
 #'
