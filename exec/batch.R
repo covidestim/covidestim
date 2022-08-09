@@ -37,6 +37,7 @@ suppressPackageStartupMessages({
   library(jsonlite)
   library(cli)
   library(dbstan)
+  library(callr)
 })
 library(covidestim)
 
@@ -51,6 +52,14 @@ output_alert <- function(name, fname)
 append_in <- function(lst, where, key, val)
   purrr::modify_in(lst, where, function(x) { x[[key]]<-val; x})
 
+empty_run <- list(
+  run_summary = tibble(),
+  warnings = tibble(),
+  opt_vals = tibble(),
+  method = tibble(),
+  raw = NULL
+)
+
 conn <- NULL
 if (args$dbstan_insert)
   conn <- DBI::dbConnect(
@@ -60,7 +69,6 @@ if (args$dbstan_insert)
     password = Sys.getenv("COVIDESTIM_DBSTAN_PASS"),
     dbname   = Sys.getenv("COVIDESTIM_DBSTAN_DBNAME")
   )
-
 
 input_df_colspec <- rlang::list2(
   !!args$key := col_character(),
@@ -112,8 +120,20 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     input_boost(get_input("boost")) +
     input_hosp(get_input("hosp"), lastHospDate = lastHospDate)
 
-  tries <- 25
-  result_optimizer <- runner_optimizer(cfg, cores = 1, tries = tries)
+  tries   <- 25
+  timeout <- 60
+  result_optimizer <- tryCatch(
+    system_command_timeout_error = function(cnd) {
+      glue::glue("{region} has timed out after {tries} tries and {timeout} seconds. Ignoring.")
+      return(empty_run)
+    },
+    callr::r(
+      runner_optimizer,
+      args = list(cfg, cores = 1, tries = tries),
+      timeout = timeout,
+      package = TRUE
+    )
+  )
   cli_alert_success("Optimizer complete. Log-posterior values:")
 
   run_summary <- summary(result_optimizer$result)
@@ -188,7 +208,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
   return(list(
     run_summary = bind_cols(!!args$key := region, run_summary),
     warnings    = bind_cols(!!args$key := region, warnings = warnings_sampler),
-    opt_vals    = tibble(!!args$key := region, optvals = numeric()),
+    opt_vals    =    tibble(!!args$key := region, optvals = numeric()),
     method      = bind_cols(!!args$key := region, method = "sampler"),
     raw         = result
   ))
