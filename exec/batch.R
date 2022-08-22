@@ -57,7 +57,7 @@ empty_run <- list(
   warnings = tibble(),
   opt_vals = tibble(),
   method = tibble(),
-  raw = NULL
+  raw = list()
 )
 
 conn <- NULL
