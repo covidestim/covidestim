@@ -422,8 +422,13 @@ runOptimizer.covidestim <- function(cc,
     purrr::discard(results, is.null) %>% # Removes timed-out runs
     purrr::keep(., ~.$return_code == 0)  # Removes >0 return-val runs
 
-  if (length(successful_results) == 0)
-    stop("All BFGS runs timed out or failed!")
+  if (length(successful_results) == 0) {
+    rlang::abort(
+      "all_runs_were_bad_error",
+      message = "All BFGS runs timed out or failed!",
+      path = "R/covidestim.R"
+    )
+  }
 
   # Extract the mode of the posterior from the results that didn't time out
   # and didn't return an error code of 70
