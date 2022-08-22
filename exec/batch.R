@@ -123,20 +123,24 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
   tries   <- 25
   timeout <- 60
   result_optimizer <- tryCatch(
-    all_runs_were_bad_error = function(cnd) {
-      glue::glue("All BFGS runs of {region} failed to meet runOptimizer's successful-result conditions. Ignoring.")
-      return(empty_run)
-    },
-    system_command_timeout_error = function(cnd) {
-      glue::glue("{region} has timed out after {tries} tries and {timeout} seconds. Ignoring.")
-      return(empty_run)
-    },
     callr::r(
       runner_optimizer,
       args = list(cfg, cores = 1, tries = tries),
       timeout = timeout,
       package = TRUE
-    )
+    ),
+    callr_timeout_error = function(cnd) {
+      message(glue::glue("{region} has timed out after {tries} tries and {timeout} seconds. Ignoring."))
+      message(cnd)
+      return(empty_run)
+    },
+    callr_error = function(cnd) {
+      message(
+        glue::glue("Optimizer function failed. Likely all BFGS runs of {region} failed to meet runOptimizer's successful-result conditions. Ignoring.")
+      )
+      message(cnd)
+      return(empty_run)
+    }
   )
   cli_alert_success("Optimizer complete. Log-posterior values:")
 
