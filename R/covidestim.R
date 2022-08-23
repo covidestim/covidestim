@@ -92,9 +92,7 @@ covidestim <- function(nweeks,
                        adapt_delta = 0.98, 
                        max_treedepth = 14,
                        window.length = 7,
-                       region,
-                       start_p_imm,
-                       cum_p_inf_init) {
+                       region) {
 
   att(is.numeric(nweeks), nweeks >= 1)
 
@@ -103,9 +101,7 @@ covidestim <- function(nweeks,
     N_weeks_before     = nweeks_before,
     pop_size           = pop_size,
     n_spl_rt_knotwidth = nspl_rt_knotwidth,
-    region             = region,
-    start_p_imm        = start_p_imm,
-    cum_p_inf_init     = cum_p_inf_init
+    region             = region
   ) -> config
 
   # All user-specified config-related things must be specified above this line

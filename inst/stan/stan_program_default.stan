@@ -50,12 +50,12 @@ data {
   // int<lower=0>           obs_cas[N_days]; // vector of cases
   // int<lower=0>           obs_die[N_days]; // vector of deaths
   int<lower=0>           obs_cas[N_weeks]; // vector of cases
-  int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
+  // int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
   int<lower=0>           obs_die[N_weeks]; // vector of deaths
-  vector<lower=0>[N_weeks]        obs_boost; // vector of booster data
+  // vector<lower=0>[N_weeks]        obs_boost; // vector of booster data
   real<lower=0>          pop_size; // population size
-  real<lower=0,upper=1>          start_p_imm; // starting fraction immune
-  real<lower=0,upper=1>   cum_p_inf_init; // starting fraction ever infected
+  // real<lower=0,upper=1>          start_p_imm; // starting fraction immune
+  // real<lower=0,upper=1>   cum_p_inf_init; // starting fraction ever infected
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
@@ -106,12 +106,12 @@ data {
 
   //  what data are included --  cases, deaths: 
   int<lower = 0, upper = 1> cas_yes; 
-  int<lower = 0, upper = 1> hosp_yes; 
+  // int<lower = 0, upper = 1> hosp_yes; 
   int<lower = 0, upper = 1> die_yes; 
 
   //  how are the data dated -- report, occurrence: 
   int<lower = 0, upper = 1> obs_cas_rep;
-  int<lower = 0, upper = 1> obs_hosp_rep;
+  // int<lower = 0, upper = 1> obs_hosp_rep;
   int<lower = 0, upper = 1> obs_die_rep;
 
   //  how many days should be used for the moving average in the likelihood 
@@ -124,7 +124,7 @@ data {
   int<lower=0> lastDeathWeek;
   
     // is there a last obeserved hospitalizations data day?
-  int<lower=0> lastHospWeek;
+  // int<lower=0> lastHospWeek;
 
   // is there a last obeserved case data day?
   // int<lower=0> lastCaseDate;
@@ -192,8 +192,8 @@ transformed data {
   // int<lower=0>           obs_die_mvs[N_days]; // vector of deaths
   // int<lower=0>           nda0 = N_days_av - 1;
   int<lower=0>           obs_cas_mvs[N_weeks]; // vector of cases
-  int<lower=0>           obs_hosp_mvs[N_weeks]; // vector of hospitalizations
-  // int<lower=0>           obs_die_mvs[N_weeks]; // vector of deaths
+  // int<lower=0>           obs_hosp_mvs[N_weeks]; // vector of hospitalizations
+  int<lower=0>           obs_die_mvs[N_weeks]; // vector of deaths
   // real susceptible_prvl; 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
@@ -254,8 +254,8 @@ for(i in 1:N_weeks_tot) {
 // }
   for(i in 1:N_weeks) {
     obs_cas_mvs[i] = obs_cas[i];
-    obs_hosp_mvs[i] = obs_hosp[i];
-    // obs_die_mvs[i] = obs_die[i];
+    // obs_hosp_mvs[i] = obs_hosp[i];
+    obs_die_mvs[i] = obs_die[i];
   }
  
   // calculate the daily probability of transitioning to a new disease state
@@ -353,8 +353,8 @@ parameters {
 // LIKELIHOOD 
 // phi terms for negative b ino imal likelihood function 
   real<lower=0>             inv_sqrt_phi_c;
-  real<lower=0>             inv_sqrt_phi_h;
-  // real<lower=0>             inv_sqrt_phi_d;
+  // real<lower=0>             inv_sqrt_phi_h;
+  real<lower=0>             inv_sqrt_phi_d;
   // VACCINE ADJUSTMENT
   simplex[3]                prob_vac;
 }
@@ -466,8 +466,8 @@ transformed parameters {
   // LIKELIHOOD
   // phi terms for negative binomial likelihood function 
   real phi_cas;
-  real phi_hosp;
-  // real phi_die;
+  // real phi_hosp;
+  real phi_die;
  
   // NATURAL HISTORY CASCADE
   p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
@@ -529,18 +529,19 @@ transformed parameters {
   //                  spl_basis_rt[1+N_days_before,2:N_spl_par_rt]) * spl_par_rt0 / 
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
-  ever_inf = pop_size * cum_p_inf_init; // initial ever infected population
-  population_protection_init[1] = pop_size * start_p_imm; // initial (waning) protection from vax/inf/boost
-  if(N_weeks_before > 0){
+  // ever_inf = pop_size * cum_p_inf_init; // initial ever infected population
+  // population_protection_init[1] = pop_size * start_p_imm; // initial (waning) protection from vax/inf/boost
+  // if(N_weeks_before > 0){
     // if there are before weeks modeled, the initial effective protection
     // equals the population that will never be infected by the start date of the data
     // i.e., the date for which the cum_p_inf_init and start_p_imm are reported.
-    effective_protection_prvl[1] = pop_size * (1 - cum_p_inf_init);
-  } else {
+    // effective_protection_prvl[1] = pop_size * (1 - cum_p_inf_init);
+  // } else {
     // if there are no before weeks modeled, the initial effecive protection is 
     // the complete immune population
-    effective_protection_prvl[1] = pop_size * start_p_imm;
-  }
+    // effective_protection_prvl[1] = pop_size * start_p_imm;
+    effective_protection_prvl[1] = 0;
+  // }
   susceptible_prvl[1] = pop_size - effective_protection_prvl[1];
   // effective_protection_inf_prvl[1] = pop_size * cum_p_inf_init;  //
   // effective protection from infections; for the first timepoint include everyone
@@ -568,30 +569,35 @@ transformed parameters {
     // prot_boost[i] = sum(obs_boost[1:i] * 0.8);
     // if(i > N_days_before){
     // wane_boost[i] = sum(obs_boost[1:i-N_days_before] .* (.35 * exp(-.008 * idx3[N_days_tot-(i-N_days_before)+1:N_days_tot]) + .45) );
-    if(i > N_weeks_before){
-      // for the observed data weeks, population protection is calculated for the 
-      // waning of the initial immunity since the observed data started;
-      // waning of booster immunity since the observed data started;
-      // waning of the modeled infections since the observed data started 
-      // (note that any infections prior to this date are implicitly included in the start_p_imm)
-    // wane_boost[i] = sum(obs_boost[1:i-N_weeks_before] .* (.35 * exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7) + .45) );
-    population_protection_init[i] = pop_size * start_p_imm * exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1]*7) ; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
-    population_protection_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1:N_weeks_tot]*7)) );
-    population_protection_inf[i] = sum(infections[N_weeks_before +1:i] .* ( exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1:N_weeks_tot] * 7)));
-    } else {
-      // for the before period, population protected is only the sum of the initial population protected (never infected prior to start date)
-      // and those infected before the start of the data.
-population_protection_init[i] = pop_size * (1 - cum_p_inf_init);
-population_protection_boost[i] = 0;
-population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks_before-i+1:N_weeks_before] * 7)));
-    }
+//     if(i > N_weeks_before){
+//       // for the observed data weeks, population protection is calculated for the 
+//       // waning of the initial immunity since the observed data started;
+//       // waning of booster immunity since the observed data started;
+//       // waning of the modeled infections since the observed data started 
+//       // (note that any infections prior to this date are implicitly included in the start_p_imm)
+//     // wane_boost[i] = sum(obs_boost[1:i-N_weeks_before] .* (.35 * exp(-.008 * idx3[N_weeks_tot-(i-N_weeks_before)+1:N_weeks_tot]*7) + .45) );
+//     population_protection_init[i] = pop_size * start_p_imm * exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1]*7) ; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
+//     population_protection_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1:N_weeks_tot]*7)) );
+//     population_protection_inf[i] = sum(infections[N_weeks_before +1:i] .* ( exp(-.008 * idx3[N_weeks_tot-i+N_weeks_before+1:N_weeks_tot] * 7)));
+//     } else {
+//       // for the before period, population protected is only the sum of the initial population protected (never infected prior to start date)
+//       // and those infected before the start of the data.
+// population_protection_init[i] = pop_size * (1 - cum_p_inf_init);
+// population_protection_boost[i] = 0;
+// population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks_before-i+1:N_weeks_before] * 7)));
+//     }
     // wane_imm = .3 * exp(-.008 * idx3[N_days_tot-i+1]) + .2;
     // wane_imm = .15 * exp(-.008 * idx3[N_weeks_tot-i+1]*7) + .1; // increasse from 75% susceptible to 90% susceptible (10% remains rpotected)
     // wane_imm = 0;
     // susceptible_prvl[i] = pop_size - wane_imm[i];
     // wane_inf[i] = sum(infections[1:i] .* (.75* exp(-.008 * idx3[N_days_tot-i+1:N_days_tot]) + .25));
     // ever_inf += infections[i];
-    effective_protection_prvl[i] = population_protection_init[i] + population_protection_inf[i] + population_protection_boost[i];
+    if(i > 1) {
+    effective_protection_prvl[i] = effective_protection_prvl[i-1] + infections[i];
+    } else {
+    effective_protection_prvl[i] = infections[i];
+    }
+    // effective_protection_prvl[i] = population_protection_init[i] + population_protection_inf[i] + population_protection_boost[i];
 
     // new infections; proportionally divided over never infected and waned protection from previous infection
     // infections_premiere[i] = infections[i] * (num_uninf[i] / ((pop_size - effective_protection_inf_prvl[i]))); 
@@ -720,14 +726,14 @@ fitted_hospitalizations = diagnoses_severe;
   // }
   for(i in 1:N_weeks_tot) {
         fitted_cases_mvs[i] = fitted_cases[i];
-        fitted_hospitalizations_mvs[i] = fitted_hospitalizations[i];
+        // fitted_hospitalizations_mvs[i] = fitted_hospitalizations[i];
         fitted_deaths_mvs[i] = fitted_deaths[i];
   }
 
   // phi
   phi_cas = pow(inv_sqrt_phi_c, -2);
-  phi_hosp = pow(inv_sqrt_phi_h, -2);
-  // phi_die = pow(inv_sqrt_phi_d, -2);
+  // phi_hosp = pow(inv_sqrt_phi_h, -2);
+  phi_die = pow(inv_sqrt_phi_d, -2);
 }
 ///////////////////////////////////////////////////////////  
 model {
@@ -763,8 +769,8 @@ model {
   
   // phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
-  inv_sqrt_phi_h       ~ normal(0, 1);
-  // inv_sqrt_phi_d       ~ normal(0, 1);
+  // inv_sqrt_phi_h       ~ normal(0, 1);
+  inv_sqrt_phi_d       ~ normal(0, 1);
 
   // prop for vaccine
   prob_vac             ~ dirichlet(rep_vector(5, 3));
@@ -786,21 +792,46 @@ model {
       if (sum(fitted_cases[1:N_weeks_before]) < 0)
         reject("`sum(fitted_cases[1:N_weeks_before])` had a negative value");
 
-      if (sum(fitted_hospitalizations[1:N_weeks_before]) < 0)
-        reject("`sum(fitted_hospitalizations[1:N_weeks_before])` had a negative value");
+      if (sum(fitted_deaths[1:N_weeks_before]) < 0)
+        reject("`sum(fitted_deaths[1:N_weeks_before])` had a negative value");
+// 
+//       if (sum(fitted_hospitalizations[1:N_weeks_before]) < 0)
+//         reject("`sum(fitted_hospitalizations[1:N_weeks_before])` had a negative value");
 
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_days_before]), phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_days_before]), phi_die);
       target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_weeks_before]), phi_cas);
-      target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
+      // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
+      target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_weeks_before]), phi_die);
+    }
+  } else { // if there is no pre-period zero
+        if(N_weeks_before>0){
+ 
+      if (fitted_cases[1] < 0)
+        reject("`fitted_cases[1]` had a negative value");
+
+      if (fitted_deaths[1] < 0)
+        reject("`fitted_deaths[1]` had a negative value");
+// 
+//       if (sum(fitted_hospitalizations[1:N_weeks_before]) < 0)
+//         reject("`sum(fitted_hospitalizations[1:N_weeks_before])` had a negative value");
+
+      // target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_days_before]), phi_cas);
+      // target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_days_before]), phi_die);
+      target += neg_binomial_2_lpmf( 0 | fitted_cases[1], phi_cas);
+      // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
+      target += neg_binomial_2_lpmf( 0 | fitted_deaths[1], phi_die);
     }
   }
 
   if (min(fitted_cases) < 0)
     reject("`fitted_cases` had a negative value");
 
-  if (min(fitted_hospitalizations) < 0)
-    reject("`fitted_hospitalizations` had a negative value");
+  if (min(fitted_deaths) < 0)
+    reject("`fitted_deaths` had a negative value");
+// 
+//   if (min(fitted_hospitalizations) < 0)
+//     reject("`fitted_hospitalizations` had a negative value");
 
   // LIKELIHOOD
   // During data
@@ -830,15 +861,24 @@ model {
     phi_cas
   ) ;// Optional, but likely unncessesary: / N_days_av;
 
-// for hospitalizations: use lastCaseWeek as last observation 
-// this is still to adjust in the future and add a lastHospiWeek variable
+// // for hospitalizations: use lastCaseWeek as last observation 
+// // this is still to adjust in the future and add a lastHospiWeek variable
+//   target += neg_binomial_2_lpmf(
+//     // `obs_die` from the first observed day to the last death date
+//     obs_hosp_mvs[5:lastHospWeek] |
+//       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
+//       // last death date
+//       fitted_hospitalizations_mvs[N_weeks_before+5 : N_weeks_before+lastHospWeek],
+//     phi_hosp
+//   ); // optional, but likelie unnecessary: / N_days_av;
+
   target += neg_binomial_2_lpmf(
     // `obs_die` from the first observed day to the last death date
-    obs_hosp_mvs[5:lastHospWeek] |
+    obs_die_mvs[5:lastDeathWeek] |
       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
       // last death date
-      fitted_hospitalizations_mvs[N_weeks_before+5 : N_weeks_before+lastHospWeek],
-    phi_hosp
+      fitted_deaths_mvs[N_weeks_before+5 : N_weeks_before+lastDeathWeek],
+    phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////
@@ -867,25 +907,25 @@ generated quantities {
 
 
 //first infections
-  num_uninf[1] = pop_size * (1.0 - cum_p_inf_init); // initial uninfected population
-  effective_protection_inf_prvl[1] = pop_size * start_p_imm;  //
-  for(i in 1:N_weeks_tot){
-    if(i > 1){
-  num_uninf[i] = num_uninf[i-1] - infections_premiere[i-1];
-    effective_protection_inf_prvl[i] = population_protection_init[i-1] + population_protection_inf[i-1];
-}
-if(num_uninf[i] < 0){
-  num_uninf[i] = 0;
-}
-if(effective_protection_inf_prvl[i] > pop_size){
-  effective_protection_inf_prvl[i] = pop_size -1;
-}
-    infections_premiere[i] = infections[i] * (num_uninf[i] / ((pop_size - effective_protection_inf_prvl[i]) + num_uninf[i]));
-
-}
+//   num_uninf[1] = pop_size * (1.0 - cum_p_inf_init); // initial uninfected population
+//   effective_protection_inf_prvl[1] = pop_size * start_p_imm;  //
+//   for(i in 1:N_weeks_tot){
+//     if(i > 1){
+//   num_uninf[i] = num_uninf[i-1] - infections_premiere[i-1];
+//     effective_protection_inf_prvl[i] = population_protection_init[i-1] + population_protection_inf[i-1];
+// }
+// if(num_uninf[i] < 0){
+//   num_uninf[i] = 0;
+// }
+// if(effective_protection_inf_prvl[i] > pop_size){
+//   effective_protection_inf_prvl[i] = pop_size -1;
+// }
+//     infections_premiere[i] = infections[i] * (num_uninf[i] / ((pop_size - effective_protection_inf_prvl[i]) + num_uninf[i]));
+// 
+// }
   // cumulative incidence
   // cumulative incidence is only calculated for the data weeks! any prior infections are added through cum_p_inf_init.
-  infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) + (cum_p_inf_init*pop_size); 
+  // infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) + (cum_p_inf_init*pop_size); 
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
   // immunoexposed_cumulative = infections_cumulative;

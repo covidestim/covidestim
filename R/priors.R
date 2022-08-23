@@ -183,8 +183,8 @@ priors_transitions <- function(
   p_sym_if_inf = c(2.5,10),    # a/b 
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
                                p_die_if_sev = c(28.239, 162.30),    # a/b
-                               # p_die_if_inf = c(15.915,3167.1),     # a/b old 
-                               p_die_if_inf = c(2.55,1594),     # a/b
+                               p_die_if_inf = c(15.915,3167.1),     # a/b old
+                               # p_die_if_inf = c(2.55,1594),     # a/b
                                ifr_decl_OR  = c(12.031, 8.999),     # shape/rate: this is actually a gamma distribution!!
                                new_p_sym_if_inf = c(2.5,10), # decline symptomatic if infected
                                rr_decl_sev = c(20.915,298.79), # decline severe if infected shape/rate (gamma)

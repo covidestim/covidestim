@@ -186,9 +186,7 @@ validate.modelconfig <- function(cfg) {
 genData <- function(N_weeks, N_weeks_before = 28/7,
                     pop_size = 1e12, #new default value
                     n_spl_rt_knotwidth = 2, 
-                    region,
-                    cum_p_inf_init,
-                    start_p_imm
+                    region
                     )
 {
   n_spl_par_rt <- max(4,ceiling((N_weeks + N_weeks_before)/n_spl_rt_knotwidth))
@@ -210,8 +208,6 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     # Region being modeled. Must be a state name, or a FIPS code, passed as
     # a string.
     region = region,
-    start_p_imm = start_p_imm,
-    cum_p_inf_init = cum_p_inf_init,
 
     # These next three variables are NULLed because they aren't defined here.
     # They get defined when an input_*() is added, because it's there that
@@ -238,9 +234,9 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
-    obs_hosp = NULL, # vector of int by date. should have 0s if no event that day
+    # obs_hosp = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day
-    obs_boost = NULL, # vector of int by date. should have 0s if no event that day
+    # obs_boost = NULL, # vector of int by date. should have 0s if no event that day
     # the ifr_vaccine adjustment data
     ifr_vac_adj = NULL,
     # first day of data, as determined by looking at input data. This allows 
@@ -248,7 +244,7 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     first_date = NA,
     # last death date and hosp date are initiated here; gets updated as deaths data gets added
     lastDeathWeek = N_weeks,
-    lastHospWeek  = N_weeks,
+    # lastHospWeek  = N_weeks,
     lastCaseWeek  = N_weeks,
 
     
@@ -269,14 +265,14 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
 
     # indicates whether case or death data are being used 
     cas_yes = as.integer(1), 
-    hosp_yes = as.integer(1), 
+    # hosp_yes = as.integer(1), 
     die_yes = as.integer(1), 
-    boost_yes = as.integer(1), 
+    # boost_yes = as.integer(1), 
     
     obs_cas_rep = as.integer(0),      # This ~means FALSE in stan
-    obs_hosp_rep = as.integer(0),     # This ~means FALSE in stan
+    # obs_hosp_rep = as.integer(0),     # This ~means FALSE in stan
     obs_die_rep = as.integer(0),      # This ~means FALSE in stan
-    obs_boost_rep = as.integer(0),      # This ~means FALSE in stan
+    # obs_boost_rep = as.integer(0),      # This ~means FALSE in stan
     ifr_vac_adj_rep = as.integer(0),  # This ~means FALSE in stan
   )
 
