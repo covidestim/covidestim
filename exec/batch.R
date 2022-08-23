@@ -52,14 +52,6 @@ output_alert <- function(name, fname)
 append_in <- function(lst, where, key, val)
   purrr::modify_in(lst, where, function(x) { x[[key]]<-val; x})
 
-empty_run <- list(
-  run_summary = tibble(),
-  warnings = tibble(),
-  opt_vals = tibble(),
-  method = tibble(),
-  raw = list()
-)
-
 conn <- NULL
 if (args$dbstan_insert)
   conn <- DBI::dbConnect(
@@ -132,16 +124,27 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     callr_timeout_error = function(cnd) {
       message(glue::glue("{region} has timed out after {tries} tries and {timeout} seconds. Ignoring."))
       message(cnd)
-      return(empty_run)
+      return(NULL)
     },
     callr_error = function(cnd) {
       message(
         glue::glue("Optimizer function failed. Likely all BFGS runs of {region} failed to meet runOptimizer's successful-result conditions. Ignoring.")
       )
       message(cnd)
-      return(empty_run)
+      return(NULL)
     }
   )
+
+  if (is.null(result_optimizer)) {
+    return(list(
+      run_summary = bind_cols(!!args$key := region, tibble()),
+      warnings    = bind_cols(!!args$key := region, warnings = tibble()),
+      opt_vals    = bind_cols(!!args$key := region, optvals  = tibble()),
+      method      = bind_cols(!!args$key := region, method   = tibble()),
+      raw         = NULL
+    ))
+  }
+
   cli_alert_success("Optimizer complete. Log-posterior values:")
 
   run_summary <- summary(result_optimizer$result)
