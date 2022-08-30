@@ -197,6 +197,14 @@
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, ℝ}.
 #'
+#'     \item \bold{\code{pop_infectiousness_prvl}}, \code{pop_infectiousness_prvl} +
+#'       (\code{_p2_5}, \code{_p25}, \code{_p75}, \code{_p97_5})
+#'
+#'       Estimate of the relative level of viral shedding in the community.
+#'       
+#'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
+#'         interval, ℝ}.
+#'         
 #'     \item \bold{\code{r_t}}, \code{r_t} + (\code{_p2_5}, \code{_p25},
 #'       \code{_p75}, \code{_p97_5})
 #'
@@ -297,6 +305,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "infections_cumulative"                  = "infections_cumulative",
     "infections"                             = "infections",
     "infections_premiere"                    = "infections_premiere",
+    "pop_infectiousness_prvl"                = "pop_infectiousness_prvl",
     "r_t"                                    = "r_t",
     "seropositive_prvl"                      = "seropositive_prvl",
     "severe"                                 = "severe",

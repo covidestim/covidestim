@@ -899,7 +899,7 @@ generated quantities {
   vector[N_weeks_tot]  diag_cases;
   vector[N_weeks_tot]  infections_cumulative;  
   vector[N_weeks_tot]  seropositive_prvl;
-  // vector[N_days_tot]  pop_infectiousness;  
+  vector[N_weeks_tot]  pop_infectiousness_prvl;
   // 
   vector[Max_delay]   infect_dist_rv;
   // 
@@ -953,6 +953,8 @@ generated quantities {
   // infectiousness
   // fitted_wastewater_prvl = conv1d(infections, infect_dist_rv);
 
+   pop_infectiousness_prvl = conv1d(infections, infect_dist_rv);
+  
   // seropositives
   seropositive_prvl = conv1d(infections, seropos_dist_rv);
 }
