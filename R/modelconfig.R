@@ -44,6 +44,7 @@ modelconfig_add.input <- function(rightside, leftside) {
 
   integer_keys <- c("obs_cas", "obs_die", 
                     "obs_boost", "obs_hosp",
+                    "obs_ww",
                     "ifr_vac_adj")
   keys         <- integer_keys
 
@@ -104,6 +105,7 @@ modelconfig_add.input <- function(rightside, leftside) {
   data_type_key <- glue("{data_key}_rep")
 
   if (data_type_key %in% c("obs_cas_rep", "obs_die_rep", 
+                           "obs_ww_rep",
                            "obs_boost_rep", "obs_hosp_rep", 
                            "ifr_vac_adj_rep")) {
     if(data_type_key == "ifr_vac_adj_rep"){
@@ -169,6 +171,7 @@ print.inputs <- function(cfg, .tab = FALSE) {
 {t}{status_deaths}\tDeaths
 {t}{status_boost}\tBooster
 {t}{status_hosp}\tHospitalizations
+{t}{status_hosp}\tWastewater
 {t}{status_rr}\tRRvaccines
 ' -> msg
 

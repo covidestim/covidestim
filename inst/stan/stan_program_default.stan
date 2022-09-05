@@ -52,6 +52,7 @@ data {
   int<lower=0>           obs_cas[N_weeks]; // vector of cases
   // int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
   int<lower=0>           obs_die[N_weeks]; // vector of deaths
+  int<lower=0>           obs_ww[N_weeks]; // vector of wastewater data
   // vector<lower=0>[N_weeks]        obs_boost; // vector of booster data
   real<lower=0>          pop_size; // population size
   // real<lower=0,upper=1>          start_p_imm; // starting fraction immune
@@ -194,6 +195,7 @@ transformed data {
   int<lower=0>           obs_cas_mvs[N_weeks]; // vector of cases
   // int<lower=0>           obs_hosp_mvs[N_weeks]; // vector of hospitalizations
   int<lower=0>           obs_die_mvs[N_weeks]; // vector of deaths
+  int<lower=0>           obs_ww_mvs[N_weeks]; // vector of wastewater
   // real susceptible_prvl; 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
@@ -204,12 +206,14 @@ transformed data {
   // Reporting delays
   vector[Max_delay]  cas_rep_delay_rv;
   vector[Max_delay]  die_rep_delay_rv;
+    vector[Max_delay]   infect_dist_rv;
  
   // Cumulative reporting delays
   // vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
   // vector[N_days + N_days_before]  die_cum_report_delay_rv; 
   vector[N_weeks + N_weeks_before]  cas_cum_report_delay_rv; 
   vector[N_weeks + N_weeks_before]  die_cum_report_delay_rv; 
+
   
  //   int  idx1[N_days + N_days_before];
  // int  idx2[N_days + N_days_before];
@@ -256,6 +260,7 @@ for(i in 1:N_weeks_tot) {
     obs_cas_mvs[i] = obs_cas[i];
     // obs_hosp_mvs[i] = obs_hosp[i];
     obs_die_mvs[i] = obs_die[i];
+    obs_ww_mvs[i] = obs_ww[i];
   }
  
   // calculate the daily probability of transitioning to a new disease state
@@ -280,6 +285,12 @@ for(i in 1:N_weeks_tot) {
       gamma_cdf(i-1 , sev_prg_delay_shap, sev_prg_delay_rate);
   }
   
+   // vector to distribute infectiousness
+  for(i in 1:Max_delay)
+    infect_dist_rv[1+Max_delay-i] =
+      gamma_cdf(i   , infect_dist_shap, infect_dist_rate) -
+      gamma_cdf(i-1 , infect_dist_shap, infect_dist_rate);
+      
   // Calcluate the probability of reporting for each day after diagnosis
   // for 1 to 60 post diagnosis. 
   for(i in 1:Max_delay) {
@@ -355,6 +366,7 @@ parameters {
   real<lower=0>             inv_sqrt_phi_c;
   // real<lower=0>             inv_sqrt_phi_h;
   real<lower=0>             inv_sqrt_phi_d;
+  real<lower=0>             inv_sqrt_phi_w;
   // VACCINE ADJUSTMENT
   simplex[3]                prob_vac;
 }
@@ -461,6 +473,8 @@ transformed parameters {
   vector[N_weeks_tot]  fitted_cases_mvs;
   vector[N_weeks_tot]  fitted_hospitalizations_mvs;
   vector[N_weeks_tot]  fitted_deaths_mvs; 
+  vector[N_weeks_tot]  fitted_wastewater_prvl;
+
 
 
   // LIKELIHOOD
@@ -468,6 +482,7 @@ transformed parameters {
   real phi_cas;
   // real phi_hosp;
   real phi_die;
+  real phi_ww;
  
   // NATURAL HISTORY CASCADE
   p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
@@ -729,11 +744,15 @@ fitted_hospitalizations = diagnoses_severe;
         // fitted_hospitalizations_mvs[i] = fitted_hospitalizations[i];
         fitted_deaths_mvs[i] = fitted_deaths[i];
   }
+  
+    // infectiousness
+  fitted_wastewater_prvl = conv1d(infections, infect_dist_rv);
 
   // phi
   phi_cas = pow(inv_sqrt_phi_c, -2);
   // phi_hosp = pow(inv_sqrt_phi_h, -2);
   phi_die = pow(inv_sqrt_phi_d, -2);
+  phi_ww = pow(inv_sqrt_phi_w, -2);
 }
 ///////////////////////////////////////////////////////////  
 model {
@@ -771,6 +790,7 @@ model {
   inv_sqrt_phi_c       ~ normal(0, 1);
   // inv_sqrt_phi_h       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
+  inv_sqrt_phi_w       ~ normal(0, 1);
 
   // prop for vaccine
   prob_vac             ~ dirichlet(rep_vector(5, 3));
@@ -803,6 +823,7 @@ model {
       target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_weeks_before]), phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
       target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_weeks_before]), phi_die);
+      target += neg_binomial_2_lpmf( 0 | sum(fitted_wastewater_prvl[1:N_weeks_before]), phi_die);
     }
   } else { // if there is no pre-period zero
         if(N_weeks_before>0){
@@ -821,6 +842,7 @@ model {
       target += neg_binomial_2_lpmf( 0 | fitted_cases[1], phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
       target += neg_binomial_2_lpmf( 0 | fitted_deaths[1], phi_die);
+      target += neg_binomial_2_lpmf( 0 | fitted_wastewater_prvl[1], phi_ww);
     }
   }
 
@@ -880,6 +902,15 @@ model {
       fitted_deaths_mvs[N_weeks_before+5 : N_weeks_before+lastDeathWeek],
     phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
+ 
+  target += neg_binomial_2_lpmf(
+    // `obs_die` from the first observed day to the last death date
+    obs_ww_mvs[1:lastCaseWeek] |
+      // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
+      // last death date
+      fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek],
+    phi_ww
+  ); // optional, but likelie unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
@@ -893,7 +924,6 @@ generated quantities {
   vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
   vector[N_weeks_tot] effective_protection_vax_prvl;
   vector[N_weeks_tot] effective_protection_vax_boost_prvl;
-  vector[N_weeks_tot] fitted_wastewater_prvl;
   vector[N_weeks_tot] immunoexposed_cumulative;
 
   vector[N_weeks_tot]  diag_cases;
@@ -901,9 +931,9 @@ generated quantities {
   vector[N_weeks_tot]  seropositive_prvl;
   vector[N_weeks_tot]  pop_infectiousness_prvl;
   // 
-  vector[Max_delay]   infect_dist_rv;
+  // vector[Max_delay]   infect_dist_rv;
   // 
-  vector[Max_delay]         seropos_dist_rv;
+  vector[Max_delay]  seropos_dist_rv;
 
 
 //first infections
@@ -939,11 +969,12 @@ generated quantities {
 
   diag_cases = diagnoses_of_symptomatic + diagnoses_severe;
   
- // vector to distribute infectiousness
-  for(i in 1:Max_delay)
-    infect_dist_rv[1+Max_delay-i] =
-      gamma_cdf(i   , infect_dist_shap, infect_dist_rate) -
-      gamma_cdf(i-1 , infect_dist_shap, infect_dist_rate);
+  //  // vector to distribute infectiousness
+  // for(i in 1:Max_delay)
+  //   infect_dist_rv[1+Max_delay-i] =
+  //     gamma_cdf(i   , infect_dist_shap, infect_dist_rate) -
+  //     gamma_cdf(i-1 , infect_dist_shap, infect_dist_rate);
+  // 
  //  
   // vector to distribute infectiousness seropositives
   for(i in 1:Max_delay)

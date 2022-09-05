@@ -67,6 +67,7 @@ reformat_dates <- function(vec) vec
 #'   week
 #'   \item Hospitalizations data, detailing the number of hospital admissions each week
 #'   \item Booster data, detailing the number of booster shots adminsitered each week
+#'   \item Wastewater data, detailing the copies per ML
 #'   \item RR data, detailing the Relative Risk IFR adjustment that the model needs to account for.
 #' }
 #'
@@ -86,10 +87,10 @@ reformat_dates <- function(vec) vec
 #' 
 #'   \code{"reported"} applies to the following situations:
 #'   \itemize{
-#'     \item Case, death, hospitalizatons, booster or RR data where the count for a particular day
+#'     \item Case, death, hospitalizatons, booster, wastewater or RR data where the count for a particular day
 #'     represents the number of cases or deaths that were reported publicly on
 #'     that day for the following week.
-#'     \item Cases, death, hospitalizatons, booster or RR data where the count for a particular day is the 
+#'     \item Cases, death, hospitalizatons, booster, wastewater or RR data where the count for a particular day is the 
 #'       number of cases or deaths received from hospital reports, or
 #'       diagnostic laboratories, accumulated across a particular region
 #'   }
@@ -185,5 +186,12 @@ input_hosp <- function(data, type = "reported",
 input_boost <- function(data, type = "reported") {
   validate_input(data, type)
   structure(list(obs_boost=data), class='input', date_type = type)
+}
+
+#' @rdname input_cases
+#' @export
+input_ww <- function(data, type = "reported") {
+  validate_input(data, type)
+  structure(list(obs_ww=data), class='input', date_type = type)
 }
 
