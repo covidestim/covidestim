@@ -52,7 +52,7 @@ data {
   int<lower=0>           obs_cas[N_weeks]; // vector of cases
   // int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
   int<lower=0>           obs_die[N_weeks]; // vector of deaths
-  int<lower=0>           obs_ww[N_weeks]; // vector of wastewater data
+  vector[N_weeks]    obs_ww; // vector of wastewater data
   // vector<lower=0>[N_weeks]        obs_boost; // vector of booster data
   real<lower=0>          pop_size; // population size
   // real<lower=0,upper=1>          start_p_imm; // starting fraction immune
@@ -195,7 +195,7 @@ transformed data {
   int<lower=0>           obs_cas_mvs[N_weeks]; // vector of cases
   // int<lower=0>           obs_hosp_mvs[N_weeks]; // vector of hospitalizations
   int<lower=0>           obs_die_mvs[N_weeks]; // vector of deaths
-  int<lower=0>           obs_ww_mvs[N_weeks]; // vector of wastewater
+  vector[N_weeks]           obs_ww_mvs; // vector of wastewater
   // real susceptible_prvl; 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
@@ -237,9 +237,9 @@ for(i in 1:N_weeks_tot) {
     idx1[i] = 1;
     idx2[i] = Max_delay-i+1;
   }
-  // if(i < (N_days_tot - 1)){ ## 
+  // if(i < (N_days_tot - 1)){ 
   // idx3[i] = N_days_tot-1-i;
-  if(i < (N_weeks_tot - 1)){ ## 
+  if(i < (N_weeks_tot - 1)){ 
   idx3[i] = N_weeks_tot-1-i;
   } else {
     idx3[i] = 1;
@@ -917,9 +917,9 @@ model {
     obs_ww_mvs[1:lastCaseWeek] |
       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
       // last death date
-      fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek],
-    sigma
-  ); // optional, but likelie unnecessary: / N_days_av;
+      fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek], 
+      sigma);
+  // optional, but likelie unnecessary: / N_days_av;
   // target += neg_binomial_2_lpmf(
   //   // `obs_die` from the first observed day to the last death date
   //   obs_ww_mvs[1:lastCaseWeek] |
