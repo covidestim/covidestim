@@ -369,6 +369,11 @@ parameters {
   real<lower=0>             inv_sqrt_phi_w;
   // VACCINE ADJUSTMENT
   simplex[3]                prob_vac;
+  // regression for wastewater
+  real                      a;
+  real                      b;
+  real<lower=0>             sigma;
+  
 }
 ///////////////////////////////////////////
 transformed parameters {
@@ -746,7 +751,7 @@ fitted_hospitalizations = diagnoses_severe;
   }
   
     // infectiousness
-  fitted_wastewater_prvl = conv1d(infections, infect_dist_rv);
+  fitted_wastewater_prvl = a + b * (conv1d(infections, infect_dist_rv)/pop_size) ;
 
   // phi
   phi_cas = pow(inv_sqrt_phi_c, -2);
@@ -791,6 +796,9 @@ model {
   // inv_sqrt_phi_h       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
   inv_sqrt_phi_w       ~ normal(0, 1);
+  a ~ normal(0,10);
+  b ~ normal(0,10);
+  sigma ~ cauchy(0,10);
 
   // prop for vaccine
   prob_vac             ~ dirichlet(rep_vector(5, 3));
@@ -823,7 +831,7 @@ model {
       target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_weeks_before]), phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
       target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_weeks_before]), phi_die);
-      target += neg_binomial_2_lpmf( 0 | sum(fitted_wastewater_prvl[1:N_weeks_before]), phi_die);
+      target += normal_lpdf( 0 | sum(fitted_wastewater_prvl[1:N_weeks_before]), sigma);
     }
   } else { // if there is no pre-period zero
         if(N_weeks_before>0){
@@ -842,7 +850,8 @@ model {
       target += neg_binomial_2_lpmf( 0 | fitted_cases[1], phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
       target += neg_binomial_2_lpmf( 0 | fitted_deaths[1], phi_die);
-      target += neg_binomial_2_lpmf( 0 | fitted_wastewater_prvl[1], phi_ww);
+      // target += neg_binomial_2_lpmf( 0 | fitted_wastewater_prvl[1], phi_ww);
+      target += normal_lpdf( 0 | fitted_wastewater_prvl[1], sigma);
     }
   }
 
@@ -903,14 +912,22 @@ model {
     phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
  
-  target += neg_binomial_2_lpmf(
+  target += normal_lpdf(
     // `obs_die` from the first observed day to the last death date
     obs_ww_mvs[1:lastCaseWeek] |
       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
       // last death date
       fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek],
-    phi_ww
+    sigma
   ); // optional, but likelie unnecessary: / N_days_av;
+  // target += neg_binomial_2_lpmf(
+  //   // `obs_die` from the first observed day to the last death date
+  //   obs_ww_mvs[1:lastCaseWeek] |
+  //     // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
+  //     // last death date
+  //     fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek],
+  //   phi_ww
+  // ); // optional, but likelie unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////
 generated quantities {
