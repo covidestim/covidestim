@@ -29,11 +29,11 @@ validate_input <- function(d, type) {
       "`{pvec(class(d$observation))}`"
     )
   )
-  att(
-    all(d$observation >= 0),
-    msg=glue("At least one observation was < 0. ",
-             "This occurred on rows {pvec(which(d$observation < 0))}")
-  )
+  # att(
+  #   all(d$observation >= 0),
+  #   msg=glue("At least one observation was < 0. ",
+  #            "This occurred on rows {pvec(which(d$observation < 0))}")
+  # )
   att(
     assertthat::is.string(type),
     msg = "Type of input data must be passed as a string."
