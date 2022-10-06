@@ -206,7 +206,7 @@ transformed data {
   // Reporting delays
   vector[Max_delay]  cas_rep_delay_rv;
   vector[Max_delay]  die_rep_delay_rv;
-    vector[Max_delay]   infect_dist_rv;
+    vector[Max_delay*7]   infect_dist_rv;
  
   // Cumulative reporting delays
   // vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
@@ -286,8 +286,8 @@ for(i in 1:N_weeks_tot) {
   }
   
    // vector to distribute infectiousness
-  for(i in 1:Max_delay)
-    infect_dist_rv[1+Max_delay-i] =
+  for(i in 1:(Max_delay*7))
+    infect_dist_rv[1+(Max_delay*7)-i] =
       gamma_cdf(i   , infect_dist_shap, infect_dist_rate) -
       gamma_cdf(i-1 , infect_dist_shap, infect_dist_rate);
       
@@ -388,6 +388,7 @@ transformed parameters {
   vector[N_weeks_tot]      log_infections;
   vector[N_weeks_tot]      deriv1_log_infections;
   vector[N_weeks_tot]      infections;
+  vector[N_weeks_tot*7]      infections_daily;
   // vector[N_weeks_tot]      infections_premiere;
   // vector[N_weeks_tot]     num_uninf;
   real                    ever_inf;
@@ -396,6 +397,8 @@ transformed parameters {
   vector[N_weeks_tot]      population_protection_inf;
   vector[N_weeks_tot]      population_protection_boost;
   vector[N_weeks_tot]      effective_protection_prvl;
+  vector[N_weeks_tot*7]      pop_infectiousness_daily_prvl;
+  vector[N_weeks_tot]      pop_infectiousness_weekly_prvl;
   // vector[N_weeks_tot]      effective_protection_inf_prvl;
   //vector[N_weeks_tot]      prot_boost;
   // vector[N_spl_par_rt]    spl_par_rt;
@@ -751,7 +754,18 @@ fitted_hospitalizations = diagnoses_severe;
   }
   
     // infectiousness
-  fitted_wastewater_prvl = a + b * (conv1d(infections, infect_dist_rv)/pop_size) ;
+    for(i in 1:7){
+      for(j in 1:N_weeks_tot){
+      infections_daily[i + 7 * (j-1)] = infections[j]/7;
+    }
+    }
+   pop_infectiousness_daily_prvl = conv1d(infections_daily, infect_dist_rv);
+for(i in 1:N_weeks_tot){
+  pop_infectiousness_weekly_prvl[i] = sum(pop_infectiousness_daily_prvl[((i-1)*7)+1:i*7]);
+}
+    // (conv1d(infections, infect_dist_rv)
+  // fitted_wastewater_prvl = a + b * (conv1d(infections, infect_dist_rv)/pop_size) ;
+  fitted_wastewater_prvl = a + b * (pop_infectiousness_weekly_prvl/pop_size) ;
 
   // phi
   phi_cas = pow(inv_sqrt_phi_c, -2);
@@ -831,7 +845,7 @@ model {
       target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_weeks_before]), phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
       target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_weeks_before]), phi_die);
-      target += normal_lpdf( 0 | sum(fitted_wastewater_prvl[1:N_weeks_before]), sigma);
+      // target += normal_lpdf( 0 | sum(fitted_wastewater_prvl[1:N_weeks_before]), sigma);
     }
   } else { // if there is no pre-period zero
         if(N_weeks_before>0){
@@ -851,7 +865,7 @@ model {
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
       target += neg_binomial_2_lpmf( 0 | fitted_deaths[1], phi_die);
       // target += neg_binomial_2_lpmf( 0 | fitted_wastewater_prvl[1], phi_ww);
-      target += normal_lpdf( 0 | fitted_wastewater_prvl[1], sigma);
+      // target += normal_lpdf( 0 | fitted_wastewater_prvl[1], sigma);
     }
   }
 
@@ -912,13 +926,13 @@ model {
     phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
  
-  target += normal_lpdf(
-    // `obs_die` from the first observed day to the last death date
-    obs_ww_mvs[1:lastCaseWeek] |
-      // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
-      // last death date
-      fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek], 
-      sigma);
+  // target += normal_lpdf(
+  //   // `obs_die` from the first observed day to the last death date
+  //   obs_ww_mvs[1:lastCaseWeek] |
+  //     // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
+  //     // last death date
+  //     fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek], 
+  //     sigma);
   // optional, but likelie unnecessary: / N_days_av;
   // target += neg_binomial_2_lpmf(
   //   // `obs_die` from the first observed day to the last death date

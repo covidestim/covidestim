@@ -306,6 +306,8 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "infections"                             = "infections",
     "infections_premiere"                    = "infections_premiere",
     "pop_infectiousness_prvl"                = "pop_infectiousness_prvl",
+    "pop_infectiousness_daily_prvl"                = "pop_infectiousness_daily_prvl",
+    "pop_infectiousness_weekly_prvl"                = "pop_infectiousness_weekly_prvl",
     "r_t"                                    = "r_t",
     "seropositive_prvl"                      = "seropositive_prvl",
     "severe"                                 = "severe",
