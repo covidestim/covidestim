@@ -204,7 +204,7 @@ transformed data {
   // Reporting delays
   vector[Max_delay]  cas_rep_delay_rv;
   vector[Max_delay]  die_rep_delay_rv;
- 
+
   // Cumulative reporting delays
   // vector[N_days + N_days_before]  cas_cum_report_delay_rv; 
   // vector[N_days + N_days_before]  die_cum_report_delay_rv; 
@@ -278,6 +278,7 @@ for(i in 1:N_weeks_tot) {
     sev_prg_delay_rv[1+Max_delay-i] =
       gamma_cdf(i   , sev_prg_delay_shap, sev_prg_delay_rate) -
       gamma_cdf(i-1 , sev_prg_delay_shap, sev_prg_delay_rate);
+   
   }
   
   // Calcluate the probability of reporting for each day after diagnosis
@@ -371,15 +372,16 @@ transformed parameters {
   vector[N_weeks_tot]      log_infections;
   vector[N_weeks_tot]      deriv1_log_infections;
   vector[N_weeks_tot]      infections;
-  // vector[N_weeks_tot]      infections_premiere;
-  // vector[N_weeks_tot]     num_uninf;
+  vector[N_weeks_tot]      infections_premiere;
+  vector[N_weeks_tot]     num_uninf;
   real                    ever_inf;
   vector[N_weeks_tot]     susceptible_prvl;
   vector[N_weeks_tot]     population_protection_init;
   vector[N_weeks_tot]      population_protection_inf;
   vector[N_weeks_tot]      population_protection_boost;
   vector[N_weeks_tot]      effective_protection_prvl;
-  // vector[N_weeks_tot]      effective_protection_inf_prvl;
+  vector[N_weeks_tot]      effective_protection_inf_prvl;
+  vector[N_weeks_tot]      p_reinf_inf;
   //vector[N_weeks_tot]      prot_boost;
   // vector[N_spl_par_rt]    spl_par_rt;
 
@@ -423,6 +425,7 @@ transformed parameters {
   // vector[N_days_tot]  severe;
   // vector[N_days_tot]  deaths;
   vector[N_weeks_tot]  symptomatic; 
+  vector[N_weeks_tot]  symptomatic_sus; // susceptible to become severely ill
   vector[N_weeks_tot]  severe;
   vector[N_weeks_tot]  deaths;
 
@@ -606,6 +609,25 @@ population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks
     // }
   }
   
+  //first infections
+  num_uninf[1] = pop_size * (1.0 - cum_p_inf_init); // initial uninfected population
+  effective_protection_inf_prvl[1] = pop_size * start_p_imm;  //
+  for(i in 1:N_weeks_tot){
+    if(i > 1){
+  num_uninf[i] = num_uninf[i-1] - infections_premiere[i-1];
+    effective_protection_inf_prvl[i] = population_protection_init[i-1] + population_protection_inf[i-1];
+}
+if(num_uninf[i] < 0){
+  num_uninf[i] = 0;
+}
+if(effective_protection_inf_prvl[i] > pop_size){
+  effective_protection_inf_prvl[i] = pop_size -1;
+}
+    infections_premiere[i] = infections[i] * (num_uninf[i] / ((pop_size - effective_protection_inf_prvl[i]) + num_uninf[i]));
+p_reinf_inf[i] = (infections[i] - infections_premiere[i])/infections[i];
+}
+
+  
   r_t = exp(logRt); 
   
   // second derivative
@@ -629,8 +651,9 @@ population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks
   
   symptomatic =
     p_sym_if_inft     .* conv1d(infections , inf_prg_delay_rv);
+    symptomatic_sus = (symptomatic .* p_reinf_inf * 0.1) + (symptomatic .* (1.0-p_reinf_inf));
 
-  severe = p_sev_if_symt               .* conv1d(symptomatic, sym_prg_delay_rv);
+  severe = p_sev_if_symt               .* conv1d(symptomatic_sus, sym_prg_delay_rv);
   // deaths = p_die_if_sevt[1:N_days_tot] .* conv1d(severe, sev_prg_delay_rv);
   deaths = p_die_if_sevt[1:N_weeks_tot] .* conv1d(severe, sev_prg_delay_rv);
 
@@ -657,7 +680,7 @@ population_protection_inf[i] = sum(infections[1:i] .* ( exp(-.008 * idx3[N_weeks
   // follow diagnosed cases forward to determine how many cases diagnosed
   // at symptomatic eventually die 
   dx_sym_sev = p_sev_if_symt .* conv1d(
-    symptomatic .* p_diag_if_sym,
+    symptomatic_sus .* p_diag_if_sym,
     sym_prg_delay_rv
   );
         
@@ -844,11 +867,11 @@ model {
 ///////////////////////////////////////////////////////////
 generated quantities {
   // calculate cumulative incidence + seropositive + pop_infectiousness
-    vector[N_weeks_tot]      infections_premiere;
-  vector[N_weeks_tot]     num_uninf;
+    // vector[N_weeks_tot]      infections_premiere;
+  // vector[N_weeks_tot]     num_uninf;
   real                p_die_if_sym;
   vector[N_weeks_tot] susceptible_severe_prvl;
-  vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
+  // vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
   vector[N_weeks_tot] effective_protection_inf_vax_prvl;
   vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
   vector[N_weeks_tot] effective_protection_vax_prvl;
@@ -867,22 +890,22 @@ generated quantities {
 
 
 //first infections
-  num_uninf[1] = pop_size * (1.0 - cum_p_inf_init); // initial uninfected population
-  effective_protection_inf_prvl[1] = pop_size * start_p_imm;  //
-  for(i in 1:N_weeks_tot){
-    if(i > 1){
-  num_uninf[i] = num_uninf[i-1] - infections_premiere[i-1];
-    effective_protection_inf_prvl[i] = population_protection_init[i-1] + population_protection_inf[i-1];
-}
-if(num_uninf[i] < 0){
-  num_uninf[i] = 0;
-}
-if(effective_protection_inf_prvl[i] > pop_size){
-  effective_protection_inf_prvl[i] = pop_size -1;
-}
-    infections_premiere[i] = infections[i] * (num_uninf[i] / ((pop_size - effective_protection_inf_prvl[i]) + num_uninf[i]));
-
-}
+//   num_uninf[1] = pop_size * (1.0 - cum_p_inf_init); // initial uninfected population
+//   effective_protection_inf_prvl[1] = pop_size * start_p_imm;  //
+//   for(i in 1:N_weeks_tot){
+//     if(i > 1){
+//   num_uninf[i] = num_uninf[i-1] - infections_premiere[i-1];
+//     effective_protection_inf_prvl[i] = population_protection_init[i-1] + population_protection_inf[i-1];
+// }
+// if(num_uninf[i] < 0){
+//   num_uninf[i] = 0;
+// }
+// if(effective_protection_inf_prvl[i] > pop_size){
+//   effective_protection_inf_prvl[i] = pop_size -1;
+// }
+//     infections_premiere[i] = infections[i] * (num_uninf[i] / ((pop_size - effective_protection_inf_prvl[i]) + num_uninf[i]));
+// 
+// }
   // cumulative incidence
   // cumulative incidence is only calculated for the data weeks! any prior infections are added through cum_p_inf_init.
   infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) + (cum_p_inf_init*pop_size); 
