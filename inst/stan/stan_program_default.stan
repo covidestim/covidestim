@@ -200,6 +200,7 @@ transformed data {
   vector[Max_delay]  asy_rec_delay_rv; 
   vector[Max_delay]  sym_prg_delay_rv;
   vector[Max_delay]  sev_prg_delay_rv;
+  vector[N_weeks + N_weeks_before]  sym_to_sev_rv;
  
   // Reporting delays
   vector[Max_delay]  cas_rep_delay_rv;
@@ -278,7 +279,15 @@ for(i in 1:N_weeks_tot) {
     sev_prg_delay_rv[1+Max_delay-i] =
       gamma_cdf(i   , sev_prg_delay_shap, sev_prg_delay_rate) -
       gamma_cdf(i-1 , sev_prg_delay_shap, sev_prg_delay_rate);
+      
    
+  }
+  for(i in 1:N_weeks_tot){
+    if(i < 8){
+      sym_to_sev_rv[1+N_weeks_tot-i] = .05;
+    } else{
+    sym_to_sev_rv[1+N_weeks_tot-i] = 1- (exp((i-8)*-.04) * .35 + .6);
+    }
   }
   
   // Calcluate the probability of reporting for each day after diagnosis
@@ -651,7 +660,8 @@ p_reinf_inf[i] = (infections[i] - infections_premiere[i])/infections[i];
   
   symptomatic =
     p_sym_if_inft     .* conv1d(infections , inf_prg_delay_rv);
-    symptomatic_sus = (symptomatic .* p_reinf_inf * 0.1) + (symptomatic .* (1.0-p_reinf_inf));
+    // symptomatic_sus = (symptomatic .* p_reinf_inf * 0.1) + (symptomatic .* (1.0-p_reinf_inf));
+    symptomatic_sus = (conv1d(symptomatic, sym_to_sev_rv) .* p_reinf_inf) + (symptomatic .* (1.0-p_reinf_inf));
 
   severe = p_sev_if_symt               .* conv1d(symptomatic_sus, sym_prg_delay_rv);
   // deaths = p_die_if_sevt[1:N_days_tot] .* conv1d(severe, sev_prg_delay_rv);
