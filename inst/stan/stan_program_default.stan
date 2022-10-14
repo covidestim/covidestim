@@ -845,7 +845,7 @@ model {
       target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_weeks_before]), phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
       target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_weeks_before]), phi_die);
-      // target += normal_lpdf( 0 | sum(fitted_wastewater_prvl[1:N_weeks_before]), sigma);
+      target += normal_lpdf( 0 | sum(fitted_wastewater_prvl[1:N_weeks_before]), sigma);
     }
   } else { // if there is no pre-period zero
         if(N_weeks_before>0){
@@ -865,7 +865,7 @@ model {
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_hospitalizations[1:N_weeks_before+4]), phi_hosp);
       target += neg_binomial_2_lpmf( 0 | fitted_deaths[1], phi_die);
       // target += neg_binomial_2_lpmf( 0 | fitted_wastewater_prvl[1], phi_ww);
-      // target += normal_lpdf( 0 | fitted_wastewater_prvl[1], sigma);
+      target += normal_lpdf( 0 | fitted_wastewater_prvl[1], sigma);
     }
   }
 
@@ -926,19 +926,16 @@ model {
     phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
  
-  // target += normal_lpdf(
-  //   // `obs_die` from the first observed day to the last death date
-  //   obs_ww_mvs[1:lastCaseWeek] |
-  //     // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
-  //     // last death date
-  //     fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek], 
-  //     sigma);
+  target += normal_lpdf(
+    // `obs_die` from the first observed day to the last death date
+    obs_ww_mvs[1:lastCaseWeek] |
+      // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
+      // last death date
+      fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek],
+      sigma);
   // optional, but likelie unnecessary: / N_days_av;
   // target += neg_binomial_2_lpmf(
-  //   // `obs_die` from the first observed day to the last death date
   //   obs_ww_mvs[1:lastCaseWeek] |
-  //     // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
-  //     // last death date
   //     fitted_wastewater_prvl[N_weeks_before+1 : N_weeks_before+lastCaseWeek],
   //   phi_ww
   // ); // optional, but likelie unnecessary: / N_days_av;
