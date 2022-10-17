@@ -391,6 +391,7 @@ transformed parameters {
   vector[N_weeks_tot]      effective_protection_prvl;
   vector[N_weeks_tot]      effective_protection_inf_prvl;
   vector[N_weeks_tot]      p_reinf_inf;
+  vector[3]                prob_sev;
   //vector[N_weeks_tot]      prot_boost;
   // vector[N_spl_par_rt]    spl_par_rt;
 
@@ -490,6 +491,9 @@ transformed parameters {
   p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
   p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
   }
+  prob_sev[1] = pow(prob_vac[1], .1);
+  prob_sev[2] = pow(prob_vac[2], .1);
+  prob_sev[3] = pow(prob_vac[3], .1);
   
   // DIAGNOSIS // 
   // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomatic vs severe
@@ -659,14 +663,16 @@ p_reinf_inf[i] = (infections[i] - infections_premiere[i])/infections[i];
   // print(inf_prg_delay_rv);
   
   symptomatic =
-    p_sym_if_inft     .* conv1d(infections , inf_prg_delay_rv);
-    // symptomatic_sus = (symptomatic .* p_reinf_inf * 0.1) + (symptomatic .* (1.0-p_reinf_inf));
+    (p_sym_if_inft  .* (p_reinf_inf + prob_sev[1] * ( 1-p_reinf_inf)))   .* conv1d(infections , inf_prg_delay_rv);
+  // symptomatic =
+  //   p_sym_if_inft     .* conv1d(infections , inf_prg_delay_rv);
     symptomatic_sus = (symptomatic .* p_reinf_inf * 0.05) + (symptomatic .* (1.0-p_reinf_inf));
     // symptomatic_sus = (conv1d(symptomatic, sym_to_sev_rv) .* p_reinf_inf) + (symptomatic .* (1.0-p_reinf_inf));
 
-  severe = p_sev_if_symt               .* conv1d(symptomatic_sus, sym_prg_delay_rv);
+  severe = (p_sev_if_symt .* (p_reinf_inf + prob_sev[2] * ( 1-p_reinf_inf)))     .* conv1d(symptomatic, sym_prg_delay_rv);
+  // severe = p_sev_if_symt               .* conv1d(symptomatic_sus, sym_prg_delay_rv);
   // deaths = p_die_if_sevt[1:N_days_tot] .* conv1d(severe, sev_prg_delay_rv);
-  deaths = p_die_if_sevt[1:N_weeks_tot] .* conv1d(severe, sev_prg_delay_rv);
+  deaths = (p_die_if_sevt[1:N_weeks_tot] .* (p_reinf_inf + prob_sev[3] * ( 1-p_reinf_inf))) .* conv1d(severe, sev_prg_delay_rv);
 
   // CASCADE OF INCIDENT OUTCOMES (DIAGNOSED) //
 
@@ -676,7 +682,7 @@ p_reinf_inf[i] = (infections[i] - infections_premiere[i])/infections[i];
   // and some probability that the diagnosis occurred on day j.
   // we assume asymptomatic diagnosis only occurs among individuals who will be
   // asymptomatic for the entire course of their infection. 
-  new_asy_dx = (1 - p_sym_if_inft) .* conv1d(
+  new_asy_dx = ((1 - p_sym_if_inft).* (p_reinf_inf + prob_sev[1] * ( 1-p_reinf_inf))) .* conv1d(
     infections .* p_diag_if_asy,
     asy_rec_delay_rv
   );
@@ -690,13 +696,18 @@ p_reinf_inf[i] = (infections[i] - infections_premiere[i])/infections[i];
   // cascade from diagnosis 
   // follow diagnosed cases forward to determine how many cases diagnosed
   // at symptomatic eventually die 
-  dx_sym_sev = p_sev_if_symt .* conv1d(
-    symptomatic_sus .* p_diag_if_sym,
+  dx_sym_sev = (p_sev_if_symt .* (p_reinf_inf + prob_sev[2] * ( 1-p_reinf_inf))) .* conv1d(
+    symptomatic .* p_diag_if_sym,
     sym_prg_delay_rv
   );
+  // dx_sym_sev = p_sev_if_symt .* conv1d(
+  //   symptomatic_sus .* p_diag_if_sym,
+  //   sym_prg_delay_rv
+  // );
         
   // dx_sym_die = p_die_if_sevt[1:N_days_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
-  dx_sym_die = p_die_if_sevt[1:N_weeks_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
+  dx_sym_die = (p_die_if_sevt[1:N_weeks_tot] .* (p_reinf_inf + prob_sev[3] * ( 1-p_reinf_inf))).* conv1d(dx_sym_sev, sev_prg_delay_rv);
+  // dx_sym_die = p_die_if_sevt[1:N_weeks_tot] .* conv1d(dx_sym_sev, sev_prg_delay_rv);
         
   // diagnosed at severe 
   // as above for symptomatic 
@@ -708,7 +719,7 @@ p_reinf_inf[i] = (infections[i] - infections_premiere[i])/infections[i];
   //   severe - dx_sym_sev,
   //   sev_prg_delay_rv
   // );
-  dx_sev_die = p_diag_if_sev * p_die_if_sevt[1:N_weeks_tot] .* conv1d(
+  dx_sev_die = (p_diag_if_sev * p_die_if_sevt[1:N_weeks_tot] .* (p_reinf_inf + prob_sev[3] * ( 1-p_reinf_inf))).* conv1d(
     severe - dx_sym_sev,
     sev_prg_delay_rv
   );
