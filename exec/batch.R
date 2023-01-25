@@ -152,6 +152,20 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
   opt_vals <- result_optimizer$result$opt_vals
 
   cli_ol(sort(opt_vals, decreasing = TRUE))
+  
+if (any((run_summary$infections / 7) > get_pop(region))) {
+    
+    cli_alert_warning("Optimizer did not converge on valid posterior for {region}; Discarding run from results.")
+    
+    return(list(
+      run_summary = bind_cols(!!args$key := region, tibble()),
+      warnings    = bind_cols(!!args$key := region, warnings = warnings_optimizer),
+      opt_vals    = bind_cols(!!args$key := region, optvals  = opt_vals),
+      method      = bind_cols(!!args$key := region, method   = "optimizer"),
+      raw         = NULL
+    ))
+    
+}
 
   if (
     # If it's the last attempt and we aren't always sampling, OR
