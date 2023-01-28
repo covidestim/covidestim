@@ -113,7 +113,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     input_boost(get_input("boost")) +
     input_hosp(get_input("hosp"), lastHospDate = lastHospDate)
 
-  tries   <- 50
+  tries   <- 25
   timeout <- 60
   result_optimizer <- tryCatch(
     callr::r(
@@ -146,18 +146,57 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     ))
   }
 
+  run_summary <- summary(result_optimizer$result)
+if (any((run_summary$infections) > (get_pop(region) * .25))) {
+    
+    cli_alert_warning("Optimizer did not converge on valid posterior for {region}; Retrying with 50 tries.")
+
+  tries   <- 50
+  timeout <- 60
+  result_optimizer <- tryCatch(
+    callr::r(
+      runner_optimizer,
+      args = list(cfg, cores = 1, tries = tries),
+      timeout = timeout,
+      package = TRUE
+    ),
+    callr_timeout_error = function(cnd) {
+      message(glue::glue("{region} has timed out after {tries} tries and {timeout} seconds. Ignoring."))
+      message(cnd)
+      return(NULL)
+    },
+    callr_error = function(cnd) {
+      message(
+        glue::glue("Optimizer function failed. Likely all BFGS runs of {region} failed to meet runOptimizer's successful-result conditions. Ignoring.")
+      )
+      message(cnd)
+      return(NULL)
+    }
+  )
+  
+  if (is.null(result_optimizer)) {
+    return(list(
+      run_summary = bind_cols(!!args$key := region, tibble()),
+      warnings    = bind_cols(!!args$key := region, warnings = tibble()),
+      opt_vals    = bind_cols(!!args$key := region, optvals  = tibble()),
+      method      = bind_cols(!!args$key := region, method   = tibble()),
+      raw         = NULL
+    ))
+  }
+  
+  run_summary <- summary(result_optimizer$result)  
+}
+  
   cli_alert_success("Optimizer complete. Log-posterior values:")
 
-  run_summary <- summary(result_optimizer$result)
   warnings_optimizer <- result_optimizer$warnings
   opt_vals <- result_optimizer$result$opt_vals
 
   cli_ol(sort(opt_vals, decreasing = TRUE))
   
-if (any((run_summary$infections / 7) > get_pop(region))) {
     
-    cli_alert_warning("Optimizer did not converge on valid posterior for {region}; Discarding run from results.")
-    
+if (any((run_summary$infections) > (get_pop(region) * .25))) {
+    cli_alert_warning("Optimizer did not converge on valid posterior for {region}; Discarding results.")
     return(list(
       run_summary = bind_cols(!!args$key := region, tibble()),
       warnings    = bind_cols(!!args$key := region, warnings = warnings_optimizer),
