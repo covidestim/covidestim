@@ -107,7 +107,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
   lastCaseDate <- as.Date(metadata[[region]]$lastCaseDate)
 
   cfg <- do.call(covidestim, covidestim_config_options) +
-    input_cases(get_input("cases")) +
+    input_cases(get_input("cases"), lastCaseDate = lastCaseDate) +
     input_deaths(get_input("deaths")) +
     input_rr(get_input("RR")) + 
     input_boost(get_input("boost")) +
