@@ -85,19 +85,19 @@ modelconfig_add.input <- function(rightside, leftside) {
   if("lastDeathDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastDeathDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
-    cfg$lastDeathWeek <- as.numeric(diff)%/%7
+    cfg$lastDeathWeek <- (as.numeric(diff)%/%7) + 1
   } 
 
     if("lastHospDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastHospDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
-    cfg$lastHospWeek <- as.numeric(diff)%/%7
+    cfg$lastHospWeek <- (as.numeric(diff)%/%7) + 1
   } 
 
   if("lastCaseDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastCaseDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
-    cfg$lastCaseWeek <- as.numeric(diff)%/%7
+    cfg$lastCaseWeek <- (as.numeric(diff)%/%7) + 1
   } 
 
   data_key <- names(d)
