@@ -147,6 +147,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
   }
 
   run_summary <- summary(result_optimizer$result)
+  
 if (any((run_summary$infections) > (get_pop(region) * .25))) {
     
     cli_alert_warning("Optimizer did not converge on valid posterior for {region}; Retrying with 50 tries.")
@@ -196,15 +197,12 @@ if (any((run_summary$infections) > (get_pop(region) * .25))) {
   
     
 if (any((run_summary$infections) > (get_pop(region) * .25))) {
+  
     cli_alert_warning("Optimizer did not converge on valid posterior for {region}; Discarding results.")
-    return(list(
-      run_summary = bind_cols(!!args$key := region, tibble()),
-      warnings    = bind_cols(!!args$key := region, warnings = warnings_optimizer),
-      opt_vals    = bind_cols(!!args$key := region, optvals  = opt_vals),
-      method      = bind_cols(!!args$key := region, method   = "optimizer"),
-      raw         = NULL
-    ))
-    
+    cli_alert_info("Infection estimates:")
+  
+    cli_ol(run_summary$infections)
+      run_summary <-  tibble()
 }
 
   if (
