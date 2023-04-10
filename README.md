@@ -1,4 +1,4 @@
-# covidestim <img src="man/figures/logo.png" width="120" align="right" />
+s# covidestim <img src="man/figures/logo.png" width="120" align="right" />
 
 Real-time estimates of the true size and trajectory of local COVID-19 epidemics
 are key metrics to guide policy responses. *covidestim* is a Bayesian
@@ -40,7 +40,7 @@ summary timeseries and graphs.
 # Installation
 
 ```r
-# Currently, Covidestim is not availble on CRAN
+# Currently, Covidestim is not available on CRAN
 # install.packages("covidestim")
 
 # Install the development version from GitHub. This requires that the
