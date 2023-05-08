@@ -153,7 +153,7 @@ if (any((run_summary$infections) > (get_pop(region) * .25))) {
     cli_alert_warning("Optimizer did not converge on valid posterior for {region}; Retrying with 50 tries.")
 
   tries   <- 50
-  timeout <- 60
+  timeout <- 120
   result_optimizer <- tryCatch(
     callr::r(
       runner_optimizer,
