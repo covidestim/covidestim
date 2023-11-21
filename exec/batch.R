@@ -114,7 +114,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     input_hosp(get_input("hosp"), lastHospDate = lastHospDate)
 
   tries   <- 25
-  timeout <- 60
+  timeout <- 120
   result_optimizer <- tryCatch(
     callr::r(
       runner_optimizer,
