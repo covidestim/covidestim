@@ -114,7 +114,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     input_hosp(get_input("hosp"), lastHospDate = lastHospDate)
 
   tries   <- 25
-  timeout <- 120
+  timeout <- 200
   result_optimizer <- tryCatch(
     callr::r(
       runner_optimizer,
@@ -153,7 +153,7 @@ if (any((run_summary$infections) > (get_pop(region) * .25))) {
     cli_alert_warning("Optimizer did not converge on valid posterior for {region}; Retrying with 50 tries.")
 
   tries   <- 50
-  timeout <- 120
+  timeout <- 200
   result_optimizer <- tryCatch(
     callr::r(
       runner_optimizer,
