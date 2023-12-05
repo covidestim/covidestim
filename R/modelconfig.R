@@ -42,9 +42,7 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg  <- leftside
   d    <- rightside
 
-  integer_keys <- c("obs_cas", "obs_die", 
-                    "obs_boost", "obs_hosp",
-                    "ifr_vac_adj")
+  integer_keys <- c("obs_cas", "obs_die")
   keys         <- integer_keys
 
   # Create a list of any existing data
@@ -88,12 +86,6 @@ modelconfig_add.input <- function(rightside, leftside) {
     cfg$lastDeathWeek <- (as.numeric(diff)%/%7) + 1
   } 
 
-    if("lastHospDate" %in% names(attributes(d))){
-    lastDate <- attr(d, "lastHospDate")
-    diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
-    cfg$lastHospWeek <- (as.numeric(diff)%/%7) + 1
-  } 
-
   if("lastCaseDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastCaseDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
@@ -103,14 +95,9 @@ modelconfig_add.input <- function(rightside, leftside) {
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
 
-  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep", 
-                           "obs_boost_rep", "obs_hosp_rep", 
-                           "ifr_vac_adj_rep")) {
-    if(data_type_key == "ifr_vac_adj_rep"){
-      cfg[[data_key]] <- d[[1]]$observation 
-    } else {
+  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep")) {
       cfg[[data_key]] <- as.integer(d[[1]]$observation)
-    }
+
 
     cfg[[data_type_key]] <-
       switch(attr(d, "date_type"), "reported" = 1, "occurred" = 0)
@@ -131,17 +118,8 @@ modelconfig_add.input <- function(rightside, leftside) {
 
   # Assign the results of the call to the `cfg` object
   cfg$ifr_adj       = ifr_adjustments$ifr_adj
-  cfg$ifr_omi       = ifr_adjustments$ifr_omi
   cfg$ifr_adj_fixed = ifr_adjustments$ifr_adj_fixed
   cfg$N_ifr_adj     = ifr_adjustments$N_ifr_adj
-  
-  # pre-fill the ifr_vaccine_adjustment with ones, such that
-  # the length of ifr_vac_adj matches N_ifr_adj
-  if (data_key == "ifr_vac_adj"){
-  # prefill <- rep(1, cfg$N_days_before)
-  prefill <- rep(1, cfg$N_weeks_before)
-  cfg$ifr_vac_adj   = c(prefill, cfg$ifr_vac_adj)
-  }
 
   structure(cfg, class = "modelconfig")
 }
@@ -156,20 +134,11 @@ print.inputs <- function(cfg, .tab = FALSE) {
     ifelse(is.null(cfg$obs_cas), '[ x ]', glue('[{frmtr(cfg$obs_cas)}]'))
   status_deaths <-
     ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_die)}]'))
-  status_boost <-
-    ifelse(is.null(cfg$obs_boost), '[ x ]', glue('[{frmtr(cfg$obs_boost)}]'))
-  status_hosp <-
-    ifelse(is.null(cfg$obs_hosp), '[ x ]', glue('[{frmtr(cfg$obs_hosp)}]'))
-  status_rr <-
-    ifelse(is.null(cfg$ifr_vac_adj), '[ x ]', glue('[{frmtr(cfg$ifr_vac_adj)}]'))
 
 'Inputs:
 
 {t}{status_cases}\tCases
 {t}{status_deaths}\tDeaths
-{t}{status_boost}\tBooster
-{t}{status_hosp}\tHospitalizations
-{t}{status_rr}\tRRvaccines
 ' -> msg
 
   cat(glue(msg))
@@ -187,8 +156,8 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
                     pop_size = 1e12, #new default value
                     n_spl_rt_knotwidth = 2, 
                     region,
-                    cum_p_inf_init,
-                    start_p_imm
+                    cum_p_inf_init = 0,
+                    start_p_imm = 0 
                     )
 {
   n_spl_par_rt <- max(4,ceiling((N_weeks + N_weeks_before)/n_spl_rt_knotwidth))
@@ -217,7 +186,6 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     # They get defined when an input_*() is added, because it's there that
     # we first see what the user's first day of data is.
     ifr_adj       = NULL,
-    ifr_omi       = NULL,
     ifr_adj_fixed = NULL,
     N_ifr_adj     = NULL,
 
@@ -238,20 +206,14 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
-    obs_hosp = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day
-    obs_boost = NULL, # vector of int by date. should have 0s if no event that day
-    # the ifr_vaccine adjustment data
-    ifr_vac_adj = NULL,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
     # last death date and hosp date are initiated here; gets updated as deaths data gets added
     lastDeathWeek = N_weeks,
-    lastHospWeek  = N_weeks,
     lastCaseWeek  = N_weeks,
 
-    
     # Rt and new infections
     pri_log_infections_0_mu = 0,
     pri_log_infections_0_sd = 10,
@@ -274,10 +236,7 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     boost_yes = as.integer(1), 
     
     obs_cas_rep = as.integer(0),      # This ~means FALSE in stan
-    obs_hosp_rep = as.integer(0),     # This ~means FALSE in stan
     obs_die_rep = as.integer(0),      # This ~means FALSE in stan
-    obs_boost_rep = as.integer(0),      # This ~means FALSE in stan
-    ifr_vac_adj_rep = as.integer(0),  # This ~means FALSE in stan
   )
 
   # Adding the priors in separately is neccessary in order to make checks

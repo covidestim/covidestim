@@ -48,11 +48,6 @@ NULL
 #'   (e.g. \code{New York}) being modeled. Required.
 #' @param nspl_rt_knotwidth An integer. The knotwidth to use for the spline of 
 #' Rt.
-#' @param start_p_imm A probability (number between 0 and 1). The starting 
-#'    fraction of the population with immunity against the Omicron variant.
-#'    Required.
-#' @param cum_p_inf_init A probability (number between o and 1). The starting
-#'    fraction of the population that has ever been infected. Required.
 #'
 #' @return An S3 object of type \code{covidestim}. This can be passed to
 #' \code{\link{run.covidestim}} or \code{\link{runOptimizer.covidestim}} to execute the model, as
@@ -69,14 +64,9 @@ NULL
 #'
 #' @examples
 #' cfg <- covidestim(nweeks = 31, region = 'Connecticut',
-#'    pop = get_pop("Connecticut"),
-#'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
-#'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+#'    pop = get_pop("Connecticut")) +
 #'   input_cases(example_ct_data('cases')) +
-#'   input_deaths(example_ct_data('deaths')) +
-#'   input_rr(example_ct_data('RR')) + 
-#'   input_hosp(example_ct_data('hosp')) +
-#'   input_boost(example_ct_data('boost'))
+#'   input_deaths(example_ct_data('deaths')) 
 #'   
 #'
 #' @importFrom magrittr %>%
@@ -92,9 +82,7 @@ covidestim <- function(nweeks,
                        adapt_delta = 0.98, 
                        max_treedepth = 14,
                        window.length = 7,
-                       region,
-                       start_p_imm,
-                       cum_p_inf_init) {
+                       region) {
 
   att(is.numeric(nweeks), nweeks >= 1)
 
@@ -103,9 +91,7 @@ covidestim <- function(nweeks,
     N_weeks_before     = nweeks_before,
     pop_size           = pop_size,
     n_spl_rt_knotwidth = nspl_rt_knotwidth,
-    region             = region,
-    start_p_imm        = start_p_imm,
-    cum_p_inf_init     = cum_p_inf_init
+    region             = region
   ) -> config
 
   # All user-specified config-related things must be specified above this line
@@ -156,36 +142,6 @@ get_pop <- function(region) {
   found$pop
 }
 
-#' Immunity and cumulative infections (fraction) estimates for US states and counties 
-#'
-#' Returns December 1, 2021 covidestim estimates of state or county effective protection
-#' and fraction of the population ever infected.
-#'
-#' @param region A string with the state name, or the FIPS code
-#'
-#' @return State/county population as a numeric, or an error
-#'
-#' @examples
-#' get_imm_init('Connecticut')
-#' get_imm_init('09009')
-#'
-#' @export
-get_imm_init <- function(region) {
-  found <- dplyr::filter(imm_state, location == region)
-
-  if (nrow(found) == 0)
-    found <- dplyr::filter(imm_county, location == region)
-
-  if (nrow(found) == 0)
-    stop(glue::glue("Could not find immunity data for region {region}!"))
-
-  if (nrow(found) > 1)
-    stop(glue::glue("Found more than set of immunity data for region {region}!"))
-
-  found
-}
-
-
 #' @export
 run <- function(...) UseMethod('run')
 
@@ -230,15 +186,9 @@ run <- function(...) UseMethod('run')
 #'
 #' @examples
 #' cfg <- covidestim(nweeks = 31, region = 'Connecticut',
-#'    pop = get_pop("Connecticut"),
-#'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
-#'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+#'    pop = get_pop("Connecticut")) +
 #'   input_cases(example_ct_data('cases')) +
-#'   input_deaths(example_ct_data('deaths')) +
-#'   input_rr(example_ct_data('RR')) + 
-#'   input_hosp(example_ct_data('hosp')) +
-#'   input_boost(example_ct_data('boost'))
-#'   
+#'   input_deaths(example_ct_data('deaths'))   
 #' 
 #' \dontrun{
 #' result <- run(cfg, cores = 2)
@@ -321,14 +271,9 @@ runOptimizer <- function(...) UseMethod('runOptimizer')
 #'
 #' @examples
 #' cfg <- covidestim(nweeks = 31, region = 'Connecticut',
-#'    pop = get_pop("Connecticut"),
-#'    start_p_imm = get_imm_init("Connecticut")$start_p_imm,
-#'    cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+#'    pop = get_pop("Connecticut")) +
 #'   input_cases(example_ct_data('cases')) +
-#'   input_deaths(example_ct_data('deaths')) +
-#'   input_rr(example_ct_data('RR')) + 
-#'   input_hosp(example_ct_data('hosp')) +
-#'   input_boost(example_ct_data('boost'))
+#'   input_deaths(example_ct_data('deaths')) 
 #' 
 #' \dontrun{
 #' result <- runOptimizer(cfg, cores = 2)
