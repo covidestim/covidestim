@@ -55,6 +55,7 @@ data {
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
+  vector<lower=0>[N_weeks+N_weeks_before] ifr_vac_adj; // ifr_vaccine_adjustment
   real<lower=0>          pri_ifr_decl_OR_a; 
   real<lower=0>          pri_ifr_decl_OR_b;
   real<lower=0>          ifr_adj_fixed;
@@ -129,9 +130,7 @@ data {
   
   // probabilities of progression inf -> sym -> sev -> die
   real<lower=0> pri_p_sym_if_inf_a; 
-  real<lower=0> pri_p_sym_if_inf_b;
-  real<lower=0> pri_new_p_sym_if_inf_a; 
-  real<lower=0> pri_new_p_sym_if_inf_b;
+  real<lower=0> pri_p_sym_if_inf_b; 
   real<lower=0> pri_p_sev_if_sym_a;
   real<lower=0> pri_p_sev_if_sym_b;
   real<lower=0> pri_p_die_if_sev_a;
@@ -334,6 +333,9 @@ parameters {
 // phi terms for negative b ino imal likelihood function 
   real<lower=0>             inv_sqrt_phi_c;
   real<lower=0>             inv_sqrt_phi_d;
+  
+    // VACCINE ADJUSTMENT
+  simplex[3]                prob_vac;
 }
 ///////////////////////////////////////////
 transformed parameters {
@@ -358,8 +360,8 @@ transformed parameters {
   
   // transitions
   vector[N_ifr_adj]   p_die_if_sevt;
-  // vector[N_weeks_tot]  p_sev_if_symt;
-  // vector[N_weeks_tot]  p_sym_if_inft;  
+  vector[N_weeks_tot]  p_sev_if_symt;
+  vector[N_weeks_tot]  p_sym_if_inft;
   
   // DIAGNOSIS AND REPORTING  
  // probability of diagnosis
@@ -410,18 +412,15 @@ transformed parameters {
   real phi_die;
  
   // NATURAL HISTORY CASCADE
-  //pre omicron model
-    p_die_if_sevt = p_die_if_sev/(1-p_die_if_sev) * ifr_adj_fixed * (1.0 + ifr_adj * ifr_decl_OR);
-  p_die_if_sevt ./= (1+p_die_if_sevt);
-  // post omicron model
-  // p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
 
-  // for( i in 1:N_weeks_tot){
-  // p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
-  // p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
-  // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
-  // }
-  
+  p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
+
+  for( i in 1:N_weeks_tot){
+  p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
+  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
+  p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
+  }
+
   // DIAGNOSIS // 
   // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomatic vs severe
   rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * logit(spl_par_sym_dx));
@@ -517,9 +516,9 @@ transformed parameters {
   // print(inf_prg_delay_rv);
   
   symptomatic =
-    p_sym_if_inf     * conv1d(infections , inf_prg_delay_rv);
+    p_sym_if_inft     .* conv1d(infections , inf_prg_delay_rv);
 
-  severe = p_sev_if_sym               * conv1d(symptomatic, sym_prg_delay_rv);
+  severe = p_sev_if_symt               .* conv1d(symptomatic, sym_prg_delay_rv);
   // deaths = p_die_if_sevt[1:N_days_tot] .* conv1d(severe, sev_prg_delay_rv);
   deaths = p_die_if_sevt[1:N_weeks_tot] .* conv1d(severe, sev_prg_delay_rv);
 
@@ -531,7 +530,7 @@ transformed parameters {
   // and some probability that the diagnosis occurred on day j.
   // we assume asymptomatic diagnosis only occurs among individuals who will be
   // asymptomatic for the entire course of their infection. 
-  new_asy_dx = (1 - p_sym_if_inf) * conv1d(
+  new_asy_dx = (1 - p_sym_if_inft) .* conv1d(
     infections .* p_diag_if_asy,
     asy_rec_delay_rv
   );
@@ -545,7 +544,7 @@ transformed parameters {
   // cascade from diagnosis 
   // follow diagnosed cases forward to determine how many cases diagnosed
   // at symptomatic eventually die 
-  dx_sym_sev = p_sev_if_sym * conv1d(
+  dx_sym_sev = p_sev_if_symt .* conv1d(
     symptomatic .* p_diag_if_sym,
     sym_prg_delay_rv
   );

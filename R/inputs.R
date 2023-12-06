@@ -144,3 +144,9 @@ input_deaths <- function(data, type = "reported",
   structure(out,class='input', date_type = type)
 }
 
+#' @rdname input_cases
+#' @export
+input_rr <- function(data, type = "reported") {
+  validate_input(data, type)
+  structure(list(ifr_vac_adj=data), class='input', date_type = type)
+}
