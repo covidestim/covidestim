@@ -44,6 +44,7 @@ data {
   // int<lower=0>           N_days; // days of data
   // int<lower=0>           N_days_before; // days before data to init epi model
   int<lower=0>           N_weeks; // weeks of data
+  int<lower=0>           N_weeks_start_omicron; // the indicator of the week when omicron starts
   int<lower=0>           N_weeks_before; // weeks before data to init epi model
   int<lower=0>           Max_delay; // maximum days delay 
   
@@ -51,6 +52,7 @@ data {
   // int<lower=0>           obs_die[N_days]; // vector of deaths
   int<lower=0>           obs_cas[N_weeks]; // vector of cases
   int<lower=0>           obs_die[N_weeks]; // vector of deaths
+  int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
   real<lower=0>          pop_size; // population size
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
@@ -98,10 +100,12 @@ data {
   //  what data are included --  cases, deaths: 
   int<lower = 0, upper = 1> cas_yes; 
   int<lower = 0, upper = 1> die_yes; 
+  int<lower = 0, upper = 1> hosp_yes; 
 
   //  how are the data dated -- report, occurrence: 
   int<lower = 0, upper = 1> obs_cas_rep;
   int<lower = 0, upper = 1> obs_die_rep;
+  int<lower = 0, upper = 1> obs_hosp_rep;
 
   //  how many days should be used for the moving average in the likelihood 
   //  function? 
@@ -110,8 +114,9 @@ data {
 
   // is there a last obeserved deaths data day?
   // int<lower=0> lastDeathDate;
-  int<lower=0> lastDeathWeek;
   
+  int<lower=0> lastDeathWeek;
+  int<lower=0> lastHospWeek;
   // is there a last obeserved case data day?
   // int<lower=0> lastCaseDate;
   int<lower=0> lastCaseWeek;
@@ -177,6 +182,7 @@ transformed data {
   // int<lower=0>           nda0 = N_days_av - 1;
   int<lower=0>           obs_cas_mvs[N_weeks]; // vector of cases
   int<lower=0>           obs_die_mvs[N_weeks]; // vector of deaths
+  int<lower=0>           obs_hosp_mvs[N_weeks]; // vector of hospitalizations
   // real susceptible_prvl; 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
@@ -237,9 +243,10 @@ for(i in 1:N_weeks_tot) {
 // }
   for(i in 1:N_weeks) {
     obs_cas_mvs[i] = obs_cas[i];
-    // obs_hosp_mvs[i] = obs_hosp[i];
+    obs_hosp_mvs[i] = obs_hosp[i];
     obs_die_mvs[i] = obs_die[i];
   }
+  
  
   // calculate the daily probability of transitioning to a new disease state
   // for days 1 to 60 after entering that state
@@ -333,6 +340,7 @@ parameters {
 // phi terms for negative b ino imal likelihood function 
   real<lower=0>             inv_sqrt_phi_c;
   real<lower=0>             inv_sqrt_phi_d;
+  real<lower=0>             inv_sqrt_phi_h;
   
     // VACCINE ADJUSTMENT
   simplex[3]                prob_vac;
@@ -401,15 +409,18 @@ transformed parameters {
   // (all diagnosed cases with an additional delay to report) 
   vector[N_weeks_tot]  fitted_cases;
   vector[N_weeks_tot]  fitted_deaths; 
+  vector[N_weeks_tot]  fitted_hospitalizations; 
   // moving sum cases and deaths
   vector[N_weeks_tot]  fitted_cases_mvs;
   vector[N_weeks_tot]  fitted_deaths_mvs; 
+  vector[N_weeks_tot]  fitted_hospitalizations_mvs; 
 
 
   // LIKELIHOOD
   // phi terms for negative binomial likelihood function 
   real phi_cas;
   real phi_die;
+  real phi_hosp;
  
   // NATURAL HISTORY CASCADE
 
@@ -477,6 +488,13 @@ transformed parameters {
   // with a historic infection; 
 
   for(i in 1:N_weeks_tot) {
+        if(i > 1){
+    susceptible_prvl[i] = susceptible_prvl[i-1] - infections[i-1];
+}
+    if (susceptible_prvl[i] < 1) {
+      // print("WARNING num_uninf preliminary value was ", num_uninf);
+      susceptible_prvl[i] = 1;
+    }
     if(i == 1){
       logRt[i] = logRt0[i];
     } else {
@@ -488,9 +506,7 @@ transformed parameters {
     log_infections[i] = sum(deriv1_log_infections[1:i]) + log_infections_0;
 
     infections[i] = exp(log_infections[i]);
-    if(i > 1){
-    susceptible_prvl[i] = susceptible_prvl[i-1] - infections[i];
-}
+
 
   }
   
@@ -678,7 +694,7 @@ model {
       target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_weeks_before+4]), phi_die);
     }
   }
-
+  
   if (min(fitted_cases) < 0)
     reject("`fitted_cases` had a negative value");
 
@@ -713,15 +729,25 @@ model {
     phi_cas
   ) ;// Optional, but likely unncessesary: / N_days_av;
 
+// this is still to adjust in the future and add a lastHospiWeek variable
+  target += neg_binomial_2_lpmf(
+    // `obs_die` from the first observed day to the last death date
+    obs_die_mvs[1:N_weeks_start_omicron] |
+      // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
+      // last death date
+     fitted_deaths_mvs[N_weeks_before+1 : N_weeks_before+N_weeks_start_omicron],
+    phi_die
+  ); // optional, but likelie unnecessary: / N_days_av;
+
 // for hospitalizations: use lastCaseWeek as last observation 
 // this is still to adjust in the future and add a lastHospiWeek variable
   target += neg_binomial_2_lpmf(
     // `obs_die` from the first observed day to the last death date
-    obs_die_mvs[5:lastDeathWeek] |
+    obs_hosp_mvs[1+N_weeks_start_omicron:lastHospWeek] |
       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
       // last death date
-     fitted_deaths_mvs[N_weeks_before+5 : N_weeks_before+lastDeathWeek],
-    phi_die
+     fitted_hospitalizations_mvs[N_weeks_before+1+N_weeks_start_omicron : N_weeks_before+lastHospWeek],
+    phi_hosp
   ); // optional, but likelie unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////

@@ -42,7 +42,8 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg  <- leftside
   d    <- rightside
 
-  integer_keys <- c("obs_cas", "obs_die", 
+  integer_keys <- c("obs_cas", "obs_die",
+                    "obs_boost", "obs_hosp",
                     "ifr_vac_adj")
   keys         <- integer_keys
 
@@ -86,17 +87,26 @@ modelconfig_add.input <- function(rightside, leftside) {
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
     cfg$lastDeathWeek <- (as.numeric(diff)%/%7) + 1
   } 
+  
+  if("lastHospDate" %in% names(attributes(d))){
+    lastDate <- attr(d, "lastHospDate")
+    diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
+    cfg$lastHospWeek <- (as.numeric(diff)%/%7) + 1
+  } 
 
   if("lastCaseDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastCaseDate")
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
     cfg$lastCaseWeek <- (as.numeric(diff)%/%7) + 1
   } 
+  
+  cfg$N_weeks_start_omicron <- as.numeric(as.Date("2021-12-01") - cfg$first_date)%/%7
 
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
 
   if (data_type_key %in% c("obs_cas_rep", "obs_die_rep",
+                           "obs_hosp_rep", "obs_boost_rep",
                            "ifr_vac_adj_rep")) {
     if(data_type_key == "ifr_vac_adj_rep"){
       cfg[[data_key]] <- d[[1]]$observation 
@@ -147,6 +157,10 @@ print.inputs <- function(cfg, .tab = FALSE) {
     ifelse(is.null(cfg$obs_cas), '[ x ]', glue('[{frmtr(cfg$obs_cas)}]'))
   status_deaths <-
     ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_die)}]'))
+  status_hosp <-
+    ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_hosp)}]'))
+  status_boost <-
+    ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_boost)}]'))
   status_rr <-
     ifelse(is.null(cfg$ifr_vac_adj), '[ x ]', glue('[{frmtr(cfg$ifr_vac_adj)}]'))
   
@@ -155,6 +169,8 @@ print.inputs <- function(cfg, .tab = FALSE) {
 {t}{status_cases}\tCases
 {t}{status_deaths}\tDeaths
 {t}{status_rr}\tRRvaccines
+{t}{status_rr}\tBoost
+{t}{status_rr}\tHospitalizations
 
 ' -> msg
 
@@ -229,9 +245,11 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     # first day of data, as determined by looking at input data. This allows 
     # matching the above^ case data to specific dates.
     first_date = NA,
-    # last death date and hosp date are initiated here; gets updated as deaths data gets added
+    # last case, death, hosp, and start omicron date are initiated here; gets updated as data gets added
     lastDeathWeek = N_weeks,
+    lastHospWeek = N_weeks,
     lastCaseWeek  = N_weeks,
+    N_weeks_start_omicron = N_weeks,
 
     # Rt and new infections
     pri_log_infections_0_mu = 0,
@@ -256,6 +274,7 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     
     obs_cas_rep = as.integer(0),      # This ~means FALSE in stan
     obs_die_rep = as.integer(0),      # This ~means FALSE in stan
+    obs_hosp_rep = as.integer(0),      # This ~means FALSE in stan
     ifr_vac_adj_rep = as.integer(0),  # This ~means FALSE in stan
     
   )

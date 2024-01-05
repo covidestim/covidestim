@@ -104,6 +104,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
   )
 
   lastHospDate <- as.Date(metadata[[region]]$lastHospDate)
+  lastDeathDate <- as.Date(metadata[[region]]$lastDeathDate)
   lastCaseDate <- as.Date(metadata[[region]]$lastCaseDate)
 
   cfg <- do.call(covidestim, covidestim_config_options) +

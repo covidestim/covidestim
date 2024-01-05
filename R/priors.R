@@ -174,30 +174,36 @@ build_priors <- function(..., .postfix = c("_a", "_b"), .prefix = "") {
 #' @export
 priors_transitions <- function(
   p_sym_if_inf = c(5.1430, 3.5360),    # a/b old
-  # p_sym_if_inf = c(2.5,10),    # a/b 
+  p_sym_if_inf_postO = c(2.5,10),    # a/b
                                p_sev_if_sym = c(1.8854, 20.002),    # a/b
                                p_die_if_sev = c(28.239, 162.30),    # a/b
                                p_die_if_inf = c(15.915,3167.1),     # a/b old
-                               # p_die_if_inf = c(2.55,1594),     # a/b
+                               p_die_if_inf_postO = c(2.55,1594),     # a/b
                                ifr_decl_OR  = c(12.031, 8.999)     # shape/rate: this is actually a gamma distribution!!
                                ) {                                 
 
   att(length(p_sym_if_inf) == 2)
+  att(length(p_sym_if_inf_postO) == 2)
   att(length(p_sev_if_sym) == 2)
   att(length(p_die_if_sev) == 2)
   att(length(p_die_if_inf) == 2)
+  att(length(p_die_if_inf_postO) == 2)
   att(length(ifr_decl_OR) == 2)
   att(is_nonNegativeReal(p_sym_if_inf))
+  att(is_nonNegativeReal(p_sym_if_inf_postO))
   att(is_nonNegativeReal(p_sev_if_sym))
   att(is_nonNegativeReal(p_die_if_sev))
   att(is_nonNegativeReal(p_die_if_inf))
+  att(is_nonNegativeReal(p_die_if_inf_postO))
   att(is_nonNegativeReal(ifr_decl_OR))
   
   build_priors(
     p_sym_if_inf,
+    p_sym_if_inf_postO,
     p_sev_if_sym,
     p_die_if_sev,
     p_die_if_inf,
+    p_die_if_inf_postO,
     ifr_decl_OR,
     .postfix=c("_a", "_b"),
     .prefix="pri_"
@@ -267,7 +273,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051*7), # shap/rate
                                sev_prg_delay = c(2.061, 0.2277*7),  # shap/rate
                                asy_rec_delay = c(14   , 2     *7),  # shap/rate 
                                pri_serial_i  = c(129.1, 22.23*7),  # shap/rate 
-                               # pri_serial_i  = c(34.615, 11.538*7),  # shap/rate 
+                               pri_serial_i_postO  = c(34.615, 11.538*7),  # shap/rate
                                infect_dist   = c(8    , 1.241*7 ),  # shap/rate 
                                seropos_dist  = c(4.41 , 0.042*7 ) ) {   # shap/rate 
 
@@ -276,6 +282,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051*7), # shap/rate
   att(length(sev_prg_delay) == 2)
   att(length(asy_rec_delay) == 2)
   att(length(pri_serial_i) == 2)
+  att(length(pri_serial_i_postO) == 2)
   att(length(infect_dist) == 2)
   att(length(seropos_dist) == 2)
   att(is_nonNegativeReal(inf_prg_delay))
@@ -283,6 +290,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051*7), # shap/rate
   att(is_nonNegativeReal(sev_prg_delay))
   att(is_nonNegativeReal(asy_rec_delay))
   att(is_nonNegativeReal(pri_serial_i))
+  att(is_nonNegativeReal(pri_serial_i_postO))
   att(is_nonNegativeReal(infect_dist))
   att(is_nonNegativeReal(seropos_dist))
   
@@ -292,6 +300,7 @@ priors_progression <- function(inf_prg_delay = c(3.413, 0.6051*7), # shap/rate
     sev_prg_delay,
     asy_rec_delay,
     pri_serial_i,
+    pri_serial_i_postO,
     infect_dist,
     seropos_dist,
     .postfix=c("_shap", "_rate")
