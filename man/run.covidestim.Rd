@@ -30,7 +30,7 @@ a strong correlate to longer runtime.
 \details{
 When running in an interactive/TTY environment (like Rstudio, Radian, or the
 R terminal), progress messages from \code{rstan} will be displayed,
-indicatng how many iterations each chain has completed. When running in
+indicating how many iterations each chain has completed. When running in
 other environments, for instance on a cluster, \code{rstan} will produce
 no output until the end of sampling.
 
@@ -48,15 +48,9 @@ as \link{runOptimizer}. It is significantly faster, but lacks CI's.\tabular{llll
 }
 \examples{
 cfg <- covidestim(nweeks = 31, region = 'Connecticut',
-   pop = get_pop("Connecticut"),
-   start_p_imm = get_imm_init("Connecticut")$start_p_imm,
-   cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+   pop = get_pop("Connecticut")) +
   input_cases(example_ct_data('cases')) +
-  input_deaths(example_ct_data('deaths')) +
-  input_rr(example_ct_data('RR')) + 
-  input_hosp(example_ct_data('hosp')) +
-  input_boost(example_ct_data('boost'))
-  
+  input_deaths(example_ct_data('deaths'))   
 
 \dontrun{
 result <- run(cfg, cores = 2)

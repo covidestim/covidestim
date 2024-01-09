@@ -16,9 +16,7 @@ covidestim(
   adapt_delta = 0.98,
   max_treedepth = 14,
   window.length = 7,
-  region,
-  start_p_imm,
-  cum_p_inf_init
+  region
 )
 }
 \arguments{
@@ -53,13 +51,6 @@ sampling or in BFGS.}
 
 \item{region}{A string. The FIPS code (for U.S. counties) or state name
 (e.g. \code{New York}) being modeled. Required.}
-
-\item{start_p_imm}{A probability (number between 0 and 1). The starting
-fraction of the population with immunity against the Omicron variant.
-Required.}
-
-\item{cum_p_inf_init}{A probability (number between o and 1). The starting
-fraction of the population that has ever been infected. Required.}
 }
 \value{
 An S3 object of type \code{covidestim}. This can be passed to
@@ -83,14 +74,9 @@ to \code{\link{run.covidestim}} (for NUTS) or
 }
 \examples{
 cfg <- covidestim(nweeks = 31, region = 'Connecticut',
-   pop = get_pop("Connecticut"),
-   start_p_imm = get_imm_init("Connecticut")$start_p_imm,
-   cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+   pop = get_pop("Connecticut")) +
   input_cases(example_ct_data('cases')) +
-  input_deaths(example_ct_data('deaths')) +
-  input_rr(example_ct_data('RR')) + 
-  input_hosp(example_ct_data('hosp')) +
-  input_boost(example_ct_data('boost'))
+  input_deaths(example_ct_data('deaths')) 
   
 
 }

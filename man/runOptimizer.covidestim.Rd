@@ -56,14 +56,9 @@ as \link{run}. It provides CI's, but is significantly slower.\tabular{lllll}{
 }
 \examples{
 cfg <- covidestim(nweeks = 31, region = 'Connecticut',
-   pop = get_pop("Connecticut"),
-   start_p_imm = get_imm_init("Connecticut")$start_p_imm,
-   cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+   pop = get_pop("Connecticut")) +
   input_cases(example_ct_data('cases')) +
-  input_deaths(example_ct_data('deaths')) +
-  input_rr(example_ct_data('RR')) + 
-  input_hosp(example_ct_data('hosp')) +
-  input_boost(example_ct_data('boost'))
+  input_deaths(example_ct_data('deaths')) 
 
 \dontrun{
 result <- runOptimizer(cfg, cores = 2)

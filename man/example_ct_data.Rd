@@ -7,8 +7,7 @@
 example_ct_data(type = "cases")
 }
 \arguments{
-\item{type}{A string: \code{"cases"} or \code{"deaths"} or \code{"RR"} or
-\code{"hosp"} or \code{"boost"}}
+\item{type}{A string: \code{"cases"} or \code{"deaths"}}
 }
 \value{
 A tibble with two variables: \code{date}, a vector of \code{Date}
@@ -22,14 +21,9 @@ Only one type of data will be returned at a time.
 \examples{
 
 cfg <- covidestim(nweeks = 31, region = 'Connecticut',
-   pop = get_pop("Connecticut"),
-   start_p_imm = get_imm_init("Connecticut")$start_p_imm,
-   cum_p_inf_init = get_imm_init("Connecticut")$cum_p_inf_init) +
+   pop = get_pop("Connecticut")) +
   input_cases(example_ct_data('cases')) +
-  input_deaths(example_ct_data('deaths')) +
-  input_rr(example_ct_data('RR')) + 
-  input_hosp(example_ct_data('hosp')) +
-  input_boost(example_ct_data('boost'))
+  input_deaths(example_ct_data('deaths')) 
 
 \dontrun{
   result <- run(cfg)

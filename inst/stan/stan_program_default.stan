@@ -53,6 +53,7 @@ data {
   int<lower=0>           obs_cas[N_weeks]; // vector of cases
   int<lower=0>           obs_die[N_weeks]; // vector of deaths
   int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
+  vector<lower=0>[N_weeks] obs_boost; // vector of boosters
   real<lower=0>          pop_size; // population size
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
@@ -130,12 +131,16 @@ data {
   real<lower=0> pri_logRt_sd;   
   real<lower=0> pri_serial_i_shap; 
   real<lower=0> pri_serial_i_rate; 
+  real<lower=0> pri_serial_i_postO_shap; 
+  real<lower=0> pri_serial_i_postO_rate; 
   real<lower=0> pri_deriv1_spl_par_sd;
   real<lower=0> pri_deriv2_spl_par_sd;
   
   // probabilities of progression inf -> sym -> sev -> die
   real<lower=0> pri_p_sym_if_inf_a; 
   real<lower=0> pri_p_sym_if_inf_b; 
+  real<lower=0> pri_p_sym_if_inf_postO_a; 
+  real<lower=0> pri_p_sym_if_inf_postO_b; 
   real<lower=0> pri_p_sev_if_sym_a;
   real<lower=0> pri_p_sev_if_sym_b;
   real<lower=0> pri_p_die_if_sev_a;
@@ -144,6 +149,8 @@ data {
   // overall case fatality rate
   real<lower=0> pri_p_die_if_inf_a;
   real<lower=0> pri_p_die_if_inf_b;
+  real<lower=0> pri_p_die_if_inf_postO_a;
+  real<lower=0> pri_p_die_if_inf_postO_b;
 
   // probabilities of diagnosis 
      // rate ratio, pr(dx) asymptomatic to symptomatic
@@ -317,12 +324,14 @@ parameters {
   real                    log_infections_0; // starting intercept
   // real<lower=0, upper=6> serial_i; // serial interval
   real serial_i; // serial interval
+  // real serial_i_postO; // serial interval
   // vector[N_spl_par_rt-1]    spl_par_rt0;
   vector[N_spl_par_rt]    spl_par_rt;
 
 // DISEASE PROGRESSION
 // probability of transitioning between disease states
   real<lower=0, upper=1>    p_sym_if_inf;
+  // real<lower=0, upper=1>    p_sym_if_inf_postO;
   real<lower=0, upper=1>    p_sev_if_sym;
   real<lower=0, upper=1>    p_die_if_sev;
   real<lower=0>             ifr_decl_OR;
@@ -340,7 +349,7 @@ parameters {
 // phi terms for negative b ino imal likelihood function 
   real<lower=0>             inv_sqrt_phi_c;
   real<lower=0>             inv_sqrt_phi_d;
-  real<lower=0>             inv_sqrt_phi_h;
+  // real<lower=0>             inv_sqrt_phi_h;
   
     // VACCINE ADJUSTMENT
   simplex[3]                prob_vac;
@@ -356,6 +365,9 @@ transformed parameters {
   // vector[N_weeks_tot]     num_uninf;
   real                    ever_inf;
   vector[N_weeks_tot]     susceptible_prvl;
+  vector[N_weeks_tot]     effective_protection_prvl;
+  vector[N_weeks_tot]     population_protection_inf;
+  vector[N_weeks_tot]     population_protection_boost;
 
   // vector[N_spl_par_rt]    spl_par_rt;
 
@@ -385,6 +397,7 @@ transformed parameters {
   // DISEASE OUTCOMES
   // overall case fatality rate
   real                p_die_if_inf;
+  // real                p_die_if_inf_postO;
 
   // "true" number entering disease state each day
   vector[N_weeks_tot]  symptomatic; 
@@ -409,18 +422,18 @@ transformed parameters {
   // (all diagnosed cases with an additional delay to report) 
   vector[N_weeks_tot]  fitted_cases;
   vector[N_weeks_tot]  fitted_deaths; 
-  vector[N_weeks_tot]  fitted_hospitalizations; 
+  // vector[N_weeks_tot]  fitted_hospitalizations; 
   // moving sum cases and deaths
   vector[N_weeks_tot]  fitted_cases_mvs;
   vector[N_weeks_tot]  fitted_deaths_mvs; 
-  vector[N_weeks_tot]  fitted_hospitalizations_mvs; 
+  // vector[N_weeks_tot]  fitted_hospitalizations_mvs; 
 
 
   // LIKELIHOOD
   // phi terms for negative binomial likelihood function 
   real phi_cas;
   real phi_die;
-  real phi_hosp;
+  // real phi_hosp;
  
   // NATURAL HISTORY CASCADE
 
@@ -429,7 +442,11 @@ transformed parameters {
   for( i in 1:N_weeks_tot){
   p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
   p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
+  // if(i < N_weeks_start_omicron){
   p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
+  // } else {
+  // p_sym_if_inft[i]     = p_sym_if_inf_postO  * pow(ifr_vac_adj[i], prob_vac[3]);
+  // }
   }
 
   // DIAGNOSIS // 
@@ -471,6 +488,8 @@ transformed parameters {
   // severely ill individuals, the probability of being severely ill if 
   // symptomatic, and the probability of becoming symptomatic if infected. 
   p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
+  print(p_die_if_inf);
+  // p_die_if_inf_postO = p_sym_if_inf_postO * p_sev_if_sym * p_die_if_sev;
 
   // CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 
@@ -489,7 +508,7 @@ transformed parameters {
 
   for(i in 1:N_weeks_tot) {
         if(i > 1){
-    susceptible_prvl[i] = susceptible_prvl[i-1] - infections[i-1];
+    susceptible_prvl[i] = pop_size - effective_protection_prvl[i-1];
 }
     if (susceptible_prvl[i] < 1) {
       // print("WARNING num_uninf preliminary value was ", num_uninf);
@@ -500,16 +519,37 @@ transformed parameters {
     } else {
       logRt[i] = logRt0[i] + log(susceptible_prvl[i]/pop_size);
     }
-
+  //Serial interval depends on variant distribution  
+// if(i < N_weeks_start_omicron){
     deriv1_log_infections[i] = logRt[i]/serial_i;
-
+// } else {
+    // deriv1_log_infections[i] = logRt[i]/serial_i_postO;
+// }
     log_infections[i] = sum(deriv1_log_infections[1:i]) + log_infections_0;
 
     infections[i] = exp(log_infections[i]);
+    // Subsection for the pre-omicron model
+      // population_protection_inf[i] = sum(infections[N_weeks_before + 1:i] .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+1:N_weeks_tot] * 7)));
+      population_protection_inf[i] = 0;
+    // if(i < N_weeks_start_omicron){
+        // note, the before weeks do not have data, so should not include waning for boosters/vaccinations.
+        // NOTE TO SELF: CHECK THAT THE INDEXES ARE CORRECT ACROSS THE MODELS 
+      population_protection_boost[i] = 0;
+    // } else {
+      // Subsection for the post-omicron model
+      // population_protection_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+1:N_weeks_tot] * 7)));
+    // }
 
-
+  effective_protection_prvl[i] = population_protection_inf[i] + population_protection_boost[i];
   }
-  
+print("effective prot");
+print(effective_protection_prvl);
+  print("infections");
+  print(infections);
+  print("serial_i");
+  print(serial_i);
+  print("susceptible");
+  print(susceptible_prvl);
   r_t = exp(logRt); 
   
   // second derivative
@@ -600,7 +640,7 @@ transformed parameters {
     fitted_cases = conv1d(diagnoses, cas_rep_delay_rv);
   else
     fitted_cases = diagnoses .* cas_cum_report_delay_rv;
-
+// fitted_hospitalizations = diagnoses_severe;
 // the hospitalizations data is reported by date of occurance;
 // and does not have a reporting delay (the data is reported delayed and 
 // is therefore always up to date). 
@@ -641,18 +681,21 @@ model {
   // log_infections_0         ~ normal(log_infections0calc, pri_log_infections_0_sd);
   spl_par_rt            ~ normal(pri_logRt_mu, pri_logRt_sd);
   serial_i              ~ gamma(pri_serial_i_shap, pri_serial_i_rate);
+  // serial_i_postO        ~ gamma(pri_serial_i_postO_shap, pri_serial_i_postO_rate);
   deriv1_spl_par_rt     ~ normal(0, pri_deriv1_spl_par_sd);
   deriv2_spl_par_rt     ~ normal(0, pri_deriv2_spl_par_sd);
 
   // PRIORS: DISEASE PROGRESSION
   // probability of transitioning from inf -> sym -> sev -> die
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
+  // p_sym_if_inf_postO         ~ beta(pri_p_sym_if_inf_postO_a, pri_p_sym_if_inf_postO_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
   
   // PRIORS: overall infection fatality rate
   p_die_if_inf         ~ beta(pri_p_die_if_inf_a, pri_p_die_if_inf_b);
+  // p_die_if_inf_postO         ~ beta(pri_p_die_if_inf_postO_a, pri_p_die_if_inf_postO_b);
 
   // PRIORS: diagnosis    
   // probabilities of diagnosis
@@ -667,6 +710,7 @@ model {
   // phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
+  // inv_sqrt_phi_h       ~ normal(0, 1);
 
   // if(N_days_pri_Rt > 0)
   //   logRt[(N_days_tot-N_days_pri_Rt+1) : N_days_tot] ~ normal(0, sd_pri_Rt);
@@ -676,7 +720,6 @@ model {
   if(pre_period_zero==1){
     // if(N_days_before>0){
     if(N_weeks_before>0){
-  
       // if (sum(fitted_cases[1:N_days_before]) < 0)
       //   reject("`sum(fitted_cases[1:N_days_before])` had a negative value");
       // 
@@ -691,7 +734,7 @@ model {
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_days_before]), phi_cas);
       // target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_days_before]), phi_die);
       target += neg_binomial_2_lpmf( 0 | sum(fitted_cases[1:N_weeks_before]), phi_cas);
-      target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_weeks_before+4]), phi_die);
+      target += neg_binomial_2_lpmf( 0 | sum(fitted_deaths[1:N_weeks_before]), phi_die);
     }
   }
   
@@ -700,6 +743,12 @@ model {
 
   if (min(fitted_deaths) < 0)
     reject("`fitted_deaths` had a negative value");
+  print("fitted cases");
+print(fitted_cases_mvs);
+  print("fitted deaths");
+print(fitted_deaths_mvs);
+  // print("fitted hosp");
+// print(fitted_hospitalizations_mvs);
 
   // LIKELIHOOD
   // During data
@@ -728,27 +777,38 @@ model {
       fitted_cases_mvs[N_weeks_before+1 : N_weeks_before+lastCaseWeek],
     phi_cas
   ) ;// Optional, but likely unncessesary: / N_days_av;
-
+// print("location");
+// print(fitted_deaths_mvs[N_weeks_before+1 : N_weeks_before+N_weeks_start_omicron]);
+// print("y");
+// print(obs_die_mvs[1:N_weeks_start_omicron]);
 // this is still to adjust in the future and add a lastHospiWeek variable
   target += neg_binomial_2_lpmf(
     // `obs_die` from the first observed day to the last death date
-    obs_die_mvs[1:N_weeks_start_omicron] |
+    obs_die_mvs[1:lastDeathWeek] |
       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
       // last death date
-     fitted_deaths_mvs[N_weeks_before+1 : N_weeks_before+N_weeks_start_omicron],
+     fitted_deaths_mvs[N_weeks_before+1 : N_weeks_before+lastDeathWeek],
     phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
+  // target += neg_binomial_2_lpmf(
+  //   // `obs_die` from the first observed day to the last death date
+  //   obs_die_mvs[1:N_weeks_start_omicron] |
+  //     // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
+  //     // last death date
+  //    fitted_deaths_mvs[N_weeks_before+1 : N_weeks_before+N_weeks_start_omicron],
+  //   phi_die
+  // ); // optional, but likelie unnecessary: / N_days_av;
 
 // for hospitalizations: use lastCaseWeek as last observation 
 // this is still to adjust in the future and add a lastHospiWeek variable
-  target += neg_binomial_2_lpmf(
-    // `obs_die` from the first observed day to the last death date
-    obs_hosp_mvs[1+N_weeks_start_omicron:lastHospWeek] |
-      // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
-      // last death date
-     fitted_hospitalizations_mvs[N_weeks_before+1+N_weeks_start_omicron : N_weeks_before+lastHospWeek],
-    phi_hosp
-  ); // optional, but likelie unnecessary: / N_days_av;
+  // target += neg_binomial_2_lpmf(
+  //   // `obs_die` from the first observed day to the last death date
+  //   obs_hosp_mvs[1+N_weeks_start_omicron:lastHospWeek] |
+  //     // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
+  //     // last death date
+  //    fitted_hospitalizations_mvs[N_weeks_before+1+N_weeks_start_omicron : N_weeks_before+lastHospWeek],
+  //   phi_hosp
+  // ); // optional, but likelie unnecessary: / N_days_av;
 }
 ///////////////////////////////////////////////////////////
 generated quantities {

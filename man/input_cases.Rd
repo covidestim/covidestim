@@ -4,8 +4,6 @@
 \alias{input_cases}
 \alias{input_deaths}
 \alias{input_rr}
-\alias{input_hosp}
-\alias{input_boost}
 \title{Input observational data}
 \usage{
 input_cases(data, type = "reported", lastCaseDate = NULL)
@@ -13,10 +11,6 @@ input_cases(data, type = "reported", lastCaseDate = NULL)
 input_deaths(data, type = "reported", lastDeathDate = NULL)
 
 input_rr(data, type = "reported")
-
-input_hosp(data, type = "reported", lastHospDate = NULL)
-
-input_boost(data, type = "reported")
 }
 \arguments{
 \item{data}{A \code{\link[base]{data.frame}} as described below.}
@@ -53,9 +47,6 @@ There are two types of observational data that can be used with Covidestim:
 \item Case data, detailing the number of new cases each week
 \item Death data, detailing the number of confirmed Covid-19 deaths each
 week
-\item Hospitalizations data, detailing the number of hospital admissions each week
-\item Booster data, detailing the number of booster shots adminsitered each week
-\item RR data, detailing the Relative Risk IFR adjustment that the model needs to account for.
 }
 
 All input data to Covidestim is expected to be a

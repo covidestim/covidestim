@@ -35,9 +35,9 @@ Each data type should be entered as its own dataframe with two columns: `date` a
 
 ```{r}
 head(example_ct_data('cases'))
-head(example_ct_data('hosp'))
+# head(example_ct_data('hosp'))
 head(example_ct_data('RR'))
-head(example_ct_data('boost'))
+# head(example_ct_data('boost'))
 head(example_ct_data('deaths'))
 ```
 
@@ -53,19 +53,19 @@ Input data and model configuration options are rolled up into a model configurat
 
 ```{r}
 cases  <- example_ct_data('cases')
-hosp   <- example_ct_data('hosp')
+# hosp   <- example_ct_data('hosp')
 RR     <- example_ct_data('RR')
-boost  <- example_ct_data('boost')
+# boost  <- example_ct_data('boost')
 deaths  <- example_ct_data('deaths')
 
 imm_init <- get_imm_init("Connecticut")
-cfg <- covidestim(nweeks = nrow(cases), region = 'Connecticut',
-                  start_p_imm = imm_init$start_p_imm,
-                  cum_p_inf_init = imm_init$cum_p_inf_init) +
+cfg <- covidestim(nweeks = nrow(cases), region = 'Connecticut')+#,
+                  # start_p_imm = imm_init$start_p_imm,
+                  # cum_p_inf_init = imm_init$cum_p_inf_init) +
   input_cases(cases) +
-  input_hosp(hosp) + 
-  input_rr(RR) + 
-  input_boost(boost) +
+  # input_hosp(hosp) + 
+  # input_rr(RR) + 
+  # input_boost(boost) +
   input_deaths(deaths)
 
 print(cfg)
