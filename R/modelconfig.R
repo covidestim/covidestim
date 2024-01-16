@@ -100,7 +100,7 @@ modelconfig_add.input <- function(rightside, leftside) {
     cfg$lastCaseWeek <- (as.numeric(diff)%/%7) + 1
   } 
   
-  cfg$N_weeks_start_omicron <- as.numeric(as.Date("2021-12-01") - cfg$first_date)%/%7
+  cfg$N_weeks_start_omicron <- (as.numeric(as.Date("2021-12-01") - cfg$first_date)%/%7) + 1
 
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")

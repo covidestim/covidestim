@@ -40,7 +40,8 @@ viz.covidestim_result <- function(ccr, renderPDF = FALSE) {
   dplyr::bind_cols(
     date = seq(first_date, first_date + lubridate::weeks(nweeks - 1), by = '1 week'),
     cases = ccr$config$obs_cas,
-    hosp = ccr$config$obs_hosp
+    hosp = ccr$config$obs_hosp,
+    deaths = ccr$config$obs_die,
   ) -> input_data
 
   # Plot the two main graphs
@@ -105,6 +106,9 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
     geom_point(data = input_data, aes(y = hosp, color = "ohsp"), size = rel(0.6)) + 
     geom_line(data  = input_data, aes(y = hosp, color = "ohsp")) + 
 
+    geom_point(data = input_data, aes(y = deaths, color = "odie"), size = rel(0.6)) + 
+    geom_line(data  = input_data, aes(y = deaths, color = "odie")) + 
+
     geom_line(aes(y = fitted_cases, color = "fcas")) + 
     geom_ribbon(
       aes(ymin = fitted_cases_p2_5, ymax = fitted_cases_p97_5, color = "fcas"),
@@ -125,16 +129,28 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
       alpha = 0.3, linetype = 'dashed'
     ) +
 
+    geom_line(aes(y = fitted_deaths)) + 
+    geom_ribbon(
+      aes(ymin =fitted_deaths_p2_5, ymax = fitted_deaths_p97_5, color = "fdie"),
+      alpha = 0.3, linetype = 'dashed'
+    ) +
+    geom_ribbon(
+      aes(ymin =fitted_deaths_p25, ymax = fitted_deaths_p75, color = "fdie"),
+      alpha = 0.3, linetype = 'dashed'
+    ) +
+    
     custom_logscale +
     scale_color_manual(
-      values = c('#a6cee3','#b2df8a','#1f78b4','#33a02c'),
+      values = c('#a6cee3','#b2df8a','#fdbb84','#1f78b4','#33a02c', '#e34a33'),
       labels = c("ocas" = "Observed Cases",
                  "ohsp" = "Observed Hospitalizations",
+                 "odie" = "Observed Deaths",
                  "fcas" = "Fitted Cases",
-                 "fhsp" = "Fitted Hospitalizations"),
+                 "fhsp" = "Fitted Hospitalizations",
+                 "fdie" = "Fitted Deaths"),
       guide = guide_legend(
         override.aes = list(
-          linetype = c(rep("solid", 2), rep("dashed", 2))
+          linetype = c(rep("solid", 3), rep("dashed", 3))
         ),
         nrow = 2
       )
@@ -143,7 +159,7 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
                  date_labels = "%b",
                  minor_breaks = NULL) +
     labs(x = NULL,
-         title = "Observed and Fitted Cases and Hospitalizations",
+         title = "Observed and Fitted Cases, Deaths and Hospitalizations",
          color = "") +
     theme_linedraw() +
     theme(

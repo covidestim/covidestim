@@ -298,11 +298,13 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "infections"                             = "infections",
     "infections_premiere"                    = "infections_premiere",
     "r_t"                                    = "r_t",
+    "r_0"                                    = "r_0",
+    "logRt0"                                 = "logRt0",
     "seropositive_prvl"                      = "seropositive_prvl",
     "severe"                                 = "severe",
     "susceptible_prvl"                       = "susceptible_prvl",
     "susceptible_severe_prvl"                = "susceptible_severe_prvl",
-    "symptomatic"                            = "symptomatic"
+    "p_sym_if_inft"                          = "p_sym_if_inft"
   ) -> params
 
   
@@ -412,11 +414,19 @@ summaryEpi <- function(ccr) {
   
   c(
     "p_sym_if_inf",
+    "p_sym_if_inf_postO",
     "p_sev_if_sym",
     "p_die_if_sev",
     "p_die_if_sym",
+    "p_die_if_inf",
+    "p_die_if_inf_postO",
+    "serial_i",
+    "serial_i_postO",
     "p_diag_if_sym",
-    "p_diag_if_sev"
+    "p_diag_if_sev",
+    "prob_vac[1]",
+    "prob_vac[2]",
+    "prob_vac[3]"
   ) -> pars_of_interest
 
   # Used for renaming quantiles output by Stan

@@ -71,9 +71,9 @@ gen_ifr_adjustments <- function(first_date, N_weeks_before, region){
   # Operationalized as 1 minus a Normal CDF, with max slope in June 1, 
   # and sd = 45 days. Vector created from ifr_adj_start to end 2022.
   ifr_adj_df <- tibble::tibble(
-    date  = seq.Date(ifr_adj_start, ymd('2023-12-31'), by = '1 week'),
+    date  = seq.Date(ifr_adj_start, ymd('2024-12-31'), by = '1 week'),
     value = 1 - pnorm(
-      as.numeric(seq.Date(ifr_adj_start, ymd("2023-12-31"), by = '1 week')),
+      as.numeric(seq.Date(ifr_adj_start, ymd("2024-12-31"), by = '1 week')),
       ymd("2020-5-1"),
       21
     )
