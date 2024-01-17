@@ -304,7 +304,10 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "severe"                                 = "severe",
     "susceptible_prvl"                       = "susceptible_prvl",
     "susceptible_severe_prvl"                = "susceptible_severe_prvl",
-    "p_sym_if_inft"                          = "p_sym_if_inft"
+    "p_sym_if_inft"                          = "p_sym_if_inft",
+    "rr_diag_sym_vs_sev"                          = "rr_diag_sym_vs_sev",
+    "p_sev_if_symt"                          = "p_sev_if_symt",
+    "p_die_if_sevt"                          = "p_die_if_sevt"
   ) -> params
 
   
@@ -315,7 +318,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
   quantile_names <- c(
     "2.5%"  = "_p2_5",
     "25%"   = "_p25",
-    "50%"   = "",
+    "50%"   = "_p50",
     "75%"   = "_p75",
     "97.5%" = "_p97_5"
   )
@@ -422,7 +425,8 @@ summaryEpi <- function(ccr) {
     "p_die_if_inf_postO",
     "serial_i",
     "serial_i_postO",
-    "p_diag_if_sym",
+    # "p_diag_if_sym",
+    "rr_diag_asy_vs_sym",
     "p_diag_if_sev",
     "prob_vac[1]",
     "prob_vac[2]",
@@ -432,9 +436,9 @@ summaryEpi <- function(ccr) {
   # Used for renaming quantiles output by Stan
   quantile_names <- c(
     "2.5%"  = "_p2_5",
-    "25%"   = "_p25",
-    "50%"   = "",
-    "75%"   = "_p75",
+    # "25%"   = "_p25",
+    "50%"   = "_p50",
+    # "75%"   = "_p75",
     "97.5%" = "_p97_5"
   )
 
