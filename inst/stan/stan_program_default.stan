@@ -333,6 +333,7 @@ parameters {
   real<lower=0, upper=1>    p_sym_if_inf;
   real<lower=0, upper=1>    p_sym_if_inf_postO;
   real<lower=0, upper=1>    p_sev_if_sym;
+  real<lower=0, upper=1>    p_sev_if_sym_postO;
   real<lower=0, upper=1>    p_die_if_sev;
   real<lower=0>             ifr_decl_OR;
   
@@ -442,10 +443,11 @@ transformed parameters {
 
   for( i in 1:N_weeks_tot){
   p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
-  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
   if(i < N_weeks_start_omicron+N_weeks_before){
+  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
   p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
   } else {
+  p_sev_if_symt[i]     = p_sev_if_sym_postO    * pow(ifr_vac_adj[i], prob_vac[2]);
   p_sym_if_inft[i]     = p_sym_if_inf_postO  * pow(ifr_vac_adj[i], prob_vac[3]);
   }
   }
@@ -695,6 +697,7 @@ model {
   p_sym_if_inf         ~ beta(pri_p_sym_if_inf_a, pri_p_sym_if_inf_b);
   p_sym_if_inf_postO         ~ beta(pri_p_sym_if_inf_postO_a, pri_p_sym_if_inf_postO_b);
   p_sev_if_sym         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
+  p_sev_if_sym_postO         ~ beta(pri_p_sev_if_sym_a, pri_p_sev_if_sym_b);
   p_die_if_sev         ~ beta(pri_p_die_if_sev_a, pri_p_die_if_sev_b);
   ifr_decl_OR          ~ gamma(pri_ifr_decl_OR_a, pri_ifr_decl_OR_b);
   
