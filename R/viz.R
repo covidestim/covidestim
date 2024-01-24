@@ -180,7 +180,7 @@ viz_all_cases_to_data <- function(run_summary, input_data) {
                size = rel(0.6)) +
     geom_line(data = input_data,
               aes(y = cases, color = "ocas")) +
-    geom_line(aes(y = infections, color = "ninf")) + 
+    geom_line(aes(y = infections_p50, color = "ninf")) + 
     geom_ribbon(
       aes(ymin = infections_p2_5, ymax = infections_p97_5),
       alpha=0.3,
