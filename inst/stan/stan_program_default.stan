@@ -213,6 +213,7 @@ transformed data {
    int  idx1[N_weeks + N_weeks_before];
  int  idx2[N_weeks + N_weeks_before];
  vector[N_weeks + N_weeks_before] idx3;
+ vector[N_weeks + N_weeks_before] idx4; // index for the omicron switch weeks
  // real log_infections_0calc = log(pop_size * .5);
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
@@ -236,7 +237,17 @@ for(i in 1:N_weeks_tot) {
   } else {
     idx3[i] = 1;
   }
+  if(i < N_weeks_start_omicron+(N_weeks_before/2)){
+    idx4[i] = 0;
+  } else {
+    if(i > N_weeks_start_omicron + N_weeks_before + (N_weeks_before/2)){
+      idx4[i] = 0;
+    } else{
+      idx4[i] = i - (N_weeks_start_omicron + (N_weeks_before/2)) + 1.0;
+    }
+  }
 }
+
 
   // compute the moving sums
   // for(i in 1:N_days) {
@@ -443,12 +454,25 @@ transformed parameters {
 
   for( i in 1:N_weeks_tot){
   p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
-  if(i < N_weeks_start_omicron+N_weeks_before){
+  // p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], 0.35);
+  if(i < N_weeks_start_omicron+(N_weeks_before/2)){ // until the last two weeks before switch
   p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
   p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
-  } else {
-  p_sev_if_symt[i]     = p_sev_if_sym_postO    * pow(ifr_vac_adj[i], prob_vac[2]);
-  p_sym_if_inft[i]     = p_sym_if_inf_postO  * pow(ifr_vac_adj[i], prob_vac[3]);
+  // p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], 0.34);
+  // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], 0.31);
+  } else{
+    if(i > N_weeks_start_omicron+N_weeks_before+(N_weeks_before/2)){ // after two weeks after the switch
+  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
+  p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
+  // p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
+  // p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], 0.31);
+  } 
+  else { // the switch period
+  p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])     * pow(ifr_vac_adj[i], prob_vac[2]);
+  p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]);
+  // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])   * pow(ifr_vac_adj[i], 0.34);
+  // p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], 0.31);
+  }
   }
   }
 

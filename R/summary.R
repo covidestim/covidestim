@@ -305,7 +305,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "susceptible_prvl"                       = "susceptible_prvl",
     "susceptible_severe_prvl"                = "susceptible_severe_prvl",
     "p_sym_if_inft"                          = "p_sym_if_inft",
-    "rr_diag_sym_vs_sev"                          = "rr_diag_sym_vs_sev",
+    "rr_diag_sym_vs_sev"                     = "rr_diag_sym_vs_sev",
     "p_sev_if_symt"                          = "p_sev_if_symt",
     "p_die_if_sevt"                          = "p_die_if_sevt"
   ) -> params
@@ -419,6 +419,7 @@ summaryEpi <- function(ccr) {
     "p_sym_if_inf",
     "p_sym_if_inf_postO",
     "p_sev_if_sym",
+    "p_sev_if_sym_postO",
     "p_die_if_sev",
     "p_die_if_sym",
     "p_die_if_inf",

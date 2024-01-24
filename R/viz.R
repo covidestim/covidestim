@@ -109,7 +109,7 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
     geom_point(data = input_data, aes(y = deaths, color = "odie"), size = rel(0.6)) + 
     geom_line(data  = input_data, aes(y = deaths, color = "odie")) + 
 
-    geom_line(aes(y = fitted_cases, color = "fcas")) + 
+    geom_line(aes(y = fitted_cases_p50, color = "fcas")) + 
     geom_ribbon(
       aes(ymin = fitted_cases_p2_5, ymax = fitted_cases_p97_5, color = "fcas"),
       alpha = 0.3, linetype = 'dashed'
@@ -119,7 +119,7 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
       alpha = 0.3, linetype = 'dashed'
     ) +
 
-    geom_line(aes(y = fitted_hospitalizations)) + 
+    geom_line(aes(y = fitted_hospitalizations_p50)) + 
     geom_ribbon(
       aes(ymin =fitted_hospitalizations_p2_5, ymax = fitted_hospitalizations_p97_5, color = "fhsp"),
       alpha = 0.3, linetype = 'dashed'
@@ -129,7 +129,7 @@ viz_observed_and_fitted <- function(run_summary, input_data) {
       alpha = 0.3, linetype = 'dashed'
     ) +
 
-    geom_line(aes(y = fitted_deaths)) + 
+    geom_line(aes(y = fitted_deaths_p50)) + 
     geom_ribbon(
       aes(ymin =fitted_deaths_p2_5, ymax = fitted_deaths_p97_5, color = "fdie"),
       alpha = 0.3, linetype = 'dashed'
