@@ -370,6 +370,7 @@ parameters {
 transformed parameters {
   ///~~~~~~~ Define ~~~~~~~
   // INCIDENCE
+  vector[N_weeks_tot]      serial_i_vec;
   vector[N_weeks_tot]      log_infections;
   vector[N_weeks_tot]      deriv1_log_infections;
   vector[N_weeks_tot]      infections;
@@ -460,18 +461,21 @@ transformed parameters {
   // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
   p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], 0.31);
+  serial_i_vec[i] = serial_i;
   } else{
     if(i > N_weeks_start_omicron+N_weeks_before+(N_weeks_before/2)){ // after two weeks after the switch
   // p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
   // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
   p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], 0.31);
+  serial_i_vec[i] = serial_i_postO;
   } 
   else { // the switch period
   // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])     * pow(ifr_vac_adj[i], prob_vac[2]);
   // p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]);
   p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])   * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], 0.31);
+ serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / 6.0 * idx4[i]);
   }
   }
   }
@@ -548,9 +552,9 @@ transformed parameters {
     }
   //Serial interval depends on variant distribution  
 if(i < N_weeks_start_omicron + N_weeks_before){
-    deriv1_log_infections[i] = logRt[i]/serial_i;
+    deriv1_log_infections[i] = logRt[i]/serial_i_vec[i];
 } else {
-    deriv1_log_infections[i] = logRt[i]/serial_i_postO;
+    deriv1_log_infections[i] = logRt[i]/serial_i_vec[i];
 }
     log_infections[i] = sum(deriv1_log_infections[1:i]) + log_infections_0;
 
