@@ -516,7 +516,7 @@ transformed parameters {
   // symptomatic, and the probability of becoming symptomatic if infected. 
   p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
   // print(p_die_if_inf);
-  p_die_if_inf_postO = p_sym_if_inf_postO * p_sev_if_sym * p_die_if_sev;
+  p_die_if_inf_postO = p_sym_if_inf_postO * p_sev_if_sym_postO * p_die_if_sev;
 
   // CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 
@@ -824,10 +824,10 @@ model {
   // ); // optional, but likelie unnecessary: / N_days_av;
   target += neg_binomial_2_lpmf(
     // `obs_die` from the first observed day to the last death date
-    obs_die_mvs[1:N_weeks_start_omicron] |
+    obs_die_mvs[1:lastDeathWeek] |
       // `fitted_deaths` from the first observed day (`N_days_before+1`) to the
       // last death date
-     fitted_deaths_mvs[N_weeks_before+1 : N_weeks_before+N_weeks_start_omicron],
+     fitted_deaths_mvs[N_weeks_before+1 : N_weeks_before+lastDeathWeek],
     phi_die
   ); // optional, but likelie unnecessary: / N_days_av;
 

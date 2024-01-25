@@ -428,6 +428,7 @@ summaryEpi <- function(ccr) {
     "serial_i_postO",
     # "p_diag_if_sym",
     "rr_diag_asy_vs_sym",
+    "ifr_decl_OR",
     "p_diag_if_sev",
     "prob_vac[1]",
     "prob_vac[2]",
