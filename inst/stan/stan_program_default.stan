@@ -214,6 +214,7 @@ transformed data {
  int  idx2[N_weeks + N_weeks_before];
  vector[N_weeks + N_weeks_before] idx3;
  vector[N_weeks + N_weeks_before] idx4; // index for the omicron switch weeks
+ vector[N_weeks + N_weeks_before] idx5; // index for the omicron switch weeks
  // real log_infections_0calc = log(pop_size * .5);
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
@@ -243,10 +244,25 @@ for(i in 1:N_weeks_tot) {
     if(i > N_weeks_start_omicron + N_weeks_before + (N_weeks_before/2)){
       idx4[i] = 0;
     } else{
+      // create an 1:N_weeks_before+1 index starting N_weeks_before/2 weeks before
+      // the start of omicron, and lasting 1 week longer
       idx4[i] = i - (N_weeks_start_omicron + (N_weeks_before/2)) + 1.0;
     }
   }
+  if(i < N_weeks_start_omicron+(N_weeks_before/2)){
+    idx5[i] = 0;
+  } else {
+    if(i > N_weeks_start_omicron + N_weeks_before*2 + (N_weeks_before/2)){
+      idx5[i] = 0;
+    } else{
+      // create a 1:N_weeks_before*2 index starting N_weeks_before/2 weeks beofer
+      // the start of omicron, and lasting 1 week longer
+      idx5[i] = i - (N_weeks_start_omicron + (N_weeks_before/2)) + 1.0;
+    }
+  }
 }
+
+
 
 
   // compute the moving sums
@@ -462,20 +478,26 @@ transformed parameters {
   p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], 0.31);
   serial_i_vec[i] = serial_i;
-  } else{
-    if(i > N_weeks_start_omicron+N_weeks_before+(N_weeks_before/2)){ // after two weeks after the switch
-  // p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
-  // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
-  p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
-  p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], 0.31);
-  serial_i_vec[i] = serial_i_postO;
-  } 
-  else { // the switch period
-  // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])     * pow(ifr_vac_adj[i], prob_vac[2]);
-  // p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]);
-  p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])   * pow(ifr_vac_adj[i], 0.34);
+  } else {
+    if(i <= N_weeks_start_omicron+N_weeks_before+(N_weeks_before/2)){ // switch period
+  p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 10.0 * idx5[i])   * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], 0.31);
  serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / 6.0 * idx4[i]);
+  // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])     * pow(ifr_vac_adj[i], prob_vac[2]);
+  // p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]);
+  } else { // extended switch period 
+    if(i <= N_weeks_start_omicron+N_weeks_before*2+(N_weeks_before/2)){ // extended switch period
+  p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 10.0 * idx5[i])   * pow(ifr_vac_adj[i], 0.34);
+  p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], 0.31);
+  serial_i_vec[i] = serial_i_postO;
+    } else{
+    // after the switch period
+  // p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
+  // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
+  p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], 0.31);
+  serial_i_vec[i] = serial_i_postO;
+  p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
+  }
   }
   }
   }
@@ -852,6 +874,7 @@ generated quantities {
     vector[N_weeks_tot]      infections_premiere;
   // vector[N_weeks_tot]     num_uninf;
   real                p_die_if_sym;
+  real                p_die_if_sym_postO;
   vector[N_weeks_tot] susceptible_severe_prvl;
   vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
   vector[N_weeks_tot] effective_protection_inf_vax_prvl;
@@ -901,6 +924,7 @@ generated quantities {
   // effective_protection_vax_boost_prvl = population_protection_boost;
   
   p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
+  p_die_if_sym_postO = p_die_if_sev * p_sev_if_sym_postO; 
 
   diag_cases = diagnoses_of_symptomatic + diagnoses_severe;
   

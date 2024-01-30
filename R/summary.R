@@ -422,6 +422,7 @@ summaryEpi <- function(ccr) {
     "p_sev_if_sym_postO",
     "p_die_if_sev",
     "p_die_if_sym",
+    "p_die_if_sym_postO",
     "p_die_if_inf",
     "p_die_if_inf_postO",
     "serial_i",
