@@ -289,6 +289,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "effective_protection_inf_vax_prvl"      = "effective_protection_inf_vax_prvl",
     "effective_protection_vax_boost_prvl"    = "effective_protection_vax_boost_prvl",
     "effective_protection_vax_prvl"          = "effective_protection_vax_prvl",
+    "effective_protection_prvl"              = "effective_protection_prvl",
     "fitted_cases"                           = "fitted_cases",
     "fitted_deaths"                          = "fitted_deaths",
     "fitted_hospitalizations"                = "fitted_hospitalizations",
