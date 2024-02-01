@@ -155,7 +155,8 @@ input_rr <- function(data, type = "reported") {
 #' @rdname input_cases
 #' @export
 input_hosp <- function(data, type = "reported",
-                       lastHospDate = NULL) {
+                       lastHospDate = NULL,
+                       firstHospDate = NULL) {
   
   validate_input(data, type)
   data <- transform_input(data)
@@ -171,6 +172,17 @@ input_hosp <- function(data, type = "reported",
                                                "Specify NULL or a date later than the first observed date"))
     
     attr(out,"lastHospDate") <- lastHospDate
+  }
+  if(!is.null(firstHospDate)){
+    att(
+      "POSIXct" %in% class(firstHospDate) | "Date" %in% class(firstHospDate),
+      msg=glue("The `firstHospDate` variable must be NULL or of class `POSIXct` or `Date`. ",
+               "Your `firstHospDate` variable was of class `{class(firstHospDate)}`. ",
+               "Consider using as.Date()?"))
+    att(firstHospDate > data$date[1], msg =glue("The `firstHospDate` specified was prior to the first observed date. ",
+                                               "Specify NULL or a date later than the first observed date"))
+    
+    attr(out,"firstHospDate") <- firstHospDate
   }
   structure(out,class='input', date_type = type)
 }

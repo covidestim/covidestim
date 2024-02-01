@@ -93,6 +93,12 @@ modelconfig_add.input <- function(rightside, leftside) {
     diff <- lastDate - as.Date(cfg$first_date, origin = '1970-01-01')
     cfg$lastHospWeek <- (as.numeric(diff)%/%7) + 1
   } 
+  
+  if("firstHospDate" %in% names(attributes(d))){
+    firstDate <- attr(d, "firstHospDate")
+    diff <- firstDate - as.Date(cfg$first_date, origin = '1970-01-01')
+    cfg$firstHospWeek <- (as.numeric(diff)%/%7) + 1
+  } 
 
   if("lastCaseDate" %in% names(attributes(d))){
     lastDate <- attr(d, "lastCaseDate")
