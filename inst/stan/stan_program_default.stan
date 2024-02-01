@@ -480,14 +480,16 @@ transformed parameters {
   serial_i_vec[i] = serial_i;
   } else {
     if(i <= N_weeks_start_omicron+N_weeks_before+(N_weeks_before/2)){ // switch period
-  p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 10.0 * idx5[i])   * pow(ifr_vac_adj[i], 0.34);
+  p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])   * pow(ifr_vac_adj[i], 0.34);
+  // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 10.0 * idx5[i])   * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], 0.31);
  serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / 6.0 * idx4[i]);
   // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])     * pow(ifr_vac_adj[i], prob_vac[2]);
   // p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]);
   } else { // extended switch period 
     if(i <= N_weeks_start_omicron+N_weeks_before*2+(N_weeks_before/2)){ // extended switch period
-  p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 10.0 * idx5[i])   * pow(ifr_vac_adj[i], 0.34);
+  p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
+  // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 10.0 * idx5[i])   * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], 0.31);
   serial_i_vec[i] = serial_i_postO;
     } else{
