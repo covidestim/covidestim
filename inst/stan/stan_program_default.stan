@@ -472,15 +472,16 @@ transformed parameters {
   for( i in 1:N_weeks_tot){
   // p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
   p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], 0.35);
+  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], 0.34);
   if(i < N_weeks_start_omicron+(N_weeks_before/2)){ // until the last two weeks before switch
   // p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);
   // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
-  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], 0.34);
+  // p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], 0.31);
   serial_i_vec[i] = serial_i;
   } else {
     if(i <= N_weeks_start_omicron+N_weeks_before+(N_weeks_before/2)){ // switch period
-  p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])   * pow(ifr_vac_adj[i], 0.34);
+  // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 6.0 * idx4[i])   * pow(ifr_vac_adj[i], 0.34);
   // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 10.0 * idx5[i])   * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], 0.31);
  serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / 6.0 * idx4[i]);
@@ -488,7 +489,7 @@ transformed parameters {
   // p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / 6.0 * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]);
   } else { // extended switch period 
     if(i <= N_weeks_start_omicron+N_weeks_before*2+(N_weeks_before/2)){ // extended switch period
-  p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
+  // p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
   // p_sev_if_symt[i]     = (p_sev_if_sym - (p_sev_if_sym - p_sev_if_sym_postO) / 10.0 * idx5[i])   * pow(ifr_vac_adj[i], 0.34);
   p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], 0.31);
   serial_i_vec[i] = serial_i_postO;
@@ -498,7 +499,7 @@ transformed parameters {
   // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
   p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], 0.31);
   serial_i_vec[i] = serial_i_postO;
-  p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
+  // p_sev_if_symt[i]     = p_sev_if_sym_postO        * pow(ifr_vac_adj[i], 0.34);
   }
   }
   }
@@ -544,7 +545,8 @@ transformed parameters {
   // symptomatic, and the probability of becoming symptomatic if infected. 
   p_die_if_inf = p_sym_if_inf * p_sev_if_sym * p_die_if_sev;
   // print(p_die_if_inf);
-  p_die_if_inf_postO = p_sym_if_inf_postO * p_sev_if_sym_postO * p_die_if_sev;
+  // p_die_if_inf_postO = p_sym_if_inf_postO * p_sev_if_sym_postO * p_die_if_sev;
+  p_die_if_inf_postO = p_sym_if_inf_postO * p_sev_if_sym * p_die_if_sev;
 
   // CASCADE OF INCIDENT OUTCOMES ("TRUE") //
 
@@ -926,7 +928,8 @@ generated quantities {
   // effective_protection_vax_boost_prvl = population_protection_boost;
   
   p_die_if_sym = p_die_if_sev * p_sev_if_sym; 
-  p_die_if_sym_postO = p_die_if_sev * p_sev_if_sym_postO; 
+  p_die_if_sym_postO = p_die_if_sev * p_sev_if_sym; 
+  // p_die_if_sym_postO = p_die_if_sev * p_sev_if_sym_postO; 
 
   diag_cases = diagnoses_of_symptomatic + diagnoses_severe;
   
