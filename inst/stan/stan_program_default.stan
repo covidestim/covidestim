@@ -594,6 +594,7 @@ if(i < N_weeks_start_omicron + N_weeks_before){
     infections[i] = exp(log_infections[i]);
     // Subsection for the pre-omicron model
     if(i < N_weeks_start_omicron + N_weeks_before){
+      infections[i] = (1-exp(-exp(log_infections[i])/susceptible_prvl[i]))*susceptible_prvl[i];
       population_protection_inf[i] = sum(infections[1:i]);
       population_protection_boost[i] = 0;
     } else {
