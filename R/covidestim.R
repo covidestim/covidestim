@@ -74,6 +74,7 @@ NULL
 covidestim <- function(nweeks, 
                        nweeks_before = 4,
                        pop_size = 1e12,
+                       OR = 1,
                        chains = 3, 
                        iter = 2000, 
                        nspl_rt_knotwidth = 1,
@@ -90,6 +91,7 @@ covidestim <- function(nweeks,
     N_weeks            = nweeks,
     N_weeks_before     = nweeks_before,
     pop_size           = pop_size,
+    OR                 = OR,
     n_spl_rt_knotwidth = nspl_rt_knotwidth,
     region             = region
   ) -> config

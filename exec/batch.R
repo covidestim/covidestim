@@ -69,6 +69,7 @@ input_df_colspec <- rlang::list2(
   deaths      = col_number(),
   RR          = col_number(),
   hosp        = col_number(),
+  vax         = col_number(),
   boost       = col_number(),
   missing_hosp= col_logical()
 ) %>% do.call(cols, .)
@@ -112,6 +113,7 @@ aggregated_results <- group_map(d, function(input_data, group_keys) {
     input_deaths(get_input("deaths")) +
     input_rr(get_input("RR")) + 
     input_boost(get_input("boost")) +
+    input_vax(get_input("vax")) +
     input_hosp(get_input("hosp"), lastHospDate = lastHospDate)
 
   tries   <- 25

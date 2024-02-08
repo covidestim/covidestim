@@ -42,7 +42,7 @@ modelconfig_add.input <- function(rightside, leftside) {
   cfg  <- leftside
   d    <- rightside
 
-  integer_keys <- c("obs_cas", "obs_die",
+  integer_keys <- c("obs_cas", "obs_die", "obs_vax",
                     "obs_boost", "obs_hosp",
                     "ifr_vac_adj")
   keys         <- integer_keys
@@ -111,7 +111,7 @@ modelconfig_add.input <- function(rightside, leftside) {
   data_key <- names(d)
   data_type_key <- glue("{data_key}_rep")
 
-  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep",
+  if (data_type_key %in% c("obs_cas_rep", "obs_die_rep", "obs_vax_rep",
                            "obs_hosp_rep", "obs_boost_rep",
                            "ifr_vac_adj_rep")) {
     if(data_type_key == "ifr_vac_adj_rep"){
@@ -164,9 +164,11 @@ print.inputs <- function(cfg, .tab = FALSE) {
   status_deaths <-
     ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_die)}]'))
   status_hosp <-
-    ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_hosp)}]'))
+    ifelse(is.null(cfg$obs_hosp), '[ x ]', glue('[{frmtr(cfg$obs_hosp)}]'))
   status_boost <-
-    ifelse(is.null(cfg$obs_die), '[ x ]', glue('[{frmtr(cfg$obs_boost)}]'))
+    ifelse(is.null(cfg$obs_boost), '[ x ]', glue('[{frmtr(cfg$obs_boost)}]'))
+  status_vax <-
+    ifelse(is.null(cfg$obs_vax), '[ x ]', glue('[{frmtr(cfg$obs_vax)}]'))
   status_rr <-
     ifelse(is.null(cfg$ifr_vac_adj), '[ x ]', glue('[{frmtr(cfg$ifr_vac_adj)}]'))
   
@@ -176,6 +178,7 @@ print.inputs <- function(cfg, .tab = FALSE) {
 {t}{status_deaths}\tDeaths
 {t}{status_rr}\tRRvaccines
 {t}{status_rr}\tBoost
+{t}{status_rr}\tVaccinations
 {t}{status_rr}\tHospitalizations
 
 ' -> msg
@@ -196,7 +199,8 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
                     n_spl_rt_knotwidth = 2, 
                     region,
                     cum_p_inf_init = 0,
-                    start_p_imm = 0 
+                    start_p_imm = 0,
+                    OR = 1
                     )
 {
   n_spl_par_rt <- max(4,ceiling((N_weeks + N_weeks_before)/n_spl_rt_knotwidth))
@@ -242,7 +246,7 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
 
     # Add population size to constrain susceptible population, large default assumes no constraint
     pop_size = pop_size, 
-    
+    OR = OR,
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day

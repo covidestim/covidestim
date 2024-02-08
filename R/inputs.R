@@ -194,3 +194,11 @@ input_boost <- function(data, type = "reported") {
   validate_input(data, type)
   structure(list(obs_boost=data), class='input', date_type = type)
 }
+
+
+#' @rdname input_cases
+#' @export
+input_vax <- function(data, type = "reported") {
+  validate_input(data, type)
+  structure(list(obs_vax=data), class='input', date_type = type)
+}

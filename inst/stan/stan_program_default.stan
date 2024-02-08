@@ -37,6 +37,21 @@ functions {
     return X * kernel;
   }
 
+real calcExposed(real OR, real cumInf, real cumVac) {
+  real t1 = 1 + OR*cumInf - cumInf - OR*cumVac - cumVac;
+  real t2 = OR - cumVac*OR;
+  real b = (-t1 + (t1^2 + 4*cumVac*t2)^0.5) / (2*t2);
+  real o_inf = b*OR;
+  real cp_vac_not_inf = b/(1+b);
+  real cp_vac_inf = o_inf/(1+o_inf);
+  real p_vac_not_inf = cp_vac_not_inf*(1-cumInf); 
+  real p_vac_inf = cp_vac_inf*cumInf;
+  real p_not_vac_not_inf = (1-cp_vac_not_inf)*(1-cumInf);
+  real p_not_vac_inf = (1-cp_vac_inf)*cumInf;
+  real pct_imm = p_vac_inf + p_vac_not_inf + p_not_vac_inf;
+  return pct_imm;
+}
+
 }
 
 data {
@@ -54,7 +69,9 @@ data {
   int<lower=0>           obs_die[N_weeks]; // vector of deaths
   int<lower=0>           obs_hosp[N_weeks]; // vector of hospitalizations
   vector<lower=0>[N_weeks] obs_boost; // vector of boosters
+  vector<lower=0>[N_weeks] obs_vax; // vector of vaccinations !!! NEEDS TO BE PREPENDED!
   real<lower=0>          pop_size; // population size
+  real<lower=0>          OR; //or of being vaccinated given infection
   
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
@@ -216,11 +233,14 @@ transformed data {
  vector[N_weeks + N_weeks_before] idx3;
  vector[N_weeks + N_weeks_before] idx4; // index for the omicron switch weeks
  vector[N_weeks + N_weeks_before] idx5; // index for the omicron switch weeks
+ vector[N_weeks + N_weeks_before] full_vax; // prefilled with zeros
  // real log_infections_0calc = log(pop_size * .5);
   // create 'N_days_tot', which is days of data plus days to model before first 
   // case or death 
   // N_days_tot = N_days + N_days_before; 
   N_weeks_tot = N_weeks + N_weeks_before; 
+  full_vax[1:N_weeks_before] = rep_vector(0.0, N_weeks_before);
+  full_vax[N_weeks_before+1:N_weeks_tot] = obs_vax;
   // susceptible_prvl = pop_size *.8;
   // Indexes for convolutions
 // for(i in 1:N_days_tot) {
@@ -391,8 +411,10 @@ transformed parameters {
   vector[N_weeks_tot]      log_infections;
   vector[N_weeks_tot]      deriv1_log_infections;
   vector[N_weeks_tot]      infections;
-  // vector[N_weeks_tot]      infections_premiere;
-  // vector[N_weeks_tot]     num_uninf;
+  vector[N_weeks_tot]      exposed;
+  vector[N_weeks_tot]      exposed_cumulative;
+  vector[N_weeks_tot]      infections_premiere;
+  vector[N_weeks_tot]     num_uninf;
   real                    ever_inf;
   vector[N_weeks_tot]     susceptible_prvl;
   vector[N_weeks_tot]     effective_protection_prvl;
@@ -566,6 +588,7 @@ transformed parameters {
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
   logRt0 = spl_basis_rt * spl_par_rt;
   susceptible_prvl[1] = pop_size;
+  num_uninf[1] = pop_size;
   // effective_protection_inf_prvl[1] = pop_size * cum_p_inf_init;  //
   // effective protection from infections; for the first timepoint include everyone
   // with a historic infection; 
@@ -592,22 +615,36 @@ if(i < N_weeks_start_omicron + N_weeks_before){
     log_infections[i] = sum(deriv1_log_infections[1:i]) + log_infections_0;
 
     infections[i] = exp(log_infections[i]);
+    exposed_cumulative[i] = calcExposed(OR, sum(infections[1:i])/pop_size, sum(full_vax[1:i])/pop_size);
+    if(i == 1){
+      exposed[i] = exposed_cumulative[i];
+    } else {
+        exposed[i] = exposed_cumulative[i] - exposed_cumulative[i-1];
+            num_uninf[i] = num_uninf[i-1] - infections_premiere[i-1];
+    }
+    if(num_uninf[i] < 0) { reject("WARNING num_uninf invalid"); }
+    if(num_uninf[i] > susceptible_prvl[i]) { reject("WARNING too few susceptible"); }
+          if (exposed_cumulative[i] > 1) {reject("exposed exceeded the population");}
+
+
     // Subsection for the pre-omicron model
     if(i < N_weeks_start_omicron + N_weeks_before){
       // infections[i] = (1-exp(-exp(log_infections[i])/susceptible_prvl[i]))*susceptible_prvl[i];
       // population_protection_inf[i] = sum(infections[1:i]);
-      population_protection_inf[i] = sum(infections[1:i] .* (exp(-.008 * idx3[N_weeks_tot-i +1:N_weeks_tot] * 7)));
+      population_protection_inf[i] = sum(exposed[1:i] .* (exp(-.008 * idx3[N_weeks_tot-i +1:N_weeks_tot] * 7)));
       population_protection_boost[i] = 0;
     } else {
       // Subsection for the post-omicron modeled
       ## reduced effectiveness of the pre-omicron infections
-      population_protection_inf[i] = (sum(infections[1:(N_weeks_start_omicron+N_weeks_before-1)] .* 
+      population_protection_inf[i] = (sum(exposed[1:(N_weeks_start_omicron+N_weeks_before-1)] .* 
       (exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot - (i - (N_weeks_start_omicron + N_weeks_before-1))] * 7))) * .3) +
-      sum(infections[N_weeks_before+N_weeks_start_omicron:i] .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+N_weeks_start_omicron:N_weeks_tot] * 7)));
+      sum(exposed[N_weeks_before+N_weeks_start_omicron:i] .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+N_weeks_start_omicron:N_weeks_tot] * 7)));
       population_protection_boost[i] = sum(obs_boost[N_weeks_start_omicron:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+N_weeks_start_omicron:N_weeks_tot] * 7)));
     }
 
   effective_protection_prvl[i] = population_protection_inf[i] + population_protection_boost[i];
+  infections_premiere[i] = infections[i] * (num_uninf[i]/ susceptible_prvl[i]);
+
   }
 // print("effective prot");
 // print(effective_protection_prvl);
@@ -882,7 +919,7 @@ target += neg_binomial_2_lpmf(
 ///////////////////////////////////////////////////////////
 generated quantities {
   // calculate cumulative incidence + seropositive + pop_infectiousness
-    vector[N_weeks_tot]      infections_premiere;
+    // vector[N_weeks_tot]      infections_premiere;
   // vector[N_weeks_tot]     num_uninf;
   real                p_die_if_sym;
   real                p_die_if_sym_postO;
@@ -905,13 +942,13 @@ generated quantities {
   vector[Max_delay]         seropos_dist_rv;
 
 
-// //first infections
-//   num_uninf[1] = pop_size * (1.0 - cum_p_inf_init); // initial uninfected population
-//   effective_protection_inf_prvl[1] = pop_size * start_p_imm;  //
+//first infections
+//   num_uninf[1] = pop_size; // initial uninfected population
+//   effective_protection_inf_prvl[1] = pop_size;  //
 //   for(i in 1:N_weeks_tot){
 //     if(i > 1){
 //   num_uninf[i] = num_uninf[i-1] - infections_premiere[i-1];
-//     effective_protection_inf_prvl[i] = population_protection_init[i-1] + population_protection_inf[i-1];
+//     effective_protection_inf_prvl[i] = population_protection_inf[i-1];
 // }
 // if(num_uninf[i] < 0){
 //   num_uninf[i] = 0;
