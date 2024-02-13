@@ -412,6 +412,7 @@ transformed parameters {
   vector[N_weeks_tot]      deriv1_log_infections;
   vector[N_weeks_tot]      infections;
   vector[N_weeks_tot]      vax_only;
+  vector[N_weeks_tot]      vax_only_cum;
   vector[N_weeks_tot]      exposed;
   vector[N_weeks_tot]      exposed_cumulative;
   vector[N_weeks_tot]      infections_premiere;
@@ -619,14 +620,25 @@ transformed parameters {
     log_infections[i] = sum(deriv1_log_infections[1:i]) + log_infections_0;
 
     infections[i] = exp(log_infections[i]);
-    p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - effective_protection_prvl[i]);
+    if(i > 1){
+    p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
+    } else {
+    p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
+    }
       infections_premiere[i] = infections[i] * p_first[i];
       exposed_cumulative[i] = calcExposed(OR, sum(infections_premiere[1:i])/pop_size, sum(full_vax[1:i])/pop_size) * pop_size;
-      vax_only[i] = exposed_cumulative[i] - sum(infections_premiere[1:i]);
+      
+      vax_only_cum[i] = exposed_cumulative[i] - sum(infections_premiere[1:i]);
     if(i == 1){
       exposed[i] = exposed_cumulative[i];
+          vax_only[i] = vax_only_cum[i];
     } else {
         exposed[i] = exposed_cumulative[i] - exposed_cumulative[i-1];
+          vax_only[i] = vax_only_cum[i] - vax_only_cum[i-1];
+    }
+    if(vax_only[i] < 0 ){
+      // print("Vax_only is smaller than 0, iteration ", i);
+      vax_only[i] = 0;
     }
     if(i < N_weeks_tot){
         num_uninf[i+1] = num_uninf[i] - infections_premiere[i];
@@ -639,19 +651,21 @@ transformed parameters {
     if(i < N_weeks_start_omicron + N_weeks_before){
       // infections[i] = (1-exp(-exp(log_infections[i])/susceptible_prvl[i]))*susceptible_prvl[i];
       // population_protection_inf[i] = sum(infections[1:i]);
-      population_protection_inf[i] = sum(infections[1:i]  .* (exp(-.008 * idx3[N_weeks_tot-i +1:N_weeks_tot] * 7)));
-      population_protection_vax[i] = sum(vax_only[1:i] * .8 .* (exp(-.008 * idx3[N_weeks_tot-i + 1:N_weeks_tot] * 7)));
+      population_protection_inf[i] = sum(infections[1:i]  .* (exp(-.008 * idx3[N_weeks_tot-i +1:N_weeks_tot] * 3.5)));
+      population_protection_vax[i] = sum(vax_only[1:i] * .8 .* (exp(-.008 * idx3[N_weeks_tot-i + 1:N_weeks_tot] * 3.5)));
       population_protection_boost[i] = 0;
     } else {
       // Subsection for the post-omicron modeled
       ## reduced effectiveness of the pre-omicron infections
       population_protection_inf[i] = (sum(infections[1:(N_weeks_start_omicron+N_weeks_before-1)] .* 
-      (exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot - (i - (N_weeks_start_omicron + N_weeks_before-1))] * 7))) * .3) +
-      sum(infections[N_weeks_before+N_weeks_start_omicron:i] .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+N_weeks_start_omicron:N_weeks_tot] * 7)));
+      (exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot - (i - (N_weeks_start_omicron + N_weeks_before-1))] * 3.5))) * .3) +
+      sum(infections[N_weeks_before+N_weeks_start_omicron:i] .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+N_weeks_start_omicron:N_weeks_tot] * 3.5)));
       population_protection_vax[i] = (sum(vax_only[1:(N_weeks_start_omicron+N_weeks_before-1)] .* 
-      (exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot - (i - (N_weeks_start_omicron + N_weeks_before-1))] * 7))) * .3) +
-      sum(vax_only[N_weeks_before+N_weeks_start_omicron:i] * .8 .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+N_weeks_start_omicron:N_weeks_tot] * 7)));
-      population_protection_boost[i] = 0;//sum(obs_boost[N_weeks_start_omicron:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+N_weeks_start_omicron:N_weeks_tot] * 7)));
+      (exp(-.008 * idx3[N_weeks_tot-i+1:N_weeks_tot - (i - (N_weeks_start_omicron + N_weeks_before-1))] * 3.5))) * .3) +
+      sum(vax_only[N_weeks_before+N_weeks_start_omicron:i] * .8 .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+N_weeks_start_omicron:N_weeks_tot] * 3.5)));
+    }
+    if(i > N_weeks_before){
+      population_protection_boost[i] = sum(obs_boost[1:i-N_weeks_before]*.8 .* (exp(-.008 * idx3[N_weeks_tot-i + N_weeks_before+1:N_weeks_tot] * 3.5)));
     }
 if(i < N_weeks_tot){
   effective_protection_prvl[i+1] = population_protection_inf[i] + population_protection_boost[i] + population_protection_vax[i];
@@ -659,22 +673,22 @@ if(i < N_weeks_tot){
 
   // if(effective_protection_prvl[i] > pop_size) reject("too much protection");
   }
-print("exposedcum");
-print(exposed_cumulative);
-print("exposed");
-print(exposed);
-print("sus");
-print(susceptible_prvl);
-print("numuninf");
-print(num_uninf);
-print("infections");
-print(infections);
-print("firstinf");
-print(infections_premiere);
-print("effective prot");
-print(effective_protection_prvl);
-print("vaxonly");
-print(vax_only);
+// print("exposedcum");
+// print(exposed_cumulative);
+// print("exposed");
+// print(exposed);
+// print("sus");
+// print(susceptible_prvl);
+// print("numuninf");
+// print(num_uninf);
+// print("infections");
+// print(infections);
+// print("firstinf");
+// print(infections_premiere);
+// print("effective prot");
+// print(effective_protection_prvl);
+// print("vaxonly");
+// print(vax_only);
 //   print("infections");
 //   print(infections);
 //   print("serial_i");
