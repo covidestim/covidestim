@@ -498,28 +498,6 @@ transformed parameters {
 
   p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
 
-  for( i in 1:N_weeks_tot){
-  p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
-  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]);// * pow(1.0-severe_protection[i], prob_vac2[1]);
-
-  if(i < N_weeks_start_omicron+N_weeks_before){ // until the switch
-  p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);// * pow(1.0-severe_protection[i], prob_vac2[2]);
-  serial_i_vec[i] = serial_i;
-
-  } else {
-    if(i <= N_weeks_start_omicron+N_weeks_before+N_weeks_transition){ // switch period
-
-  p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]);
- serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / (N_weeks_transition+2) * idx4[i]);
-
-  } else { // extended switch period 
-  p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3]);
-  serial_i_vec[i] = serial_i_postO;
-
-  }
-  }
-  }
-
   // DIAGNOSIS // 
   // rate ratio of diagnosis at asymptomatic vs symptomatic, symptomatic vs severe
   rr_diag_sym_vs_sev = inv_logit(spl_basis_dx * logit(spl_par_sym_dx));
@@ -577,8 +555,27 @@ transformed parameters {
   severe_protection[1] = 0.0;
   // effective protection from infections; for the first timepoint include everyone
   // with a historic infection; 
+  for( i in 1:N_weeks_tot){
+  p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
+  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1]);
+  if(i < N_weeks_start_omicron+N_weeks_before){ // until the switch
+  p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2]);
+  p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
+  serial_i_vec[i] = serial_i;
 
-  for(i in 1:N_weeks_tot) {
+  } else {
+    if(i <= N_weeks_start_omicron+N_weeks_before+N_weeks_transition){ // switch period
+  p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]) *
+   pow(1.0-(severe_protection[i]/pop_size),prob_vac2[2]);
+ serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / (N_weeks_transition+2) * idx4[i]);
+
+  } else { // extended switch period 
+  p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3]) * pow(1.0-(severe_protection[i-1]/pop_size), prob_vac2[2]);
+  serial_i_vec[i] = serial_i_postO;
+
+  }
+  }
+
         if(i > 1){
     susceptible_prvl[i] = pop_size - effective_protection_prvl[i];
 }
