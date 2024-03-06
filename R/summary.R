@@ -305,10 +305,12 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "p_first"                                = "p_first",
     "population_protection_inf"              = "population_protection_inf",
     "population_protection_vax"              = "population_protection_vax",
-    "population_protection_boost"            = "population_protection_boost",
+    "population_protection_hybrid"              = "population_protection_hybrid",
+    # "population_protection_boost"            = "population_protection_boost",
     "population_protection_sev_inf"              = "population_protection_sev_inf",
     "population_protection_sev_vax"              = "population_protection_sev_vax",
-    "population_protection_sev_boost"            = "population_protection_sev_boost",
+    "population_protection_sev_hybrid"              = "population_protection_sev_hybrid",
+    # "population_protection_sev_boost"            = "population_protection_sev_boost",
     "r_t"                                    = "r_t",
     "r_0"                                    = "r_0",
     "logRt0"                                 = "logRt0",
@@ -321,7 +323,11 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "p_sym_if_inft"                          = "p_sym_if_inft",
     "rr_diag_sym_vs_sev"                     = "rr_diag_sym_vs_sev",
     "p_sev_if_symt"                          = "p_sev_if_symt",
-    "p_die_if_sevt"                          = "p_die_if_sevt"
+    "p_die_if_sevt"                          = "p_die_if_sevt",
+    "inf_prvl"                          = "inf_prvl",
+    "vax_prvl"                          = "vax_prvl",
+    "naive_prvl"                          = "naive_prvl",
+    "hybrid_prvl"                          = "hybrid_prvl"
   ) -> params
 
   
