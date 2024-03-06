@@ -592,7 +592,7 @@ transformed parameters {
   p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1]);
   if(i < N_weeks_start_omicron+N_weeks_before){ // until the switch
   p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2]);
-  p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
+  // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
   serial_i_vec[i] = serial_i;
 
   } else {
