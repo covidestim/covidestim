@@ -87,6 +87,8 @@ data {
   real<lower=0>          seropos_dist_shap;
   real<lower=0>          waning_scalar;
   real<lower=0>          waning_scalar_sev;
+  real<lower=0>          waning_scalar_hybrid;
+  real<lower=0>          waning_scalar_hybrid_sev;
   real<lower=0, upper=1> vax_boost_scalar;
   real<lower=0, upper=1> omicron_scalar;
 
@@ -735,14 +737,14 @@ if(sum(full_vax[1:i]) == 0.0){
     hybrid_to_boost[i] +
     inf_to_hybrid[i] +
     hybrid_to_reinf[i] +
-    ((population_protection_hybrid[i-1] * (1-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar * -.008));
+    ((population_protection_hybrid[i-1] * (1-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid * -.008));
     
     population_protection_sev_hybrid[i] = 
     vax_to_hybrid[i] +
     hybrid_to_boost[i] +
     inf_to_hybrid[i] +
     hybrid_to_reinf[i] +
-    ((population_protection_sev_hybrid[i-1] * (1-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_sev * -.008));
+    ((population_protection_sev_hybrid[i-1] * (1-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid_sev * -.008));
     }
     }
     
