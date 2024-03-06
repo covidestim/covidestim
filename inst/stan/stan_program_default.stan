@@ -567,15 +567,22 @@ transformed parameters {
   logRt0 = spl_basis_rt * spl_par_rt;
   susceptible_prvl[1] = pop_size;
   num_uninf[1] = pop_size;
+  naive_prvl[1] = pop_size;
+  
   effective_protection_prvl[1] = 0.0; 
   severe_protection[1] = 0.0;
-  inf_to_reinf[1] = 0.0;
-  inf_to_hybrid[1] = 0.0;
-  vax_to_boost[1] = 0.0;
-  vax_to_hybrid[1] = 0.0;
-  hybrid_to_reinf[1] = 0.0;
-  hybrid_to_boost[1] = 0.0;
   
+  inf_to_reinf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  inf_to_hybrid[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  vax_to_boost[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  vax_to_hybrid[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  hybrid_to_reinf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  hybrid_to_boost[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  naive_to_vax[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  naive_to_inf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  vax_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  hybrid_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   // effective protection from infections; for the first timepoint include everyone
   // with a historic infection; 
   for( i in 1:N_weeks_tot){
@@ -610,7 +617,6 @@ transformed parameters {
     deriv1_log_infections[i] = logRt[i]/serial_i_vec[i];
     log_infections[i] = sum(deriv1_log_infections[1:i]) + log_infections_0;
     infections[i] = exp(log_infections[i]);
-
 //calculate the probability that an infection is a first infection
 // as ratio of the uninfected population vs the susceptible for (first/re)infection
     if(i > 1){
@@ -625,7 +631,7 @@ transformed parameters {
     if(i > 1){
     inf_to_reinf[i] = infections_repeat[i] * (population_protection_inf[i-1]/(population_protection_inf[i-1] + population_protection_hybrid[i-1]));
     hybrid_to_reinf[i] = infections_repeat[i] * (population_protection_hybrid[i-1]/(population_protection_inf[i-1] + population_protection_hybrid[i-1]));
-    if(sum(full_vax[1:i]) == 0.0){
+    if(sum(full_boost[1:i]) == 0.0){
       vax_to_boost[i] = 0.0;
     } else {
     vax_to_boost[i] = full_boost[i] * (vax_prvl[i-1] / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
@@ -640,7 +646,6 @@ transformed parameters {
     exposed_cumulative[i] = calcExposed(OR, sum(infections_premiere[1:i])/pop_size, sum(full_vax[1:i])/pop_size) * pop_size;
     vax_only_cum[i] = exposed_cumulative[i] - sum(infections_premiere[1:i]);
     hybrid_cumulative[i] = (sum(infections_premiere[1:i]) + sum(full_vax[1:i])) - exposed_cumulative[i];
-
     if(i == 1){
       exposed[i] = exposed_cumulative[i];
       vax_only[i] = vax_only_cum[i];
@@ -659,10 +664,12 @@ transformed parameters {
     
     naive_to_vax[i] = vax_only[i];
     naive_to_inf[i] = infections_premiere[i] - vax_to_hybrid[i];
+// print("iteration", i, " infections ",infections[i]," pfirst ", p_first[i]," hybridreinf ", hybrid_to_reinf[i],
+// "vaxtoboost",vax_to_boost[i],"hyridboost",hybrid_to_boost[i], "exposedcum", exposed_cumulative[i],"vaxonly", vax_only_cum[i],"hybridcum",hybrid_cumulative[i]);
 if(i > 1){    
 inf_prvl[i] = inf_prvl[i-1] - inf_to_hybrid[i] + naive_to_inf[i];
 vax_prvl[i] = vax_prvl[i-1] - vax_to_hybrid[i] + naive_to_vax[i];
-naive_prvl[i] = naive_prvl[i] - naive_to_inf[i] - naive_to_vax[i];
+naive_prvl[i] = naive_prvl[i-1] - naive_to_inf[i] - naive_to_vax[i];
 hybrid_prvl[i] = hybrid_prvl[i-1] + inf_to_hybrid[i] + vax_to_hybrid[i];
 } else{
   inf_prvl[i] = infections[i];
@@ -670,6 +677,8 @@ hybrid_prvl[i] = hybrid_prvl[i-1] + inf_to_hybrid[i] + vax_to_hybrid[i];
   naive_prvl[i] = pop_size - infections[i];
   hybrid_prvl[i] = 0.0;
 }
+// print("iteration", i, " infections ",infections[i]," pfirst ", p_first[i], " inf_to_hybrid ", inf_to_hybrid[i], " vaxtohbyrd ", vax_to_hybrid[i],
+// " infprvl ", inf_prvl[i], " vaxprvl ", vax_prvl[i], " hybridprvl ", hybrid_prvl[i], " naive prvl ", naive_prvl[i]);
     if(i < N_weeks_tot) num_uninf[i+1] = num_uninf[i] - infections_premiere[i];
     if(num_uninf[i] < 0) reject("WARNING num_uninf invalid"); 
 
@@ -689,7 +698,8 @@ if(sum(full_vax[1:i]) == 0.0){
       population_protection_sev_vax[i] = full_vax[i];
       population_protection_sev_hybrid[i] = 0.0;
     } else{
-    
+    // sum of incoming new infections (first infections, and reinfections in the unvaccinated group)
+    // and the previous protection, minus the fraction that gets vaccinated or reinfected, waned
     population_protection_inf[i] = 
     naive_to_inf[i] + 
     inf_to_reinf[i] +
@@ -699,8 +709,8 @@ if(sum(full_vax[1:i]) == 0.0){
     naive_to_inf[i] + 
     inf_to_reinf[i] +
     ((population_protection_sev_inf[i-1] * (1-((inf_to_hybrid[i] + inf_to_reinf[i])/ inf_prvl[i-1])))* exp(waning_scalar_sev * -.008));
-    
-    if(sum(full_vax[1:i]) == 0.0){
+ 
+    if(vax_prvl[i-1] == 0.0){
       population_protection_vax[i] = 0.0;
       population_protection_sev_vax[i] = 0.0;
 
@@ -715,7 +725,7 @@ if(sum(full_vax[1:i]) == 0.0){
     vax_to_boost[i] +
     ((population_protection_sev_vax[i-1] * (1-((vax_to_hybrid[i] + vax_to_boost[i])/ vax_prvl[i-1])))* exp(waning_scalar_sev * -.008));
     }
-    if(hybrid_prvl[i] == 0.0){
+    if(hybrid_prvl[i-1] == 0.0){
       population_protection_hybrid[i] = 0.0;
       population_protection_sev_hybrid[i] = 0.0; 
     } else {
@@ -822,34 +832,53 @@ if(effective_protection_prvl[i+1] > pop_size){
 }
 
 }
+// print("effective_protection_prvl ", effective_protection_prvl[i], " popprotinf ", population_protection_inf[i],
+// " popprot vax ", population_protection_vax[i], " popprot hyb ", population_protection_hybrid[i]);
+// print("susceptible_prvl ",susceptible_prvl[i]);
 
   }
-print("population_protection_inf");
-print(population_protection_inf);
-print("population_protection_vax");
-print(population_protection_vax);
-print("population_protection_hybrid");
-print(population_protection_hybrid);
-print("infections");
-print(infections);
-print("suminfections");
-print(naive_to_inf + inf_to_reinf + hybrid_to_reinf);
-print("naive_to_inf");
-print(naive_to_inf);
-print("naive_to_vax");
-print(naive_to_vax);
-print("vax_to_boost");
-print(vax_to_boost);
-print("inf_to_reinf");
-print(inf_to_reinf);
-print("vax_to_hybrid");
-print(vax_to_hybrid);
-print("inf_to_hybrid");
-print(inf_to_hybrid);
-print("hybrid_to_reinf");
-print(hybrid_to_reinf);
-print("hybrid_to_boost");
-print(hybrid_to_boost);
+// print("effective_protection_prvl");
+// print(effective_protection_prvl);
+// print("susceptible_prvl");
+// print(susceptible_prvl);
+// print("population_protection_inf");
+// print(population_protection_inf);
+// print("population_protection_vax");
+// print(population_protection_vax);
+// print("population_protection_hybrid");
+// print(population_protection_hybrid);
+// print("infections");
+// print(infections);
+// // print("suminfections");
+// // print(naive_to_inf + inf_to_reinf + hybrid_to_reinf);
+// print("vax_only");
+// print(vax_only);
+// print("p_first");
+// print(p_first);
+// print("naive_to_inf");
+// print(naive_to_inf);
+// print("naive_to_vax");
+// print(naive_to_vax);
+// print("vax_to_boost");
+// print(vax_to_boost);
+// print("inf_to_reinf");
+// print(inf_to_reinf);
+// print("vax_to_hybrid");
+// print(vax_to_hybrid);
+// print("inf_to_hybrid");
+// print(inf_to_hybrid);
+// print("hybrid_to_reinf");
+// print(hybrid_to_reinf);
+// print("hybrid_to_boost");
+// print(hybrid_to_boost);
+// print("hybrid_prvl");
+// print(hybrid_prvl);
+// print("vax_prvl");
+// print(vax_prvl);
+// print("inf_prvl");
+// print(inf_prvl);
+// print("naive_prvl");
+// print(naive_prvl);
   r_t = exp(logRt);
   r_0 = exp(logRt0);
   // second derivative
