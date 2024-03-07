@@ -589,20 +589,21 @@ transformed parameters {
   // with a historic infection; 
   for( i in 1:N_weeks_tot){
   p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
-  p_sev_if_symt[i]     = p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1]);
+  p_sev_if_symt[i]     = (p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2])) * (p_first[i] + ((1 - p_first[i]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1])));
+  
   if(i < N_weeks_start_omicron+N_weeks_before){ // until the switch
-  p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2]);
+  p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i] + ((1 - p_first[i]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
   // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
   serial_i_vec[i] = serial_i;
 
   } else {
     if(i <= N_weeks_start_omicron+N_weeks_before+N_weeks_transition){ // switch period
-  p_sym_if_inft[i]     = (p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3]) *
-   pow(1.0-(severe_protection[i]/pop_size),prob_vac2[2]);
+  p_sym_if_inft[i]     = ((p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3])) *
+   (p_first[i] + ((1 - p_first[i]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
  serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / (N_weeks_transition+2) * idx4[i]);
 
   } else { // extended switch period 
-  p_sym_if_inft[i]     = p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3]) * pow(1.0-(severe_protection[i-1]/pop_size), prob_vac2[2]);
+  p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i] + ((1 - p_first[i]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
   serial_i_vec[i] = serial_i_postO;
 
   }
@@ -622,8 +623,11 @@ transformed parameters {
 //calculate the probability that an infection is a first infection
 // as ratio of the uninfected population vs the susceptible for (first/re)infection
     if(i > 1){
-    p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
+    // p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
+    p_first[i] = (naive_prvl[i] + (vax_prvl[i] - population_protection_vax[i])) / (naive_prvl[i] + (vax_prvl[i] - population_protection_vax[i]) +
+    (inf_prvl[i] - population_protection_inf[i]) + (hybrid_prvl[i] - population_protection_hybrid[i]));
     } else {
+    // p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
     p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
     }
     infections_premiere[i] = infections[i] * p_first[i];
