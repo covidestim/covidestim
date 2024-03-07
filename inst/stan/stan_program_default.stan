@@ -643,9 +643,9 @@ transformed parameters {
     infections_repeat[i] = infections[i] * (1-p_first[i]);
     
     // divide the repeat infections and boosters over those eligible: hybrid and uni exposures
-    if(i > 1){
-    inf_to_reinf[i] = infections_repeat[i] * (population_protection_inf[i-1]/(population_protection_inf[i-1] + population_protection_hybrid[i-1]));
-    hybrid_to_reinf[i] = infections_repeat[i] * (population_protection_hybrid[i-1]/(population_protection_inf[i-1] + population_protection_hybrid[i-1]));
+    if(i > 2){ // larger than 2: t = 1, fully susceptible population, t = 2, all infections 'fully' protected
+    inf_to_reinf[i] = infections_repeat[i] * ((inf_prvl[i-1] - population_protection_inf[i-1])/((inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1])));
+    hybrid_to_reinf[i] = infections_repeat[i] * ((hybrid_prvl[i-1] - population_protection_hybrid[i-1])/((inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1])));
     if(sum(full_boost[1:i]) == 0.0){
       vax_to_boost[i] = 0.0;
     } else {
