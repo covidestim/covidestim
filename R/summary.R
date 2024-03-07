@@ -298,6 +298,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "fitted_deaths"                          = "fitted_deaths",
     "fitted_hospitalizations"                = "fitted_hospitalizations",
     "fitted_wastewater_prvl"                 = "fitted_wastewater_prvl",
+    "num_uninf"                 = "num_uninf",
     "immunoexposed_cumulative"               = "immunoexposed_cumulative",
     "infections_cumulative"                  = "infections_cumulative",
     "infections"                             = "infections",
