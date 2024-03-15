@@ -429,6 +429,9 @@ transformed parameters {
   vector[N_weeks_tot]     hybrid_to_reinf;
   vector[N_weeks_tot]     vax_to_boost;
   vector[N_weeks_tot]     vax_to_hybrid;
+  vector[N_weeks_tot]     first_inf_only_prvl;
+  vector[N_weeks_tot]     reinf_only_prvl;
+  vector[N_weeks_tot]     hybrid_last_inf_prvl;
   vector[N_weeks_tot]     hybrid_to_boost;
   vector[N_weeks_tot]     vax_prvl;
   vector[N_weeks_tot]     inf_prvl;
@@ -584,35 +587,41 @@ transformed parameters {
   naive_to_inf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   vax_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  first_inf_only_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  reinf_only_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  hybrid_last_inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   hybrid_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   // effective protection from infections; for the first timepoint include everyone
   // with a historic infection; 
   for( i in 1:N_weeks_tot){
   p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
   if(i > 1){
-  p_sev_if_symt[i]     = (p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1])));
-// print("pfirst ", p_first[i-1]);
-// print((p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1]))));
+  // p_sev_if_symt[i]     = (p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1])));
+  p_sev_if_symt[i]     = (p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[1]);
 } else{
   p_sev_if_symt[i]     = (p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]));
 }
   if(i < N_weeks_start_omicron+N_weeks_before){ // until the switch
   if(i > 1){
-  p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
+  p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
+  // p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
   } else{
   p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) ;
   }
-  // p_sym_if_inft[i]     = p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3]);
   serial_i_vec[i] = serial_i;
 
   } else {
     if(i <= N_weeks_start_omicron+N_weeks_before+N_weeks_transition){ // switch period
-  p_sym_if_inft[i]     = ((p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3])) *
-   (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
+  p_sym_if_inft[i]     = ((p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
+  // p_sym_if_inft[i]     = ((p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3])) *
+  //  (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
  serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / (N_weeks_transition+2) * idx4[i]);
 
   } else { // extended switch period 
-  p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
+  p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
+  // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * (first_inf_only_prvl[i-1]/exposed_cumulative[i-1]  + pow((exposed_cumulative[i-1] - severe_protection[i])/exposed_cumulative[i-1], prob_vac2[2]));
+  // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * pow(1.0-(severe_protection[i]/(inf_prvl[i-1] + vax_prvl[i-1] + hybrid_prvl[i-1])), prob_vac2[2]);
+  // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
   serial_i_vec[i] = serial_i_postO;
 
   }
@@ -674,9 +683,24 @@ transformed parameters {
     if(vax_only[i] > full_vax[i]) vax_only[i] = 0.0;
     if(new_hybrid[i] < 0 ) new_hybrid[i] = 0.0;
     if(sum(full_vax[1:i]) == 0.0) {new_hybrid[i] = 0.0;}
+    
+    // if(i > 1){
+    // vax_to_hybrid[i] = infections_premiere[i] * ((vax_prvl[i-1] - population_protection_vax[i-1])/(naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])));
+    // naive_to_inf[i] = infections_premiere[i] * (naive_prvl[i-1]/(naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])));
+    // if(vax_to_hybrid[i] > new_hybrid[i]) {
+    //   vax_to_hybrid[i] = new_hybrid[i];
+    //   naive_to_inf[i] = infections_premiere[i] - vax_to_hybrid[i];
+    //   if(naive_to_inf[i] > naive_prvl[i-1]) print("Too few naive");
+    // }
+    // inf_to_hybrid[i] = new_hybrid[i] - vax_to_hybrid[i];
+    // if(inf_to_hybrid[i] > full_vax[i]) print("Too few vaccinated");
+    // naive_to_vax[i] = full_vax[i] - inf_to_hybrid[i];
+    // } else{
+    //   naive_to_inf[i] = infections_premiere[i];
+    // }
     inf_to_hybrid[i] = full_vax[i] - vax_only[i];
     vax_to_hybrid[i] = new_hybrid[i] - inf_to_hybrid[i];
-    
+
     naive_to_vax[i] = vax_only[i];
     naive_to_inf[i] = infections_premiere[i] - vax_to_hybrid[i];
 // print("iteration", i, " infections ",infections[i]," pfirst ", p_first[i]," hybridreinf ", hybrid_to_reinf[i],
@@ -686,11 +710,18 @@ inf_prvl[i] = inf_prvl[i-1] - inf_to_hybrid[i] + naive_to_inf[i];
 vax_prvl[i] = vax_prvl[i-1] - vax_to_hybrid[i] + naive_to_vax[i];
 naive_prvl[i] = naive_prvl[i-1] - naive_to_inf[i] - naive_to_vax[i];
 hybrid_prvl[i] = hybrid_prvl[i-1] + inf_to_hybrid[i] + vax_to_hybrid[i];
+first_inf_only_prvl[i] = first_inf_only_prvl[i-1] + naive_to_inf[i] - ((inf_to_hybrid[i] + inf_to_reinf[i]) * (first_inf_only_prvl[i-1] / inf_prvl[i]));
+reinf_only_prvl[i] = reinf_only_prvl[i-1] - (inf_to_hybrid[i] * (reinf_only_prvl[i-1] / inf_prvl[i])) + inf_to_reinf[i] - (inf_to_reinf[i] * (reinf_only_prvl[i-1]/inf_prvl[i]));
+hybrid_last_inf_prvl[i] = hybrid_last_inf_prvl[i-1] + vax_to_hybrid[i] + hybrid_to_reinf[i] - hybrid_to_boost[i];
+// print(first_inf_only_prvl[i]);
 } else{
   inf_prvl[i] = infections[i];
+  first_inf_only_prvl[i] = infections[i];
   vax_prvl[i] = 0.0;
   naive_prvl[i] = pop_size - infections[i];
   hybrid_prvl[i] = 0.0;
+  hybrid_last_inf_prvl[i] = 0.0;
+  reinf_only_prvl[i] = 0.0;
 }
 // print("iteration", i, " infections ",infections[i]," pfirst ", p_first[i], " inf_to_hybrid ", inf_to_hybrid[i], " vaxtohbyrd ", vax_to_hybrid[i],
 // " infprvl ", inf_prvl[i], " vaxprvl ", vax_prvl[i], " hybridprvl ", hybrid_prvl[i], " naive prvl ", naive_prvl[i]);
