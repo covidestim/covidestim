@@ -438,6 +438,9 @@ transformed parameters {
   vector[N_weeks_tot]     naive_prvl;
   vector[N_weeks_tot]     hybrid_prvl;
   real                    ever_inf;
+  vector[N_weeks_tot]     p1;
+  vector[N_weeks_tot]     p1max;
+  vector[N_weeks_tot]     p1min;
   vector[N_weeks_tot]     susceptible_prvl;
   vector[N_weeks_tot]     effective_protection_prvl;
   vector[N_weeks_tot]     severe_protection;
@@ -587,6 +590,7 @@ transformed parameters {
   naive_to_inf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   vax_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  naive_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   first_inf_only_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   reinf_only_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   hybrid_last_inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
@@ -684,25 +688,74 @@ transformed parameters {
     if(new_hybrid[i] < 0 ) new_hybrid[i] = 0.0;
     if(sum(full_vax[1:i]) == 0.0) {new_hybrid[i] = 0.0;}
     
-    // if(i > 1){
+    // if(i > 2){
+    //   if(vax_prvl[i-2] == 0.0){
+    //     naive_to_inf[i] = infections_premiere[i];
+    //   } else{
     // vax_to_hybrid[i] = infections_premiere[i] * ((vax_prvl[i-1] - population_protection_vax[i-1])/(naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])));
     // naive_to_inf[i] = infections_premiere[i] * (naive_prvl[i-1]/(naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])));
+    //   }
     // if(vax_to_hybrid[i] > new_hybrid[i]) {
+    //   print("Too few hybrid in week ", i);
+    // print("Vaxtohybrid ", vax_to_hybrid[i], " and vax prvl ", vax_prvl[i-1], " and new hybrid", new_hybrid[i]);
+    // print("naive to inf ", naive_to_inf[i], " and naive prvl ", naive_prvl[i-1], " and infe prem ", infections_premiere[i]);
     //   vax_to_hybrid[i] = new_hybrid[i];
     //   naive_to_inf[i] = infections_premiere[i] - vax_to_hybrid[i];
+    // }
     //   if(naive_to_inf[i] > naive_prvl[i-1]) print("Too few naive");
-    // }
-    // inf_to_hybrid[i] = new_hybrid[i] - vax_to_hybrid[i];
+    //   if(vax_to_hybrid[i] > vax_prvl[i-1]) print("Too few vax");
+    //   if(naive_to_inf[i] > exposed[i]) {print("Too few exposed");
+    //   print("exposed ", exposed[i], " naive_to_inf ", naive_to_inf[i], " infections_premiere ", infections_premiere[i], " vax ", full_vax[i]);
+    //   naive_to_inf[i] = exposed[i];
+    //   }
+    //   if(full_vax[i] > 0.0){
+    // naive_to_vax[i] = exposed[i] - naive_to_inf[i];
+    //   }
+    // inf_to_hybrid[i] = full_vax[i] - naive_to_vax[i];
+    // // inf_to_hybrid[i] = new_hybrid[i] - vax_to_hybrid[i];
     // if(inf_to_hybrid[i] > full_vax[i]) print("Too few vaccinated");
-    // naive_to_vax[i] = full_vax[i] - inf_to_hybrid[i];
-    // } else{
+    // // naive_to_vax[i] = full_vax[i] - inf_to_hybrid[i];
+    // if(i == 1){
     //   naive_to_inf[i] = infections_premiere[i];
-    // }
-    inf_to_hybrid[i] = full_vax[i] - vax_only[i];
-    vax_to_hybrid[i] = new_hybrid[i] - inf_to_hybrid[i];
+    // }  else{
+      if(i > 1){
+    p1[i] = (naive_prvl[i-1]/(naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])));
+    p1max[i] = fmin(exposed[i] / infections_premiere[i],1.0);
+    p1min[i] = fmax((infections_premiere[i]-new_hybrid[i])/ infections_premiere[i], 0.0);
+    // if((p1min - p1max) > .001) print("p1max ", p1max, " p1min ", p1min);
 
-    naive_to_vax[i] = vax_only[i];
-    naive_to_inf[i] = infections_premiere[i] - vax_to_hybrid[i];
+    if((p1[i] > p1max[i]) && (p1[i] < p1min[i])){
+      // print("No valid probability:", p1," ", p1min, " " , p1max);
+      // print("p1 ", p1, " pmax ", p1max, " pmin ", p1min);
+      } else {
+       if(p1[i] > p1max[i]) {
+         // print("Adjust p1 to max");
+               // print("p1 ", p1, " pmax ", p1max);
+         p1[i] = p1max[i];
+       }
+       if(p1[i] < p1min[i]) {
+         // print("Adjust p1 to min");
+            // print("p1 ", p1, " pmin ", p1min);
+         p1[i] = p1min[i];
+      }
+      }
+  naive_to_inf[i] = p1[i]*infections_premiere[i];
+if(vax_prvl[i-1] > 0.0)  vax_to_hybrid[i] = (1-p1[i])*infections_premiere[i];
+if(full_vax[i] > 0.0)  naive_to_vax[i] = exposed[i] - naive_to_inf[i];
+if(full_vax[i] > 0.0)  inf_to_hybrid[i] = new_hybrid[i] - vax_to_hybrid[i];
+// print("week ", i, " p1 ", p1, " exposed ", exposed[i], " hybrid ", new_hybrid[i], " naive inf ", naive_to_inf[i], " naive_vax ", naive_to_vax[i], " inf hybrid ", inf_to_hybrid[i], "vax hybrid ", vax_to_hybrid[i],
+// " inf prem ", infections_premiere[i], " vax prvl prsv ", vax_prvl[i-1], " pop prot vax ", population_protection_vax[i-1]);
+} else{
+  naive_to_inf[i] = infections_premiere[i];
+}
+
+  
+    // inf_to_hybrid[i] = full_vax[i] - vax_only[i];
+    // vax_to_hybrid[i] = new_hybrid[i] - inf_to_hybrid[i];
+// 
+    // naive_to_vax[i] = vax_only[i];
+    // naive_to_inf[i] = infections_premiere[i] - vax_to_hybrid[i];
+    // }
 // print("iteration", i, " infections ",infections[i]," pfirst ", p_first[i]," hybridreinf ", hybrid_to_reinf[i],
 // "vaxtoboost",vax_to_boost[i],"hyridboost",hybrid_to_boost[i], "exposedcum", exposed_cumulative[i],"vaxonly", vax_only_cum[i],"hybridcum",hybrid_cumulative[i]);
 if(i > 1){    
