@@ -802,12 +802,12 @@ if(sum(full_vax[1:i]) == 0.0){
     population_protection_inf[i] = 
     naive_to_inf[i] + 
     inf_to_reinf[i] +
-    ((population_protection_inf[i-1] * (1-((inf_to_hybrid[i] + inf_to_reinf[i])/ inf_prvl[i-1])))* exp(waning_scalar * -.008));
+    ((population_protection_inf[i-1] * (1.0-((inf_to_hybrid[i] + inf_to_reinf[i])/ inf_prvl[i-1])))* exp(waning_scalar * -.008));
     
     population_protection_sev_inf[i] = 
     naive_to_inf[i] + 
     inf_to_reinf[i] +
-    ((population_protection_sev_inf[i-1] * (1-((inf_to_hybrid[i] + inf_to_reinf[i])/ inf_prvl[i-1])))* exp(waning_scalar_sev * -.008));
+    ((population_protection_sev_inf[i-1] * (1.0-((inf_to_hybrid[i] + inf_to_reinf[i])/ inf_prvl[i-1])))* exp(waning_scalar_sev * -.008));
  
     if(vax_prvl[i-1] == 0.0){
       population_protection_vax[i] = 0.0;
@@ -817,12 +817,12 @@ if(sum(full_vax[1:i]) == 0.0){
     population_protection_vax[i] = 
     naive_to_vax[i] + 
     vax_to_boost[i] +
-    ((population_protection_vax[i-1] * (1-((vax_to_hybrid[i] + vax_to_boost[i])/ vax_prvl[i-1])))* exp(waning_scalar * -.008));
+    ((population_protection_vax[i-1] * (1.0-((vax_to_hybrid[i] + vax_to_boost[i])/ vax_prvl[i-1])))* exp(waning_scalar * -.008));
     
     population_protection_sev_vax[i] = 
     naive_to_vax[i] + 
     vax_to_boost[i] +
-    ((population_protection_sev_vax[i-1] * (1-((vax_to_hybrid[i] + vax_to_boost[i])/ vax_prvl[i-1])))* exp(waning_scalar_sev * -.008));
+    ((population_protection_sev_vax[i-1] * (1.0-((vax_to_hybrid[i] + vax_to_boost[i])/ vax_prvl[i-1])))* exp(waning_scalar_sev * -.008));
     }
     if(hybrid_prvl[i-1] == 0.0){
       population_protection_hybrid[i] = 0.0;
@@ -834,14 +834,14 @@ if(sum(full_vax[1:i]) == 0.0){
     hybrid_to_boost[i] +
     inf_to_hybrid[i] +
     hybrid_to_reinf[i] +
-    ((population_protection_hybrid[i-1] * (1-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid * -.008));
+    ((population_protection_hybrid[i-1] * (1.0-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid * -.008));
     
     population_protection_sev_hybrid[i] = 
     vax_to_hybrid[i] +
     hybrid_to_boost[i] +
     inf_to_hybrid[i] +
     hybrid_to_reinf[i] +
-    ((population_protection_sev_hybrid[i-1] * (1-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid_sev * -.008));
+    ((population_protection_sev_hybrid[i-1] * (1.0-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid_sev * -.008));
     }
     }
     
