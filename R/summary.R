@@ -328,7 +328,15 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "inf_prvl"                          = "inf_prvl",
     "vax_prvl"                          = "vax_prvl",
     "naive_prvl"                          = "naive_prvl",
-    "hybrid_prvl"                          = "hybrid_prvl"
+    "hybrid_prvl"                          = "hybrid_prvl",
+    "naive_to_vax" = "naive_to_vax",
+    "naive_to_inf" = "naive_to_inf",
+    "vax_to_boost" = "vax_to_boost",
+    "vax_to_hybrid" = "vax_to_hybrid",
+    "inf_to_hybrid" = "inf_to_hybrid",
+    "inf_to_reinf" = "inf_to_reinf",
+    "hybrid_to_boost" = "hybrid_to_boost",
+    "hybrid_to_reinf" = "hybrid_to_reinf"
   ) -> params
 
   
