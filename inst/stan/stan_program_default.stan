@@ -664,7 +664,7 @@ transformed parameters {
     } else {
     vax_to_boost[i] = full_boost[i] * (vax_prvl[i-1] / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
     }
-    if(vax_prvl[i] + hybrid_prvl[i] == 0.0){
+    if(vax_prvl[i-1] + hybrid_prvl[i-1] == 0.0){
       hybrid_to_boost[i] = 0.0;
     } else{
     hybrid_to_boost[i] = full_boost[i] * (hybrid_prvl[i-1] / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
