@@ -443,6 +443,12 @@ transformed parameters {
   vector[N_weeks_tot]     p1min;
   vector[N_weeks_tot]     susceptible_prvl;
   vector[N_weeks_tot]     effective_protection_prvl;
+  vector[N_weeks_tot]     effective_protection_prvl_lag;
+  vector[N_weeks_tot]     new_protection_inf;
+  vector[N_weeks_tot]     new_protection_vax;
+  vector[N_weeks_tot]     new_protection;
+  vector[N_weeks_tot]     lost_protection;
+  vector[N_weeks_tot]     lost_protection_net;
   vector[N_weeks_tot]     severe_protection;
   vector[N_weeks_tot]     population_protection_inf;
   vector[N_weeks_tot]     population_protection_hybrid;
@@ -578,6 +584,7 @@ transformed parameters {
   naive_prvl[1] = pop_size;
   
   effective_protection_prvl[1] = 0.0; 
+  effective_protection_prvl_lag[1] = 0.0; 
   severe_protection[1] = 0.0;
   
   inf_to_reinf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
@@ -595,6 +602,13 @@ transformed parameters {
   reinf_only_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   hybrid_last_inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   hybrid_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  
+  new_protection_inf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  new_protection_vax[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  new_protection[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  lost_protection[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  lost_protection_net[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  
   // effective protection from infections; for the first timepoint include everyone
   // with a historic infection; 
   for( i in 1:N_weeks_tot){
@@ -796,6 +810,8 @@ if(sum(full_vax[1:i]) == 0.0){
       population_protection_sev_inf[i] = infections[i];
       population_protection_sev_vax[i] = full_vax[i];
       population_protection_sev_hybrid[i] = 0.0;
+      new_protection_inf[i] = naive_to_inf[i];
+      new_protection_vax[i] = 0.0;
     } else{
     // sum of incoming new infections (first infections, and reinfections in the unvaccinated group)
     // and the previous protection, minus the fraction that gets vaccinated or reinfected, waned
@@ -843,6 +859,31 @@ if(sum(full_vax[1:i]) == 0.0){
     hybrid_to_reinf[i] +
     ((population_protection_sev_hybrid[i-1] * (1.0-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid_sev * -.008));
     }
+    // Flow of new immunity due to vaccination/infection only
+      if(vax_prvl[i-1] == 0.0){
+        new_protection_inf[i] = naive_to_inf[i] + (inf_to_reinf[i] - population_protection_inf[i-1] * (inf_to_reinf[i]/inf_prvl[i-1]));
+        new_protection_vax[i] = naive_to_vax[i];
+      } else{
+        if(hybrid_prvl[i-1] == 0.0){
+          new_protection_inf[i] = naive_to_inf[i] + 
+          (inf_to_reinf[i] - population_protection_inf[i] * (inf_to_reinf[i]/inf_prvl[i-1])) +
+          (vax_to_hybrid[i] - population_protection_vax[i-1]*(vax_to_hybrid[i]/vax_prvl[i-1]));
+          
+          new_protection_vax[i] = naive_to_vax[i] + 
+          (vax_to_boost[i] - population_protection_vax[i-1]*(vax_to_boost[i]/vax_prvl[i-1])) +
+          (inf_to_hybrid[i-1] - population_protection_inf[i-1]*(inf_to_hybrid[i]/inf_prvl[i-1]));
+        } else {
+          new_protection_inf[i] = naive_to_inf[i] + 
+          (inf_to_reinf[i] - population_protection_inf[i] * (inf_to_reinf[i]/inf_prvl[i-1])) +
+          (vax_to_hybrid[i] - population_protection_vax[i-1]*(vax_to_hybrid[i]/vax_prvl[i-1])) +
+          (hybrid_to_reinf[i] - population_protection_hybrid[i-1]*(hybrid_to_reinf[i]/hybrid_prvl[i-1]));
+          
+          new_protection_vax[i] = naive_to_vax[i] + 
+          (vax_to_boost[i] - population_protection_vax[i-1]*(vax_to_boost[i]/vax_prvl[i-1])) +
+          (inf_to_hybrid[i-1] - population_protection_inf[i-1]*(inf_to_hybrid[i]/inf_prvl[i-1]))+ 
+          (hybrid_to_boost[i] - population_protection_hybrid[i-1]*(hybrid_to_boost[i]/hybrid_prvl[i-1]));
+        }
+    }
     }
     
     if(i == N_weeks_start_omicron + N_weeks_before){
@@ -853,6 +894,10 @@ if(sum(full_vax[1:i]) == 0.0){
       population_protection_sev_vax[i] = population_protection_sev_vax[i] * (1.0 - omicron_scalar);
       population_protection_sev_hybrid[i] = population_protection_sev_hybrid[i] * (1.0 - omicron_scalar);
     }
+    
+    new_protection[i] = new_protection_inf[i] + new_protection_vax[i];
+    lost_protection_net[i] = (effective_protection_prvl_lag[i]-effective_protection_prvl[i] );
+    lost_protection[i] = lost_protection_net[i] - new_protection[i];
 // population_protection_inf[i] = sum(infections[1:i]  .* (exp(-.008 * idx3[N_weeks_tot-i +1:N_weeks_tot] * waning_scalar))) * p_reinf[i];
 // 
 // population_protection_vax[i] = sum((full_vax[1:i]+full_boost[1:i]) * vax_boost_scalar .* (exp(-.008 * idx3[N_weeks_tot-i + 1:N_weeks_tot] * waning_scalar))) *
@@ -924,7 +969,7 @@ if(i < N_weeks_tot){
   effective_protection_prvl[i+1] = population_protection_inf[i] + population_protection_vax[i] + population_protection_hybrid[i];// + population_protection_boost[i];
   severe_protection[i+1] = population_protection_sev_inf[i] + population_protection_sev_vax[i] + population_protection_sev_hybrid[i];// + population_protection_sev_vax[i];
   // effective_protection_prvl[i+1] = population_protection_inf[i] + population_protection_boost[i];
-
+  effective_protection_prvl_lag[i+1] = effective_protection_prvl[i];
 if(effective_protection_prvl[i+1] > pop_size){
   // print("Too high protection");
   effective_protection_prvl[i+1] = pop_size - 1;

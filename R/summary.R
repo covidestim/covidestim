@@ -336,7 +336,13 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     "inf_to_hybrid" = "inf_to_hybrid",
     "inf_to_reinf" = "inf_to_reinf",
     "hybrid_to_boost" = "hybrid_to_boost",
-    "hybrid_to_reinf" = "hybrid_to_reinf"
+    "hybrid_to_reinf" = "hybrid_to_reinf",
+    "lost_protection" = "lost_protection",
+    "lost_protection_net" = "lost_protection_net",
+    "new_protection_inf" = "new_protection_inf",
+    "new_protection_vax" = "new_protection_vax",
+    "new_protection" = "new_protection",
+    "effective_protection_prvl_lag" = "effective_protection_prvl_lag"
   ) -> params
 
   
