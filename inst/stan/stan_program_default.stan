@@ -675,12 +675,9 @@ transformed parameters {
     hybrid_to_reinf[i] = infections_repeat[i] * ((hybrid_prvl[i-1] - population_protection_hybrid[i-1])/((inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1])));
     if(sum(full_boost[1:i]) == 0.0){
       vax_to_boost[i] = 0.0;
+      hybrid_to_boost[i] = 0.0;
     } else {
     vax_to_boost[i] = full_boost[i] * (vax_prvl[i-1] / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
-    }
-    if(vax_prvl[i-1] + hybrid_prvl[i-1] == 0.0){
-      hybrid_to_boost[i] = 0.0;
-    } else{
     hybrid_to_boost[i] = full_boost[i] * (hybrid_prvl[i-1] / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
     }
     }
@@ -779,7 +776,11 @@ naive_prvl[i] = naive_prvl[i-1] - naive_to_inf[i] - naive_to_vax[i];
 hybrid_prvl[i] = hybrid_prvl[i-1] + inf_to_hybrid[i] + vax_to_hybrid[i];
 first_inf_only_prvl[i] = first_inf_only_prvl[i-1] + naive_to_inf[i] - ((inf_to_hybrid[i] + inf_to_reinf[i]) * (first_inf_only_prvl[i-1] / inf_prvl[i]));
 reinf_only_prvl[i] = reinf_only_prvl[i-1] - (inf_to_hybrid[i] * (reinf_only_prvl[i-1] / inf_prvl[i])) + inf_to_reinf[i] - (inf_to_reinf[i] * (reinf_only_prvl[i-1]/inf_prvl[i]));
-hybrid_last_inf_prvl[i] = hybrid_last_inf_prvl[i-1] + vax_to_hybrid[i] + hybrid_to_reinf[i] - hybrid_to_boost[i];
+if(hybrid_prvl[i-1]==0.0){
+hybrid_last_inf_prvl[i] = hybrid_last_inf_prvl[i-1] + vax_to_hybrid[i] + hybrid_to_reinf[i];
+} else{
+hybrid_last_inf_prvl[i] = hybrid_last_inf_prvl[i-1] + vax_to_hybrid[i] + hybrid_to_reinf[i] - (hybrid_to_boost[i] * (hybrid_last_inf_prvl[i-1]/hybrid_prvl[i-1]));
+}
 // print(first_inf_only_prvl[i]);
 } else{
   inf_prvl[i] = infections[i];
