@@ -898,7 +898,7 @@ if(sum(full_vax[1:i]) == 0.0){
     
     new_protection[i] = new_protection_inf[i] + new_protection_vax[i];
     lost_protection_net[i] = (effective_protection_prvl_lag[i]-effective_protection_prvl[i] );
-    lost_protection[i] = lost_protection_net[i] - new_protection[i];
+    lost_protection[i] = new_protection[i] - lost_protection_net[i];
 // population_protection_inf[i] = sum(infections[1:i]  .* (exp(-.008 * idx3[N_weeks_tot-i +1:N_weeks_tot] * waning_scalar))) * p_reinf[i];
 // 
 // population_protection_vax[i] = sum((full_vax[1:i]+full_boost[1:i]) * vax_boost_scalar .* (exp(-.008 * idx3[N_weeks_tot-i + 1:N_weeks_tot] * waning_scalar))) *
