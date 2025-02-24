@@ -74,6 +74,8 @@ data {
   real<lower=0>          pop_size; // population size
   real<lower=0>          OR; //or of being vaccinated given infection
   
+  real<lower=0, upper=1>    p_hosp_nonsevere; // HOSPITALIZATION (NON SEVERE)
+
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
   vector<lower=0>[N_weeks+N_weeks_before] ifr_vac_adj; // ifr_vaccine_adjustment
@@ -384,6 +386,9 @@ parameters {
   real<lower=0, upper=1>    p_die_if_sev;
   real<lower=0>             ifr_decl_OR;
   
+// // HOSPITALIZATION (NON SEVERE)
+//   real<lower=0, upper=1>    p_hosp_nonsevere;
+  
 // DIANGOSIS
 // scaling factor for time to diagnosis
   real<lower=0, upper=1>    scale_dx_delay_sym; 
@@ -499,6 +504,12 @@ transformed parameters {
   vector[N_weeks_tot]  new_asy_dx; 
   vector[N_weeks_tot]  diagnoses_of_symptomatic; 
   vector[N_weeks_tot]  diagnoses_severe;
+  
+  // hospitalizations
+  // as we will now have a fraction of non-severe cases 
+  // making up hospitalizations it will be good to track these 
+  vector[N_weeks_tot]  hospitalizations_nonsevere; 
+  vector[N_weeks_tot]  hospitalizations_severe; 
 
   // follow diagnosed cases forward to calculate deaths among diagnosed
   vector[N_weeks_tot]  dx_sym_sev; 
@@ -1127,7 +1138,13 @@ if(effective_protection_prvl[i+1] > pop_size){
     fitted_cases = conv1d(diagnoses, cas_rep_delay_rv);
   else
     fitted_cases = diagnoses .* cas_cum_report_delay_rv;
-fitted_hospitalizations = diagnoses_severe;
+
+// TOTAL NEW HOSPITALIZATIONS 
+// Add in a fraction of non-severe diagnoses toward hospitalizations. 
+hospitalizations_severe = diagnoses_severe; 
+hospitalizations_nonsevere = (new_asy_dx + diagnoses_of_symptomatic) * p_hosp_nonsevere;
+
+fitted_hospitalizations = hospitalizations_severe + hospitalizations_nonsevere;
 // the hospitalizations data is reported by date of occurance;
 // and does not have a reporting delay (the data is reported delayed and 
 // is therefore always up to date). 
