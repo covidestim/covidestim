@@ -201,7 +201,7 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
                     cum_p_inf_init = 0,
                     start_p_imm = 0,
                     OR = 1, 
-                    p_hosp_nonsevere = 0.099
+                    p_hosp_nonsevere = 0.002
                     )
 {
   n_spl_par_rt <- max(4,ceiling((N_weeks + N_weeks_before)/n_spl_rt_knotwidth))
