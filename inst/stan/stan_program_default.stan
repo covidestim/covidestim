@@ -86,7 +86,9 @@ data {
   real<lower=0>          seropos_dist_rate;
   real<lower=0>          seropos_dist_shap;
   real<lower=0>          waning_scalar;
+  real<lower=0>          prot_scalar;
   real<lower=0>          waning_scalar_sev;
+  real<lower=0>          prot_sev_scalar;
   real<lower=0>          waning_scalar_hybrid;
   real<lower=0>          waning_scalar_hybrid_sev;
   real<lower=0, upper=1> vax_boost_scalar;
@@ -805,11 +807,11 @@ if(sum(full_vax[1:i]) == 0.0){
     // if(i < N_weeks_start_omicron + N_weeks_before){
     // Subsection for the pre-omicron model
     if(i == 1){
-      population_protection_inf[i] = infections[i];
-      population_protection_vax[i] = full_vax[i];
+      population_protection_inf[i] = infections[i] * prot_scalar;
+      population_protection_vax[i] = full_vax[i] * prot_scalar;
       population_protection_hybrid[i] = 0.0;
-      population_protection_sev_inf[i] = infections[i];
-      population_protection_sev_vax[i] = full_vax[i];
+      population_protection_sev_inf[i] = infections[i] * prot_sev_scalar;
+      population_protection_sev_vax[i] = full_vax[i] * prot_sev_scalar;
       population_protection_sev_hybrid[i] = 0.0;
       new_protection_inf[i] = naive_to_inf[i];
       new_protection_vax[i] = 0.0;
@@ -817,13 +819,13 @@ if(sum(full_vax[1:i]) == 0.0){
     // sum of incoming new infections (first infections, and reinfections in the unvaccinated group)
     // and the previous protection, minus the fraction that gets vaccinated or reinfected, waned
     population_protection_inf[i] = 
-    naive_to_inf[i] + 
-    inf_to_reinf[i] +
+    (naive_to_inf[i] * prot_scalar) + 
+    (inf_to_reinf[i] * prot_scalar) +
     ((population_protection_inf[i-1] * (1.0-((inf_to_hybrid[i] + inf_to_reinf[i])/ inf_prvl[i-1])))* exp(waning_scalar * -.008));
     
     population_protection_sev_inf[i] = 
-    naive_to_inf[i] + 
-    inf_to_reinf[i] +
+    (naive_to_inf[i] * prot_sev_scalar) + 
+    (inf_to_reinf[i] * prot_sev_scalar) +
     ((population_protection_sev_inf[i-1] * (1.0-((inf_to_hybrid[i] + inf_to_reinf[i])/ inf_prvl[i-1])))* exp(waning_scalar_sev * -.008));
  
     if(vax_prvl[i-1] == 0.0){
@@ -832,13 +834,13 @@ if(sum(full_vax[1:i]) == 0.0){
 
     } else {
     population_protection_vax[i] = 
-    naive_to_vax[i] + 
-    vax_to_boost[i] +
+    (naive_to_vax[i] * prot_scalar)+ 
+    (vax_to_boost[i]* prot_scalar) +
     ((population_protection_vax[i-1] * (1.0-((vax_to_hybrid[i] + vax_to_boost[i])/ vax_prvl[i-1])))* exp(waning_scalar * -.008));
     
     population_protection_sev_vax[i] = 
-    naive_to_vax[i] + 
-    vax_to_boost[i] +
+    (naive_to_vax[i] * prot_sev_scalar)+ 
+    (vax_to_boost[i]* prot_sev_scalar) +
     ((population_protection_sev_vax[i-1] * (1.0-((vax_to_hybrid[i] + vax_to_boost[i])/ vax_prvl[i-1])))* exp(waning_scalar_sev * -.008));
     }
     if(hybrid_prvl[i-1] == 0.0){
@@ -847,57 +849,68 @@ if(sum(full_vax[1:i]) == 0.0){
     } else {
       
     population_protection_hybrid[i] = 
-    vax_to_hybrid[i] +
-    hybrid_to_boost[i] +
-    inf_to_hybrid[i] +
-    hybrid_to_reinf[i] +
+    (vax_to_hybrid[i] * prot_scalar)+
+    (hybrid_to_boost[i] * prot_scalar)+
+    (inf_to_hybrid[i] * prot_scalar)+
+    (hybrid_to_reinf[i] * prot_scalar)+
     ((population_protection_hybrid[i-1] * (1.0-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid * -.008));
     
     population_protection_sev_hybrid[i] = 
-    vax_to_hybrid[i] +
-    hybrid_to_boost[i] +
-    inf_to_hybrid[i] +
-    hybrid_to_reinf[i] +
+    (vax_to_hybrid[i] * prot_sev_scalar)+
+    (hybrid_to_boost[i] * prot_sev_scalar)+
+    (inf_to_hybrid[i] * prot_sev_scalar)+
+    (hybrid_to_reinf[i] * prot_sev_scalar)+
     ((population_protection_sev_hybrid[i-1] * (1.0-((hybrid_to_boost[i] + hybrid_to_reinf[i])/ hybrid_prvl[i-1])))* exp(waning_scalar_hybrid_sev * -.008));
     }
     // Flow of new immunity due to vaccination/infection only
       if(vax_prvl[i-1] == 0.0){
-        new_protection_inf[i] = naive_to_inf[i] + (inf_to_reinf[i] - population_protection_inf[i-1] * (inf_to_reinf[i]/inf_prvl[i-1]));
-        new_protection_vax[i] = naive_to_vax[i];
+        new_protection_inf[i] = (naive_to_inf[i] * prot_scalar) + (inf_to_reinf[i] - population_protection_inf[i-1] * (inf_to_reinf[i]/inf_prvl[i-1]));
+        new_protection_vax[i] = (naive_to_vax[i] * prot_scalar);
       } else{
         if(hybrid_prvl[i-1] == 0.0){
-          new_protection_inf[i] = naive_to_inf[i] + 
-          (inf_to_reinf[i] - population_protection_inf[i] * (inf_to_reinf[i]/inf_prvl[i-1])) +
-          (vax_to_hybrid[i] - population_protection_vax[i-1]*(vax_to_hybrid[i]/vax_prvl[i-1]));
+          new_protection_inf[i] = (naive_to_inf[i] * prot_scalar) + 
+          ((inf_to_reinf[i]*prot_scalar) - population_protection_inf[i] * (inf_to_reinf[i]/inf_prvl[i-1])) +
+          ((vax_to_hybrid[i]*prot_scalar) - population_protection_vax[i-1]*(vax_to_hybrid[i]/vax_prvl[i-1]));
           
-          new_protection_vax[i] = naive_to_vax[i] + 
-          (vax_to_boost[i] - population_protection_vax[i-1]*(vax_to_boost[i]/vax_prvl[i-1])) +
-          (inf_to_hybrid[i-1] - population_protection_inf[i-1]*(inf_to_hybrid[i]/inf_prvl[i-1]));
+          new_protection_vax[i] = (naive_to_vax[i] * prot_scalar) + 
+          ((vax_to_boost[i] * prot_scalar) - population_protection_vax[i-1]*(vax_to_boost[i]/vax_prvl[i-1])) +
+          ((inf_to_hybrid[i] * prot_scalar) - population_protection_inf[i-1]*(inf_to_hybrid[i]/inf_prvl[i-1]));
         } else {
-          new_protection_inf[i] = naive_to_inf[i] + 
-          (inf_to_reinf[i] - population_protection_inf[i] * (inf_to_reinf[i]/inf_prvl[i-1])) +
-          (vax_to_hybrid[i] - population_protection_vax[i-1]*(vax_to_hybrid[i]/vax_prvl[i-1])) +
-          (hybrid_to_reinf[i] - population_protection_hybrid[i-1]*(hybrid_to_reinf[i]/hybrid_prvl[i-1]));
+          new_protection_inf[i] = (naive_to_inf[i] * prot_scalar) + 
+          ((inf_to_reinf[i] * prot_scalar) - population_protection_inf[i] * (inf_to_reinf[i]/inf_prvl[i-1])) +
+          ((vax_to_hybrid[i] * prot_scalar) - population_protection_vax[i-1]*(vax_to_hybrid[i]/vax_prvl[i-1])) +
+          ((hybrid_to_reinf[i] * prot_scalar) - population_protection_hybrid[i-1]*(hybrid_to_reinf[i]/hybrid_prvl[i-1]));
           
-          new_protection_vax[i] = naive_to_vax[i] + 
-          (vax_to_boost[i] - population_protection_vax[i-1]*(vax_to_boost[i]/vax_prvl[i-1])) +
-          (inf_to_hybrid[i-1] - population_protection_inf[i-1]*(inf_to_hybrid[i]/inf_prvl[i-1]))+ 
-          (hybrid_to_boost[i] - population_protection_hybrid[i-1]*(hybrid_to_boost[i]/hybrid_prvl[i-1]));
+          new_protection_vax[i] = (naive_to_vax[i] * prot_scalar)+ 
+          ((vax_to_boost[i] * prot_scalar) - population_protection_vax[i-1]*(vax_to_boost[i]/vax_prvl[i-1])) +
+          ((inf_to_hybrid[i] * prot_scalar) - population_protection_inf[i-1]*(inf_to_hybrid[i]/inf_prvl[i-1]))+ 
+          ((hybrid_to_boost[i] * prot_scalar) - population_protection_hybrid[i-1]*(hybrid_to_boost[i]/hybrid_prvl[i-1]));
         }
     }
     }
     
-    if(i == N_weeks_start_omicron + N_weeks_before){
-      population_protection_inf[i] = population_protection_inf[i] * (1.0 - omicron_scalar);
-      population_protection_vax[i] = population_protection_vax[i] * (1.0 - omicron_scalar);
-      population_protection_hybrid[i] = population_protection_hybrid[i] * (1.0 - omicron_scalar);
-      population_protection_sev_inf[i] = population_protection_sev_inf[i] * (1.0 - omicron_scalar);
-      population_protection_sev_vax[i] = population_protection_sev_vax[i] * (1.0 - omicron_scalar);
-      population_protection_sev_hybrid[i] = population_protection_sev_hybrid[i] * (1.0 - omicron_scalar);
+    if(i >= N_weeks_start_omicron + N_weeks_before){
+      if(i < N_weeks_start_omicron + N_weeks_before + N_weeks_transition){
+      population_protection_inf[i] = population_protection_inf[i] * pow((1.0 - omicron_scalar), 0.25);
+      population_protection_vax[i] = population_protection_vax[i] * pow((1.0 - omicron_scalar), 0.25);
+      population_protection_hybrid[i] = population_protection_hybrid[i] * pow((1.0 - omicron_scalar), 0.25);
+      population_protection_sev_inf[i] = population_protection_sev_inf[i] * pow((1.0 - omicron_scalar), 0.25);
+      population_protection_sev_vax[i] = population_protection_sev_vax[i] * pow((1.0 - omicron_scalar), 0.25);
+      population_protection_sev_hybrid[i] = population_protection_sev_hybrid[i] * pow((1.0 - omicron_scalar), 0.25);
     }
+    }
+    // 
+    // if(i == N_weeks_start_omicron + N_weeks_before){
+    //   population_protection_inf[i] = population_protection_inf[i] * (1.0 - omicron_scalar);
+    //   population_protection_vax[i] = population_protection_vax[i] * (1.0 - omicron_scalar);
+    //   population_protection_hybrid[i] = population_protection_hybrid[i] * (1.0 - omicron_scalar);
+    //   population_protection_sev_inf[i] = population_protection_sev_inf[i] * (1.0 - omicron_scalar);
+    //   population_protection_sev_vax[i] = population_protection_sev_vax[i] * (1.0 - omicron_scalar);
+    //   population_protection_sev_hybrid[i] = population_protection_sev_hybrid[i] * (1.0 - omicron_scalar);
+    // }
     
     new_protection[i] = new_protection_inf[i] + new_protection_vax[i];
-    lost_protection_net[i] = (effective_protection_prvl_lag[i]-effective_protection_prvl[i] );
+    lost_protection_net[i] = (effective_protection_prvl[i]-effective_protection_prvl_lag[i] );
     lost_protection[i] = new_protection[i] - lost_protection_net[i];
 // population_protection_inf[i] = sum(infections[1:i]  .* (exp(-.008 * idx3[N_weeks_tot-i +1:N_weeks_tot] * waning_scalar))) * p_reinf[i];
 // 
