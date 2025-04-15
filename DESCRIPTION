@@ -58,7 +58,7 @@ Suggests:
     grDevices,
     knitr,
     rmarkdown
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.2
 RdMacros: Rdpack
 Depends: 
     R (>= 3.4.0)

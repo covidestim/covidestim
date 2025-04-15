@@ -4,6 +4,9 @@
 \alias{input_cases}
 \alias{input_deaths}
 \alias{input_rr}
+\alias{input_hosp}
+\alias{input_boost}
+\alias{input_vax}
 \title{Input observational data}
 \usage{
 input_cases(data, type = "reported", lastCaseDate = NULL)
@@ -11,6 +14,12 @@ input_cases(data, type = "reported", lastCaseDate = NULL)
 input_deaths(data, type = "reported", lastDeathDate = NULL)
 
 input_rr(data, type = "reported")
+
+input_hosp(data, type = "reported", lastHospDate = NULL, firstHospDate = NULL)
+
+input_boost(data, type = "reported")
+
+input_vax(data, type = "reported")
 }
 \arguments{
 \item{data}{A \code{\link[base]{data.frame}} as described below.}

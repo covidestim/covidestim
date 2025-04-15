@@ -10,6 +10,7 @@ priors_progression(
   sev_prg_delay = c(2.061, 0.2277 * 7),
   asy_rec_delay = c(14, 2 * 7),
   pri_serial_i = c(129.1, 22.23 * 7),
+  pri_serial_i_postO = c(34.615, 11.538 * 7),
   infect_dist = c(8, 1.241 * 7),
   seropos_dist = c(4.41, 0.042 * 7)
 )
