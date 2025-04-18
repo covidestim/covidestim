@@ -1330,8 +1330,8 @@ generated quantities {
   // vector[N_weeks_tot]     num_uninf;
   real                p_die_if_sym;
   real                p_die_if_sym_postO;
-  // vector[N_weeks_tot] susceptible_severe_prvl;
-  // vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
+  vector[N_weeks_tot] susceptible_severe_prvl;
+  vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
   vector[N_weeks_tot] effective_protection_inf_vax_prvl;
   vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
   vector[N_weeks_tot] effective_protection_vax_prvl;
