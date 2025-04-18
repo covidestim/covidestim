@@ -201,7 +201,8 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
                     cum_p_inf_init = 0,
                     start_p_imm = 0,
                     OR = 1, 
-                    p_hosp_nonsevere = 0.002
+                    p_hosp_nonsevere_a = 0.013968,
+                    p_hosp_nonsevere_b = 6.970032
                     )
 {
   n_spl_par_rt <- max(4,ceiling((N_weeks + N_weeks_before)/n_spl_rt_knotwidth))
@@ -250,7 +251,8 @@ genData <- function(N_weeks, N_weeks_before = 28/7,
     OR = OR,
     # Add probability of non-severe hospitalization 
     # Want to test different values so that is why we are exposing it to the function call 
-    p_hosp_nonsevere = p_hosp_nonsevere,
+    p_hosp_nonsevere_a = p_hosp_nonsevere_a,
+    p_hosp_nonsevere_b = p_hosp_nonsevere_b,
     # vectors of event counts; default to 0 if no input
     obs_cas = NULL, # vector of int by date. should have 0s if no event that day
     obs_die = NULL, # vector of int by date. should have 0s if no event that day

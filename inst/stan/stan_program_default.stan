@@ -74,7 +74,7 @@ data {
   real<lower=0>          pop_size; // population size
   real<lower=0>          OR; //or of being vaccinated given infection
   
-  real<lower=0, upper=1>    p_hosp_nonsevere; // HOSPITALIZATION (NON SEVERE)
+  // real<lower=0, upper=1>    p_hosp_nonsevere; // HOSPITALIZATION (NON SEVERE)
 
   int<lower=0>           N_ifr_adj; // length of ifr_adjustment
   vector<lower=0>[N_ifr_adj] ifr_adj; // ifr_adjustment
@@ -201,6 +201,10 @@ data {
   real<lower=0> scale_dx_delay_sev_a; 
   real<lower=0> scale_dx_delay_sev_b;
 
+  // probabilities of diagnosis 
+  // rate ratio, pr(dx) asymptomatic to symptomatic
+  real<lower=0> p_hosp_nonsevere_a; 
+  real<lower=0> p_hosp_nonsevere_b;
   
   // input for the number of days to put the Rt prior on
   // int<lower=0>  N_days_pri_Rt;
@@ -239,7 +243,7 @@ transformed data {
  //   int  idx1[N_days + N_days_before];
  // int  idx2[N_days + N_days_before];
  // vector[N_days + N_days_before] idx3;
-   int  idx1[N_weeks + N_weeks_before];
+ int  idx1[N_weeks + N_weeks_before];
  int  idx2[N_weeks + N_weeks_before];
  vector[N_weeks + N_weeks_before] idx3;
  vector[N_weeks + N_weeks_before] idx4; // index for the omicron switch weeks
@@ -387,7 +391,7 @@ parameters {
   real<lower=0>             ifr_decl_OR;
   
 // // HOSPITALIZATION (NON SEVERE)
-//   real<lower=0, upper=1>    p_hosp_nonsevere;
+  real<lower=0, upper=1>    p_hosp_nonsevere;
   
 // DIANGOSIS
 // scaling factor for time to diagnosis
@@ -428,7 +432,7 @@ transformed parameters {
   vector[N_weeks_tot]     p_first;
   vector[N_weeks_tot]     p_boost;
   // vector[N_weeks_tot]     p_inf_reinf;
-  vector[N_weeks_tot]     p_reinf;
+  // vector[N_weeks_tot]     p_reinf;
   vector[N_weeks_tot]     naive_to_vax;
   vector[N_weeks_tot]     naive_to_inf;
   vector[N_weeks_tot]     inf_to_reinf;
@@ -444,7 +448,7 @@ transformed parameters {
   vector[N_weeks_tot]     inf_prvl;
   vector[N_weeks_tot]     naive_prvl;
   vector[N_weeks_tot]     hybrid_prvl;
-  real                    ever_inf;
+  // real                    ever_inf;
   vector[N_weeks_tot]     p1;
   vector[N_weeks_tot]     p1max;
   vector[N_weeks_tot]     p1min;
@@ -1212,6 +1216,10 @@ model {
   scale_dx_delay_sym   ~ beta(scale_dx_delay_sym_a, scale_dx_delay_sym_b); 
   scale_dx_delay_sev   ~ beta(scale_dx_delay_sev_a, scale_dx_delay_sev_b);
   
+  // PRIOR: 
+  // probability of hospitalization with nonSevere disease 
+  p_hosp_nonsevere ~ beta(p_hosp_nonsevere_a, p_hosp_nonsevere_b);
+  
   // phi  
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
@@ -1322,8 +1330,8 @@ generated quantities {
   // vector[N_weeks_tot]     num_uninf;
   real                p_die_if_sym;
   real                p_die_if_sym_postO;
-  vector[N_weeks_tot] susceptible_severe_prvl;
-  vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
+  // vector[N_weeks_tot] susceptible_severe_prvl;
+  // vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
   vector[N_weeks_tot] effective_protection_inf_vax_prvl;
   vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
   vector[N_weeks_tot] effective_protection_vax_prvl;
