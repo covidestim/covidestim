@@ -27,7 +27,7 @@ namespace model_stan_program_default_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 745> locations_array__ =
+static constexpr std::array<const char*, 749> locations_array__ =
   {" (found before start of program)",
   " (in 'stan_program_default', line 328, column 2 to column 24)",
   " (in 'stan_program_default', line 330, column 2 to column 16)",
@@ -414,15 +414,19 @@ static constexpr std::array<const char*, 745> locations_array__ =
   " (in 'stan_program_default', line 1058, column 2 to column 36)",
   " (in 'stan_program_default', line 1059, column 2 to column 37)",
   " (in 'stan_program_default', line 1060, column 2 to column 36)",
-  " (in 'stan_program_default', line 1232, column 2 to column 92)",
-  " (in 'stan_program_default', line 1241, column 2 to column 45)",
-  " (in 'stan_program_default', line 1242, column 2 to column 51)",
-  " (in 'stan_program_default', line 1244, column 2 to column 59)",
-  " (in 'stan_program_default', line 1247, column 4 to line 1249, column 58)",
-  " (in 'stan_program_default', line 1246, column 2 to line 1249, column 58)",
-  " (in 'stan_program_default', line 1253, column 4 to line 1254, column 64)",
-  " (in 'stan_program_default', line 1252, column 2 to line 1254, column 64)",
-  " (in 'stan_program_default', line 1259, column 2 to column 58)",
+  " (in 'stan_program_default', line 1231, column 2 to column 31)",
+  " (in 'stan_program_default', line 1232, column 2 to column 31)",
+  " (in 'stan_program_default', line 1233, column 2 to column 31)",
+  " (in 'stan_program_default', line 1234, column 2 to column 31)",
+  " (in 'stan_program_default', line 1235, column 2 to column 92)",
+  " (in 'stan_program_default', line 1244, column 2 to column 45)",
+  " (in 'stan_program_default', line 1245, column 2 to column 51)",
+  " (in 'stan_program_default', line 1247, column 2 to column 59)",
+  " (in 'stan_program_default', line 1250, column 4 to line 1252, column 58)",
+  " (in 'stan_program_default', line 1249, column 2 to line 1252, column 58)",
+  " (in 'stan_program_default', line 1256, column 4 to line 1257, column 64)",
+  " (in 'stan_program_default', line 1255, column 2 to line 1257, column 64)",
+  " (in 'stan_program_default', line 1262, column 2 to column 58)",
   " (in 'stan_program_default', line 1065, column 2 to column 78)",
   " (in 'stan_program_default', line 1067, column 2 to column 50)",
   " (in 'stan_program_default', line 1068, column 2 to column 57)",
@@ -809,36 +813,36 @@ conv1d(const T0__& x_arg__, const T1__& kernel_arg__, std::ostream* pstream__) {
   (void) DUMMY_VAR__;
   try {
     int nk = std::numeric_limits<int>::min();
-    current_statement__ = 718;
+    current_statement__ = 722;
     nk = stan::math::rows(kernel);
     int nx = std::numeric_limits<int>::min();
-    current_statement__ = 719;
+    current_statement__ = 723;
     nx = stan::math::rows(x);
-    current_statement__ = 720;
+    current_statement__ = 724;
     stan::math::validate_non_negative_index("X", "nx", nx);
-    current_statement__ = 721;
+    current_statement__ = 725;
     stan::math::validate_non_negative_index("X", "nk", nk);
     Eigen::Matrix<local_scalar_t__,-1,-1> X =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(nx, nk, DUMMY_VAR__);
-    current_statement__ = 724;
+    current_statement__ = 728;
     if (stan::math::logical_lt(nx, nk)) {
-      current_statement__ = 723;
+      current_statement__ = 727;
       std::stringstream errmsg_stream__;
       stan::math::stan_print(&errmsg_stream__,
         "nrow(x) must be >= nrow(kernel). x had nrow =");
       stan::math::stan_print(&errmsg_stream__, nx);
       throw std::domain_error(errmsg_stream__.str());
     }
-    current_statement__ = 729;
+    current_statement__ = 733;
     for (int i = 1; i <= nk; ++i) {
-      current_statement__ = 726;
+      current_statement__ = 730;
       if (stan::math::logical_lt(i, nk)) {
-        current_statement__ = 725;
+        current_statement__ = 729;
         stan::model::assign(X, stan::math::rep_vector(0, (nk - i)),
           "assigning variable X", stan::model::index_min_max(1, (nk - i)),
           stan::model::index_uni(i));
       }
-      current_statement__ = 727;
+      current_statement__ = 731;
       stan::model::assign(X,
         stan::model::rvalue(x, "x",
           stan::model::index_min_max(1, ((nx - nk) + i))),
@@ -846,7 +850,7 @@ conv1d(const T0__& x_arg__, const T1__& kernel_arg__, std::ostream* pstream__) {
         stan::model::index_min_max(((nk - i) + 1), nx),
         stan::model::index_uni(i));
     }
-    current_statement__ = 730;
+    current_statement__ = 734;
     return stan::math::multiply(X, kernel);
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -869,41 +873,41 @@ calcExposed(const T0__& OR, const T1__& cumInf, const T2__& cumVac,
   (void) DUMMY_VAR__;
   try {
     local_scalar_t__ t1 = DUMMY_VAR__;
-    current_statement__ = 732;
+    current_statement__ = 736;
     t1 = ((((1 + (OR * cumInf)) - cumInf) - (OR * cumVac)) - cumVac);
     local_scalar_t__ t2 = DUMMY_VAR__;
-    current_statement__ = 733;
+    current_statement__ = 737;
     t2 = (OR - (cumVac * OR));
     local_scalar_t__ b = DUMMY_VAR__;
-    current_statement__ = 734;
+    current_statement__ = 738;
     b = ((-t1 +
       stan::math::pow((stan::math::pow(t1, 2) + ((4 * cumVac) * t2)), 0.5)) /
       (2 * t2));
     local_scalar_t__ o_inf = DUMMY_VAR__;
-    current_statement__ = 735;
+    current_statement__ = 739;
     o_inf = (b * OR);
     local_scalar_t__ cp_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 736;
+    current_statement__ = 740;
     cp_vac_not_inf = (b / (1 + b));
     local_scalar_t__ cp_vac_inf = DUMMY_VAR__;
-    current_statement__ = 737;
+    current_statement__ = 741;
     cp_vac_inf = (o_inf / (1 + o_inf));
     local_scalar_t__ p_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 738;
+    current_statement__ = 742;
     p_vac_not_inf = (cp_vac_not_inf * (1 - cumInf));
     local_scalar_t__ p_vac_inf = DUMMY_VAR__;
-    current_statement__ = 739;
+    current_statement__ = 743;
     p_vac_inf = (cp_vac_inf * cumInf);
     local_scalar_t__ p_not_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 740;
+    current_statement__ = 744;
     p_not_vac_not_inf = ((1 - cp_vac_not_inf) * (1 - cumInf));
     local_scalar_t__ p_not_vac_inf = DUMMY_VAR__;
-    current_statement__ = 741;
+    current_statement__ = 745;
     p_not_vac_inf = ((1 - cp_vac_inf) * cumInf);
     local_scalar_t__ pct_imm = DUMMY_VAR__;
-    current_statement__ = 742;
+    current_statement__ = 746;
     pct_imm = ((p_vac_inf + p_vac_not_inf) + p_not_vac_inf);
-    current_statement__ = 743;
+    current_statement__ = 747;
     return pct_imm;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1062,84 +1066,84 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      current_statement__ = 435;
+      current_statement__ = 439;
       context__.validate_dims("data initialization", "N_weeks", "int",
         std::vector<size_t>{});
       N_weeks = std::numeric_limits<int>::min();
-      current_statement__ = 435;
+      current_statement__ = 439;
       N_weeks = context__.vals_i("N_weeks")[(1 - 1)];
-      current_statement__ = 435;
+      current_statement__ = 439;
       stan::math::check_greater_or_equal(function__, "N_weeks", N_weeks, 0);
-      current_statement__ = 436;
+      current_statement__ = 440;
       context__.validate_dims("data initialization", "N_weeks_start_omicron",
         "int", std::vector<size_t>{});
       N_weeks_start_omicron = std::numeric_limits<int>::min();
-      current_statement__ = 436;
+      current_statement__ = 440;
       N_weeks_start_omicron = context__.vals_i("N_weeks_start_omicron")[(1 -
         1)];
-      current_statement__ = 436;
+      current_statement__ = 440;
       stan::math::check_greater_or_equal(function__, "N_weeks_start_omicron",
         N_weeks_start_omicron, 0);
-      current_statement__ = 437;
+      current_statement__ = 441;
       context__.validate_dims("data initialization", "N_weeks_before", "int",
         std::vector<size_t>{});
       N_weeks_before = std::numeric_limits<int>::min();
-      current_statement__ = 437;
+      current_statement__ = 441;
       N_weeks_before = context__.vals_i("N_weeks_before")[(1 - 1)];
-      current_statement__ = 437;
+      current_statement__ = 441;
       stan::math::check_greater_or_equal(function__, "N_weeks_before",
         N_weeks_before, 0);
-      current_statement__ = 438;
+      current_statement__ = 442;
       context__.validate_dims("data initialization", "N_weeks_transition",
         "int", std::vector<size_t>{});
       N_weeks_transition = std::numeric_limits<int>::min();
-      current_statement__ = 438;
+      current_statement__ = 442;
       N_weeks_transition = context__.vals_i("N_weeks_transition")[(1 - 1)];
-      current_statement__ = 438;
+      current_statement__ = 442;
       stan::math::check_greater_or_equal(function__, "N_weeks_transition",
         N_weeks_transition, 0);
-      current_statement__ = 439;
+      current_statement__ = 443;
       context__.validate_dims("data initialization", "Max_delay", "int",
         std::vector<size_t>{});
       Max_delay = std::numeric_limits<int>::min();
-      current_statement__ = 439;
+      current_statement__ = 443;
       Max_delay = context__.vals_i("Max_delay")[(1 - 1)];
-      current_statement__ = 439;
+      current_statement__ = 443;
       stan::math::check_greater_or_equal(function__, "Max_delay", Max_delay,
         0);
-      current_statement__ = 440;
+      current_statement__ = 444;
       stan::math::validate_non_negative_index("obs_cas", "N_weeks", N_weeks);
-      current_statement__ = 441;
+      current_statement__ = 445;
       context__.validate_dims("data initialization", "obs_cas", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_cas = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 441;
+      current_statement__ = 445;
       obs_cas = context__.vals_i("obs_cas");
-      current_statement__ = 441;
+      current_statement__ = 445;
       stan::math::check_greater_or_equal(function__, "obs_cas", obs_cas, 0);
-      current_statement__ = 442;
+      current_statement__ = 446;
       stan::math::validate_non_negative_index("obs_die", "N_weeks", N_weeks);
-      current_statement__ = 443;
+      current_statement__ = 447;
       context__.validate_dims("data initialization", "obs_die", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_die = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 443;
+      current_statement__ = 447;
       obs_die = context__.vals_i("obs_die");
-      current_statement__ = 443;
+      current_statement__ = 447;
       stan::math::check_greater_or_equal(function__, "obs_die", obs_die, 0);
-      current_statement__ = 444;
+      current_statement__ = 448;
       stan::math::validate_non_negative_index("obs_hosp", "N_weeks", N_weeks);
-      current_statement__ = 445;
+      current_statement__ = 449;
       context__.validate_dims("data initialization", "obs_hosp", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_hosp = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 445;
+      current_statement__ = 449;
       obs_hosp = context__.vals_i("obs_hosp");
-      current_statement__ = 445;
+      current_statement__ = 449;
       stan::math::check_greater_or_equal(function__, "obs_hosp", obs_hosp, 0);
-      current_statement__ = 446;
+      current_statement__ = 450;
       stan::math::validate_non_negative_index("obs_boost", "N_weeks", N_weeks);
-      current_statement__ = 447;
+      current_statement__ = 451;
       context__.validate_dims("data initialization", "obs_boost", "double",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_boost_data__ = Eigen::Matrix<double,-1,1>::Constant(N_weeks,
@@ -1149,25 +1153,25 @@ public:
         N_weeks);
       {
         std::vector<local_scalar_t__> obs_boost_flat__;
-        current_statement__ = 447;
+        current_statement__ = 451;
         obs_boost_flat__ = context__.vals_r("obs_boost");
-        current_statement__ = 447;
+        current_statement__ = 451;
         pos__ = 1;
-        current_statement__ = 447;
+        current_statement__ = 451;
         for (int sym1__ = 1; sym1__ <= N_weeks; ++sym1__) {
-          current_statement__ = 447;
+          current_statement__ = 451;
           stan::model::assign(obs_boost, obs_boost_flat__[(pos__ - 1)],
             "assigning variable obs_boost", stan::model::index_uni(sym1__));
-          current_statement__ = 447;
+          current_statement__ = 451;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 447;
+      current_statement__ = 451;
       stan::math::check_greater_or_equal(function__, "obs_boost", obs_boost,
         0);
-      current_statement__ = 448;
+      current_statement__ = 452;
       stan::math::validate_non_negative_index("obs_vax", "N_weeks", N_weeks);
-      current_statement__ = 449;
+      current_statement__ = 453;
       context__.validate_dims("data initialization", "obs_vax", "double",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_vax_data__ = Eigen::Matrix<double,-1,1>::Constant(N_weeks,
@@ -1177,50 +1181,50 @@ public:
         N_weeks);
       {
         std::vector<local_scalar_t__> obs_vax_flat__;
-        current_statement__ = 449;
+        current_statement__ = 453;
         obs_vax_flat__ = context__.vals_r("obs_vax");
-        current_statement__ = 449;
+        current_statement__ = 453;
         pos__ = 1;
-        current_statement__ = 449;
+        current_statement__ = 453;
         for (int sym1__ = 1; sym1__ <= N_weeks; ++sym1__) {
-          current_statement__ = 449;
+          current_statement__ = 453;
           stan::model::assign(obs_vax, obs_vax_flat__[(pos__ - 1)],
             "assigning variable obs_vax", stan::model::index_uni(sym1__));
-          current_statement__ = 449;
+          current_statement__ = 453;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 449;
+      current_statement__ = 453;
       stan::math::check_greater_or_equal(function__, "obs_vax", obs_vax, 0);
-      current_statement__ = 450;
+      current_statement__ = 454;
       context__.validate_dims("data initialization", "pop_size", "double",
         std::vector<size_t>{});
       pop_size = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 450;
+      current_statement__ = 454;
       pop_size = context__.vals_r("pop_size")[(1 - 1)];
-      current_statement__ = 450;
+      current_statement__ = 454;
       stan::math::check_greater_or_equal(function__, "pop_size", pop_size, 0);
-      current_statement__ = 451;
+      current_statement__ = 455;
       context__.validate_dims("data initialization", "OR", "double",
         std::vector<size_t>{});
       OR = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 451;
+      current_statement__ = 455;
       OR = context__.vals_r("OR")[(1 - 1)];
-      current_statement__ = 451;
+      current_statement__ = 455;
       stan::math::check_greater_or_equal(function__, "OR", OR, 0);
-      current_statement__ = 452;
+      current_statement__ = 456;
       context__.validate_dims("data initialization", "N_ifr_adj", "int",
         std::vector<size_t>{});
       N_ifr_adj = std::numeric_limits<int>::min();
-      current_statement__ = 452;
+      current_statement__ = 456;
       N_ifr_adj = context__.vals_i("N_ifr_adj")[(1 - 1)];
-      current_statement__ = 452;
+      current_statement__ = 456;
       stan::math::check_greater_or_equal(function__, "N_ifr_adj", N_ifr_adj,
         0);
-      current_statement__ = 453;
+      current_statement__ = 457;
       stan::math::validate_non_negative_index("ifr_adj", "N_ifr_adj",
         N_ifr_adj);
-      current_statement__ = 454;
+      current_statement__ = 458;
       context__.validate_dims("data initialization", "ifr_adj", "double",
         std::vector<size_t>{static_cast<size_t>(N_ifr_adj)});
       ifr_adj_data__ = Eigen::Matrix<double,-1,1>::Constant(N_ifr_adj,
@@ -1230,25 +1234,25 @@ public:
         N_ifr_adj);
       {
         std::vector<local_scalar_t__> ifr_adj_flat__;
-        current_statement__ = 454;
+        current_statement__ = 458;
         ifr_adj_flat__ = context__.vals_r("ifr_adj");
-        current_statement__ = 454;
+        current_statement__ = 458;
         pos__ = 1;
-        current_statement__ = 454;
+        current_statement__ = 458;
         for (int sym1__ = 1; sym1__ <= N_ifr_adj; ++sym1__) {
-          current_statement__ = 454;
+          current_statement__ = 458;
           stan::model::assign(ifr_adj, ifr_adj_flat__[(pos__ - 1)],
             "assigning variable ifr_adj", stan::model::index_uni(sym1__));
-          current_statement__ = 454;
+          current_statement__ = 458;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 454;
+      current_statement__ = 458;
       stan::math::check_greater_or_equal(function__, "ifr_adj", ifr_adj, 0);
-      current_statement__ = 455;
+      current_statement__ = 459;
       stan::math::validate_non_negative_index("ifr_vac_adj",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 456;
+      current_statement__ = 460;
       context__.validate_dims("data initialization", "ifr_vac_adj", "double",
         std::vector<size_t>{static_cast<size_t>((N_weeks + N_weeks_before))});
       ifr_vac_adj_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
@@ -1259,181 +1263,181 @@ public:
         (N_weeks + N_weeks_before));
       {
         std::vector<local_scalar_t__> ifr_vac_adj_flat__;
-        current_statement__ = 456;
+        current_statement__ = 460;
         ifr_vac_adj_flat__ = context__.vals_r("ifr_vac_adj");
-        current_statement__ = 456;
+        current_statement__ = 460;
         pos__ = 1;
-        current_statement__ = 456;
+        current_statement__ = 460;
         for (int sym1__ = 1; sym1__ <= (N_weeks + N_weeks_before); ++sym1__) {
-          current_statement__ = 456;
+          current_statement__ = 460;
           stan::model::assign(ifr_vac_adj, ifr_vac_adj_flat__[(pos__ - 1)],
             "assigning variable ifr_vac_adj", stan::model::index_uni(sym1__));
-          current_statement__ = 456;
+          current_statement__ = 460;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 456;
+      current_statement__ = 460;
       stan::math::check_greater_or_equal(function__, "ifr_vac_adj",
         ifr_vac_adj, 0);
-      current_statement__ = 457;
+      current_statement__ = 461;
       context__.validate_dims("data initialization", "pri_ifr_decl_OR_a",
         "double", std::vector<size_t>{});
       pri_ifr_decl_OR_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 457;
+      current_statement__ = 461;
       pri_ifr_decl_OR_a = context__.vals_r("pri_ifr_decl_OR_a")[(1 - 1)];
-      current_statement__ = 457;
+      current_statement__ = 461;
       stan::math::check_greater_or_equal(function__, "pri_ifr_decl_OR_a",
         pri_ifr_decl_OR_a, 0);
-      current_statement__ = 458;
+      current_statement__ = 462;
       context__.validate_dims("data initialization", "pri_ifr_decl_OR_b",
         "double", std::vector<size_t>{});
       pri_ifr_decl_OR_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 458;
+      current_statement__ = 462;
       pri_ifr_decl_OR_b = context__.vals_r("pri_ifr_decl_OR_b")[(1 - 1)];
-      current_statement__ = 458;
+      current_statement__ = 462;
       stan::math::check_greater_or_equal(function__, "pri_ifr_decl_OR_b",
         pri_ifr_decl_OR_b, 0);
-      current_statement__ = 459;
+      current_statement__ = 463;
       context__.validate_dims("data initialization", "ifr_adj_fixed",
         "double", std::vector<size_t>{});
       ifr_adj_fixed = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 459;
+      current_statement__ = 463;
       ifr_adj_fixed = context__.vals_r("ifr_adj_fixed")[(1 - 1)];
-      current_statement__ = 459;
+      current_statement__ = 463;
       stan::math::check_greater_or_equal(function__, "ifr_adj_fixed",
         ifr_adj_fixed, 0);
-      current_statement__ = 460;
+      current_statement__ = 464;
       context__.validate_dims("data initialization", "infect_dist_rate",
         "double", std::vector<size_t>{});
       infect_dist_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 460;
+      current_statement__ = 464;
       infect_dist_rate = context__.vals_r("infect_dist_rate")[(1 - 1)];
-      current_statement__ = 460;
+      current_statement__ = 464;
       stan::math::check_greater_or_equal(function__, "infect_dist_rate",
         infect_dist_rate, 0);
-      current_statement__ = 461;
+      current_statement__ = 465;
       context__.validate_dims("data initialization", "infect_dist_shap",
         "double", std::vector<size_t>{});
       infect_dist_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 461;
+      current_statement__ = 465;
       infect_dist_shap = context__.vals_r("infect_dist_shap")[(1 - 1)];
-      current_statement__ = 461;
+      current_statement__ = 465;
       stan::math::check_greater_or_equal(function__, "infect_dist_shap",
         infect_dist_shap, 0);
-      current_statement__ = 462;
+      current_statement__ = 466;
       context__.validate_dims("data initialization", "seropos_dist_rate",
         "double", std::vector<size_t>{});
       seropos_dist_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 462;
+      current_statement__ = 466;
       seropos_dist_rate = context__.vals_r("seropos_dist_rate")[(1 - 1)];
-      current_statement__ = 462;
+      current_statement__ = 466;
       stan::math::check_greater_or_equal(function__, "seropos_dist_rate",
         seropos_dist_rate, 0);
-      current_statement__ = 463;
+      current_statement__ = 467;
       context__.validate_dims("data initialization", "seropos_dist_shap",
         "double", std::vector<size_t>{});
       seropos_dist_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 463;
+      current_statement__ = 467;
       seropos_dist_shap = context__.vals_r("seropos_dist_shap")[(1 - 1)];
-      current_statement__ = 463;
+      current_statement__ = 467;
       stan::math::check_greater_or_equal(function__, "seropos_dist_shap",
         seropos_dist_shap, 0);
-      current_statement__ = 464;
+      current_statement__ = 468;
       context__.validate_dims("data initialization", "waning_scalar",
         "double", std::vector<size_t>{});
       waning_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 464;
+      current_statement__ = 468;
       waning_scalar = context__.vals_r("waning_scalar")[(1 - 1)];
-      current_statement__ = 464;
+      current_statement__ = 468;
       stan::math::check_greater_or_equal(function__, "waning_scalar",
         waning_scalar, 0);
-      current_statement__ = 465;
+      current_statement__ = 469;
       context__.validate_dims("data initialization", "prot_scalar", "double",
         std::vector<size_t>{});
       prot_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 465;
+      current_statement__ = 469;
       prot_scalar = context__.vals_r("prot_scalar")[(1 - 1)];
-      current_statement__ = 465;
+      current_statement__ = 469;
       stan::math::check_greater_or_equal(function__, "prot_scalar",
         prot_scalar, 0);
-      current_statement__ = 466;
+      current_statement__ = 470;
       context__.validate_dims("data initialization", "waning_scalar_sev",
         "double", std::vector<size_t>{});
       waning_scalar_sev = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 466;
+      current_statement__ = 470;
       waning_scalar_sev = context__.vals_r("waning_scalar_sev")[(1 - 1)];
-      current_statement__ = 466;
+      current_statement__ = 470;
       stan::math::check_greater_or_equal(function__, "waning_scalar_sev",
         waning_scalar_sev, 0);
-      current_statement__ = 467;
+      current_statement__ = 471;
       context__.validate_dims("data initialization", "prot_sev_scalar",
         "double", std::vector<size_t>{});
       prot_sev_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 467;
+      current_statement__ = 471;
       prot_sev_scalar = context__.vals_r("prot_sev_scalar")[(1 - 1)];
-      current_statement__ = 467;
+      current_statement__ = 471;
       stan::math::check_greater_or_equal(function__, "prot_sev_scalar",
         prot_sev_scalar, 0);
-      current_statement__ = 468;
+      current_statement__ = 472;
       context__.validate_dims("data initialization", "waning_scalar_hybrid",
         "double", std::vector<size_t>{});
       waning_scalar_hybrid = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 468;
+      current_statement__ = 472;
       waning_scalar_hybrid = context__.vals_r("waning_scalar_hybrid")[(1 -
         1)];
-      current_statement__ = 468;
+      current_statement__ = 472;
       stan::math::check_greater_or_equal(function__, "waning_scalar_hybrid",
         waning_scalar_hybrid, 0);
-      current_statement__ = 469;
+      current_statement__ = 473;
       context__.validate_dims("data initialization",
         "waning_scalar_hybrid_sev", "double", std::vector<size_t>{});
       waning_scalar_hybrid_sev = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 469;
+      current_statement__ = 473;
       waning_scalar_hybrid_sev = context__.vals_r("waning_scalar_hybrid_sev")[(1
         - 1)];
-      current_statement__ = 469;
+      current_statement__ = 473;
       stan::math::check_greater_or_equal(function__,
         "waning_scalar_hybrid_sev", waning_scalar_hybrid_sev, 0);
-      current_statement__ = 470;
+      current_statement__ = 474;
       context__.validate_dims("data initialization", "vax_boost_scalar",
         "double", std::vector<size_t>{});
       vax_boost_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 470;
+      current_statement__ = 474;
       vax_boost_scalar = context__.vals_r("vax_boost_scalar")[(1 - 1)];
-      current_statement__ = 470;
+      current_statement__ = 474;
       stan::math::check_greater_or_equal(function__, "vax_boost_scalar",
         vax_boost_scalar, 0);
-      current_statement__ = 470;
+      current_statement__ = 474;
       stan::math::check_less_or_equal(function__, "vax_boost_scalar",
         vax_boost_scalar, 1);
-      current_statement__ = 471;
+      current_statement__ = 475;
       context__.validate_dims("data initialization", "omicron_scalar",
         "double", std::vector<size_t>{});
       omicron_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 471;
+      current_statement__ = 475;
       omicron_scalar = context__.vals_r("omicron_scalar")[(1 - 1)];
-      current_statement__ = 471;
+      current_statement__ = 475;
       stan::math::check_greater_or_equal(function__, "omicron_scalar",
         omicron_scalar, 0);
-      current_statement__ = 471;
+      current_statement__ = 475;
       stan::math::check_less_or_equal(function__, "omicron_scalar",
         omicron_scalar, 1);
-      current_statement__ = 472;
+      current_statement__ = 476;
       context__.validate_dims("data initialization", "N_spl_par_rt", "int",
         std::vector<size_t>{});
       N_spl_par_rt = std::numeric_limits<int>::min();
-      current_statement__ = 472;
+      current_statement__ = 476;
       N_spl_par_rt = context__.vals_i("N_spl_par_rt")[(1 - 1)];
-      current_statement__ = 472;
+      current_statement__ = 476;
       stan::math::check_greater_or_equal(function__, "N_spl_par_rt",
         N_spl_par_rt, 0);
-      current_statement__ = 473;
+      current_statement__ = 477;
       stan::math::validate_non_negative_index("spl_basis_rt",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 474;
+      current_statement__ = 478;
       stan::math::validate_non_negative_index("spl_basis_rt", "N_spl_par_rt",
         N_spl_par_rt);
-      current_statement__ = 475;
+      current_statement__ = 479;
       context__.validate_dims("data initialization", "spl_basis_rt",
         "double",
         std::vector<size_t>{static_cast<size_t>((N_weeks + N_weeks_before)),
@@ -1446,39 +1450,39 @@ public:
         (N_weeks + N_weeks_before), N_spl_par_rt);
       {
         std::vector<local_scalar_t__> spl_basis_rt_flat__;
-        current_statement__ = 475;
+        current_statement__ = 479;
         spl_basis_rt_flat__ = context__.vals_r("spl_basis_rt");
-        current_statement__ = 475;
+        current_statement__ = 479;
         pos__ = 1;
-        current_statement__ = 475;
+        current_statement__ = 479;
         for (int sym1__ = 1; sym1__ <= N_spl_par_rt; ++sym1__) {
-          current_statement__ = 475;
+          current_statement__ = 479;
           for (int sym2__ = 1; sym2__ <= (N_weeks + N_weeks_before); ++sym2__) {
-            current_statement__ = 475;
+            current_statement__ = 479;
             stan::model::assign(spl_basis_rt, spl_basis_rt_flat__[(pos__ -
               1)], "assigning variable spl_basis_rt",
               stan::model::index_uni(sym2__), stan::model::index_uni(sym1__));
-            current_statement__ = 475;
+            current_statement__ = 479;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 476;
+      current_statement__ = 480;
       context__.validate_dims("data initialization", "N_spl_par_dx", "int",
         std::vector<size_t>{});
       N_spl_par_dx = std::numeric_limits<int>::min();
-      current_statement__ = 476;
+      current_statement__ = 480;
       N_spl_par_dx = context__.vals_i("N_spl_par_dx")[(1 - 1)];
-      current_statement__ = 476;
+      current_statement__ = 480;
       stan::math::check_greater_or_equal(function__, "N_spl_par_dx",
         N_spl_par_dx, 0);
-      current_statement__ = 477;
+      current_statement__ = 481;
       stan::math::validate_non_negative_index("spl_basis_dx",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 478;
+      current_statement__ = 482;
       stan::math::validate_non_negative_index("spl_basis_dx", "N_spl_par_dx",
         N_spl_par_dx);
-      current_statement__ = 479;
+      current_statement__ = 483;
       context__.validate_dims("data initialization", "spl_basis_dx",
         "double",
         std::vector<size_t>{static_cast<size_t>((N_weeks + N_weeks_before)),
@@ -1491,641 +1495,641 @@ public:
         (N_weeks + N_weeks_before), N_spl_par_dx);
       {
         std::vector<local_scalar_t__> spl_basis_dx_flat__;
-        current_statement__ = 479;
+        current_statement__ = 483;
         spl_basis_dx_flat__ = context__.vals_r("spl_basis_dx");
-        current_statement__ = 479;
+        current_statement__ = 483;
         pos__ = 1;
-        current_statement__ = 479;
+        current_statement__ = 483;
         for (int sym1__ = 1; sym1__ <= N_spl_par_dx; ++sym1__) {
-          current_statement__ = 479;
+          current_statement__ = 483;
           for (int sym2__ = 1; sym2__ <= (N_weeks + N_weeks_before); ++sym2__) {
-            current_statement__ = 479;
+            current_statement__ = 483;
             stan::model::assign(spl_basis_dx, spl_basis_dx_flat__[(pos__ -
               1)], "assigning variable spl_basis_dx",
               stan::model::index_uni(sym2__), stan::model::index_uni(sym1__));
-            current_statement__ = 479;
+            current_statement__ = 483;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 480;
+      current_statement__ = 484;
       context__.validate_dims("data initialization", "inf_prg_delay_shap",
         "double", std::vector<size_t>{});
       inf_prg_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 480;
+      current_statement__ = 484;
       inf_prg_delay_shap = context__.vals_r("inf_prg_delay_shap")[(1 - 1)];
-      current_statement__ = 480;
+      current_statement__ = 484;
       stan::math::check_greater_or_equal(function__, "inf_prg_delay_shap",
         inf_prg_delay_shap, 0);
-      current_statement__ = 481;
+      current_statement__ = 485;
       context__.validate_dims("data initialization", "inf_prg_delay_rate",
         "double", std::vector<size_t>{});
       inf_prg_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 481;
+      current_statement__ = 485;
       inf_prg_delay_rate = context__.vals_r("inf_prg_delay_rate")[(1 - 1)];
-      current_statement__ = 481;
+      current_statement__ = 485;
       stan::math::check_greater_or_equal(function__, "inf_prg_delay_rate",
         inf_prg_delay_rate, 0);
-      current_statement__ = 482;
+      current_statement__ = 486;
       context__.validate_dims("data initialization", "asy_rec_delay_shap",
         "double", std::vector<size_t>{});
       asy_rec_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 482;
+      current_statement__ = 486;
       asy_rec_delay_shap = context__.vals_r("asy_rec_delay_shap")[(1 - 1)];
-      current_statement__ = 482;
+      current_statement__ = 486;
       stan::math::check_greater_or_equal(function__, "asy_rec_delay_shap",
         asy_rec_delay_shap, 0);
-      current_statement__ = 483;
+      current_statement__ = 487;
       context__.validate_dims("data initialization", "asy_rec_delay_rate",
         "double", std::vector<size_t>{});
       asy_rec_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 483;
+      current_statement__ = 487;
       asy_rec_delay_rate = context__.vals_r("asy_rec_delay_rate")[(1 - 1)];
-      current_statement__ = 483;
+      current_statement__ = 487;
       stan::math::check_greater_or_equal(function__, "asy_rec_delay_rate",
         asy_rec_delay_rate, 0);
-      current_statement__ = 484;
+      current_statement__ = 488;
       context__.validate_dims("data initialization", "sym_prg_delay_shap",
         "double", std::vector<size_t>{});
       sym_prg_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 484;
+      current_statement__ = 488;
       sym_prg_delay_shap = context__.vals_r("sym_prg_delay_shap")[(1 - 1)];
-      current_statement__ = 484;
+      current_statement__ = 488;
       stan::math::check_greater_or_equal(function__, "sym_prg_delay_shap",
         sym_prg_delay_shap, 0);
-      current_statement__ = 485;
+      current_statement__ = 489;
       context__.validate_dims("data initialization", "sym_prg_delay_rate",
         "double", std::vector<size_t>{});
       sym_prg_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 485;
+      current_statement__ = 489;
       sym_prg_delay_rate = context__.vals_r("sym_prg_delay_rate")[(1 - 1)];
-      current_statement__ = 485;
+      current_statement__ = 489;
       stan::math::check_greater_or_equal(function__, "sym_prg_delay_rate",
         sym_prg_delay_rate, 0);
-      current_statement__ = 486;
+      current_statement__ = 490;
       context__.validate_dims("data initialization", "sev_prg_delay_shap",
         "double", std::vector<size_t>{});
       sev_prg_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 486;
+      current_statement__ = 490;
       sev_prg_delay_shap = context__.vals_r("sev_prg_delay_shap")[(1 - 1)];
-      current_statement__ = 486;
+      current_statement__ = 490;
       stan::math::check_greater_or_equal(function__, "sev_prg_delay_shap",
         sev_prg_delay_shap, 0);
-      current_statement__ = 487;
+      current_statement__ = 491;
       context__.validate_dims("data initialization", "sev_prg_delay_rate",
         "double", std::vector<size_t>{});
       sev_prg_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 487;
+      current_statement__ = 491;
       sev_prg_delay_rate = context__.vals_r("sev_prg_delay_rate")[(1 - 1)];
-      current_statement__ = 487;
+      current_statement__ = 491;
       stan::math::check_greater_or_equal(function__, "sev_prg_delay_rate",
         sev_prg_delay_rate, 0);
-      current_statement__ = 488;
+      current_statement__ = 492;
       context__.validate_dims("data initialization", "cas_rep_delay_shap",
         "double", std::vector<size_t>{});
       cas_rep_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 488;
+      current_statement__ = 492;
       cas_rep_delay_shap = context__.vals_r("cas_rep_delay_shap")[(1 - 1)];
-      current_statement__ = 488;
+      current_statement__ = 492;
       stan::math::check_greater_or_equal(function__, "cas_rep_delay_shap",
         cas_rep_delay_shap, 0);
-      current_statement__ = 489;
+      current_statement__ = 493;
       context__.validate_dims("data initialization", "cas_rep_delay_rate",
         "double", std::vector<size_t>{});
       cas_rep_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 489;
+      current_statement__ = 493;
       cas_rep_delay_rate = context__.vals_r("cas_rep_delay_rate")[(1 - 1)];
-      current_statement__ = 489;
+      current_statement__ = 493;
       stan::math::check_greater_or_equal(function__, "cas_rep_delay_rate",
         cas_rep_delay_rate, 0);
-      current_statement__ = 490;
+      current_statement__ = 494;
       context__.validate_dims("data initialization", "die_rep_delay_shap",
         "double", std::vector<size_t>{});
       die_rep_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 490;
+      current_statement__ = 494;
       die_rep_delay_shap = context__.vals_r("die_rep_delay_shap")[(1 - 1)];
-      current_statement__ = 490;
+      current_statement__ = 494;
       stan::math::check_greater_or_equal(function__, "die_rep_delay_shap",
         die_rep_delay_shap, 0);
-      current_statement__ = 491;
+      current_statement__ = 495;
       context__.validate_dims("data initialization", "die_rep_delay_rate",
         "double", std::vector<size_t>{});
       die_rep_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 491;
+      current_statement__ = 495;
       die_rep_delay_rate = context__.vals_r("die_rep_delay_rate")[(1 - 1)];
-      current_statement__ = 491;
+      current_statement__ = 495;
       stan::math::check_greater_or_equal(function__, "die_rep_delay_rate",
         die_rep_delay_rate, 0);
-      current_statement__ = 492;
+      current_statement__ = 496;
       context__.validate_dims("data initialization", "pre_period_zero",
         "int", std::vector<size_t>{});
       pre_period_zero = std::numeric_limits<int>::min();
-      current_statement__ = 492;
+      current_statement__ = 496;
       pre_period_zero = context__.vals_i("pre_period_zero")[(1 - 1)];
-      current_statement__ = 492;
+      current_statement__ = 496;
       stan::math::check_greater_or_equal(function__, "pre_period_zero",
         pre_period_zero, 0);
-      current_statement__ = 492;
+      current_statement__ = 496;
       stan::math::check_less_or_equal(function__, "pre_period_zero",
         pre_period_zero, 1);
-      current_statement__ = 493;
+      current_statement__ = 497;
       context__.validate_dims("data initialization", "cas_yes", "int",
         std::vector<size_t>{});
       cas_yes = std::numeric_limits<int>::min();
-      current_statement__ = 493;
+      current_statement__ = 497;
       cas_yes = context__.vals_i("cas_yes")[(1 - 1)];
-      current_statement__ = 493;
+      current_statement__ = 497;
       stan::math::check_greater_or_equal(function__, "cas_yes", cas_yes, 0);
-      current_statement__ = 493;
+      current_statement__ = 497;
       stan::math::check_less_or_equal(function__, "cas_yes", cas_yes, 1);
-      current_statement__ = 494;
+      current_statement__ = 498;
       context__.validate_dims("data initialization", "die_yes", "int",
         std::vector<size_t>{});
       die_yes = std::numeric_limits<int>::min();
-      current_statement__ = 494;
+      current_statement__ = 498;
       die_yes = context__.vals_i("die_yes")[(1 - 1)];
-      current_statement__ = 494;
+      current_statement__ = 498;
       stan::math::check_greater_or_equal(function__, "die_yes", die_yes, 0);
-      current_statement__ = 494;
+      current_statement__ = 498;
       stan::math::check_less_or_equal(function__, "die_yes", die_yes, 1);
-      current_statement__ = 495;
+      current_statement__ = 499;
       context__.validate_dims("data initialization", "hosp_yes", "int",
         std::vector<size_t>{});
       hosp_yes = std::numeric_limits<int>::min();
-      current_statement__ = 495;
+      current_statement__ = 499;
       hosp_yes = context__.vals_i("hosp_yes")[(1 - 1)];
-      current_statement__ = 495;
+      current_statement__ = 499;
       stan::math::check_greater_or_equal(function__, "hosp_yes", hosp_yes, 0);
-      current_statement__ = 495;
+      current_statement__ = 499;
       stan::math::check_less_or_equal(function__, "hosp_yes", hosp_yes, 1);
-      current_statement__ = 496;
+      current_statement__ = 500;
       context__.validate_dims("data initialization", "obs_cas_rep", "int",
         std::vector<size_t>{});
       obs_cas_rep = std::numeric_limits<int>::min();
-      current_statement__ = 496;
+      current_statement__ = 500;
       obs_cas_rep = context__.vals_i("obs_cas_rep")[(1 - 1)];
-      current_statement__ = 496;
+      current_statement__ = 500;
       stan::math::check_greater_or_equal(function__, "obs_cas_rep",
         obs_cas_rep, 0);
-      current_statement__ = 496;
+      current_statement__ = 500;
       stan::math::check_less_or_equal(function__, "obs_cas_rep", obs_cas_rep,
         1);
-      current_statement__ = 497;
+      current_statement__ = 501;
       context__.validate_dims("data initialization", "obs_die_rep", "int",
         std::vector<size_t>{});
       obs_die_rep = std::numeric_limits<int>::min();
-      current_statement__ = 497;
+      current_statement__ = 501;
       obs_die_rep = context__.vals_i("obs_die_rep")[(1 - 1)];
-      current_statement__ = 497;
+      current_statement__ = 501;
       stan::math::check_greater_or_equal(function__, "obs_die_rep",
         obs_die_rep, 0);
-      current_statement__ = 497;
+      current_statement__ = 501;
       stan::math::check_less_or_equal(function__, "obs_die_rep", obs_die_rep,
         1);
-      current_statement__ = 498;
+      current_statement__ = 502;
       context__.validate_dims("data initialization", "obs_hosp_rep", "int",
         std::vector<size_t>{});
       obs_hosp_rep = std::numeric_limits<int>::min();
-      current_statement__ = 498;
+      current_statement__ = 502;
       obs_hosp_rep = context__.vals_i("obs_hosp_rep")[(1 - 1)];
-      current_statement__ = 498;
+      current_statement__ = 502;
       stan::math::check_greater_or_equal(function__, "obs_hosp_rep",
         obs_hosp_rep, 0);
-      current_statement__ = 498;
+      current_statement__ = 502;
       stan::math::check_less_or_equal(function__, "obs_hosp_rep",
         obs_hosp_rep, 1);
-      current_statement__ = 499;
+      current_statement__ = 503;
       context__.validate_dims("data initialization", "lastDeathWeek", "int",
         std::vector<size_t>{});
       lastDeathWeek = std::numeric_limits<int>::min();
-      current_statement__ = 499;
+      current_statement__ = 503;
       lastDeathWeek = context__.vals_i("lastDeathWeek")[(1 - 1)];
-      current_statement__ = 499;
+      current_statement__ = 503;
       stan::math::check_greater_or_equal(function__, "lastDeathWeek",
         lastDeathWeek, 0);
-      current_statement__ = 500;
+      current_statement__ = 504;
       context__.validate_dims("data initialization", "lastHospWeek", "int",
         std::vector<size_t>{});
       lastHospWeek = std::numeric_limits<int>::min();
-      current_statement__ = 500;
+      current_statement__ = 504;
       lastHospWeek = context__.vals_i("lastHospWeek")[(1 - 1)];
-      current_statement__ = 500;
+      current_statement__ = 504;
       stan::math::check_greater_or_equal(function__, "lastHospWeek",
         lastHospWeek, 0);
-      current_statement__ = 501;
+      current_statement__ = 505;
       context__.validate_dims("data initialization", "firstHospWeek", "int",
         std::vector<size_t>{});
       firstHospWeek = std::numeric_limits<int>::min();
-      current_statement__ = 501;
+      current_statement__ = 505;
       firstHospWeek = context__.vals_i("firstHospWeek")[(1 - 1)];
-      current_statement__ = 501;
+      current_statement__ = 505;
       stan::math::check_greater_or_equal(function__, "firstHospWeek",
         firstHospWeek, 0);
-      current_statement__ = 502;
+      current_statement__ = 506;
       context__.validate_dims("data initialization", "lastCaseWeek", "int",
         std::vector<size_t>{});
       lastCaseWeek = std::numeric_limits<int>::min();
-      current_statement__ = 502;
+      current_statement__ = 506;
       lastCaseWeek = context__.vals_i("lastCaseWeek")[(1 - 1)];
-      current_statement__ = 502;
+      current_statement__ = 506;
       stan::math::check_greater_or_equal(function__, "lastCaseWeek",
         lastCaseWeek, 0);
-      current_statement__ = 503;
+      current_statement__ = 507;
       context__.validate_dims("data initialization",
         "pri_log_infections_0_mu", "double", std::vector<size_t>{});
       pri_log_infections_0_mu = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 503;
+      current_statement__ = 507;
       pri_log_infections_0_mu = context__.vals_r("pri_log_infections_0_mu")[(1
         - 1)];
-      current_statement__ = 504;
+      current_statement__ = 508;
       context__.validate_dims("data initialization",
         "pri_log_infections_0_sd", "double", std::vector<size_t>{});
       pri_log_infections_0_sd = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 504;
+      current_statement__ = 508;
       pri_log_infections_0_sd = context__.vals_r("pri_log_infections_0_sd")[(1
         - 1)];
-      current_statement__ = 504;
+      current_statement__ = 508;
       stan::math::check_greater_or_equal(function__,
         "pri_log_infections_0_sd", pri_log_infections_0_sd, 0);
-      current_statement__ = 505;
+      current_statement__ = 509;
       context__.validate_dims("data initialization", "pri_logRt_mu",
         "double", std::vector<size_t>{});
       pri_logRt_mu = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 505;
+      current_statement__ = 509;
       pri_logRt_mu = context__.vals_r("pri_logRt_mu")[(1 - 1)];
-      current_statement__ = 506;
+      current_statement__ = 510;
       context__.validate_dims("data initialization", "pri_logRt_sd",
         "double", std::vector<size_t>{});
       pri_logRt_sd = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 506;
+      current_statement__ = 510;
       pri_logRt_sd = context__.vals_r("pri_logRt_sd")[(1 - 1)];
-      current_statement__ = 506;
+      current_statement__ = 510;
       stan::math::check_greater_or_equal(function__, "pri_logRt_sd",
         pri_logRt_sd, 0);
-      current_statement__ = 507;
+      current_statement__ = 511;
       context__.validate_dims("data initialization", "pri_serial_i_shap",
         "double", std::vector<size_t>{});
       pri_serial_i_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 507;
+      current_statement__ = 511;
       pri_serial_i_shap = context__.vals_r("pri_serial_i_shap")[(1 - 1)];
-      current_statement__ = 507;
+      current_statement__ = 511;
       stan::math::check_greater_or_equal(function__, "pri_serial_i_shap",
         pri_serial_i_shap, 0);
-      current_statement__ = 508;
+      current_statement__ = 512;
       context__.validate_dims("data initialization", "pri_serial_i_rate",
         "double", std::vector<size_t>{});
       pri_serial_i_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 508;
+      current_statement__ = 512;
       pri_serial_i_rate = context__.vals_r("pri_serial_i_rate")[(1 - 1)];
-      current_statement__ = 508;
+      current_statement__ = 512;
       stan::math::check_greater_or_equal(function__, "pri_serial_i_rate",
         pri_serial_i_rate, 0);
-      current_statement__ = 509;
+      current_statement__ = 513;
       context__.validate_dims("data initialization",
         "pri_serial_i_postO_shap", "double", std::vector<size_t>{});
       pri_serial_i_postO_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 509;
+      current_statement__ = 513;
       pri_serial_i_postO_shap = context__.vals_r("pri_serial_i_postO_shap")[(1
         - 1)];
-      current_statement__ = 509;
+      current_statement__ = 513;
       stan::math::check_greater_or_equal(function__,
         "pri_serial_i_postO_shap", pri_serial_i_postO_shap, 0);
-      current_statement__ = 510;
+      current_statement__ = 514;
       context__.validate_dims("data initialization",
         "pri_serial_i_postO_rate", "double", std::vector<size_t>{});
       pri_serial_i_postO_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 510;
+      current_statement__ = 514;
       pri_serial_i_postO_rate = context__.vals_r("pri_serial_i_postO_rate")[(1
         - 1)];
-      current_statement__ = 510;
+      current_statement__ = 514;
       stan::math::check_greater_or_equal(function__,
         "pri_serial_i_postO_rate", pri_serial_i_postO_rate, 0);
-      current_statement__ = 511;
+      current_statement__ = 515;
       context__.validate_dims("data initialization", "pri_deriv1_spl_par_sd",
         "double", std::vector<size_t>{});
       pri_deriv1_spl_par_sd = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 511;
+      current_statement__ = 515;
       pri_deriv1_spl_par_sd = context__.vals_r("pri_deriv1_spl_par_sd")[(1 -
         1)];
-      current_statement__ = 511;
+      current_statement__ = 515;
       stan::math::check_greater_or_equal(function__, "pri_deriv1_spl_par_sd",
         pri_deriv1_spl_par_sd, 0);
-      current_statement__ = 512;
+      current_statement__ = 516;
       context__.validate_dims("data initialization", "pri_deriv2_spl_par_sd",
         "double", std::vector<size_t>{});
       pri_deriv2_spl_par_sd = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 512;
+      current_statement__ = 516;
       pri_deriv2_spl_par_sd = context__.vals_r("pri_deriv2_spl_par_sd")[(1 -
         1)];
-      current_statement__ = 512;
+      current_statement__ = 516;
       stan::math::check_greater_or_equal(function__, "pri_deriv2_spl_par_sd",
         pri_deriv2_spl_par_sd, 0);
-      current_statement__ = 513;
+      current_statement__ = 517;
       context__.validate_dims("data initialization", "pri_p_sym_if_inf_a",
         "double", std::vector<size_t>{});
       pri_p_sym_if_inf_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 513;
+      current_statement__ = 517;
       pri_p_sym_if_inf_a = context__.vals_r("pri_p_sym_if_inf_a")[(1 - 1)];
-      current_statement__ = 513;
+      current_statement__ = 517;
       stan::math::check_greater_or_equal(function__, "pri_p_sym_if_inf_a",
         pri_p_sym_if_inf_a, 0);
-      current_statement__ = 514;
+      current_statement__ = 518;
       context__.validate_dims("data initialization", "pri_p_sym_if_inf_b",
         "double", std::vector<size_t>{});
       pri_p_sym_if_inf_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 514;
+      current_statement__ = 518;
       pri_p_sym_if_inf_b = context__.vals_r("pri_p_sym_if_inf_b")[(1 - 1)];
-      current_statement__ = 514;
+      current_statement__ = 518;
       stan::math::check_greater_or_equal(function__, "pri_p_sym_if_inf_b",
         pri_p_sym_if_inf_b, 0);
-      current_statement__ = 515;
+      current_statement__ = 519;
       context__.validate_dims("data initialization",
         "pri_p_sym_if_inf_postO_a", "double", std::vector<size_t>{});
       pri_p_sym_if_inf_postO_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 515;
+      current_statement__ = 519;
       pri_p_sym_if_inf_postO_a = context__.vals_r("pri_p_sym_if_inf_postO_a")[(1
         - 1)];
-      current_statement__ = 515;
+      current_statement__ = 519;
       stan::math::check_greater_or_equal(function__,
         "pri_p_sym_if_inf_postO_a", pri_p_sym_if_inf_postO_a, 0);
-      current_statement__ = 516;
+      current_statement__ = 520;
       context__.validate_dims("data initialization",
         "pri_p_sym_if_inf_postO_b", "double", std::vector<size_t>{});
       pri_p_sym_if_inf_postO_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 516;
+      current_statement__ = 520;
       pri_p_sym_if_inf_postO_b = context__.vals_r("pri_p_sym_if_inf_postO_b")[(1
         - 1)];
-      current_statement__ = 516;
+      current_statement__ = 520;
       stan::math::check_greater_or_equal(function__,
         "pri_p_sym_if_inf_postO_b", pri_p_sym_if_inf_postO_b, 0);
-      current_statement__ = 517;
+      current_statement__ = 521;
       context__.validate_dims("data initialization", "pri_p_sev_if_sym_a",
         "double", std::vector<size_t>{});
       pri_p_sev_if_sym_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 517;
+      current_statement__ = 521;
       pri_p_sev_if_sym_a = context__.vals_r("pri_p_sev_if_sym_a")[(1 - 1)];
-      current_statement__ = 517;
+      current_statement__ = 521;
       stan::math::check_greater_or_equal(function__, "pri_p_sev_if_sym_a",
         pri_p_sev_if_sym_a, 0);
-      current_statement__ = 518;
+      current_statement__ = 522;
       context__.validate_dims("data initialization", "pri_p_sev_if_sym_b",
         "double", std::vector<size_t>{});
       pri_p_sev_if_sym_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 518;
+      current_statement__ = 522;
       pri_p_sev_if_sym_b = context__.vals_r("pri_p_sev_if_sym_b")[(1 - 1)];
-      current_statement__ = 518;
+      current_statement__ = 522;
       stan::math::check_greater_or_equal(function__, "pri_p_sev_if_sym_b",
         pri_p_sev_if_sym_b, 0);
-      current_statement__ = 519;
+      current_statement__ = 523;
       context__.validate_dims("data initialization", "pri_p_die_if_sev_a",
         "double", std::vector<size_t>{});
       pri_p_die_if_sev_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 519;
+      current_statement__ = 523;
       pri_p_die_if_sev_a = context__.vals_r("pri_p_die_if_sev_a")[(1 - 1)];
-      current_statement__ = 519;
+      current_statement__ = 523;
       stan::math::check_greater_or_equal(function__, "pri_p_die_if_sev_a",
         pri_p_die_if_sev_a, 0);
-      current_statement__ = 520;
+      current_statement__ = 524;
       context__.validate_dims("data initialization", "pri_p_die_if_sev_b",
         "double", std::vector<size_t>{});
       pri_p_die_if_sev_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 520;
+      current_statement__ = 524;
       pri_p_die_if_sev_b = context__.vals_r("pri_p_die_if_sev_b")[(1 - 1)];
-      current_statement__ = 520;
+      current_statement__ = 524;
       stan::math::check_greater_or_equal(function__, "pri_p_die_if_sev_b",
         pri_p_die_if_sev_b, 0);
-      current_statement__ = 521;
+      current_statement__ = 525;
       context__.validate_dims("data initialization", "pri_p_die_if_inf_a",
         "double", std::vector<size_t>{});
       pri_p_die_if_inf_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 521;
+      current_statement__ = 525;
       pri_p_die_if_inf_a = context__.vals_r("pri_p_die_if_inf_a")[(1 - 1)];
-      current_statement__ = 521;
+      current_statement__ = 525;
       stan::math::check_greater_or_equal(function__, "pri_p_die_if_inf_a",
         pri_p_die_if_inf_a, 0);
-      current_statement__ = 522;
+      current_statement__ = 526;
       context__.validate_dims("data initialization", "pri_p_die_if_inf_b",
         "double", std::vector<size_t>{});
       pri_p_die_if_inf_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 522;
+      current_statement__ = 526;
       pri_p_die_if_inf_b = context__.vals_r("pri_p_die_if_inf_b")[(1 - 1)];
-      current_statement__ = 522;
+      current_statement__ = 526;
       stan::math::check_greater_or_equal(function__, "pri_p_die_if_inf_b",
         pri_p_die_if_inf_b, 0);
-      current_statement__ = 523;
+      current_statement__ = 527;
       context__.validate_dims("data initialization",
         "pri_p_die_if_inf_postO_a", "double", std::vector<size_t>{});
       pri_p_die_if_inf_postO_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 523;
+      current_statement__ = 527;
       pri_p_die_if_inf_postO_a = context__.vals_r("pri_p_die_if_inf_postO_a")[(1
         - 1)];
-      current_statement__ = 523;
+      current_statement__ = 527;
       stan::math::check_greater_or_equal(function__,
         "pri_p_die_if_inf_postO_a", pri_p_die_if_inf_postO_a, 0);
-      current_statement__ = 524;
+      current_statement__ = 528;
       context__.validate_dims("data initialization",
         "pri_p_die_if_inf_postO_b", "double", std::vector<size_t>{});
       pri_p_die_if_inf_postO_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 524;
+      current_statement__ = 528;
       pri_p_die_if_inf_postO_b = context__.vals_r("pri_p_die_if_inf_postO_b")[(1
         - 1)];
-      current_statement__ = 524;
+      current_statement__ = 528;
       stan::math::check_greater_or_equal(function__,
         "pri_p_die_if_inf_postO_b", pri_p_die_if_inf_postO_b, 0);
-      current_statement__ = 525;
+      current_statement__ = 529;
       context__.validate_dims("data initialization",
         "pri_rr_diag_asy_vs_sym_a", "double", std::vector<size_t>{});
       pri_rr_diag_asy_vs_sym_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 525;
+      current_statement__ = 529;
       pri_rr_diag_asy_vs_sym_a = context__.vals_r("pri_rr_diag_asy_vs_sym_a")[(1
         - 1)];
-      current_statement__ = 525;
+      current_statement__ = 529;
       stan::math::check_greater_or_equal(function__,
         "pri_rr_diag_asy_vs_sym_a", pri_rr_diag_asy_vs_sym_a, 0);
-      current_statement__ = 526;
+      current_statement__ = 530;
       context__.validate_dims("data initialization",
         "pri_rr_diag_asy_vs_sym_b", "double", std::vector<size_t>{});
       pri_rr_diag_asy_vs_sym_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 526;
+      current_statement__ = 530;
       pri_rr_diag_asy_vs_sym_b = context__.vals_r("pri_rr_diag_asy_vs_sym_b")[(1
         - 1)];
-      current_statement__ = 526;
+      current_statement__ = 530;
       stan::math::check_greater_or_equal(function__,
         "pri_rr_diag_asy_vs_sym_b", pri_rr_diag_asy_vs_sym_b, 0);
-      current_statement__ = 527;
+      current_statement__ = 531;
       context__.validate_dims("data initialization",
         "pri_rr_diag_sym_vs_sev_a", "double", std::vector<size_t>{});
       pri_rr_diag_sym_vs_sev_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 527;
+      current_statement__ = 531;
       pri_rr_diag_sym_vs_sev_a = context__.vals_r("pri_rr_diag_sym_vs_sev_a")[(1
         - 1)];
-      current_statement__ = 527;
+      current_statement__ = 531;
       stan::math::check_greater_or_equal(function__,
         "pri_rr_diag_sym_vs_sev_a", pri_rr_diag_sym_vs_sev_a, 0);
-      current_statement__ = 528;
+      current_statement__ = 532;
       context__.validate_dims("data initialization",
         "pri_rr_diag_sym_vs_sev_b", "double", std::vector<size_t>{});
       pri_rr_diag_sym_vs_sev_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 528;
+      current_statement__ = 532;
       pri_rr_diag_sym_vs_sev_b = context__.vals_r("pri_rr_diag_sym_vs_sev_b")[(1
         - 1)];
-      current_statement__ = 528;
+      current_statement__ = 532;
       stan::math::check_greater_or_equal(function__,
         "pri_rr_diag_sym_vs_sev_b", pri_rr_diag_sym_vs_sev_b, 0);
-      current_statement__ = 529;
+      current_statement__ = 533;
       context__.validate_dims("data initialization", "pri_p_diag_if_sev_a",
         "double", std::vector<size_t>{});
       pri_p_diag_if_sev_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 529;
+      current_statement__ = 533;
       pri_p_diag_if_sev_a = context__.vals_r("pri_p_diag_if_sev_a")[(1 - 1)];
-      current_statement__ = 529;
+      current_statement__ = 533;
       stan::math::check_greater_or_equal(function__, "pri_p_diag_if_sev_a",
         pri_p_diag_if_sev_a, 0);
-      current_statement__ = 530;
+      current_statement__ = 534;
       context__.validate_dims("data initialization", "pri_p_diag_if_sev_b",
         "double", std::vector<size_t>{});
       pri_p_diag_if_sev_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 530;
+      current_statement__ = 534;
       pri_p_diag_if_sev_b = context__.vals_r("pri_p_diag_if_sev_b")[(1 - 1)];
-      current_statement__ = 530;
+      current_statement__ = 534;
       stan::math::check_greater_or_equal(function__, "pri_p_diag_if_sev_b",
         pri_p_diag_if_sev_b, 0);
-      current_statement__ = 531;
+      current_statement__ = 535;
       context__.validate_dims("data initialization", "scale_dx_delay_sym_a",
         "double", std::vector<size_t>{});
       scale_dx_delay_sym_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 531;
+      current_statement__ = 535;
       scale_dx_delay_sym_a = context__.vals_r("scale_dx_delay_sym_a")[(1 -
         1)];
-      current_statement__ = 531;
+      current_statement__ = 535;
       stan::math::check_greater_or_equal(function__, "scale_dx_delay_sym_a",
         scale_dx_delay_sym_a, 0);
-      current_statement__ = 532;
+      current_statement__ = 536;
       context__.validate_dims("data initialization", "scale_dx_delay_sym_b",
         "double", std::vector<size_t>{});
       scale_dx_delay_sym_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 532;
+      current_statement__ = 536;
       scale_dx_delay_sym_b = context__.vals_r("scale_dx_delay_sym_b")[(1 -
         1)];
-      current_statement__ = 532;
+      current_statement__ = 536;
       stan::math::check_greater_or_equal(function__, "scale_dx_delay_sym_b",
         scale_dx_delay_sym_b, 0);
-      current_statement__ = 533;
+      current_statement__ = 537;
       context__.validate_dims("data initialization", "scale_dx_delay_sev_a",
         "double", std::vector<size_t>{});
       scale_dx_delay_sev_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 533;
+      current_statement__ = 537;
       scale_dx_delay_sev_a = context__.vals_r("scale_dx_delay_sev_a")[(1 -
         1)];
-      current_statement__ = 533;
+      current_statement__ = 537;
       stan::math::check_greater_or_equal(function__, "scale_dx_delay_sev_a",
         scale_dx_delay_sev_a, 0);
-      current_statement__ = 534;
+      current_statement__ = 538;
       context__.validate_dims("data initialization", "scale_dx_delay_sev_b",
         "double", std::vector<size_t>{});
       scale_dx_delay_sev_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 534;
+      current_statement__ = 538;
       scale_dx_delay_sev_b = context__.vals_r("scale_dx_delay_sev_b")[(1 -
         1)];
-      current_statement__ = 534;
+      current_statement__ = 538;
       stan::math::check_greater_or_equal(function__, "scale_dx_delay_sev_b",
         scale_dx_delay_sev_b, 0);
-      current_statement__ = 535;
+      current_statement__ = 539;
       context__.validate_dims("data initialization", "p_hosp_nonsevere_a",
         "double", std::vector<size_t>{});
       p_hosp_nonsevere_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 535;
+      current_statement__ = 539;
       p_hosp_nonsevere_a = context__.vals_r("p_hosp_nonsevere_a")[(1 - 1)];
-      current_statement__ = 535;
+      current_statement__ = 539;
       stan::math::check_greater_or_equal(function__, "p_hosp_nonsevere_a",
         p_hosp_nonsevere_a, 0);
-      current_statement__ = 536;
+      current_statement__ = 540;
       context__.validate_dims("data initialization", "p_hosp_nonsevere_b",
         "double", std::vector<size_t>{});
       p_hosp_nonsevere_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 536;
+      current_statement__ = 540;
       p_hosp_nonsevere_b = context__.vals_r("p_hosp_nonsevere_b")[(1 - 1)];
-      current_statement__ = 536;
+      current_statement__ = 540;
       stan::math::check_greater_or_equal(function__, "p_hosp_nonsevere_b",
         p_hosp_nonsevere_b, 0);
-      current_statement__ = 537;
+      current_statement__ = 541;
       N_weeks_tot = std::numeric_limits<int>::min();
-      current_statement__ = 538;
+      current_statement__ = 542;
       stan::math::validate_non_negative_index("obs_cas_mvs", "N_weeks",
         N_weeks);
-      current_statement__ = 539;
+      current_statement__ = 543;
       obs_cas_mvs = std::vector<int>(N_weeks,
                       std::numeric_limits<int>::min());
-      current_statement__ = 540;
+      current_statement__ = 544;
       stan::math::validate_non_negative_index("obs_die_mvs", "N_weeks",
         N_weeks);
-      current_statement__ = 541;
+      current_statement__ = 545;
       obs_die_mvs = std::vector<int>(N_weeks,
                       std::numeric_limits<int>::min());
-      current_statement__ = 542;
+      current_statement__ = 546;
       stan::math::validate_non_negative_index("obs_hosp_mvs", "N_weeks",
         N_weeks);
-      current_statement__ = 543;
+      current_statement__ = 547;
       obs_hosp_mvs = std::vector<int>(N_weeks,
                        std::numeric_limits<int>::min());
-      current_statement__ = 544;
+      current_statement__ = 548;
       stan::math::validate_non_negative_index("inf_prg_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 545;
+      current_statement__ = 549;
       inf_prg_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&inf_prg_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(inf_prg_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 546;
+      current_statement__ = 550;
       stan::math::validate_non_negative_index("asy_rec_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 547;
+      current_statement__ = 551;
       asy_rec_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&asy_rec_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(asy_rec_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 548;
+      current_statement__ = 552;
       stan::math::validate_non_negative_index("sym_prg_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 549;
+      current_statement__ = 553;
       sym_prg_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&sym_prg_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(sym_prg_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 550;
+      current_statement__ = 554;
       stan::math::validate_non_negative_index("sev_prg_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 551;
+      current_statement__ = 555;
       sev_prg_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&sev_prg_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(sev_prg_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 552;
+      current_statement__ = 556;
       stan::math::validate_non_negative_index("cas_rep_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 553;
+      current_statement__ = 557;
       cas_rep_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&cas_rep_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(cas_rep_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 554;
+      current_statement__ = 558;
       stan::math::validate_non_negative_index("die_rep_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 555;
+      current_statement__ = 559;
       die_rep_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&die_rep_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(die_rep_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 556;
+      current_statement__ = 560;
       stan::math::validate_non_negative_index("cas_cum_report_delay_rv",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 557;
+      current_statement__ = 561;
       cas_cum_report_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks
                                          + N_weeks_before),
                                          std::numeric_limits<double>::quiet_NaN(
@@ -2133,10 +2137,10 @@ public:
       new (&cas_cum_report_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(cas_cum_report_delay_rv_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 558;
+      current_statement__ = 562;
       stan::math::validate_non_negative_index("die_cum_report_delay_rv",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 559;
+      current_statement__ = 563;
       die_cum_report_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks
                                          + N_weeks_before),
                                          std::numeric_limits<double>::quiet_NaN(
@@ -2144,148 +2148,148 @@ public:
       new (&die_cum_report_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(die_cum_report_delay_rv_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 560;
+      current_statement__ = 564;
       stan::math::validate_non_negative_index("idx1",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 561;
+      current_statement__ = 565;
       idx1 = std::vector<int>((N_weeks + N_weeks_before),
                std::numeric_limits<int>::min());
-      current_statement__ = 562;
+      current_statement__ = 566;
       stan::math::validate_non_negative_index("idx2",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 563;
+      current_statement__ = 567;
       idx2 = std::vector<int>((N_weeks + N_weeks_before),
                std::numeric_limits<int>::min());
-      current_statement__ = 564;
+      current_statement__ = 568;
       stan::math::validate_non_negative_index("idx3",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 565;
+      current_statement__ = 569;
       idx3_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
                       N_weeks_before),
                       std::numeric_limits<double>::quiet_NaN());
       new (&idx3) Eigen::Map<Eigen::Matrix<double,-1,1>>(idx3_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 566;
+      current_statement__ = 570;
       stan::math::validate_non_negative_index("idx4",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 567;
+      current_statement__ = 571;
       idx4_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
                       N_weeks_before),
                       std::numeric_limits<double>::quiet_NaN());
       new (&idx4) Eigen::Map<Eigen::Matrix<double,-1,1>>(idx4_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 568;
+      current_statement__ = 572;
       stan::math::validate_non_negative_index("full_vax",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 569;
+      current_statement__ = 573;
       full_vax_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
                           N_weeks_before),
                           std::numeric_limits<double>::quiet_NaN());
       new (&full_vax)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(full_vax_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 570;
+      current_statement__ = 574;
       stan::math::validate_non_negative_index("full_boost",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 571;
+      current_statement__ = 575;
       full_boost_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
                             N_weeks_before),
                             std::numeric_limits<double>::quiet_NaN());
       new (&full_boost)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(full_boost_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 572;
+      current_statement__ = 576;
       N_weeks_tot = (N_weeks + N_weeks_before);
-      current_statement__ = 573;
+      current_statement__ = 577;
       stan::model::assign(full_vax,
         stan::math::rep_vector(0.0, N_weeks_before),
         "assigning variable full_vax",
         stan::model::index_min_max(1, N_weeks_before));
-      current_statement__ = 574;
+      current_statement__ = 578;
       stan::model::assign(full_vax, obs_vax, "assigning variable full_vax",
         stan::model::index_min_max((N_weeks_before + 1), N_weeks_tot));
-      current_statement__ = 575;
+      current_statement__ = 579;
       stan::model::assign(full_boost,
         stan::math::rep_vector(0.0, N_weeks_before),
         "assigning variable full_boost",
         stan::model::index_min_max(1, N_weeks_before));
-      current_statement__ = 576;
+      current_statement__ = 580;
       stan::model::assign(full_boost, obs_boost,
         "assigning variable full_boost",
         stan::model::index_min_max((N_weeks_before + 1), N_weeks_tot));
-      current_statement__ = 599;
+      current_statement__ = 603;
       for (int i = 1; i <= N_weeks_tot; ++i) {
-        current_statement__ = 583;
+        current_statement__ = 587;
         if (stan::math::logical_gt((i - Max_delay), 0)) {
-          current_statement__ = 580;
+          current_statement__ = 584;
           stan::model::assign(idx1, ((i - Max_delay) + 1),
             "assigning variable idx1", stan::model::index_uni(i));
-          current_statement__ = 581;
+          current_statement__ = 585;
           stan::model::assign(idx2, 1, "assigning variable idx2",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 577;
+          current_statement__ = 581;
           stan::model::assign(idx1, 1, "assigning variable idx1",
             stan::model::index_uni(i));
-          current_statement__ = 578;
+          current_statement__ = 582;
           stan::model::assign(idx2, ((Max_delay - i) + 1),
             "assigning variable idx2", stan::model::index_uni(i));
         }
-        current_statement__ = 588;
+        current_statement__ = 592;
         if (stan::math::logical_lt(i, (N_weeks_tot - 1))) {
-          current_statement__ = 586;
+          current_statement__ = 590;
           stan::model::assign(idx3, ((N_weeks_tot - 1) - i),
             "assigning variable idx3", stan::model::index_uni(i));
         } else {
-          current_statement__ = 584;
+          current_statement__ = 588;
           stan::model::assign(idx3, 1, "assigning variable idx3",
             stan::model::index_uni(i));
         }
-        current_statement__ = 597;
+        current_statement__ = 601;
         if (stan::math::logical_lt(i, (N_weeks_start_omicron +
               N_weeks_before))) {
-          current_statement__ = 595;
+          current_statement__ = 599;
           stan::model::assign(idx4, 0, "assigning variable idx4",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 593;
+          current_statement__ = 597;
           if (stan::math::logical_gt(i, ((N_weeks_start_omicron +
                 N_weeks_before) + N_weeks_transition))) {
-            current_statement__ = 591;
+            current_statement__ = 595;
             stan::model::assign(idx4, 0, "assigning variable idx4",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 589;
+            current_statement__ = 593;
             stan::model::assign(idx4, ((i - (N_weeks_start_omicron +
               N_weeks_before)) + 1.0), "assigning variable idx4",
               stan::model::index_uni(i));
           }
         }
       }
-      current_statement__ = 604;
+      current_statement__ = 608;
       for (int i = 1; i <= N_weeks; ++i) {
-        current_statement__ = 600;
+        current_statement__ = 604;
         stan::model::assign(obs_cas_mvs,
           stan::model::rvalue(obs_cas, "obs_cas", stan::model::index_uni(i)),
           "assigning variable obs_cas_mvs", stan::model::index_uni(i));
-        current_statement__ = 601;
+        current_statement__ = 605;
         stan::model::assign(obs_hosp_mvs,
           stan::model::rvalue(obs_hosp, "obs_hosp", stan::model::index_uni(i)),
           "assigning variable obs_hosp_mvs", stan::model::index_uni(i));
-        current_statement__ = 602;
+        current_statement__ = 606;
         stan::model::assign(obs_die_mvs,
           stan::model::rvalue(obs_die, "obs_die", stan::model::index_uni(i)),
           "assigning variable obs_die_mvs", stan::model::index_uni(i));
       }
-      current_statement__ = 610;
+      current_statement__ = 614;
       for (int i = 1; i <= Max_delay; ++i) {
-        current_statement__ = 605;
+        current_statement__ = 609;
         stan::model::assign(inf_prg_delay_rv,
           (stan::math::gamma_cdf(i, inf_prg_delay_shap, inf_prg_delay_rate) -
           stan::math::gamma_cdf((i - 1), inf_prg_delay_shap,
             inf_prg_delay_rate)), "assigning variable inf_prg_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
-        current_statement__ = 606;
+        current_statement__ = 610;
         stan::model::assign(asy_rec_delay_rv,
           (stan::math::gamma_cdf(i, asy_rec_delay_shap, (asy_rec_delay_rate *
              2)) -
@@ -2293,368 +2297,368 @@ public:
             (asy_rec_delay_rate * 2))),
           "assigning variable asy_rec_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
-        current_statement__ = 607;
+        current_statement__ = 611;
         stan::model::assign(sym_prg_delay_rv,
           (stan::math::gamma_cdf(i, sym_prg_delay_shap, sym_prg_delay_rate) -
           stan::math::gamma_cdf((i - 1), sym_prg_delay_shap,
             sym_prg_delay_rate)), "assigning variable sym_prg_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
-        current_statement__ = 608;
+        current_statement__ = 612;
         stan::model::assign(sev_prg_delay_rv,
           (stan::math::gamma_cdf(i, sev_prg_delay_shap, sev_prg_delay_rate) -
           stan::math::gamma_cdf((i - 1), sev_prg_delay_shap,
             sev_prg_delay_rate)), "assigning variable sev_prg_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
       }
-      current_statement__ = 614;
+      current_statement__ = 618;
       for (int i = 1; i <= Max_delay; ++i) {
-        current_statement__ = 611;
+        current_statement__ = 615;
         stan::model::assign(cas_rep_delay_rv,
           (stan::math::gamma_cdf(i, cas_rep_delay_shap, cas_rep_delay_rate) -
           stan::math::gamma_cdf((i - 1), cas_rep_delay_shap,
             cas_rep_delay_rate)), "assigning variable cas_rep_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
-        current_statement__ = 612;
+        current_statement__ = 616;
         stan::model::assign(die_rep_delay_rv,
           (stan::math::gamma_cdf(i, die_rep_delay_shap, die_rep_delay_rate) -
           stan::math::gamma_cdf((i - 1), die_rep_delay_shap,
             die_rep_delay_rate)), "assigning variable die_rep_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
       }
-      current_statement__ = 615;
+      current_statement__ = 619;
       stan::model::assign(inf_prg_delay_rv,
         stan::math::divide(stan::model::deep_copy(inf_prg_delay_rv),
           stan::math::sum(inf_prg_delay_rv)),
         "assigning variable inf_prg_delay_rv");
-      current_statement__ = 616;
+      current_statement__ = 620;
       stan::model::assign(asy_rec_delay_rv,
         stan::math::divide(stan::model::deep_copy(asy_rec_delay_rv),
           stan::math::sum(asy_rec_delay_rv)),
         "assigning variable asy_rec_delay_rv");
-      current_statement__ = 617;
+      current_statement__ = 621;
       stan::model::assign(sym_prg_delay_rv,
         stan::math::divide(stan::model::deep_copy(sym_prg_delay_rv),
           stan::math::sum(sym_prg_delay_rv)),
         "assigning variable sym_prg_delay_rv");
-      current_statement__ = 618;
+      current_statement__ = 622;
       stan::model::assign(sev_prg_delay_rv,
         stan::math::divide(stan::model::deep_copy(sev_prg_delay_rv),
           stan::math::sum(sev_prg_delay_rv)),
         "assigning variable sev_prg_delay_rv");
-      current_statement__ = 619;
+      current_statement__ = 623;
       stan::model::assign(cas_rep_delay_rv,
         stan::math::divide(stan::model::deep_copy(cas_rep_delay_rv),
           stan::math::sum(cas_rep_delay_rv)),
         "assigning variable cas_rep_delay_rv");
-      current_statement__ = 620;
+      current_statement__ = 624;
       stan::model::assign(die_rep_delay_rv,
         stan::math::divide(stan::model::deep_copy(die_rep_delay_rv),
           stan::math::sum(die_rep_delay_rv)),
         "assigning variable die_rep_delay_rv");
-      current_statement__ = 629;
+      current_statement__ = 633;
       for (int i = 1; i <= N_weeks_tot; ++i) {
-        current_statement__ = 627;
+        current_statement__ = 631;
         if (stan::math::logical_lt(i, Max_delay)) {
-          current_statement__ = 624;
+          current_statement__ = 628;
           stan::model::assign(cas_cum_report_delay_rv,
             stan::math::gamma_cdf(i, cas_rep_delay_shap, cas_rep_delay_rate),
             "assigning variable cas_cum_report_delay_rv",
             stan::model::index_uni(((1 + N_weeks_tot) - i)));
-          current_statement__ = 625;
+          current_statement__ = 629;
           stan::model::assign(die_cum_report_delay_rv,
             stan::math::gamma_cdf(i, die_rep_delay_shap, die_rep_delay_rate),
             "assigning variable die_cum_report_delay_rv",
             stan::model::index_uni(((1 + N_weeks_tot) - i)));
         } else {
-          current_statement__ = 621;
+          current_statement__ = 625;
           stan::model::assign(cas_cum_report_delay_rv, 1.0,
             "assigning variable cas_cum_report_delay_rv",
             stan::model::index_uni(((1 + N_weeks_tot) - i)));
-          current_statement__ = 622;
+          current_statement__ = 626;
           stan::model::assign(die_cum_report_delay_rv, 1.0,
             "assigning variable die_cum_report_delay_rv",
             stan::model::index_uni(((1 + N_weeks_tot) - i)));
         }
       }
-      current_statement__ = 539;
+      current_statement__ = 543;
       stan::math::check_greater_or_equal(function__, "obs_cas_mvs",
         obs_cas_mvs, 0);
-      current_statement__ = 541;
+      current_statement__ = 545;
       stan::math::check_greater_or_equal(function__, "obs_die_mvs",
         obs_die_mvs, 0);
-      current_statement__ = 543;
+      current_statement__ = 547;
       stan::math::check_greater_or_equal(function__, "obs_hosp_mvs",
         obs_hosp_mvs, 0);
-      current_statement__ = 630;
+      current_statement__ = 634;
       stan::math::validate_non_negative_index("spl_par_rt", "N_spl_par_rt",
         N_spl_par_rt);
-      current_statement__ = 631;
+      current_statement__ = 635;
       stan::math::validate_non_negative_index("spl_par_sym_dx",
         "N_spl_par_dx", N_spl_par_dx);
-      current_statement__ = 632;
+      current_statement__ = 636;
       stan::math::validate_non_negative_index("serial_i_vec", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 633;
+      current_statement__ = 637;
       stan::math::validate_non_negative_index("log_infections",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 634;
+      current_statement__ = 638;
       stan::math::validate_non_negative_index("deriv1_log_infections",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 635;
+      current_statement__ = 639;
       stan::math::validate_non_negative_index("infections", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 636;
+      current_statement__ = 640;
       stan::math::validate_non_negative_index("vax_only", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 637;
+      current_statement__ = 641;
       stan::math::validate_non_negative_index("vax_only_cum", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 638;
+      current_statement__ = 642;
       stan::math::validate_non_negative_index("exposed", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 639;
+      current_statement__ = 643;
       stan::math::validate_non_negative_index("exposed_cumulative",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 640;
+      current_statement__ = 644;
       stan::math::validate_non_negative_index("new_hybrid", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 641;
+      current_statement__ = 645;
       stan::math::validate_non_negative_index("hybrid_cumulative",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 642;
+      current_statement__ = 646;
       stan::math::validate_non_negative_index("infections_premiere",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 643;
+      current_statement__ = 647;
       stan::math::validate_non_negative_index("infections_repeat",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 644;
+      current_statement__ = 648;
       stan::math::validate_non_negative_index("num_uninf", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 645;
+      current_statement__ = 649;
       stan::math::validate_non_negative_index("p_first", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 646;
+      current_statement__ = 650;
       stan::math::validate_non_negative_index("p_boost", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 647;
+      current_statement__ = 651;
       stan::math::validate_non_negative_index("naive_to_vax", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 648;
+      current_statement__ = 652;
       stan::math::validate_non_negative_index("naive_to_inf", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 649;
+      current_statement__ = 653;
       stan::math::validate_non_negative_index("inf_to_reinf", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 650;
+      current_statement__ = 654;
       stan::math::validate_non_negative_index("inf_to_hybrid", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 651;
+      current_statement__ = 655;
       stan::math::validate_non_negative_index("hybrid_to_reinf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 652;
+      current_statement__ = 656;
       stan::math::validate_non_negative_index("vax_to_boost", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 653;
+      current_statement__ = 657;
       stan::math::validate_non_negative_index("vax_to_hybrid", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 654;
+      current_statement__ = 658;
       stan::math::validate_non_negative_index("first_inf_only_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 655;
+      current_statement__ = 659;
       stan::math::validate_non_negative_index("reinf_only_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 656;
+      current_statement__ = 660;
       stan::math::validate_non_negative_index("hybrid_last_inf_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 657;
+      current_statement__ = 661;
       stan::math::validate_non_negative_index("hybrid_to_boost",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 658;
+      current_statement__ = 662;
       stan::math::validate_non_negative_index("vax_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 659;
+      current_statement__ = 663;
       stan::math::validate_non_negative_index("inf_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 660;
+      current_statement__ = 664;
       stan::math::validate_non_negative_index("naive_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 661;
+      current_statement__ = 665;
       stan::math::validate_non_negative_index("hybrid_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 662;
+      current_statement__ = 666;
       stan::math::validate_non_negative_index("p1", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 663;
+      current_statement__ = 667;
       stan::math::validate_non_negative_index("p1max", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 664;
+      current_statement__ = 668;
       stan::math::validate_non_negative_index("p1min", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 665;
+      current_statement__ = 669;
       stan::math::validate_non_negative_index("susceptible_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 666;
+      current_statement__ = 670;
       stan::math::validate_non_negative_index("effective_protection_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 667;
+      current_statement__ = 671;
       stan::math::validate_non_negative_index(
         "effective_protection_prvl_lag", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 668;
+      current_statement__ = 672;
       stan::math::validate_non_negative_index("new_protection_inf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 669;
+      current_statement__ = 673;
       stan::math::validate_non_negative_index("new_protection_vax",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 670;
+      current_statement__ = 674;
       stan::math::validate_non_negative_index("new_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 671;
+      current_statement__ = 675;
       stan::math::validate_non_negative_index("lost_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 672;
+      current_statement__ = 676;
       stan::math::validate_non_negative_index("lost_protection_net",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 673;
+      current_statement__ = 677;
       stan::math::validate_non_negative_index("severe_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 674;
+      current_statement__ = 678;
       stan::math::validate_non_negative_index("population_protection_inf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 675;
+      current_statement__ = 679;
       stan::math::validate_non_negative_index("population_protection_hybrid",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 676;
+      current_statement__ = 680;
       stan::math::validate_non_negative_index("population_protection_vax",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 677;
+      current_statement__ = 681;
       stan::math::validate_non_negative_index(
         "population_protection_sev_inf", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 678;
+      current_statement__ = 682;
       stan::math::validate_non_negative_index(
         "population_protection_sev_vax", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 679;
+      current_statement__ = 683;
       stan::math::validate_non_negative_index(
         "population_protection_sev_hybrid", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 680;
+      current_statement__ = 684;
       stan::math::validate_non_negative_index("logRt0", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 681;
+      current_statement__ = 685;
       stan::math::validate_non_negative_index("logRt", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 682;
+      current_statement__ = 686;
       stan::math::validate_non_negative_index("r_t", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 683;
+      current_statement__ = 687;
       stan::math::validate_non_negative_index("r_0", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 684;
+      current_statement__ = 688;
       deriv1_spl_par_rt_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 684;
+      current_statement__ = 688;
       deriv1_spl_par_rt_1dim__ = (N_spl_par_rt - 1);
-      current_statement__ = 684;
+      current_statement__ = 688;
       stan::math::validate_non_negative_index("deriv1_spl_par_rt",
         "N_spl_par_rt - 1", deriv1_spl_par_rt_1dim__);
-      current_statement__ = 685;
+      current_statement__ = 689;
       deriv2_spl_par_rt_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 685;
+      current_statement__ = 689;
       deriv2_spl_par_rt_1dim__ = (N_spl_par_rt - 2);
-      current_statement__ = 685;
+      current_statement__ = 689;
       stan::math::validate_non_negative_index("deriv2_spl_par_rt",
         "N_spl_par_rt - 2", deriv2_spl_par_rt_1dim__);
-      current_statement__ = 686;
+      current_statement__ = 690;
       stan::math::validate_non_negative_index("p_die_if_sevt", "N_ifr_adj",
         N_ifr_adj);
-      current_statement__ = 687;
+      current_statement__ = 691;
       stan::math::validate_non_negative_index("p_sev_if_symt", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 688;
+      current_statement__ = 692;
       stan::math::validate_non_negative_index("p_sym_if_inft", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 689;
+      current_statement__ = 693;
       stan::math::validate_non_negative_index("rr_diag_sym_vs_sev",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 690;
+      current_statement__ = 694;
       stan::math::validate_non_negative_index("p_diag_if_asy", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 691;
+      current_statement__ = 695;
       stan::math::validate_non_negative_index("p_diag_if_sym", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 692;
+      current_statement__ = 696;
       stan::math::validate_non_negative_index("sym_diag_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 693;
+      current_statement__ = 697;
       stan::math::validate_non_negative_index("sev_diag_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 694;
+      current_statement__ = 698;
       stan::math::validate_non_negative_index("symptomatic", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 695;
+      current_statement__ = 699;
       stan::math::validate_non_negative_index("severe", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 696;
+      current_statement__ = 700;
       stan::math::validate_non_negative_index("deaths", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 697;
+      current_statement__ = 701;
       stan::math::validate_non_negative_index("new_asy_dx", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 698;
+      current_statement__ = 702;
       stan::math::validate_non_negative_index("diagnoses_of_symptomatic",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 699;
+      current_statement__ = 703;
       stan::math::validate_non_negative_index("diagnoses_severe",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 700;
+      current_statement__ = 704;
       stan::math::validate_non_negative_index("hospitalizations_nonsevere",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 701;
+      current_statement__ = 705;
       stan::math::validate_non_negative_index("hospitalizations_severe",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 702;
+      current_statement__ = 706;
       stan::math::validate_non_negative_index("dx_sym_sev", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 703;
+      current_statement__ = 707;
       stan::math::validate_non_negative_index("dx_sym_die", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 704;
+      current_statement__ = 708;
       stan::math::validate_non_negative_index("dx_sev_die", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 705;
+      current_statement__ = 709;
       stan::math::validate_non_negative_index("diagnoses", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 706;
+      current_statement__ = 710;
       stan::math::validate_non_negative_index("deaths_of_diagnosed",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 707;
+      current_statement__ = 711;
       stan::math::validate_non_negative_index("fitted_cases", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 708;
+      current_statement__ = 712;
       stan::math::validate_non_negative_index("fitted_deaths", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 709;
+      current_statement__ = 713;
       stan::math::validate_non_negative_index("fitted_hospitalizations",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 710;
+      current_statement__ = 714;
       stan::math::validate_non_negative_index("fitted_cases_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 711;
+      current_statement__ = 715;
       stan::math::validate_non_negative_index("fitted_deaths_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 712;
+      current_statement__ = 716;
       stan::math::validate_non_negative_index("fitted_hospitalizations_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 713;
+      current_statement__ = 717;
       stan::math::validate_non_negative_index("diag_cases", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 714;
+      current_statement__ = 718;
       stan::math::validate_non_negative_index("infections_cumulative",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 715;
+      current_statement__ = 719;
       stan::math::validate_non_negative_index("seropositive_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 716;
+      current_statement__ = 720;
       stan::math::validate_non_negative_index("infect_dist_rv", "Max_delay",
         Max_delay);
-      current_statement__ = 717;
+      current_statement__ = 721;
       stan::math::validate_non_negative_index("seropos_dist_rv", "Max_delay",
         Max_delay);
     } catch (const std::exception& e) {
@@ -4600,106 +4604,106 @@ public:
       current_statement__ = 385;
       phi_die = stan::math::pow(inv_sqrt_phi_d, -2);
       {
-        current_statement__ = 395;
+        current_statement__ = 399;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(log_infections_0,
                          pri_log_infections_0_mu, pri_log_infections_0_sd));
-        current_statement__ = 396;
+        current_statement__ = 400;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(spl_par_rt,
                          pri_logRt_mu, pri_logRt_sd));
-        current_statement__ = 397;
+        current_statement__ = 401;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(serial_i,
                          pri_serial_i_shap, pri_serial_i_rate));
-        current_statement__ = 398;
+        current_statement__ = 402;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(serial_i_postO,
                          pri_serial_i_postO_shap, pri_serial_i_postO_rate));
-        current_statement__ = 399;
+        current_statement__ = 403;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(deriv1_spl_par_rt,
                          0, pri_deriv1_spl_par_sd));
-        current_statement__ = 400;
+        current_statement__ = 404;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(deriv2_spl_par_rt,
                          0, pri_deriv2_spl_par_sd));
-        current_statement__ = 401;
+        current_statement__ = 405;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_sym_if_inf,
                          pri_p_sym_if_inf_a, pri_p_sym_if_inf_b));
-        current_statement__ = 402;
+        current_statement__ = 406;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_sym_if_inf_postO,
                          pri_p_sym_if_inf_postO_a, pri_p_sym_if_inf_postO_b));
-        current_statement__ = 403;
+        current_statement__ = 407;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_sev_if_sym,
                          pri_p_sev_if_sym_a, pri_p_sev_if_sym_b));
-        current_statement__ = 404;
+        current_statement__ = 408;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_sev_if_sym_postO,
                          pri_p_sev_if_sym_a, pri_p_sev_if_sym_b));
-        current_statement__ = 405;
+        current_statement__ = 409;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_die_if_sev,
                          pri_p_die_if_sev_a, pri_p_die_if_sev_b));
-        current_statement__ = 406;
+        current_statement__ = 410;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(ifr_decl_OR,
                          pri_ifr_decl_OR_a, pri_ifr_decl_OR_b));
-        current_statement__ = 407;
+        current_statement__ = 411;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_die_if_inf,
                          pri_p_die_if_inf_a, pri_p_die_if_inf_b));
-        current_statement__ = 408;
+        current_statement__ = 412;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_die_if_inf_postO,
                          pri_p_die_if_inf_postO_a, pri_p_die_if_inf_postO_b));
-        current_statement__ = 409;
+        current_statement__ = 413;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(rr_diag_asy_vs_sym,
                          pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b));
-        current_statement__ = 410;
+        current_statement__ = 414;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(spl_par_sym_dx,
                          pri_rr_diag_sym_vs_sev_a, pri_rr_diag_sym_vs_sev_b));
-        current_statement__ = 411;
+        current_statement__ = 415;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_diag_if_sev,
                          pri_p_diag_if_sev_a, pri_p_diag_if_sev_b));
-        current_statement__ = 412;
+        current_statement__ = 416;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(scale_dx_delay_sym,
                          scale_dx_delay_sym_a, scale_dx_delay_sym_b));
-        current_statement__ = 413;
+        current_statement__ = 417;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(scale_dx_delay_sev,
                          scale_dx_delay_sev_a, scale_dx_delay_sev_b));
-        current_statement__ = 414;
+        current_statement__ = 418;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_hosp_nonsevere,
                          p_hosp_nonsevere_a, p_hosp_nonsevere_b));
-        current_statement__ = 415;
+        current_statement__ = 419;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(inv_sqrt_phi_c, 0, 1));
-        current_statement__ = 416;
+        current_statement__ = 420;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(inv_sqrt_phi_d, 0, 1));
-        current_statement__ = 417;
+        current_statement__ = 421;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(inv_sqrt_phi_h, 0, 1));
-        current_statement__ = 427;
+        current_statement__ = 431;
         if (stan::math::logical_eq(pre_period_zero, 1)) {
-          current_statement__ = 425;
+          current_statement__ = 429;
           if (stan::math::logical_gt(N_weeks_before, 0)) {
-            current_statement__ = 419;
+            current_statement__ = 423;
             if (stan::math::logical_lt(
                   stan::math::sum(
                     stan::model::rvalue(fitted_cases, "fitted_cases",
                       stan::model::index_min_max(1, N_weeks_before))), 0)) {
-              current_statement__ = 418;
+              current_statement__ = 422;
               std::stringstream errmsg_stream__;
               stan::math::stan_print(&errmsg_stream__,
                 "`sum(fitted_cases[1:N_weeks_before])` had a negative value");
               throw std::domain_error(errmsg_stream__.str());
             }
-            current_statement__ = 421;
+            current_statement__ = 425;
             if (stan::math::logical_lt(
                   stan::math::sum(
                     stan::model::rvalue(fitted_deaths, "fitted_deaths",
                       stan::model::index_min_max(1, N_weeks_before))), 0)) {
-              current_statement__ = 420;
+              current_statement__ = 424;
               std::stringstream errmsg_stream__;
               stan::math::stan_print(&errmsg_stream__,
                 "`sum(fitted_deaths[1:N_weeks_before])` had a negative value");
               throw std::domain_error(errmsg_stream__.str());
             }
-            current_statement__ = 422;
+            current_statement__ = 426;
             lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(0,
                              stan::math::sum(
                                stan::model::rvalue(fitted_cases,
                                  "fitted_cases",
                                  stan::model::index_min_max(1, N_weeks_before))),
                              phi_cas));
-            current_statement__ = 423;
+            current_statement__ = 427;
             lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(0,
                              stan::math::sum(
                                stan::model::rvalue(fitted_deaths,
@@ -4708,23 +4712,23 @@ public:
                              phi_die));
           }
         }
-        current_statement__ = 429;
+        current_statement__ = 433;
         if (stan::math::logical_lt(stan::math::min(fitted_cases), 0)) {
-          current_statement__ = 428;
+          current_statement__ = 432;
           std::stringstream errmsg_stream__;
           stan::math::stan_print(&errmsg_stream__,
             "`fitted_cases` had a negative value");
           throw std::domain_error(errmsg_stream__.str());
         }
-        current_statement__ = 431;
+        current_statement__ = 435;
         if (stan::math::logical_lt(stan::math::min(fitted_deaths), 0)) {
-          current_statement__ = 430;
+          current_statement__ = 434;
           std::stringstream errmsg_stream__;
           stan::math::stan_print(&errmsg_stream__,
             "`fitted_deaths` had a negative value");
           throw std::domain_error(errmsg_stream__.str());
         }
-        current_statement__ = 432;
+        current_statement__ = 436;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_cas_mvs, "obs_cas_mvs",
                            stan::model::index_min_max(1, lastCaseWeek)),
@@ -4732,7 +4736,7 @@ public:
                            "fitted_cases_mvs",
                            stan::model::index_min_max((N_weeks_before + 1),
                              (N_weeks_before + lastCaseWeek))), phi_cas));
-        current_statement__ = 433;
+        current_statement__ = 437;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_die_mvs, "obs_die_mvs",
                            stan::model::index_min_max(1, lastDeathWeek)),
@@ -4740,7 +4744,7 @@ public:
                            "fitted_deaths_mvs",
                            stan::model::index_min_max((N_weeks_before + 1),
                              (N_weeks_before + lastDeathWeek))), phi_die));
-        current_statement__ = 434;
+        current_statement__ = 438;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_hosp_mvs, "obs_hosp_mvs",
                            stan::model::index_min_max(firstHospWeek,
@@ -6834,38 +6838,50 @@ public:
         Eigen::Matrix<double,-1,1>::Constant(Max_delay,
           std::numeric_limits<double>::quiet_NaN());
       current_statement__ = 386;
+      stan::model::assign(infections_cumulative, 0,
+        "assigning variable infections_cumulative", stan::model::index_uni(1));
+      current_statement__ = 387;
+      stan::model::assign(infections_cumulative, 0,
+        "assigning variable infections_cumulative", stan::model::index_uni(2));
+      current_statement__ = 388;
+      stan::model::assign(infections_cumulative, 0,
+        "assigning variable infections_cumulative", stan::model::index_uni(3));
+      current_statement__ = 389;
+      stan::model::assign(infections_cumulative, 0,
+        "assigning variable infections_cumulative", stan::model::index_uni(4));
+      current_statement__ = 390;
       stan::model::assign(infections_cumulative,
         stan::math::cumulative_sum(
           stan::model::rvalue(infections, "infections",
             stan::model::index_min((N_weeks_before + 1)))),
         "assigning variable infections_cumulative",
         stan::model::index_min((N_weeks_before + 1)));
-      current_statement__ = 387;
+      current_statement__ = 391;
       p_die_if_sym = (p_die_if_sev * p_sev_if_sym);
-      current_statement__ = 388;
+      current_statement__ = 392;
       p_die_if_sym_postO = (p_die_if_sev * p_sev_if_sym);
-      current_statement__ = 389;
+      current_statement__ = 393;
       stan::model::assign(diag_cases,
         stan::math::add(diagnoses_of_symptomatic, diagnoses_severe),
         "assigning variable diag_cases");
-      current_statement__ = 391;
+      current_statement__ = 395;
       for (int i = 1; i <= Max_delay; ++i) {
-        current_statement__ = 390;
+        current_statement__ = 394;
         stan::model::assign(infect_dist_rv,
           (stan::math::gamma_cdf(i, infect_dist_shap, infect_dist_rate) -
           stan::math::gamma_cdf((i - 1), infect_dist_shap, infect_dist_rate)),
           "assigning variable infect_dist_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
       }
-      current_statement__ = 393;
+      current_statement__ = 397;
       for (int i = 1; i <= Max_delay; ++i) {
-        current_statement__ = 392;
+        current_statement__ = 396;
         stan::model::assign(seropos_dist_rv, (1.0 -
           stan::math::gamma_cdf(i, seropos_dist_shap, seropos_dist_rate)),
           "assigning variable seropos_dist_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
       }
-      current_statement__ = 394;
+      current_statement__ = 398;
       stan::model::assign(seropositive_prvl,
         conv1d(infections, seropos_dist_rv, pstream__),
         "assigning variable seropositive_prvl");

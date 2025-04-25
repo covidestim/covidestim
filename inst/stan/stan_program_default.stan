@@ -1371,7 +1371,10 @@ generated quantities {
 // }
   // cumulative incidence
   // cumulative incidence is only calculated for the data weeks! any prior infections are added through cum_p_inf_init.
-  // infections_cumulative[1:4] =  [0,0,0,0] ; 
+  infections_cumulative[1] = 0;
+  infections_cumulative[2] = 0;
+  infections_cumulative[3] = 0;
+  infections_cumulative[4] = 0;
   infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) ; 
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
