@@ -773,9 +773,12 @@ if(full_vax[i] > 0.0)  naive_to_vax[i] = exposed[i] - naive_to_inf[i];
 if(full_vax[i] > 0.0)  inf_to_hybrid[i] = new_hybrid[i] - vax_to_hybrid[i];
 // print("week ", i, " p1 ", p1, " exposed ", exposed[i], " hybrid ", new_hybrid[i], " naive inf ", naive_to_inf[i], " naive_vax ", naive_to_vax[i], " inf hybrid ", inf_to_hybrid[i], "vax hybrid ", vax_to_hybrid[i],
 // " inf prem ", infections_premiere[i], " vax prvl prsv ", vax_prvl[i-1], " pop prot vax ", population_protection_vax[i-1]);
-} else{
-  naive_to_inf[i] = infections_premiere[i];
-}
+    } else{
+       p1[1] = 1; 
+       p1min[1] = 1; 
+       p1max[1] = 1; 
+       naive_to_inf[i] = infections_premiere[i];
+    }
 
   
     // inf_to_hybrid[i] = full_vax[i] - vax_only[i];
@@ -1368,6 +1371,7 @@ generated quantities {
 // }
   // cumulative incidence
   // cumulative incidence is only calculated for the data weeks! any prior infections are added through cum_p_inf_init.
+  // infections_cumulative[1:4] =  [0,0,0,0] ; 
   infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) ; 
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
