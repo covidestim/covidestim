@@ -220,9 +220,9 @@ transformed data {
   // int<lower=0>           obs_cas_mvs[N_days]; // vector of cases
   // int<lower=0>           obs_die_mvs[N_days]; // vector of deaths
   // int<lower=0>           nda0 = N_days_av - 1;
-  int<lower=0>           obs_cas_mvs[N_weeks]; // vector of cases
-  int<lower=0>           obs_die_mvs[N_weeks]; // vector of deaths
-  int<lower=0>           obs_hosp_mvs[N_weeks]; // vector of hospitalizations
+  int<lower=0>       obs_cas_mvs[N_weeks]; // vector of cases
+  int<lower=0>       obs_die_mvs[N_weeks]; // vector of deaths
+  int<lower=0>       obs_hosp_mvs[N_weeks]; // vector of hospitalizations
   // real susceptible_prvl; 
   // Progression delays
   vector[Max_delay]  inf_prg_delay_rv;
@@ -746,7 +746,7 @@ transformed parameters {
     // if(i == 1){
     //   naive_to_inf[i] = infections_premiere[i];
     // }  else{
-      if(i > 1){
+    if(i > 1){
     p1[i] = (naive_prvl[i-1]/(naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])));
     p1max[i] = fmin(exposed[i] / infections_premiere[i],1.0);
     p1min[i] = fmax((infections_premiere[i]-new_hybrid[i])/ infections_premiere[i], 0.0);
@@ -903,7 +903,7 @@ if(sum(full_vax[1:i]) == 0.0){
         }
     }
     }
-    
+    // Spread out the omicron transition over four weeks 
     if(i >= N_weeks_start_omicron + N_weeks_before){
       if(i < N_weeks_start_omicron + N_weeks_before + N_weeks_transition){
       population_protection_inf[i] = population_protection_inf[i] * pow((1.0 - omicron_scalar), 0.25);
@@ -1330,14 +1330,14 @@ generated quantities {
   // vector[N_weeks_tot]     num_uninf;
   real                p_die_if_sym;
   real                p_die_if_sym_postO;
-  vector[N_weeks_tot] susceptible_severe_prvl;
-  vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
-  vector[N_weeks_tot] effective_protection_inf_vax_prvl;
-  vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
-  vector[N_weeks_tot] effective_protection_vax_prvl;
-  vector[N_weeks_tot] effective_protection_vax_boost_prvl;
-  vector[N_weeks_tot] fitted_wastewater_prvl;
-  vector[N_weeks_tot] immunoexposed_cumulative;
+  // vector[N_weeks_tot] susceptible_severe_prvl;
+  // vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
+  // vector[N_weeks_tot] effective_protection_inf_vax_prvl;
+  // vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
+  // vector[N_weeks_tot] effective_protection_vax_prvl;
+  // vector[N_weeks_tot] effective_protection_vax_boost_prvl;
+  // vector[N_weeks_tot] fitted_wastewater_prvl;
+  // vector[N_weeks_tot] immunoexposed_cumulative;
 
   vector[N_weeks_tot]  diag_cases;
   vector[N_weeks_tot]  infections_cumulative;  
