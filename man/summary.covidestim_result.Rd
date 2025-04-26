@@ -61,61 +61,6 @@ A \code{data.frame} with the following variables:
       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
         interval, ℝ}.
 
-    \item \bold{\code{effective_protection_inf_prvl}},
-      \code{effective_protection_inf_prvl} + (\code{_p2_5}, \code{_p25},
-      \code{_p75}, \code{_p97_5})
-
-      The estimated fraction of the population on date \code{date} with
-      effective protection against infection with a history of infection
-      (but no vaccinations).
-
-      \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-        interval, ℝ}.
-
-    \item \bold{\code{effective_protection_inf_vax_boost_prvl}},
-      \code{effective_protection_inf_vax_boost_prvl} + (\code{_p2_5},
-      \code{_p25}, \code{_p75}, \code{_p97_5})
-
-      The estimated fraction of the population on date \code{date} with 
-      effective protection against infection, with a history of infection,
-      vaccination and a booster shot.
-      
-      \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-        interval, ℝ}.
-
-    \item \bold{\code{effective_protection_inf_vax_prvl}},
-      \code{effective_protection_inf_vax_prvl} + (\code{_p2_5}, \code{_p25},
-      \code{_p75}, \code{_p97_5})
-
-      The estimated fraction of the population on date \code{date} with
-      effective protection against infection, with a history of infection
-      and vaccination (but no booster shot).
-      
-      \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-        interval, ℝ}.
-
-    \item \bold{\code{effective_protection_vax_boost_prvl}},
-      \code{effective_protection_vax_boost_prvl} + (\code{_p2_5},
-      \code{_p25}, \code{_p75}, \code{_p97_5})
-
-      The estimated fraction of the population on date \code{date} with 
-      effective protection against infection with a history of vaccination
-      and a booster shot (but no infection).
-
-      \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-        interval, ℝ}.
-
-    \item \bold{\code{effective_protection_vax_prvl}},
-      \code{effective_protection_vax_prvl} + (\code{_p2_5}, \code{_p25},
-      \code{_p75}, \code{_p97_5})
-
-      The estimated fraction of the population on date \code{date} with 
-      effective protection against infection with a history of vaccination
-      (but no booster shot or infection).
-
-      \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-        interval, ℝ}.
-
     \item \bold{\code{fitted_cases}}, \code{fitted_cases} + (\code{_p2_5},
       \code{_p25}, \code{_p75}, \code{_p97_5})
 
@@ -148,27 +93,6 @@ A \code{data.frame} with the following variables:
       thus is approximating how many admission reports should exist for this
       date.  This estimate is used to fit against the observed data
       (reported hospital admissions).
-
-      \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-        interval, ℝ}.
-
-    \item \bold{\code{fitted_wastewater_prvl}},
-      \code{fitted_wastewater_prvl} + (\code{_p2_5}, \code{_p25},
-      \code{_p75}, \code{_p97_5})
-
-      To be developed - a modeled estimate that resembles the wastewater
-      data; a measure of infectiousness in the population on date
-      \code{date}.
-      
-      \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-        interval, ℝ}.
-
-    \item \bold{\code{immunoexposed_cumulative}},
-      \code{immunoexposed_cumulative} + (\code{_p2_5}, \code{_p25},
-      \code{_p75}, \code{_p97_5})
-
-      The estimated fraction of the population on date \code{date} with 
-      historic immunological exposure (infection and/or vaccination).
 
       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
         interval, ℝ}.
@@ -235,17 +159,6 @@ A \code{data.frame} with the following variables:
       to SARS-CoV-2 infection, i.e., the fraction of the population that has
       \emph{no} effective protection.
 
-      \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-        interval, ℝ}.
-
-    \item \bold{\code{susceptible_severe_prvl}},
-      \code{susceptible_severe_prvl} + (\code{_p2_5}, \code{_p25},
-      \code{_p75}, \code{_p97_5})
-
-      The fraction of the population on date \code{date} that is susceptible
-      to developing severe disease from a SARS-CoV-2 infection. This is a 
-      subset from \code{susceptible_prvl}.
-      
       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
         interval, ℝ}.
 
