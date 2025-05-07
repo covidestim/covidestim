@@ -247,7 +247,7 @@ transformed data {
  int  idx2[N_weeks + N_weeks_before];
  vector[N_weeks + N_weeks_before] idx3;
  vector[N_weeks + N_weeks_before] idx4; // index for the omicron switch weeks
- vector[N_weeks + N_weeks_before] full_vax; // prefilled with zeros
+ vector<lower=0,upper=pop_size>[N_weeks + N_weeks_before] full_vax; // prefilled with zeros
  vector[N_weeks + N_weeks_before] full_boost; // prefilled with zeros
  // real log_infections_0calc = log(pop_size * .5);
   // create 'N_days_tot', which is days of data plus days to model before first 
@@ -426,7 +426,7 @@ transformed parameters {
   vector[N_weeks_tot]      exposed_cumulative;
   vector[N_weeks_tot]      new_hybrid;
   vector[N_weeks_tot]      hybrid_cumulative;
-  vector[N_weeks_tot]      infections_premiere;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]      infections_premiere;
   vector[N_weeks_tot]      infections_repeat;
   vector[N_weeks_tot]     num_uninf;
   vector[N_weeks_tot]     p_first;
@@ -540,6 +540,14 @@ transformed parameters {
   real phi_cas;
   real phi_die;
   real phi_hosp;
+  
+  ////////////// ADDED BY NSWARTWOOD 
+  // Add a vector of ever infected
+  vector<lower=0,upper=pop_size>[N_weeks_tot]  num_ever_inf;
+  // Add in tracking of first vaccination 
+  // vector[N_weeks_tot]  first_vax_prvl;
+
+
  
   // NATURAL HISTORY CASCADE
 
@@ -614,7 +622,12 @@ transformed parameters {
   naive_to_inf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   vax_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
-  naive_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  naive_prvl[2:N_weeks_tot] = rep_vector(0.0, N_weeks_tot-1);
+  
+  /// Add a tracking of the number of people ever infected 
+  num_ever_inf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+  // first_vax_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
+
   first_inf_only_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   reinf_only_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   hybrid_last_inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
@@ -679,12 +692,22 @@ transformed parameters {
     // p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
     p_first[i] = (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])) / (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1]) +
     (inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1]));
+    
+    // p_first[i] = (pop_size - num_ever_inf[i])/ (pop_size - num_ever_inf[i] + infections[i]);
+    
+    // p_first[i] = (pop_size - num_ever_inf[i-1]) / (pop_size - infections[i-1]);
+        
     } else {
     // p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
-    p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
+    p_first[i] = (pop_size - num_ever_inf[1]) / (pop_size - infections[1]);
+    
     }
+    
     infections_premiere[i] = infections[i] * p_first[i];
-    infections_repeat[i] = infections[i] * (1-p_first[i]);
+    infections_repeat[i]   = infections[i] * (1-p_first[i]);
+    
+    //// Add in tracking the number of uniquely infected individuals 
+    num_ever_inf[i] = sum(infections_premiere[1:i]);
     
     // divide the repeat infections and boosters over those eligible: hybrid and uni exposures
     if(i > 2){ // larger than 2: t = 1, fully susceptible population, t = 2, all infections 'fully' protected
@@ -792,7 +815,10 @@ if(full_vax[i] > 0.0)  inf_to_hybrid[i] = new_hybrid[i] - vax_to_hybrid[i];
 if(i > 1){    
 inf_prvl[i] = inf_prvl[i-1] - inf_to_hybrid[i] + naive_to_inf[i];
 vax_prvl[i] = vax_prvl[i-1] - vax_to_hybrid[i] + naive_to_vax[i];
-naive_prvl[i] = naive_prvl[i-1] - naive_to_inf[i] - naive_to_vax[i];
+// first_vax_prvl[i] = first_vax_prvl[i-1] + naive_to_vax[i]; 
+// naive_prvl[i] = naive_prvl[i-1] - naive_to_inf[i] - naive_to_vax[i];
+naive_prvl[i] = pop_size-num_ever_inf[i];
+
 hybrid_prvl[i] = hybrid_prvl[i-1] + inf_to_hybrid[i] + vax_to_hybrid[i];
 first_inf_only_prvl[i] = first_inf_only_prvl[i-1] + naive_to_inf[i] - ((inf_to_hybrid[i] + inf_to_reinf[i]) * (first_inf_only_prvl[i-1] / inf_prvl[i]));
 reinf_only_prvl[i] = reinf_only_prvl[i-1] - (inf_to_hybrid[i] * (reinf_only_prvl[i-1] / inf_prvl[i])) + inf_to_reinf[i] - (inf_to_reinf[i] * (reinf_only_prvl[i-1]/inf_prvl[i]));
@@ -806,6 +832,7 @@ hybrid_last_inf_prvl[i] = hybrid_last_inf_prvl[i-1] + vax_to_hybrid[i] + hybrid_
   inf_prvl[i] = infections[i];
   first_inf_only_prvl[i] = infections[i];
   vax_prvl[i] = 0.0;
+  // first_vax_prvl[i] = 0.0; 
   naive_prvl[i] = pop_size - infections[i];
   hybrid_prvl[i] = 0.0;
   hybrid_last_inf_prvl[i] = 0.0;
@@ -813,6 +840,8 @@ hybrid_last_inf_prvl[i] = hybrid_last_inf_prvl[i-1] + vax_to_hybrid[i] + hybrid_
 }
 // print("iteration", i, " infections ",infections[i]," pfirst ", p_first[i], " inf_to_hybrid ", inf_to_hybrid[i], " vaxtohbyrd ", vax_to_hybrid[i],
 // " infprvl ", inf_prvl[i], " vaxprvl ", vax_prvl[i], " hybridprvl ", hybrid_prvl[i], " naive prvl ", naive_prvl[i]);
+
+    // Update the number of ever uninfected 
     if(i < N_weeks_tot) num_uninf[i+1] = num_uninf[i] - infections_premiere[i];
     if(num_uninf[i] < 0) reject("WARNING num_uninf invalid"); 
 
@@ -1343,7 +1372,7 @@ generated quantities {
   // vector[N_weeks_tot] immunoexposed_cumulative;
 
   vector[N_weeks_tot]  diag_cases;
-  vector[N_weeks_tot]  infections_cumulative;
+  // vector[N_weeks_tot]  infections_cumulative;  
   vector[N_weeks_tot]  seropositive_prvl;
   // vector[N_days_tot]  pop_infectiousness;  
   // 
@@ -1371,7 +1400,11 @@ generated quantities {
 // }
   // cumulative incidence
   // cumulative incidence is only calculated for the data weeks! any prior infections are added through cum_p_inf_init.
-  infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) ;
+  // infections_cumulative[1] = 0;
+  // infections_cumulative[2] = 0;
+  // infections_cumulative[3] = 0;
+  // infections_cumulative[4] = 0;
+  // infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) ; 
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
   // immunoexposed_cumulative = infections_cumulative;
@@ -1404,4 +1437,3 @@ generated quantities {
   // seropositives
   seropositive_prvl = conv1d(infections, seropos_dist_rv);
 }
-
