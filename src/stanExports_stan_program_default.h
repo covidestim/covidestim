@@ -60,7 +60,7 @@ static constexpr std::array<const char*, 743> locations_array__ =
   " (in 'stan_program_default', line 372, column 2 to column 41)",
   " (in 'stan_program_default', line 373, column 2 to column 33)",
   " (in 'stan_program_default', line 374, column 2 to column 40)",
-  " (in 'stan_program_default', line 375, column 2 to column 42)",
+  " (in 'stan_program_default', line 375, column 2 to column 66)",
   " (in 'stan_program_default', line 376, column 2 to column 40)",
   " (in 'stan_program_default', line 377, column 2 to column 32)",
   " (in 'stan_program_default', line 378, column 2 to column 30)",
@@ -228,7 +228,7 @@ static constexpr std::array<const char*, 743> locations_array__ =
   " (in 'stan_program_default', line 595, column 4 to column 43)",
   " (in 'stan_program_default', line 606, column 4 to column 75)",
   " (in 'stan_program_default', line 604, column 11 to line 607, column 5)",
-  " (in 'stan_program_default', line 600, column 4 to line 601, column 111)",
+  " (in 'stan_program_default', line 599, column 4 to column 103)",
   " (in 'stan_program_default', line 598, column 13 to line 604, column 5)",
   " (in 'stan_program_default', line 598, column 4 to line 607, column 5)",
   " (in 'stan_program_default', line 608, column 4 to column 56)",
@@ -668,7 +668,7 @@ static constexpr std::array<const char*, 743> locations_array__ =
   " (in 'stan_program_default', line 372, column 9 to column 20)",
   " (in 'stan_program_default', line 373, column 9 to column 20)",
   " (in 'stan_program_default', line 374, column 9 to column 20)",
-  " (in 'stan_program_default', line 375, column 9 to column 20)",
+  " (in 'stan_program_default', line 375, column 33 to column 44)",
   " (in 'stan_program_default', line 376, column 9 to column 20)",
   " (in 'stan_program_default', line 377, column 9 to column 20)",
   " (in 'stan_program_default', line 378, column 9 to column 20)",
@@ -3478,29 +3478,15 @@ public:
         if (stan::math::logical_gt(i, 1)) {
           current_statement__ = 200;
           stan::model::assign(p_first,
-            ((stan::model::rvalue(naive_prvl, "naive_prvl",
-                stan::model::index_uni((i - 1))) +
-            (stan::model::rvalue(vax_prvl, "vax_prvl",
-               stan::model::index_uni((i - 1))) -
-            stan::model::rvalue(population_protection_vax,
-              "population_protection_vax", stan::model::index_uni((i - 1)))))
-            /
-            (((stan::model::rvalue(naive_prvl, "naive_prvl",
-                 stan::model::index_uni((i - 1))) +
-            (stan::model::rvalue(vax_prvl, "vax_prvl",
-               stan::model::index_uni((i - 1))) -
-            stan::model::rvalue(population_protection_vax,
-              "population_protection_vax", stan::model::index_uni((i - 1)))))
-            +
-            (stan::model::rvalue(inf_prvl, "inf_prvl",
-               stan::model::index_uni((i - 1))) -
+            (stan::model::rvalue(num_uninf, "num_uninf",
+               stan::model::index_uni(i)) /
+            ((stan::model::rvalue(num_uninf, "num_uninf",
+                stan::model::index_uni(i)) +
+            stan::math::sum(
+              stan::model::rvalue(infections, "infections",
+                stan::model::index_min_max(1, i)))) -
             stan::model::rvalue(population_protection_inf,
-              "population_protection_inf", stan::model::index_uni((i - 1)))))
-            +
-            (stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
-               stan::model::index_uni((i - 1))) -
-            stan::model::rvalue(population_protection_hybrid,
-              "population_protection_hybrid", stan::model::index_uni((i - 1)))))),
+              "population_protection_inf", stan::model::index_uni((i - 1))))),
             "assigning variable p_first", stan::model::index_uni(i));
         } else {
           current_statement__ = 198;
@@ -4623,6 +4609,12 @@ public:
       phi_hosp = stan::math::pow(inv_sqrt_phi_h, -2);
       current_statement__ = 384;
       phi_die = stan::math::pow(inv_sqrt_phi_d, -2);
+      current_statement__ = 32;
+      stan::math::check_greater_or_equal(function__, "infections_premiere",
+        infections_premiere, 0);
+      current_statement__ = 32;
+      stan::math::check_less_or_equal(function__, "infections_premiere",
+        infections_premiere, pop_size);
       current_statement__ = 108;
       stan::math::check_greater_or_equal(function__, "num_ever_inf",
         num_ever_inf, 0);
@@ -5616,29 +5608,15 @@ public:
         if (stan::math::logical_gt(i, 1)) {
           current_statement__ = 200;
           stan::model::assign(p_first,
-            ((stan::model::rvalue(naive_prvl, "naive_prvl",
-                stan::model::index_uni((i - 1))) +
-            (stan::model::rvalue(vax_prvl, "vax_prvl",
-               stan::model::index_uni((i - 1))) -
-            stan::model::rvalue(population_protection_vax,
-              "population_protection_vax", stan::model::index_uni((i - 1)))))
-            /
-            (((stan::model::rvalue(naive_prvl, "naive_prvl",
-                 stan::model::index_uni((i - 1))) +
-            (stan::model::rvalue(vax_prvl, "vax_prvl",
-               stan::model::index_uni((i - 1))) -
-            stan::model::rvalue(population_protection_vax,
-              "population_protection_vax", stan::model::index_uni((i - 1)))))
-            +
-            (stan::model::rvalue(inf_prvl, "inf_prvl",
-               stan::model::index_uni((i - 1))) -
+            (stan::model::rvalue(num_uninf, "num_uninf",
+               stan::model::index_uni(i)) /
+            ((stan::model::rvalue(num_uninf, "num_uninf",
+                stan::model::index_uni(i)) +
+            stan::math::sum(
+              stan::model::rvalue(infections, "infections",
+                stan::model::index_min_max(1, i)))) -
             stan::model::rvalue(population_protection_inf,
-              "population_protection_inf", stan::model::index_uni((i - 1)))))
-            +
-            (stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
-               stan::model::index_uni((i - 1))) -
-            stan::model::rvalue(population_protection_hybrid,
-              "population_protection_hybrid", stan::model::index_uni((i - 1)))))),
+              "population_protection_inf", stan::model::index_uni((i - 1))))),
             "assigning variable p_first", stan::model::index_uni(i));
         } else {
           current_statement__ = 198;
@@ -6761,6 +6739,12 @@ public:
       phi_hosp = stan::math::pow(inv_sqrt_phi_h, -2);
       current_statement__ = 384;
       phi_die = stan::math::pow(inv_sqrt_phi_d, -2);
+      current_statement__ = 32;
+      stan::math::check_greater_or_equal(function__, "infections_premiere",
+        infections_premiere, 0);
+      current_statement__ = 32;
+      stan::math::check_less_or_equal(function__, "infections_premiere",
+        infections_premiere, pop_size);
       current_statement__ = 108;
       stan::math::check_greater_or_equal(function__, "num_ever_inf",
         num_ever_inf, 0);

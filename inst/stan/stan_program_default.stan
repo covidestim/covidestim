@@ -689,9 +689,9 @@ transformed parameters {
 //calculate the probability that an infection is a first infection
 // as ratio of the uninfected population vs the susceptible for (first/re)infection
     if(i > 1){
-    // p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
-    p_first[i] = (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])) / (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1]) +
-    (inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1]));
+    p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
+    // p_first[i] = (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])) / (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1]) +
+    // (inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1]));
     
     // p_first[i] = (pop_size - num_ever_inf[i])/ (pop_size - num_ever_inf[i] + infections[i]);
     
