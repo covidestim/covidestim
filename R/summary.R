@@ -94,16 +94,6 @@
 #'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
 #'         interval, ℝ}.
 #'
-#'     \item \bold{\code{infections_cumulative}}, \code{infections_cumulative}
-#'       + (\code{_p2_5}, \code{_p25}, \code{_p75}, \code{_p97_5})
-#'
-#'       The estimated cumulative number of infections on date \code{date}.
-#'       This includes both first and repeat infections and can therefore
-#'       exceed the population size.       
-#'
-#'       \emph{Median, 2.5\% interval, 25\% interval, 75\% interval, 97.5\%
-#'         interval, ℝ}.
-#'
 #'     \item \bold{\code{infections}}, \code{infections} + (\code{_p2_5},
 #'       \code{_p25}, \code{_p75}, \code{_p97_5})
 #'
@@ -213,7 +203,7 @@ summary.covidestim_result <- function(ccr, include.before = TRUE, index = FALSE)
     # "fitted_wastewater_prvl"                 = "fitted_wastewater_prvl",
     "num_uninf"                              = "num_uninf",
     # "immunoexposed_cumulative"               = "immunoexposed_cumulative",
-    "infections_cumulative"                  = "infections_cumulative",
+    # "infections_cumulative"                  = "infections_cumulative",
     "infections"                             = "infections",
     "infections_premiere"                    = "infections_premiere",
     "p_first"                                = "p_first",
