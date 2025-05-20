@@ -37,7 +37,9 @@ functions {
     return X * kernel;
   }
 
-real calcExposed(real OR, real cumInf, real cumVac) {
+real calcExposed(real OR, 
+                 real cumInf, 
+                 real cumVac) {
   real t1 = 1 + OR*cumInf - cumInf - OR*cumVac - cumVac;
   real t2 = OR - cumVac*OR;
   real b = (-t1 + (t1^2 + 4*cumVac*t2)^0.5) / (2*t2);
@@ -376,8 +378,8 @@ parameters {
 // INCIDENCE 
   real                    log_infections_0; // starting intercept
   // real<lower=0, upper=6> serial_i; // serial interval
-  real serial_i; // serial interval
-  real serial_i_postO; // serial interval
+  real<lower=0> serial_i; // serial interval
+  real<lower=0> serial_i_postO; // serial interval post omicron
   // vector[N_spl_par_rt-1]    spl_par_rt0;
   vector[N_spl_par_rt]    spl_par_rt;
 
@@ -416,20 +418,20 @@ parameters {
 transformed parameters {
   ///~~~~~~~ Define ~~~~~~~
   // INCIDENCE
-  vector[N_weeks_tot]      serial_i_vec;
+  vector<lower=0>[N_weeks_tot]      serial_i_vec;
   vector[N_weeks_tot]      log_infections;
   vector[N_weeks_tot]      deriv1_log_infections;
-  vector[N_weeks_tot]      infections;
-  vector[N_weeks_tot]      vax_only;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]      infections;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]      vax_only;
   vector[N_weeks_tot]      vax_only_cum;
-  vector[N_weeks_tot]      exposed;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]      exposed;
   vector[N_weeks_tot]      exposed_cumulative;
-  vector[N_weeks_tot]      new_hybrid;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]      new_hybrid;
   vector[N_weeks_tot]      hybrid_cumulative;
   vector<lower=0,upper=pop_size>[N_weeks_tot]      infections_premiere;
   vector[N_weeks_tot]      infections_repeat;
-  vector[N_weeks_tot]     num_uninf;
-  vector[N_weeks_tot]     p_first;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     num_uninf;
+  vector<lower=0,upper=1>[N_weeks_tot]     p_first;
   vector[N_weeks_tot]     p_boost;
   // vector[N_weeks_tot]     p_inf_reinf;
   // vector[N_weeks_tot]     p_reinf;
@@ -440,20 +442,20 @@ transformed parameters {
   vector[N_weeks_tot]     hybrid_to_reinf;
   vector[N_weeks_tot]     vax_to_boost;
   vector[N_weeks_tot]     vax_to_hybrid;
-  vector[N_weeks_tot]     first_inf_only_prvl;
-  vector[N_weeks_tot]     reinf_only_prvl;
-  vector[N_weeks_tot]     hybrid_last_inf_prvl;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     first_inf_only_prvl;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     reinf_only_prvl;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     hybrid_last_inf_prvl;
   vector[N_weeks_tot]     hybrid_to_boost;
-  vector[N_weeks_tot]     vax_prvl;
-  vector[N_weeks_tot]     inf_prvl;
-  vector[N_weeks_tot]     naive_prvl;
-  vector[N_weeks_tot]     hybrid_prvl;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     vax_prvl;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     inf_prvl;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     naive_prvl;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     hybrid_prvl;
   // real                    ever_inf;
-  vector[N_weeks_tot-1]     p1;
-  vector[N_weeks_tot-1]     p1max;
-  vector[N_weeks_tot-1]     p1min;
-  vector[N_weeks_tot]     susceptible_prvl;
-  vector[N_weeks_tot]     effective_protection_prvl;
+  vector<lower=0,upper=1>[N_weeks_tot-1]     p1;
+  vector<lower=0,upper=1>[N_weeks_tot-1]     p1max;
+  vector<lower=0,upper=1>[N_weeks_tot-1]     p1min;
+  vector<lower=1,upper=pop_size>[N_weeks_tot]     susceptible_prvl;
+  vector<lower=0,upper=pop_size>[N_weeks_tot]     effective_protection_prvl;
   vector[N_weeks_tot]     effective_protection_prvl_lag;
   vector[N_weeks_tot]     new_protection_inf;
   vector[N_weeks_tot]     new_protection_vax;
@@ -496,8 +498,8 @@ transformed parameters {
 
   // DISEASE OUTCOMES
   // overall case fatality rate
-  real                p_die_if_inf;
-  real                p_die_if_inf_postO;
+  real<lower=0,upper=1> p_die_if_inf;
+  real<lower=0,upper=1> p_die_if_inf_postO;
 
   // "true" number entering disease state each day
   vector[N_weeks_tot]  symptomatic; 
@@ -547,10 +549,7 @@ transformed parameters {
   // Add in tracking of first vaccination 
   // vector[N_weeks_tot]  first_vax_prvl;
 
-
- 
   // NATURAL HISTORY CASCADE
-
   p_die_if_sevt = p_die_if_sev * ifr_adj_fixed * (1 + ifr_adj * ifr_decl_OR);
 
   // DIAGNOSIS // 
@@ -603,11 +602,12 @@ transformed parameters {
   // spl_par_rt[1] = (spl_basis_rt[2+N_days_before,2:N_spl_par_rt]-
   //                  spl_basis_rt[1+N_days_before,2:N_spl_par_rt]) * spl_par_rt0 / 
   //                 (spl_basis_rt[1+N_days_before,1]-spl_basis_rt[2+N_days_before,1]);
+  
+  // Initial conditions //
   logRt0 = spl_basis_rt * spl_par_rt;
   susceptible_prvl[1] = pop_size;
   num_uninf[1] = pop_size;
   naive_prvl[1] = pop_size;
-  
   effective_protection_prvl[1] = 0.0; 
   effective_protection_prvl_lag[1] = 0.0; 
   severe_protection[1] = 0.0;
@@ -633,6 +633,7 @@ transformed parameters {
   hybrid_last_inf_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   hybrid_prvl[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   
+  // Change in population immunological protection
   new_protection_inf[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   new_protection_vax[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
   new_protection[1:N_weeks_tot] = rep_vector(0.0, N_weeks_tot);
@@ -641,68 +642,70 @@ transformed parameters {
   
   // effective protection from infections; for the first timepoint include everyone
   // with a historic infection; 
-  for( i in 1:N_weeks_tot){
-  p_die_if_sevt[i]     = p_die_if_sevt[i]   .* pow(ifr_vac_adj[i], prob_vac[1]);
-  if(i > 1){
-  // p_sev_if_symt[i]     = (p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1])));
-  p_sev_if_symt[i]     = (p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[1]);
-} else{
-  p_sev_if_symt[i]     = (p_sev_if_sym        * pow(ifr_vac_adj[i], prob_vac[2]));
-}
-  if(i < N_weeks_start_omicron+N_weeks_before){ // until the switch
-  if(i > 1){
-  p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
-  // p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
-  } else{
-  p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) ;
-  }
-  serial_i_vec[i] = serial_i;
-
+  for(i in 1:N_weeks_tot){
+    p_die_if_sevt[i] = p_die_if_sevt[i]  .* pow(ifr_vac_adj[i], prob_vac[1]);
+    if(i > 1){
+  // p_sev_if_symt[i]     = (p_sev_if_sym * pow(ifr_vac_adj[i], prob_vac[2])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[1])));
+        p_sev_if_symt[i] = (p_sev_if_sym * pow(ifr_vac_adj[i], prob_vac[2])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[1]);
+    } else {
+        p_sev_if_symt[i] = (p_sev_if_sym * pow(ifr_vac_adj[i], prob_vac[2]));
+    }
+   if(i < N_weeks_start_omicron+N_weeks_before){ // until the switch
+      if(i > 1){
+        p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
+        // p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
+      } else{
+        p_sym_if_inft[i]     = (p_sym_if_inf        * pow(ifr_vac_adj[i], prob_vac[3])) ;
+      }
+      
+      serial_i_vec[i] = serial_i;
   } else {
     if(i <= N_weeks_start_omicron+N_weeks_before+N_weeks_transition){ // switch period
-  p_sym_if_inft[i]     = ((p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
-  // p_sym_if_inft[i]     = ((p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3])) *
-  //  (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
- serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / (N_weeks_transition+2) * idx4[i]);
+         p_sym_if_inft[i]     = ((p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
+        // p_sym_if_inft[i]     = ((p_sym_if_inf - (p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition+2) * idx4[i])  * pow(ifr_vac_adj[i], prob_vac[3])) *
+        //  (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
+        serial_i_vec[i] = (serial_i - (serial_i - serial_i_postO) / (N_weeks_transition+2) * idx4[i]);
 
-  } else { // extended switch period 
-  p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
-  // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * (first_inf_only_prvl[i-1]/exposed_cumulative[i-1]  + pow((exposed_cumulative[i-1] - severe_protection[i])/exposed_cumulative[i-1], prob_vac2[2]));
-  // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * pow(1.0-(severe_protection[i]/(inf_prvl[i-1] + vax_prvl[i-1] + hybrid_prvl[i-1])), prob_vac2[2]);
-  // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
-  serial_i_vec[i] = serial_i_postO;
-
+    } else { // extended switch period 
+        p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * pow((first_inf_only_prvl[i-1]+((reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1])*((1.0 - (effective_protection_prvl[i]/pop_size)) * (1.0-(severe_protection[i]/pop_size)))))/(first_inf_only_prvl[i-1]+reinf_only_prvl[i-1]+hybrid_last_inf_prvl[i-1]), prob_vac2[2]);
+      // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * (first_inf_only_prvl[i-1]/exposed_cumulative[i-1]  + pow((exposed_cumulative[i-1] - severe_protection[i])/exposed_cumulative[i-1], prob_vac2[2]));
+      // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * pow(1.0-(severe_protection[i]/(inf_prvl[i-1] + vax_prvl[i-1] + hybrid_prvl[i-1])), prob_vac2[2]);
+      // p_sym_if_inft[i]     = (p_sym_if_inf_postO        * pow(ifr_vac_adj[i], prob_vac[3])) * (p_first[i-1] + ((1 - p_first[i-1]) * pow(1.0-(severe_protection[i]/pop_size), prob_vac2[2])));
+      serial_i_vec[i] = serial_i_postO;
   }
   }
-    if(i > 1){susceptible_prvl[i] = pop_size - effective_protection_prvl[i];}
-    if (susceptible_prvl[i] < 1) {      susceptible_prvl[i] = 1;}
-    
+    // update the susceptible population based on effective protection
+    // effective protection includes infections at time i
+    if(i > 1){
+        susceptible_prvl[i] = pop_size - effective_protection_prvl[i];
+    }
+    // if (susceptible_prvl[i] < 1) {      
+    //     susceptible_prvl[i] = 1
+    // }
     if(i == 1){
       logRt[i] = logRt0[i];
     } else {
       logRt[i] = logRt0[i] + log(susceptible_prvl[i]/pop_size);
     }
 
-    deriv1_log_infections[i] = logRt[i]/serial_i_vec[i];
+    deriv1_log_infections[i] = logRt[i] / serial_i_vec[i];
     log_infections[i] = sum(deriv1_log_infections[1:i]) + log_infections_0;
     infections[i] = exp(log_infections[i]);
-//calculate the probability that an infection is a first infection
-// as ratio of the uninfected population vs the susceptible for (first/re)infection
+    
+    //calculate the probability that an infection is a first infection
+    // as ratio of the uninfected population vs the susceptible for (first/re)infection
     if(i > 1){
-    p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
-    // p_first[i] = (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])) / (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1]) +
-    // (inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1]));
-    
-    // p_first[i] = (pop_size - num_ever_inf[i])/ (pop_size - num_ever_inf[i] + infections[i]);
-    
-    // p_first[i] = (pop_size - num_ever_inf[i-1]) / (pop_size - infections[i-1]);
-        
+        // p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
+        p_first[i] = (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])) / 
+        (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1]) +
+        (inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1]));
     } else {
-    // p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
-    p_first[i] = (pop_size - num_ever_inf[1]) / (pop_size - infections[1]);
-    
+        // p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
+        p_first[i] = 1.0000; ///(pop_size - num_ever_inf[1]) / (pop_size - infections[1]);
     }
     
+    // Calculate the number of first [premiere] infections and the number of 
+    // repeat infections. 
     infections_premiere[i] = infections[i] * p_first[i];
     infections_repeat[i]   = infections[i] * (1-p_first[i]);
     
@@ -711,20 +714,22 @@ transformed parameters {
     
     // divide the repeat infections and boosters over those eligible: hybrid and uni exposures
     if(i > 2){ // larger than 2: t = 1, fully susceptible population, t = 2, all infections 'fully' protected
-    inf_to_reinf[i] = infections_repeat[i] * ((inf_prvl[i-1] - population_protection_inf[i-1])/((inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1])));
-    hybrid_to_reinf[i] = infections_repeat[i] * ((hybrid_prvl[i-1] - population_protection_hybrid[i-1])/((inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1])));
+        inf_to_reinf[i] = infections_repeat[i] * ((inf_prvl[i-1] - population_protection_inf[i-1])/((inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1])));
+        hybrid_to_reinf[i] = infections_repeat[i] * ((hybrid_prvl[i-1] - population_protection_hybrid[i-1])/((inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1])));
     if(sum(full_boost[1:i]) == 0.0){
-      vax_to_boost[i] = 0.0;
-      hybrid_to_boost[i] = 0.0;
+        vax_to_boost[i] = 0.0;
+        hybrid_to_boost[i] = 0.0;
     } else {
-    vax_to_boost[i] = full_boost[i] * (vax_prvl[i-1] / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
-    hybrid_to_boost[i] = full_boost[i] * (hybrid_prvl[i-1] / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
+        vax_to_boost[i]    = full_boost[i] * (vax_prvl[i-1]    / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
+        hybrid_to_boost[i] = full_boost[i] * (hybrid_prvl[i-1] / (vax_prvl[i-1] + hybrid_prvl[i-1])) ;
     }
     }
+    
     // compute the overlap of vaccinations and infections
     exposed_cumulative[i] = calcExposed(OR, sum(infections_premiere[1:i])/pop_size, sum(full_vax[1:i])/pop_size) * pop_size;
-    vax_only_cum[i] = exposed_cumulative[i] - sum(infections_premiere[1:i]);
-    hybrid_cumulative[i] = (sum(infections_premiere[1:i]) + sum(full_vax[1:i])) - exposed_cumulative[i];
+    vax_only_cum[i]       = exposed_cumulative[i] - sum(infections_premiere[1:i]);
+    hybrid_cumulative[i]  = (sum(infections_premiere[1:i]) + sum(full_vax[1:i])) - exposed_cumulative[i];
+    
     if(i == 1){
       exposed[i] = exposed_cumulative[i];
       vax_only[i] = vax_only_cum[i];
