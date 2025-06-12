@@ -40,8 +40,14 @@ functions {
 real calcExposed(real OR, 
                  real cumInf, 
                  real cumVac) {
-  real t1 = 1 + OR*cumInf - cumInf - OR*cumVac - cumVac;
-  real t2 = OR - cumVac*OR;
+  ///try converting the cumInf to and from an odds from probability 
+  // (c / (1-c) * OR) / (1+ c / (1-c) * OR)
+  real t1 = 1 + (cumInf / (1-cumInf) * OR) / (1+ cumInf / (1-cumInf) * OR) - cumInf - OR*cumVac - cumVac;
+  real t2 = OR - ((cumVac / (1-cumVac) * OR) / (1+ cumVac / (1-cumVac) * OR));
+  // real t1 = 1 + OR*cumInf - cumInf - OR*cumVac - cumVac;
+  // real t2 = OR - cumVac*OR;
+  // real t1 = 1 + OR*cumInf - cumInf - OR*cumVac - cumVac;
+  // real t2 = OR - cumVac*OR;
   real b = (-t1 + (t1^2 + 4*cumVac*t2)^0.5) / (2*t2);
   real o_inf = b*OR;
   real cp_vac_not_inf = b/(1+b);
