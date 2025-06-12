@@ -420,20 +420,20 @@ parameters {
 transformed parameters {
   ///~~~~~~~ Define ~~~~~~~
   // INCIDENCE
-  vector<lower=0>[N_weeks_tot]      serial_i_vec;
+  vector[N_weeks_tot]      serial_i_vec;
   vector[N_weeks_tot]      log_infections;
   vector[N_weeks_tot]      deriv1_log_infections;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]      infections;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]      vax_only;
+  vector[N_weeks_tot]      infections;
+  vector[N_weeks_tot]      vax_only;
   vector[N_weeks_tot]      vax_only_cum;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]      exposed;
+  vector[N_weeks_tot]      exposed;
   vector[N_weeks_tot]      exposed_cumulative;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]      new_hybrid;
+  vector[N_weeks_tot]      new_hybrid;
   vector[N_weeks_tot]      hybrid_cumulative;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]      infections_premiere;
+  vector[N_weeks_tot]      infections_premiere;
   vector[N_weeks_tot]      infections_repeat;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     num_uninf;
-  vector<lower=0,upper=1>[N_weeks_tot]     p_first;
+  vector[N_weeks_tot]     num_uninf;
+  vector[N_weeks_tot]     p_first;
   vector[N_weeks_tot]     p_boost;
   // vector[N_weeks_tot]     p_inf_reinf;
   // vector[N_weeks_tot]     p_reinf;
@@ -444,20 +444,20 @@ transformed parameters {
   vector[N_weeks_tot]     hybrid_to_reinf;
   vector[N_weeks_tot]     vax_to_boost;
   vector[N_weeks_tot]     vax_to_hybrid;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     first_inf_only_prvl;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     reinf_only_prvl;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     hybrid_last_inf_prvl;
+  vector[N_weeks_tot]     first_inf_only_prvl;
+  vector[N_weeks_tot]     reinf_only_prvl;
+  vector[N_weeks_tot]     hybrid_last_inf_prvl;
   vector[N_weeks_tot]     hybrid_to_boost;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     vax_prvl;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     inf_prvl;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     naive_prvl;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     hybrid_prvl;
+  vector[N_weeks_tot]     vax_prvl;
+  vector[N_weeks_tot]     inf_prvl;
+  vector[N_weeks_tot]     naive_prvl;
+  vector[N_weeks_tot]     hybrid_prvl;
   // real                    ever_inf;
-  vector<lower=0,upper=1>[N_weeks_tot-1]     p1;
-  vector<lower=0,upper=1>[N_weeks_tot-1]     p1max;
-  vector<lower=0,upper=1>[N_weeks_tot-1]     p1min;
-  vector<lower=1,upper=pop_size>[N_weeks_tot]     susceptible_prvl;
-  vector<lower=0,upper=pop_size>[N_weeks_tot]     effective_protection_prvl;
+  vector[N_weeks_tot-1]     p1;
+  vector[N_weeks_tot-1]     p1max;
+  vector[N_weeks_tot-1]     p1min;
+  vector[N_weeks_tot]     susceptible_prvl;
+  vector[N_weeks_tot]     effective_protection_prvl;
   vector[N_weeks_tot]     effective_protection_prvl_lag;
   vector[N_weeks_tot]     new_protection_inf;
   vector[N_weeks_tot]     new_protection_vax;
@@ -500,8 +500,8 @@ transformed parameters {
 
   // DISEASE OUTCOMES
   // overall case fatality rate
-  real<lower=0,upper=1> p_die_if_inf;
-  real<lower=0,upper=1> p_die_if_inf_postO;
+  real p_die_if_inf;
+  real p_die_if_inf_postO;
 
   // "true" number entering disease state each day
   vector[N_weeks_tot]  symptomatic; 
@@ -547,7 +547,7 @@ transformed parameters {
   
   ////////////// ADDED BY NSWARTWOOD 
   // Add a vector of ever infected
-  vector<lower=0,upper=pop_size>[N_weeks_tot]  num_ever_inf;
+  vector[N_weeks_tot]  num_ever_inf;
   // Add in tracking of first vaccination 
   // vector[N_weeks_tot]  first_vax_prvl;
 

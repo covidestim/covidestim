@@ -50,20 +50,20 @@ static constexpr std::array<const char*, 741> locations_array__ =
   " (in 'stan_program_default', line 359, column 2 to column 31)",
   " (in 'stan_program_default', line 361, column 2 to column 22)",
   " (in 'stan_program_default', line 362, column 2 to column 23)",
-  " (in 'stan_program_default', line 368, column 2 to column 44)",
+  " (in 'stan_program_default', line 368, column 2 to column 35)",
   " (in 'stan_program_default', line 369, column 2 to column 37)",
   " (in 'stan_program_default', line 370, column 2 to column 44)",
-  " (in 'stan_program_default', line 371, column 2 to column 57)",
-  " (in 'stan_program_default', line 372, column 2 to column 55)",
+  " (in 'stan_program_default', line 371, column 2 to column 33)",
+  " (in 'stan_program_default', line 372, column 2 to column 31)",
   " (in 'stan_program_default', line 373, column 2 to column 35)",
-  " (in 'stan_program_default', line 374, column 2 to column 54)",
+  " (in 'stan_program_default', line 374, column 2 to column 30)",
   " (in 'stan_program_default', line 375, column 2 to column 41)",
-  " (in 'stan_program_default', line 376, column 2 to column 57)",
+  " (in 'stan_program_default', line 376, column 2 to column 33)",
   " (in 'stan_program_default', line 377, column 2 to column 40)",
-  " (in 'stan_program_default', line 378, column 2 to column 66)",
+  " (in 'stan_program_default', line 378, column 2 to column 42)",
   " (in 'stan_program_default', line 379, column 2 to column 40)",
-  " (in 'stan_program_default', line 380, column 2 to column 56)",
-  " (in 'stan_program_default', line 381, column 2 to column 47)",
+  " (in 'stan_program_default', line 380, column 2 to column 32)",
+  " (in 'stan_program_default', line 381, column 2 to column 30)",
   " (in 'stan_program_default', line 382, column 2 to column 30)",
   " (in 'stan_program_default', line 385, column 2 to column 35)",
   " (in 'stan_program_default', line 386, column 2 to column 35)",
@@ -72,19 +72,19 @@ static constexpr std::array<const char*, 741> locations_array__ =
   " (in 'stan_program_default', line 389, column 2 to column 38)",
   " (in 'stan_program_default', line 390, column 2 to column 35)",
   " (in 'stan_program_default', line 391, column 2 to column 36)",
-  " (in 'stan_program_default', line 392, column 2 to column 66)",
-  " (in 'stan_program_default', line 393, column 2 to column 62)",
-  " (in 'stan_program_default', line 394, column 2 to column 67)",
+  " (in 'stan_program_default', line 392, column 2 to column 42)",
+  " (in 'stan_program_default', line 393, column 2 to column 38)",
+  " (in 'stan_program_default', line 394, column 2 to column 43)",
   " (in 'stan_program_default', line 395, column 2 to column 38)",
-  " (in 'stan_program_default', line 396, column 2 to column 55)",
-  " (in 'stan_program_default', line 397, column 2 to column 55)",
-  " (in 'stan_program_default', line 398, column 2 to column 57)",
-  " (in 'stan_program_default', line 399, column 2 to column 58)",
-  " (in 'stan_program_default', line 401, column 2 to column 44)",
-  " (in 'stan_program_default', line 402, column 2 to column 47)",
-  " (in 'stan_program_default', line 403, column 2 to column 47)",
-  " (in 'stan_program_default', line 404, column 2 to column 63)",
-  " (in 'stan_program_default', line 405, column 2 to column 72)",
+  " (in 'stan_program_default', line 396, column 2 to column 31)",
+  " (in 'stan_program_default', line 397, column 2 to column 31)",
+  " (in 'stan_program_default', line 398, column 2 to column 33)",
+  " (in 'stan_program_default', line 399, column 2 to column 34)",
+  " (in 'stan_program_default', line 401, column 2 to column 27)",
+  " (in 'stan_program_default', line 402, column 2 to column 30)",
+  " (in 'stan_program_default', line 403, column 2 to column 30)",
+  " (in 'stan_program_default', line 404, column 2 to column 39)",
+  " (in 'stan_program_default', line 405, column 2 to column 48)",
   " (in 'stan_program_default', line 406, column 2 to column 52)",
   " (in 'stan_program_default', line 407, column 2 to column 41)",
   " (in 'stan_program_default', line 408, column 2 to column 41)",
@@ -112,8 +112,8 @@ static constexpr std::array<const char*, 741> locations_array__ =
   " (in 'stan_program_default', line 435, column 2 to column 36)",
   " (in 'stan_program_default', line 438, column 2 to column 38)",
   " (in 'stan_program_default', line 439, column 2 to column 38)",
-  " (in 'stan_program_default', line 442, column 2 to column 37)",
-  " (in 'stan_program_default', line 443, column 2 to column 43)",
+  " (in 'stan_program_default', line 442, column 2 to column 20)",
+  " (in 'stan_program_default', line 443, column 2 to column 26)",
   " (in 'stan_program_default', line 445, column 2 to column 34)",
   " (in 'stan_program_default', line 446, column 2 to column 29)",
   " (in 'stan_program_default', line 447, column 2 to column 29)",
@@ -136,7 +136,7 @@ static constexpr std::array<const char*, 741> locations_array__ =
   " (in 'stan_program_default', line 475, column 2 to column 15)",
   " (in 'stan_program_default', line 476, column 2 to column 15)",
   " (in 'stan_program_default', line 477, column 2 to column 16)",
-  " (in 'stan_program_default', line 480, column 2 to column 59)",
+  " (in 'stan_program_default', line 480, column 2 to column 35)",
   " (in 'stan_program_default', line 1222, column 2 to column 20)",
   " (in 'stan_program_default', line 1223, column 2 to column 26)",
   " (in 'stan_program_default', line 1232, column 2 to column 33)",
@@ -656,20 +656,20 @@ static constexpr std::array<const char*, 741> locations_array__ =
   " (in 'stan_program_default', line 318, column 2 to line 326, column 3)",
   " (in 'stan_program_default', line 336, column 9 to column 21)",
   " (in 'stan_program_default', line 354, column 27 to column 39)",
-  " (in 'stan_program_default', line 368, column 18 to column 29)",
+  " (in 'stan_program_default', line 368, column 9 to column 20)",
   " (in 'stan_program_default', line 369, column 9 to column 20)",
   " (in 'stan_program_default', line 370, column 9 to column 20)",
-  " (in 'stan_program_default', line 371, column 33 to column 44)",
-  " (in 'stan_program_default', line 372, column 33 to column 44)",
+  " (in 'stan_program_default', line 371, column 9 to column 20)",
+  " (in 'stan_program_default', line 372, column 9 to column 20)",
   " (in 'stan_program_default', line 373, column 9 to column 20)",
-  " (in 'stan_program_default', line 374, column 33 to column 44)",
+  " (in 'stan_program_default', line 374, column 9 to column 20)",
   " (in 'stan_program_default', line 375, column 9 to column 20)",
-  " (in 'stan_program_default', line 376, column 33 to column 44)",
+  " (in 'stan_program_default', line 376, column 9 to column 20)",
   " (in 'stan_program_default', line 377, column 9 to column 20)",
-  " (in 'stan_program_default', line 378, column 33 to column 44)",
+  " (in 'stan_program_default', line 378, column 9 to column 20)",
   " (in 'stan_program_default', line 379, column 9 to column 20)",
-  " (in 'stan_program_default', line 380, column 33 to column 44)",
-  " (in 'stan_program_default', line 381, column 26 to column 37)",
+  " (in 'stan_program_default', line 380, column 9 to column 20)",
+  " (in 'stan_program_default', line 381, column 9 to column 20)",
   " (in 'stan_program_default', line 382, column 9 to column 20)",
   " (in 'stan_program_default', line 385, column 9 to column 20)",
   " (in 'stan_program_default', line 386, column 9 to column 20)",
@@ -678,19 +678,19 @@ static constexpr std::array<const char*, 741> locations_array__ =
   " (in 'stan_program_default', line 389, column 9 to column 20)",
   " (in 'stan_program_default', line 390, column 9 to column 20)",
   " (in 'stan_program_default', line 391, column 9 to column 20)",
-  " (in 'stan_program_default', line 392, column 33 to column 44)",
-  " (in 'stan_program_default', line 393, column 33 to column 44)",
-  " (in 'stan_program_default', line 394, column 33 to column 44)",
+  " (in 'stan_program_default', line 392, column 9 to column 20)",
+  " (in 'stan_program_default', line 393, column 9 to column 20)",
+  " (in 'stan_program_default', line 394, column 9 to column 20)",
   " (in 'stan_program_default', line 395, column 9 to column 20)",
-  " (in 'stan_program_default', line 396, column 33 to column 44)",
-  " (in 'stan_program_default', line 397, column 33 to column 44)",
-  " (in 'stan_program_default', line 398, column 33 to column 44)",
-  " (in 'stan_program_default', line 399, column 33 to column 44)",
-  " (in 'stan_program_default', line 401, column 26 to column 39)",
-  " (in 'stan_program_default', line 402, column 26 to column 39)",
-  " (in 'stan_program_default', line 403, column 26 to column 39)",
-  " (in 'stan_program_default', line 404, column 33 to column 44)",
-  " (in 'stan_program_default', line 405, column 33 to column 44)",
+  " (in 'stan_program_default', line 396, column 9 to column 20)",
+  " (in 'stan_program_default', line 397, column 9 to column 20)",
+  " (in 'stan_program_default', line 398, column 9 to column 20)",
+  " (in 'stan_program_default', line 399, column 9 to column 20)",
+  " (in 'stan_program_default', line 401, column 9 to column 22)",
+  " (in 'stan_program_default', line 402, column 9 to column 22)",
+  " (in 'stan_program_default', line 403, column 9 to column 22)",
+  " (in 'stan_program_default', line 404, column 9 to column 20)",
+  " (in 'stan_program_default', line 405, column 9 to column 20)",
   " (in 'stan_program_default', line 406, column 9 to column 20)",
   " (in 'stan_program_default', line 407, column 9 to column 20)",
   " (in 'stan_program_default', line 408, column 9 to column 20)",
@@ -737,7 +737,7 @@ static constexpr std::array<const char*, 741> locations_array__ =
   " (in 'stan_program_default', line 470, column 9 to column 20)",
   " (in 'stan_program_default', line 471, column 9 to column 20)",
   " (in 'stan_program_default', line 472, column 9 to column 20)",
-  " (in 'stan_program_default', line 480, column 33 to column 44)",
+  " (in 'stan_program_default', line 480, column 9 to column 20)",
   " (in 'stan_program_default', line 1232, column 9 to column 20)",
   " (in 'stan_program_default', line 1234, column 9 to column 20)",
   " (in 'stan_program_default', line 1237, column 9 to column 18)",
@@ -4624,129 +4624,6 @@ public:
       phi_hosp = stan::math::pow(inv_sqrt_phi_h, -2);
       current_statement__ = 381;
       phi_die = stan::math::pow(inv_sqrt_phi_d, -2);
-      current_statement__ = 22;
-      stan::math::check_greater_or_equal(function__, "serial_i_vec",
-        serial_i_vec, 0);
-      current_statement__ = 25;
-      stan::math::check_greater_or_equal(function__, "infections",
-        infections, 0);
-      current_statement__ = 25;
-      stan::math::check_less_or_equal(function__, "infections", infections,
-        pop_size);
-      current_statement__ = 26;
-      stan::math::check_greater_or_equal(function__, "vax_only", vax_only, 0);
-      current_statement__ = 26;
-      stan::math::check_less_or_equal(function__, "vax_only", vax_only,
-        pop_size);
-      current_statement__ = 28;
-      stan::math::check_greater_or_equal(function__, "exposed", exposed, 0);
-      current_statement__ = 28;
-      stan::math::check_less_or_equal(function__, "exposed", exposed,
-        pop_size);
-      current_statement__ = 30;
-      stan::math::check_greater_or_equal(function__, "new_hybrid",
-        new_hybrid, 0);
-      current_statement__ = 30;
-      stan::math::check_less_or_equal(function__, "new_hybrid", new_hybrid,
-        pop_size);
-      current_statement__ = 32;
-      stan::math::check_greater_or_equal(function__, "infections_premiere",
-        infections_premiere, 0);
-      current_statement__ = 32;
-      stan::math::check_less_or_equal(function__, "infections_premiere",
-        infections_premiere, pop_size);
-      current_statement__ = 34;
-      stan::math::check_greater_or_equal(function__, "num_uninf", num_uninf,
-        0);
-      current_statement__ = 34;
-      stan::math::check_less_or_equal(function__, "num_uninf", num_uninf,
-        pop_size);
-      current_statement__ = 35;
-      stan::math::check_greater_or_equal(function__, "p_first", p_first, 0);
-      current_statement__ = 35;
-      stan::math::check_less_or_equal(function__, "p_first", p_first, 1);
-      current_statement__ = 44;
-      stan::math::check_greater_or_equal(function__, "first_inf_only_prvl",
-        first_inf_only_prvl, 0);
-      current_statement__ = 44;
-      stan::math::check_less_or_equal(function__, "first_inf_only_prvl",
-        first_inf_only_prvl, pop_size);
-      current_statement__ = 45;
-      stan::math::check_greater_or_equal(function__, "reinf_only_prvl",
-        reinf_only_prvl, 0);
-      current_statement__ = 45;
-      stan::math::check_less_or_equal(function__, "reinf_only_prvl",
-        reinf_only_prvl, pop_size);
-      current_statement__ = 46;
-      stan::math::check_greater_or_equal(function__, "hybrid_last_inf_prvl",
-        hybrid_last_inf_prvl, 0);
-      current_statement__ = 46;
-      stan::math::check_less_or_equal(function__, "hybrid_last_inf_prvl",
-        hybrid_last_inf_prvl, pop_size);
-      current_statement__ = 48;
-      stan::math::check_greater_or_equal(function__, "vax_prvl", vax_prvl, 0);
-      current_statement__ = 48;
-      stan::math::check_less_or_equal(function__, "vax_prvl", vax_prvl,
-        pop_size);
-      current_statement__ = 49;
-      stan::math::check_greater_or_equal(function__, "inf_prvl", inf_prvl, 0);
-      current_statement__ = 49;
-      stan::math::check_less_or_equal(function__, "inf_prvl", inf_prvl,
-        pop_size);
-      current_statement__ = 50;
-      stan::math::check_greater_or_equal(function__, "naive_prvl",
-        naive_prvl, 0);
-      current_statement__ = 50;
-      stan::math::check_less_or_equal(function__, "naive_prvl", naive_prvl,
-        pop_size);
-      current_statement__ = 51;
-      stan::math::check_greater_or_equal(function__, "hybrid_prvl",
-        hybrid_prvl, 0);
-      current_statement__ = 51;
-      stan::math::check_less_or_equal(function__, "hybrid_prvl", hybrid_prvl,
-        pop_size);
-      current_statement__ = 52;
-      stan::math::check_greater_or_equal(function__, "p1", p1, 0);
-      current_statement__ = 52;
-      stan::math::check_less_or_equal(function__, "p1", p1, 1);
-      current_statement__ = 53;
-      stan::math::check_greater_or_equal(function__, "p1max", p1max, 0);
-      current_statement__ = 53;
-      stan::math::check_less_or_equal(function__, "p1max", p1max, 1);
-      current_statement__ = 54;
-      stan::math::check_greater_or_equal(function__, "p1min", p1min, 0);
-      current_statement__ = 54;
-      stan::math::check_less_or_equal(function__, "p1min", p1min, 1);
-      current_statement__ = 55;
-      stan::math::check_greater_or_equal(function__, "susceptible_prvl",
-        susceptible_prvl, 1);
-      current_statement__ = 55;
-      stan::math::check_less_or_equal(function__, "susceptible_prvl",
-        susceptible_prvl, pop_size);
-      current_statement__ = 56;
-      stan::math::check_greater_or_equal(function__,
-        "effective_protection_prvl", effective_protection_prvl, 0);
-      current_statement__ = 56;
-      stan::math::check_less_or_equal(function__,
-        "effective_protection_prvl", effective_protection_prvl, pop_size);
-      current_statement__ = 84;
-      stan::math::check_greater_or_equal(function__, "p_die_if_inf",
-        p_die_if_inf, 0);
-      current_statement__ = 84;
-      stan::math::check_less_or_equal(function__, "p_die_if_inf",
-        p_die_if_inf, 1);
-      current_statement__ = 85;
-      stan::math::check_greater_or_equal(function__, "p_die_if_inf_postO",
-        p_die_if_inf_postO, 0);
-      current_statement__ = 85;
-      stan::math::check_less_or_equal(function__, "p_die_if_inf_postO",
-        p_die_if_inf_postO, 1);
-      current_statement__ = 108;
-      stan::math::check_greater_or_equal(function__, "num_ever_inf",
-        num_ever_inf, 0);
-      current_statement__ = 108;
-      stan::math::check_less_or_equal(function__, "num_ever_inf",
-        num_ever_inf, pop_size);
       {
         current_statement__ = 390;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(log_infections_0,
@@ -6869,129 +6746,6 @@ public:
       phi_hosp = stan::math::pow(inv_sqrt_phi_h, -2);
       current_statement__ = 381;
       phi_die = stan::math::pow(inv_sqrt_phi_d, -2);
-      current_statement__ = 22;
-      stan::math::check_greater_or_equal(function__, "serial_i_vec",
-        serial_i_vec, 0);
-      current_statement__ = 25;
-      stan::math::check_greater_or_equal(function__, "infections",
-        infections, 0);
-      current_statement__ = 25;
-      stan::math::check_less_or_equal(function__, "infections", infections,
-        pop_size);
-      current_statement__ = 26;
-      stan::math::check_greater_or_equal(function__, "vax_only", vax_only, 0);
-      current_statement__ = 26;
-      stan::math::check_less_or_equal(function__, "vax_only", vax_only,
-        pop_size);
-      current_statement__ = 28;
-      stan::math::check_greater_or_equal(function__, "exposed", exposed, 0);
-      current_statement__ = 28;
-      stan::math::check_less_or_equal(function__, "exposed", exposed,
-        pop_size);
-      current_statement__ = 30;
-      stan::math::check_greater_or_equal(function__, "new_hybrid",
-        new_hybrid, 0);
-      current_statement__ = 30;
-      stan::math::check_less_or_equal(function__, "new_hybrid", new_hybrid,
-        pop_size);
-      current_statement__ = 32;
-      stan::math::check_greater_or_equal(function__, "infections_premiere",
-        infections_premiere, 0);
-      current_statement__ = 32;
-      stan::math::check_less_or_equal(function__, "infections_premiere",
-        infections_premiere, pop_size);
-      current_statement__ = 34;
-      stan::math::check_greater_or_equal(function__, "num_uninf", num_uninf,
-        0);
-      current_statement__ = 34;
-      stan::math::check_less_or_equal(function__, "num_uninf", num_uninf,
-        pop_size);
-      current_statement__ = 35;
-      stan::math::check_greater_or_equal(function__, "p_first", p_first, 0);
-      current_statement__ = 35;
-      stan::math::check_less_or_equal(function__, "p_first", p_first, 1);
-      current_statement__ = 44;
-      stan::math::check_greater_or_equal(function__, "first_inf_only_prvl",
-        first_inf_only_prvl, 0);
-      current_statement__ = 44;
-      stan::math::check_less_or_equal(function__, "first_inf_only_prvl",
-        first_inf_only_prvl, pop_size);
-      current_statement__ = 45;
-      stan::math::check_greater_or_equal(function__, "reinf_only_prvl",
-        reinf_only_prvl, 0);
-      current_statement__ = 45;
-      stan::math::check_less_or_equal(function__, "reinf_only_prvl",
-        reinf_only_prvl, pop_size);
-      current_statement__ = 46;
-      stan::math::check_greater_or_equal(function__, "hybrid_last_inf_prvl",
-        hybrid_last_inf_prvl, 0);
-      current_statement__ = 46;
-      stan::math::check_less_or_equal(function__, "hybrid_last_inf_prvl",
-        hybrid_last_inf_prvl, pop_size);
-      current_statement__ = 48;
-      stan::math::check_greater_or_equal(function__, "vax_prvl", vax_prvl, 0);
-      current_statement__ = 48;
-      stan::math::check_less_or_equal(function__, "vax_prvl", vax_prvl,
-        pop_size);
-      current_statement__ = 49;
-      stan::math::check_greater_or_equal(function__, "inf_prvl", inf_prvl, 0);
-      current_statement__ = 49;
-      stan::math::check_less_or_equal(function__, "inf_prvl", inf_prvl,
-        pop_size);
-      current_statement__ = 50;
-      stan::math::check_greater_or_equal(function__, "naive_prvl",
-        naive_prvl, 0);
-      current_statement__ = 50;
-      stan::math::check_less_or_equal(function__, "naive_prvl", naive_prvl,
-        pop_size);
-      current_statement__ = 51;
-      stan::math::check_greater_or_equal(function__, "hybrid_prvl",
-        hybrid_prvl, 0);
-      current_statement__ = 51;
-      stan::math::check_less_or_equal(function__, "hybrid_prvl", hybrid_prvl,
-        pop_size);
-      current_statement__ = 52;
-      stan::math::check_greater_or_equal(function__, "p1", p1, 0);
-      current_statement__ = 52;
-      stan::math::check_less_or_equal(function__, "p1", p1, 1);
-      current_statement__ = 53;
-      stan::math::check_greater_or_equal(function__, "p1max", p1max, 0);
-      current_statement__ = 53;
-      stan::math::check_less_or_equal(function__, "p1max", p1max, 1);
-      current_statement__ = 54;
-      stan::math::check_greater_or_equal(function__, "p1min", p1min, 0);
-      current_statement__ = 54;
-      stan::math::check_less_or_equal(function__, "p1min", p1min, 1);
-      current_statement__ = 55;
-      stan::math::check_greater_or_equal(function__, "susceptible_prvl",
-        susceptible_prvl, 1);
-      current_statement__ = 55;
-      stan::math::check_less_or_equal(function__, "susceptible_prvl",
-        susceptible_prvl, pop_size);
-      current_statement__ = 56;
-      stan::math::check_greater_or_equal(function__,
-        "effective_protection_prvl", effective_protection_prvl, 0);
-      current_statement__ = 56;
-      stan::math::check_less_or_equal(function__,
-        "effective_protection_prvl", effective_protection_prvl, pop_size);
-      current_statement__ = 84;
-      stan::math::check_greater_or_equal(function__, "p_die_if_inf",
-        p_die_if_inf, 0);
-      current_statement__ = 84;
-      stan::math::check_less_or_equal(function__, "p_die_if_inf",
-        p_die_if_inf, 1);
-      current_statement__ = 85;
-      stan::math::check_greater_or_equal(function__, "p_die_if_inf_postO",
-        p_die_if_inf_postO, 0);
-      current_statement__ = 85;
-      stan::math::check_less_or_equal(function__, "p_die_if_inf_postO",
-        p_die_if_inf_postO, 1);
-      current_statement__ = 108;
-      stan::math::check_greater_or_equal(function__, "num_ever_inf",
-        num_ever_inf, 0);
-      current_statement__ = 108;
-      stan::math::check_less_or_equal(function__, "num_ever_inf",
-        num_ever_inf, pop_size);
       if (emit_transformed_parameters__) {
         out__.write(serial_i_vec);
         out__.write(log_infections);
