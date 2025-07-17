@@ -704,7 +704,9 @@ transformed parameters {
     }
     }
     // compute the overlap of vaccinations and infections
-    exposed_cumulative[i] = calcExposed(OR, sum(infections_premiere[1:i])/pop_size, sum(full_vax[1:i])/pop_size) * pop_size;
+    exposed_cumulative[i] = fmax(sum(infections_premiere[1:i]) + sum(full_vax[1:i]), 
+    (calcExposed(OR, sum(infections_premiere[1:i])/pop_size, sum(full_vax[1:i])/pop_size) * pop_size));
+
     vax_only_cum[i] = exposed_cumulative[i] - sum(infections_premiere[1:i]);
     hybrid_cumulative[i] = (sum(infections_premiere[1:i]) + sum(full_vax[1:i])) - exposed_cumulative[i];
     if(i == 1){
