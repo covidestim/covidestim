@@ -11,3 +11,23 @@ COVID-19 epidemics.
 \references{
 Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://covidestim.org}
+  \item \url{https://github.com/covidestim}
+  \item \url{https://pkg.covidestim.org}
+  \item Report bugs at \url{https://github.com/covidestim/covidestim/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Marcus Russi \email{marcus.russi@yale.edu} (\href{https://orcid.org/0000-0002-7106-068X}{ORCID})
+
+Authors:
+\itemize{
+  \item Melanie Chitwood \email{melanie.chitwood@yale.edu} (\href{https://orcid.org/0000-0002-9289-5694}{ORCID})
+  \item Fayette Klaassen \email{fklaassen@hsph.harvard.edu} (\href{https://orcid.org/0000-0002-9488-2571}{ORCID})
+}
+
+}

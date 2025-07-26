@@ -8,6 +8,7 @@ covidestim(
   nweeks,
   nweeks_before = 4,
   pop_size = 1e+12,
+  OR = 1,
   chains = 3,
   iter = 2000,
   nspl_rt_knotwidth = 1,

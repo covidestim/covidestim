@@ -13,9 +13,11 @@ summaryEpi(ccr)
 A \code{data.frame} with the following variables:
 
 \itemize{
-\item \code{par}: Name of the Stan parameter\preformatted{\\item \code{2.5\%}, \code{50\%}, \code{97.5\%}: Quantiles for the posterior
+\item \code{par}: Name of the Stan parameter
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\\item \code{2.5\%}, \code{50\%}, \code{97.5\%}: Quantiles for the posterior
   distribution of \code{par}.
-}
+}\if{html}{\out{</div>}}
 
 }
 }
