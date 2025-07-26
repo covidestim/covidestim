@@ -422,7 +422,6 @@ transformed parameters {
   vector[N_weeks_tot]     num_uninf;
   vector[N_weeks_tot]     p_first;
   vector[N_weeks_tot]     p_boost;
-  vector[N_weeks_tot]     p_inf_reinf;
   vector[N_weeks_tot]     p_reinf;
   vector[N_weeks_tot]     naive_to_vax;
   vector[N_weeks_tot]     naive_to_inf;
