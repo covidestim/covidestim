@@ -27,42 +27,41 @@ namespace model_stan_program_default_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 751> locations_array__ =
+static constexpr std::array<const char*, 750> locations_array__ =
   {" (found before start of program)",
-  " (in 'stan_program_default', line 323, column 2 to column 24)",
-  " (in 'stan_program_default', line 325, column 2 to column 16)",
-  " (in 'stan_program_default', line 326, column 2 to column 22)",
-  " (in 'stan_program_default', line 328, column 2 to column 34)",
-  " (in 'stan_program_default', line 331, column 2 to column 38)",
-  " (in 'stan_program_default', line 332, column 2 to column 44)",
-  " (in 'stan_program_default', line 333, column 2 to column 38)",
-  " (in 'stan_program_default', line 334, column 2 to column 44)",
-  " (in 'stan_program_default', line 335, column 2 to column 38)",
-  " (in 'stan_program_default', line 336, column 2 to column 28)",
-  " (in 'stan_program_default', line 339, column 2 to column 44)",
+  " (in 'stan_program_default', line 324, column 2 to column 24)",
+  " (in 'stan_program_default', line 326, column 2 to column 16)",
+  " (in 'stan_program_default', line 327, column 2 to column 22)",
+  " (in 'stan_program_default', line 329, column 2 to column 34)",
+  " (in 'stan_program_default', line 332, column 2 to column 38)",
+  " (in 'stan_program_default', line 333, column 2 to column 44)",
+  " (in 'stan_program_default', line 334, column 2 to column 38)",
+  " (in 'stan_program_default', line 335, column 2 to column 44)",
+  " (in 'stan_program_default', line 336, column 2 to column 38)",
+  " (in 'stan_program_default', line 337, column 2 to column 28)",
   " (in 'stan_program_default', line 340, column 2 to column 44)",
-  " (in 'stan_program_default', line 342, column 2 to column 44)",
-  " (in 'stan_program_default', line 343, column 2 to column 39)",
-  " (in 'stan_program_default', line 344, column 2 to column 56)",
-  " (in 'stan_program_default', line 347, column 2 to column 31)",
+  " (in 'stan_program_default', line 341, column 2 to column 44)",
+  " (in 'stan_program_default', line 343, column 2 to column 44)",
+  " (in 'stan_program_default', line 344, column 2 to column 39)",
+  " (in 'stan_program_default', line 345, column 2 to column 56)",
   " (in 'stan_program_default', line 348, column 2 to column 31)",
   " (in 'stan_program_default', line 349, column 2 to column 31)",
-  " (in 'stan_program_default', line 351, column 2 to column 22)",
-  " (in 'stan_program_default', line 352, column 2 to column 23)",
-  " (in 'stan_program_default', line 358, column 2 to column 35)",
-  " (in 'stan_program_default', line 359, column 2 to column 37)",
-  " (in 'stan_program_default', line 360, column 2 to column 44)",
-  " (in 'stan_program_default', line 361, column 2 to column 33)",
-  " (in 'stan_program_default', line 362, column 2 to column 31)",
-  " (in 'stan_program_default', line 363, column 2 to column 35)",
-  " (in 'stan_program_default', line 364, column 2 to column 30)",
-  " (in 'stan_program_default', line 365, column 2 to column 41)",
-  " (in 'stan_program_default', line 366, column 2 to column 33)",
-  " (in 'stan_program_default', line 367, column 2 to column 40)",
-  " (in 'stan_program_default', line 368, column 2 to column 42)",
-  " (in 'stan_program_default', line 369, column 2 to column 40)",
-  " (in 'stan_program_default', line 370, column 2 to column 32)",
-  " (in 'stan_program_default', line 371, column 2 to column 30)",
+  " (in 'stan_program_default', line 350, column 2 to column 31)",
+  " (in 'stan_program_default', line 352, column 2 to column 22)",
+  " (in 'stan_program_default', line 353, column 2 to column 23)",
+  " (in 'stan_program_default', line 359, column 2 to column 35)",
+  " (in 'stan_program_default', line 360, column 2 to column 37)",
+  " (in 'stan_program_default', line 361, column 2 to column 44)",
+  " (in 'stan_program_default', line 362, column 2 to column 33)",
+  " (in 'stan_program_default', line 363, column 2 to column 31)",
+  " (in 'stan_program_default', line 364, column 2 to column 35)",
+  " (in 'stan_program_default', line 365, column 2 to column 30)",
+  " (in 'stan_program_default', line 366, column 2 to column 41)",
+  " (in 'stan_program_default', line 367, column 2 to column 33)",
+  " (in 'stan_program_default', line 368, column 2 to column 40)",
+  " (in 'stan_program_default', line 369, column 2 to column 42)",
+  " (in 'stan_program_default', line 370, column 2 to column 40)",
+  " (in 'stan_program_default', line 371, column 2 to column 32)",
   " (in 'stan_program_default', line 372, column 2 to column 30)",
   " (in 'stan_program_default', line 373, column 2 to column 30)",
   " (in 'stan_program_default', line 374, column 2 to column 35)",
@@ -363,12 +362,12 @@ static constexpr std::array<const char*, 751> locations_array__ =
   " (in 'stan_program_default', line 724, column 6 to column 34)",
   " (in 'stan_program_default', line 716, column 14 to line 725, column 5)",
   " (in 'stan_program_default', line 716, column 4 to line 789, column 5)",
-  " (in 'stan_program_default', line 792, column 6 to column 102)",
-  " (in 'stan_program_default', line 793, column 6 to column 102)",
-  " (in 'stan_program_default', line 794, column 6 to column 108)",
-  " (in 'stan_program_default', line 795, column 6 to column 110)",
-  " (in 'stan_program_default', line 796, column 6 to column 110)",
-  " (in 'stan_program_default', line 797, column 6 to column 116)",
+  " (in 'stan_program_default', line 792, column 6 to column 106)",
+  " (in 'stan_program_default', line 793, column 6 to column 106)",
+  " (in 'stan_program_default', line 794, column 6 to column 112)",
+  " (in 'stan_program_default', line 795, column 6 to column 114)",
+  " (in 'stan_program_default', line 796, column 6 to column 114)",
+  " (in 'stan_program_default', line 797, column 6 to column 120)",
   " (in 'stan_program_default', line 791, column 73 to line 798, column 5)",
   " (in 'stan_program_default', line 791, column 6 to line 798, column 5)",
   " (in 'stan_program_default', line 790, column 51 to line 799, column 5)",
@@ -500,16 +499,16 @@ static constexpr std::array<const char*, 751> locations_array__ =
   " (in 'stan_program_default', line 80, column 2 to column 37)",
   " (in 'stan_program_default', line 81, column 2 to column 41)",
   " (in 'stan_program_default', line 82, column 2 to column 42)",
-  " (in 'stan_program_default', line 83, column 2 to column 40)",
-  " (in 'stan_program_default', line 86, column 2 to column 28)",
-  " (in 'stan_program_default', line 88, column 9 to column 31)",
-  " (in 'stan_program_default', line 88, column 32 to column 44)",
-  " (in 'stan_program_default', line 88, column 2 to column 59)",
-  " (in 'stan_program_default', line 89, column 2 to column 28)",
-  " (in 'stan_program_default', line 91, column 9 to column 31)",
-  " (in 'stan_program_default', line 91, column 32 to column 44)",
-  " (in 'stan_program_default', line 91, column 2 to column 59)",
-  " (in 'stan_program_default', line 94, column 2 to column 35)",
+  " (in 'stan_program_default', line 83, column 2 to column 44)",
+  " (in 'stan_program_default', line 84, column 2 to column 44)",
+  " (in 'stan_program_default', line 87, column 2 to column 28)",
+  " (in 'stan_program_default', line 89, column 9 to column 31)",
+  " (in 'stan_program_default', line 89, column 32 to column 44)",
+  " (in 'stan_program_default', line 89, column 2 to column 59)",
+  " (in 'stan_program_default', line 90, column 2 to column 28)",
+  " (in 'stan_program_default', line 92, column 9 to column 31)",
+  " (in 'stan_program_default', line 92, column 32 to column 44)",
+  " (in 'stan_program_default', line 92, column 2 to column 59)",
   " (in 'stan_program_default', line 95, column 2 to column 35)",
   " (in 'stan_program_default', line 96, column 2 to column 35)",
   " (in 'stan_program_default', line 97, column 2 to column 35)",
@@ -517,149 +516,149 @@ static constexpr std::array<const char*, 751> locations_array__ =
   " (in 'stan_program_default', line 99, column 2 to column 35)",
   " (in 'stan_program_default', line 100, column 2 to column 35)",
   " (in 'stan_program_default', line 101, column 2 to column 35)",
-  " (in 'stan_program_default', line 103, column 2 to column 35)",
+  " (in 'stan_program_default', line 102, column 2 to column 35)",
   " (in 'stan_program_default', line 104, column 2 to column 35)",
   " (in 'stan_program_default', line 105, column 2 to column 35)",
   " (in 'stan_program_default', line 106, column 2 to column 35)",
-  " (in 'stan_program_default', line 109, column 2 to column 44)",
-  " (in 'stan_program_default', line 111, column 2 to column 36)",
+  " (in 'stan_program_default', line 107, column 2 to column 35)",
+  " (in 'stan_program_default', line 110, column 2 to column 44)",
   " (in 'stan_program_default', line 112, column 2 to column 36)",
-  " (in 'stan_program_default', line 113, column 2 to column 37)",
-  " (in 'stan_program_default', line 115, column 2 to column 40)",
+  " (in 'stan_program_default', line 113, column 2 to column 36)",
+  " (in 'stan_program_default', line 114, column 2 to column 37)",
   " (in 'stan_program_default', line 116, column 2 to column 40)",
-  " (in 'stan_program_default', line 117, column 2 to column 41)",
-  " (in 'stan_program_default', line 124, column 2 to column 29)",
-  " (in 'stan_program_default', line 125, column 2 to column 28)",
-  " (in 'stan_program_default', line 126, column 2 to column 29)",
-  " (in 'stan_program_default', line 129, column 2 to column 28)",
-  " (in 'stan_program_default', line 133, column 2 to column 31)",
-  " (in 'stan_program_default', line 134, column 2 to column 40)",
-  " (in 'stan_program_default', line 135, column 2 to column 20)",
-  " (in 'stan_program_default', line 136, column 2 to column 29)",
-  " (in 'stan_program_default', line 137, column 2 to column 34)",
+  " (in 'stan_program_default', line 117, column 2 to column 40)",
+  " (in 'stan_program_default', line 118, column 2 to column 41)",
+  " (in 'stan_program_default', line 125, column 2 to column 29)",
+  " (in 'stan_program_default', line 126, column 2 to column 28)",
+  " (in 'stan_program_default', line 127, column 2 to column 29)",
+  " (in 'stan_program_default', line 130, column 2 to column 28)",
+  " (in 'stan_program_default', line 134, column 2 to column 31)",
+  " (in 'stan_program_default', line 135, column 2 to column 40)",
+  " (in 'stan_program_default', line 136, column 2 to column 20)",
+  " (in 'stan_program_default', line 137, column 2 to column 29)",
   " (in 'stan_program_default', line 138, column 2 to column 34)",
-  " (in 'stan_program_default', line 139, column 2 to column 40)",
+  " (in 'stan_program_default', line 139, column 2 to column 34)",
   " (in 'stan_program_default', line 140, column 2 to column 40)",
-  " (in 'stan_program_default', line 141, column 2 to column 38)",
+  " (in 'stan_program_default', line 141, column 2 to column 40)",
   " (in 'stan_program_default', line 142, column 2 to column 38)",
-  " (in 'stan_program_default', line 144, column 2 to column 35)",
+  " (in 'stan_program_default', line 143, column 2 to column 38)",
   " (in 'stan_program_default', line 145, column 2 to column 35)",
-  " (in 'stan_program_default', line 146, column 2 to column 41)",
+  " (in 'stan_program_default', line 146, column 2 to column 35)",
   " (in 'stan_program_default', line 147, column 2 to column 41)",
-  " (in 'stan_program_default', line 148, column 2 to column 35)",
+  " (in 'stan_program_default', line 148, column 2 to column 41)",
   " (in 'stan_program_default', line 149, column 2 to column 35)",
   " (in 'stan_program_default', line 150, column 2 to column 35)",
   " (in 'stan_program_default', line 151, column 2 to column 35)",
-  " (in 'stan_program_default', line 153, column 2 to column 35)",
+  " (in 'stan_program_default', line 152, column 2 to column 35)",
   " (in 'stan_program_default', line 154, column 2 to column 35)",
-  " (in 'stan_program_default', line 155, column 2 to column 41)",
+  " (in 'stan_program_default', line 155, column 2 to column 35)",
   " (in 'stan_program_default', line 156, column 2 to column 41)",
-  " (in 'stan_program_default', line 159, column 2 to column 41)",
+  " (in 'stan_program_default', line 157, column 2 to column 41)",
   " (in 'stan_program_default', line 160, column 2 to column 41)",
-  " (in 'stan_program_default', line 162, column 2 to column 41)",
+  " (in 'stan_program_default', line 161, column 2 to column 41)",
   " (in 'stan_program_default', line 163, column 2 to column 41)",
-  " (in 'stan_program_default', line 165, column 2 to column 36)",
+  " (in 'stan_program_default', line 164, column 2 to column 41)",
   " (in 'stan_program_default', line 166, column 2 to column 36)",
-  " (in 'stan_program_default', line 169, column 2 to column 37)",
+  " (in 'stan_program_default', line 167, column 2 to column 36)",
   " (in 'stan_program_default', line 170, column 2 to column 37)",
   " (in 'stan_program_default', line 171, column 2 to column 37)",
   " (in 'stan_program_default', line 172, column 2 to column 37)",
-  " (in 'stan_program_default', line 180, column 2 to column 18)",
-  " (in 'stan_program_default', line 185, column 27 to column 34)",
-  " (in 'stan_program_default', line 185, column 2 to column 36)",
+  " (in 'stan_program_default', line 173, column 2 to column 37)",
+  " (in 'stan_program_default', line 181, column 2 to column 18)",
   " (in 'stan_program_default', line 186, column 27 to column 34)",
   " (in 'stan_program_default', line 186, column 2 to column 36)",
-  " (in 'stan_program_default', line 187, column 28 to column 35)",
-  " (in 'stan_program_default', line 187, column 2 to column 37)",
-  " (in 'stan_program_default', line 190, column 9 to column 18)",
-  " (in 'stan_program_default', line 190, column 2 to column 37)",
+  " (in 'stan_program_default', line 187, column 27 to column 34)",
+  " (in 'stan_program_default', line 187, column 2 to column 36)",
+  " (in 'stan_program_default', line 188, column 28 to column 35)",
+  " (in 'stan_program_default', line 188, column 2 to column 37)",
   " (in 'stan_program_default', line 191, column 9 to column 18)",
   " (in 'stan_program_default', line 191, column 2 to column 37)",
   " (in 'stan_program_default', line 192, column 9 to column 18)",
   " (in 'stan_program_default', line 192, column 2 to column 37)",
   " (in 'stan_program_default', line 193, column 9 to column 18)",
   " (in 'stan_program_default', line 193, column 2 to column 37)",
-  " (in 'stan_program_default', line 195, column 9 to column 18)",
-  " (in 'stan_program_default', line 195, column 2 to column 37)",
+  " (in 'stan_program_default', line 194, column 9 to column 18)",
+  " (in 'stan_program_default', line 194, column 2 to column 37)",
   " (in 'stan_program_default', line 196, column 9 to column 18)",
   " (in 'stan_program_default', line 196, column 2 to column 37)",
-  " (in 'stan_program_default', line 200, column 9 to column 33)",
-  " (in 'stan_program_default', line 200, column 2 to column 59)",
+  " (in 'stan_program_default', line 197, column 9 to column 18)",
+  " (in 'stan_program_default', line 197, column 2 to column 37)",
   " (in 'stan_program_default', line 201, column 9 to column 33)",
   " (in 'stan_program_default', line 201, column 2 to column 59)",
-  " (in 'stan_program_default', line 205, column 12 to column 36)",
-  " (in 'stan_program_default', line 205, column 3 to column 38)",
-  " (in 'stan_program_default', line 206, column 10 to column 34)",
-  " (in 'stan_program_default', line 206, column 1 to column 36)",
-  " (in 'stan_program_default', line 207, column 8 to column 32)",
-  " (in 'stan_program_default', line 207, column 1 to column 39)",
+  " (in 'stan_program_default', line 202, column 9 to column 33)",
+  " (in 'stan_program_default', line 202, column 2 to column 59)",
+  " (in 'stan_program_default', line 206, column 12 to column 36)",
+  " (in 'stan_program_default', line 206, column 3 to column 38)",
+  " (in 'stan_program_default', line 207, column 10 to column 34)",
+  " (in 'stan_program_default', line 207, column 1 to column 36)",
   " (in 'stan_program_default', line 208, column 8 to column 32)",
   " (in 'stan_program_default', line 208, column 1 to column 39)",
   " (in 'stan_program_default', line 209, column 8 to column 32)",
-  " (in 'stan_program_default', line 209, column 1 to column 43)",
+  " (in 'stan_program_default', line 209, column 1 to column 39)",
   " (in 'stan_program_default', line 210, column 8 to column 32)",
-  " (in 'stan_program_default', line 210, column 1 to column 45)",
-  " (in 'stan_program_default', line 215, column 2 to column 41)",
-  " (in 'stan_program_default', line 216, column 2 to column 63)",
-  " (in 'stan_program_default', line 217, column 2 to column 51)",
-  " (in 'stan_program_default', line 218, column 2 to column 65)",
-  " (in 'stan_program_default', line 219, column 2 to column 55)",
-  " (in 'stan_program_default', line 228, column 4 to column 16)",
-  " (in 'stan_program_default', line 229, column 4 to column 28)",
-  " (in 'stan_program_default', line 227, column 9 to line 230, column 3)",
-  " (in 'stan_program_default', line 225, column 4 to column 28)",
-  " (in 'stan_program_default', line 226, column 4 to column 16)",
-  " (in 'stan_program_default', line 224, column 19 to line 227, column 3)",
-  " (in 'stan_program_default', line 224, column 2 to line 230, column 3)",
-  " (in 'stan_program_default', line 236, column 4 to column 16)",
-  " (in 'stan_program_default', line 235, column 9 to line 237, column 3)",
-  " (in 'stan_program_default', line 234, column 2 to column 28)",
-  " (in 'stan_program_default', line 233, column 27 to line 235, column 3)",
-  " (in 'stan_program_default', line 233, column 2 to line 237, column 3)",
-  " (in 'stan_program_default', line 246, column 6 to column 67)",
-  " (in 'stan_program_default', line 243, column 10 to line 247, column 5)",
-  " (in 'stan_program_default', line 242, column 6 to column 18)",
-  " (in 'stan_program_default', line 241, column 71 to line 243, column 5)",
-  " (in 'stan_program_default', line 241, column 4 to line 247, column 5)",
-  " (in 'stan_program_default', line 240, column 9 to line 248, column 3)",
-  " (in 'stan_program_default', line 239, column 4 to column 16)",
-  " (in 'stan_program_default', line 238, column 46 to line 240, column 3)",
-  " (in 'stan_program_default', line 238, column 2 to line 248, column 3)",
-  " (in 'stan_program_default', line 223, column 24 to line 249, column 1)",
-  " (in 'stan_program_default', line 223, column 0 to line 249, column 1)",
-  " (in 'stan_program_default', line 261, column 4 to column 32)",
-  " (in 'stan_program_default', line 262, column 4 to column 34)",
-  " (in 'stan_program_default', line 263, column 4 to column 32)",
-  " (in 'stan_program_default', line 260, column 22 to line 264, column 3)",
-  " (in 'stan_program_default', line 260, column 2 to line 264, column 3)",
-  " (in 'stan_program_default', line 268, column 4 to line 270, column 62)",
-  " (in 'stan_program_default', line 271, column 4 to line 273, column 64)",
-  " (in 'stan_program_default', line 276, column 4 to line 278, column 62)",
-  " (in 'stan_program_default', line 279, column 4 to line 281, column 62)",
-  " (in 'stan_program_default', line 267, column 24 to line 282, column 3)",
-  " (in 'stan_program_default', line 267, column 2 to line 282, column 3)",
-  " (in 'stan_program_default', line 286, column 4 to line 288, column 62)",
-  " (in 'stan_program_default', line 289, column 4 to line 291, column 62)",
-  " (in 'stan_program_default', line 285, column 24 to line 292, column 3)",
-  " (in 'stan_program_default', line 285, column 2 to line 292, column 3)",
-  " (in 'stan_program_default', line 294, column 2 to column 60)",
+  " (in 'stan_program_default', line 210, column 1 to column 43)",
+  " (in 'stan_program_default', line 211, column 8 to column 32)",
+  " (in 'stan_program_default', line 211, column 1 to column 45)",
+  " (in 'stan_program_default', line 216, column 2 to column 41)",
+  " (in 'stan_program_default', line 217, column 2 to column 63)",
+  " (in 'stan_program_default', line 218, column 2 to column 51)",
+  " (in 'stan_program_default', line 219, column 2 to column 65)",
+  " (in 'stan_program_default', line 220, column 2 to column 55)",
+  " (in 'stan_program_default', line 229, column 4 to column 16)",
+  " (in 'stan_program_default', line 230, column 4 to column 28)",
+  " (in 'stan_program_default', line 228, column 9 to line 231, column 3)",
+  " (in 'stan_program_default', line 226, column 4 to column 28)",
+  " (in 'stan_program_default', line 227, column 4 to column 16)",
+  " (in 'stan_program_default', line 225, column 19 to line 228, column 3)",
+  " (in 'stan_program_default', line 225, column 2 to line 231, column 3)",
+  " (in 'stan_program_default', line 237, column 4 to column 16)",
+  " (in 'stan_program_default', line 236, column 9 to line 238, column 3)",
+  " (in 'stan_program_default', line 235, column 2 to column 28)",
+  " (in 'stan_program_default', line 234, column 27 to line 236, column 3)",
+  " (in 'stan_program_default', line 234, column 2 to line 238, column 3)",
+  " (in 'stan_program_default', line 247, column 6 to column 67)",
+  " (in 'stan_program_default', line 244, column 10 to line 248, column 5)",
+  " (in 'stan_program_default', line 243, column 6 to column 18)",
+  " (in 'stan_program_default', line 242, column 71 to line 244, column 5)",
+  " (in 'stan_program_default', line 242, column 4 to line 248, column 5)",
+  " (in 'stan_program_default', line 241, column 9 to line 249, column 3)",
+  " (in 'stan_program_default', line 240, column 4 to column 16)",
+  " (in 'stan_program_default', line 239, column 46 to line 241, column 3)",
+  " (in 'stan_program_default', line 239, column 2 to line 249, column 3)",
+  " (in 'stan_program_default', line 224, column 24 to line 250, column 1)",
+  " (in 'stan_program_default', line 224, column 0 to line 250, column 1)",
+  " (in 'stan_program_default', line 262, column 4 to column 32)",
+  " (in 'stan_program_default', line 263, column 4 to column 34)",
+  " (in 'stan_program_default', line 264, column 4 to column 32)",
+  " (in 'stan_program_default', line 261, column 22 to line 265, column 3)",
+  " (in 'stan_program_default', line 261, column 2 to line 265, column 3)",
+  " (in 'stan_program_default', line 269, column 4 to line 271, column 62)",
+  " (in 'stan_program_default', line 272, column 4 to line 274, column 64)",
+  " (in 'stan_program_default', line 277, column 4 to line 279, column 62)",
+  " (in 'stan_program_default', line 280, column 4 to line 282, column 62)",
+  " (in 'stan_program_default', line 268, column 24 to line 283, column 3)",
+  " (in 'stan_program_default', line 268, column 2 to line 283, column 3)",
+  " (in 'stan_program_default', line 287, column 4 to line 289, column 62)",
+  " (in 'stan_program_default', line 290, column 4 to line 292, column 62)",
+  " (in 'stan_program_default', line 286, column 24 to line 293, column 3)",
+  " (in 'stan_program_default', line 286, column 2 to line 293, column 3)",
   " (in 'stan_program_default', line 295, column 2 to column 60)",
   " (in 'stan_program_default', line 296, column 2 to column 60)",
   " (in 'stan_program_default', line 297, column 2 to column 60)",
   " (in 'stan_program_default', line 298, column 2 to column 60)",
   " (in 'stan_program_default', line 299, column 2 to column 60)",
-  " (in 'stan_program_default', line 315, column 6 to column 53)",
+  " (in 'stan_program_default', line 300, column 2 to column 60)",
   " (in 'stan_program_default', line 316, column 6 to column 53)",
-  " (in 'stan_program_default', line 314, column 11 to line 317, column 5)",
-  " (in 'stan_program_default', line 312, column 6 to column 103)",
+  " (in 'stan_program_default', line 317, column 6 to column 53)",
+  " (in 'stan_program_default', line 315, column 11 to line 318, column 5)",
   " (in 'stan_program_default', line 313, column 6 to column 103)",
-  " (in 'stan_program_default', line 311, column 21 to line 314, column 5)",
-  " (in 'stan_program_default', line 311, column 4 to line 317, column 5)",
-  " (in 'stan_program_default', line 310, column 26 to line 318, column 3)",
-  " (in 'stan_program_default', line 310, column 2 to line 318, column 3)",
-  " (in 'stan_program_default', line 328, column 9 to column 21)",
-  " (in 'stan_program_default', line 344, column 27 to column 39)",
-  " (in 'stan_program_default', line 358, column 9 to column 20)",
+  " (in 'stan_program_default', line 314, column 6 to column 103)",
+  " (in 'stan_program_default', line 312, column 21 to line 315, column 5)",
+  " (in 'stan_program_default', line 312, column 4 to line 318, column 5)",
+  " (in 'stan_program_default', line 311, column 26 to line 319, column 3)",
+  " (in 'stan_program_default', line 311, column 2 to line 319, column 3)",
+  " (in 'stan_program_default', line 329, column 9 to column 21)",
+  " (in 'stan_program_default', line 345, column 27 to column 39)",
   " (in 'stan_program_default', line 359, column 9 to column 20)",
   " (in 'stan_program_default', line 360, column 9 to column 20)",
   " (in 'stan_program_default', line 361, column 9 to column 20)",
@@ -815,36 +814,36 @@ conv1d(const T0__& x_arg__, const T1__& kernel_arg__, std::ostream* pstream__) {
   (void) DUMMY_VAR__;
   try {
     int nk = std::numeric_limits<int>::min();
-    current_statement__ = 724;
+    current_statement__ = 723;
     nk = stan::math::rows(kernel);
     int nx = std::numeric_limits<int>::min();
-    current_statement__ = 725;
+    current_statement__ = 724;
     nx = stan::math::rows(x);
-    current_statement__ = 726;
+    current_statement__ = 725;
     stan::math::validate_non_negative_index("X", "nx", nx);
-    current_statement__ = 727;
+    current_statement__ = 726;
     stan::math::validate_non_negative_index("X", "nk", nk);
     Eigen::Matrix<local_scalar_t__,-1,-1> X =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(nx, nk, DUMMY_VAR__);
-    current_statement__ = 730;
+    current_statement__ = 729;
     if (stan::math::logical_lt(nx, nk)) {
-      current_statement__ = 729;
+      current_statement__ = 728;
       std::stringstream errmsg_stream__;
       stan::math::stan_print(&errmsg_stream__,
         "nrow(x) must be >= nrow(kernel). x had nrow =");
       stan::math::stan_print(&errmsg_stream__, nx);
       throw std::domain_error(errmsg_stream__.str());
     }
-    current_statement__ = 735;
+    current_statement__ = 734;
     for (int i = 1; i <= nk; ++i) {
-      current_statement__ = 732;
+      current_statement__ = 731;
       if (stan::math::logical_lt(i, nk)) {
-        current_statement__ = 731;
+        current_statement__ = 730;
         stan::model::assign(X, stan::math::rep_vector(0, (nk - i)),
           "assigning variable X", stan::model::index_min_max(1, (nk - i)),
           stan::model::index_uni(i));
       }
-      current_statement__ = 733;
+      current_statement__ = 732;
       stan::model::assign(X,
         stan::model::rvalue(x, "x",
           stan::model::index_min_max(1, ((nx - nk) + i))),
@@ -852,7 +851,7 @@ conv1d(const T0__& x_arg__, const T1__& kernel_arg__, std::ostream* pstream__) {
         stan::model::index_min_max(((nk - i) + 1), nx),
         stan::model::index_uni(i));
     }
-    current_statement__ = 736;
+    current_statement__ = 735;
     return stan::math::multiply(X, kernel);
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -875,41 +874,41 @@ calcExposed(const T0__& OR, const T1__& cumInf, const T2__& cumVac,
   (void) DUMMY_VAR__;
   try {
     local_scalar_t__ t1 = DUMMY_VAR__;
-    current_statement__ = 738;
+    current_statement__ = 737;
     t1 = ((((1 + (OR * cumInf)) - cumInf) - (OR * cumVac)) - cumVac);
     local_scalar_t__ t2 = DUMMY_VAR__;
-    current_statement__ = 739;
+    current_statement__ = 738;
     t2 = (OR - (cumVac * OR));
     local_scalar_t__ b = DUMMY_VAR__;
-    current_statement__ = 740;
+    current_statement__ = 739;
     b = ((-t1 +
       stan::math::pow((stan::math::pow(t1, 2) + ((4 * cumVac) * t2)), 0.5)) /
       (2 * t2));
     local_scalar_t__ o_inf = DUMMY_VAR__;
-    current_statement__ = 741;
+    current_statement__ = 740;
     o_inf = (b * OR);
     local_scalar_t__ cp_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 742;
+    current_statement__ = 741;
     cp_vac_not_inf = (b / (1 + b));
     local_scalar_t__ cp_vac_inf = DUMMY_VAR__;
-    current_statement__ = 743;
+    current_statement__ = 742;
     cp_vac_inf = (o_inf / (1 + o_inf));
     local_scalar_t__ p_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 744;
+    current_statement__ = 743;
     p_vac_not_inf = (cp_vac_not_inf * (1 - cumInf));
     local_scalar_t__ p_vac_inf = DUMMY_VAR__;
-    current_statement__ = 745;
+    current_statement__ = 744;
     p_vac_inf = (cp_vac_inf * cumInf);
     local_scalar_t__ p_not_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 746;
+    current_statement__ = 745;
     p_not_vac_not_inf = ((1 - cp_vac_not_inf) * (1 - cumInf));
     local_scalar_t__ p_not_vac_inf = DUMMY_VAR__;
-    current_statement__ = 747;
+    current_statement__ = 746;
     p_not_vac_inf = ((1 - cp_vac_inf) * cumInf);
     local_scalar_t__ pct_imm = DUMMY_VAR__;
-    current_statement__ = 748;
+    current_statement__ = 747;
     pct_imm = ((p_vac_inf + p_vac_not_inf) + p_not_vac_inf);
-    current_statement__ = 749;
+    current_statement__ = 748;
     return pct_imm;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -947,7 +946,8 @@ private:
   double waning_scalar_hybrid;
   double waning_scalar_hybrid_sev;
   double vax_boost_scalar;
-  double omicron_scalar;
+  double omicron_scalar_inf;
+  double omicron_scalar_sev;
   int N_spl_par_rt;
   Eigen::Matrix<double,-1,-1> spl_basis_rt_data__;
   int N_spl_par_dx;
@@ -1066,84 +1066,84 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      current_statement__ = 436;
+      current_statement__ = 435;
       context__.validate_dims("data initialization", "N_weeks", "int",
         std::vector<size_t>{});
       N_weeks = std::numeric_limits<int>::min();
-      current_statement__ = 436;
+      current_statement__ = 435;
       N_weeks = context__.vals_i("N_weeks")[(1 - 1)];
-      current_statement__ = 436;
+      current_statement__ = 435;
       stan::math::check_greater_or_equal(function__, "N_weeks", N_weeks, 0);
-      current_statement__ = 437;
+      current_statement__ = 436;
       context__.validate_dims("data initialization", "N_weeks_start_omicron",
         "int", std::vector<size_t>{});
       N_weeks_start_omicron = std::numeric_limits<int>::min();
-      current_statement__ = 437;
+      current_statement__ = 436;
       N_weeks_start_omicron = context__.vals_i("N_weeks_start_omicron")[(1 -
         1)];
-      current_statement__ = 437;
+      current_statement__ = 436;
       stan::math::check_greater_or_equal(function__, "N_weeks_start_omicron",
         N_weeks_start_omicron, 0);
-      current_statement__ = 438;
+      current_statement__ = 437;
       context__.validate_dims("data initialization", "N_weeks_before", "int",
         std::vector<size_t>{});
       N_weeks_before = std::numeric_limits<int>::min();
-      current_statement__ = 438;
+      current_statement__ = 437;
       N_weeks_before = context__.vals_i("N_weeks_before")[(1 - 1)];
-      current_statement__ = 438;
+      current_statement__ = 437;
       stan::math::check_greater_or_equal(function__, "N_weeks_before",
         N_weeks_before, 0);
-      current_statement__ = 439;
+      current_statement__ = 438;
       context__.validate_dims("data initialization", "N_weeks_transition",
         "int", std::vector<size_t>{});
       N_weeks_transition = std::numeric_limits<int>::min();
-      current_statement__ = 439;
+      current_statement__ = 438;
       N_weeks_transition = context__.vals_i("N_weeks_transition")[(1 - 1)];
-      current_statement__ = 439;
+      current_statement__ = 438;
       stan::math::check_greater_or_equal(function__, "N_weeks_transition",
         N_weeks_transition, 0);
-      current_statement__ = 440;
+      current_statement__ = 439;
       context__.validate_dims("data initialization", "Max_delay", "int",
         std::vector<size_t>{});
       Max_delay = std::numeric_limits<int>::min();
-      current_statement__ = 440;
+      current_statement__ = 439;
       Max_delay = context__.vals_i("Max_delay")[(1 - 1)];
-      current_statement__ = 440;
+      current_statement__ = 439;
       stan::math::check_greater_or_equal(function__, "Max_delay", Max_delay,
         0);
-      current_statement__ = 441;
+      current_statement__ = 440;
       stan::math::validate_non_negative_index("obs_cas", "N_weeks", N_weeks);
-      current_statement__ = 442;
+      current_statement__ = 441;
       context__.validate_dims("data initialization", "obs_cas", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_cas = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 442;
+      current_statement__ = 441;
       obs_cas = context__.vals_i("obs_cas");
-      current_statement__ = 442;
+      current_statement__ = 441;
       stan::math::check_greater_or_equal(function__, "obs_cas", obs_cas, 0);
-      current_statement__ = 443;
+      current_statement__ = 442;
       stan::math::validate_non_negative_index("obs_die", "N_weeks", N_weeks);
-      current_statement__ = 444;
+      current_statement__ = 443;
       context__.validate_dims("data initialization", "obs_die", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_die = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 444;
+      current_statement__ = 443;
       obs_die = context__.vals_i("obs_die");
-      current_statement__ = 444;
+      current_statement__ = 443;
       stan::math::check_greater_or_equal(function__, "obs_die", obs_die, 0);
-      current_statement__ = 445;
+      current_statement__ = 444;
       stan::math::validate_non_negative_index("obs_hosp", "N_weeks", N_weeks);
-      current_statement__ = 446;
+      current_statement__ = 445;
       context__.validate_dims("data initialization", "obs_hosp", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_hosp = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 446;
+      current_statement__ = 445;
       obs_hosp = context__.vals_i("obs_hosp");
-      current_statement__ = 446;
+      current_statement__ = 445;
       stan::math::check_greater_or_equal(function__, "obs_hosp", obs_hosp, 0);
-      current_statement__ = 447;
+      current_statement__ = 446;
       stan::math::validate_non_negative_index("obs_boost", "N_weeks", N_weeks);
-      current_statement__ = 448;
+      current_statement__ = 447;
       context__.validate_dims("data initialization", "obs_boost", "double",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_boost_data__ = Eigen::Matrix<double,-1,1>::Constant(N_weeks,
@@ -1153,25 +1153,25 @@ public:
         N_weeks);
       {
         std::vector<local_scalar_t__> obs_boost_flat__;
-        current_statement__ = 448;
+        current_statement__ = 447;
         obs_boost_flat__ = context__.vals_r("obs_boost");
-        current_statement__ = 448;
+        current_statement__ = 447;
         pos__ = 1;
-        current_statement__ = 448;
+        current_statement__ = 447;
         for (int sym1__ = 1; sym1__ <= N_weeks; ++sym1__) {
-          current_statement__ = 448;
+          current_statement__ = 447;
           stan::model::assign(obs_boost, obs_boost_flat__[(pos__ - 1)],
             "assigning variable obs_boost", stan::model::index_uni(sym1__));
-          current_statement__ = 448;
+          current_statement__ = 447;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 448;
+      current_statement__ = 447;
       stan::math::check_greater_or_equal(function__, "obs_boost", obs_boost,
         0);
-      current_statement__ = 449;
+      current_statement__ = 448;
       stan::math::validate_non_negative_index("obs_vax", "N_weeks", N_weeks);
-      current_statement__ = 450;
+      current_statement__ = 449;
       context__.validate_dims("data initialization", "obs_vax", "double",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_vax_data__ = Eigen::Matrix<double,-1,1>::Constant(N_weeks,
@@ -1181,50 +1181,50 @@ public:
         N_weeks);
       {
         std::vector<local_scalar_t__> obs_vax_flat__;
-        current_statement__ = 450;
+        current_statement__ = 449;
         obs_vax_flat__ = context__.vals_r("obs_vax");
-        current_statement__ = 450;
+        current_statement__ = 449;
         pos__ = 1;
-        current_statement__ = 450;
+        current_statement__ = 449;
         for (int sym1__ = 1; sym1__ <= N_weeks; ++sym1__) {
-          current_statement__ = 450;
+          current_statement__ = 449;
           stan::model::assign(obs_vax, obs_vax_flat__[(pos__ - 1)],
             "assigning variable obs_vax", stan::model::index_uni(sym1__));
-          current_statement__ = 450;
+          current_statement__ = 449;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 450;
+      current_statement__ = 449;
       stan::math::check_greater_or_equal(function__, "obs_vax", obs_vax, 0);
-      current_statement__ = 451;
+      current_statement__ = 450;
       context__.validate_dims("data initialization", "pop_size", "double",
         std::vector<size_t>{});
       pop_size = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 451;
+      current_statement__ = 450;
       pop_size = context__.vals_r("pop_size")[(1 - 1)];
-      current_statement__ = 451;
+      current_statement__ = 450;
       stan::math::check_greater_or_equal(function__, "pop_size", pop_size, 0);
-      current_statement__ = 452;
+      current_statement__ = 451;
       context__.validate_dims("data initialization", "OR", "double",
         std::vector<size_t>{});
       OR = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 452;
+      current_statement__ = 451;
       OR = context__.vals_r("OR")[(1 - 1)];
-      current_statement__ = 452;
+      current_statement__ = 451;
       stan::math::check_greater_or_equal(function__, "OR", OR, 0);
-      current_statement__ = 453;
+      current_statement__ = 452;
       context__.validate_dims("data initialization", "N_ifr_adj", "int",
         std::vector<size_t>{});
       N_ifr_adj = std::numeric_limits<int>::min();
-      current_statement__ = 453;
+      current_statement__ = 452;
       N_ifr_adj = context__.vals_i("N_ifr_adj")[(1 - 1)];
-      current_statement__ = 453;
+      current_statement__ = 452;
       stan::math::check_greater_or_equal(function__, "N_ifr_adj", N_ifr_adj,
         0);
-      current_statement__ = 454;
+      current_statement__ = 453;
       stan::math::validate_non_negative_index("ifr_adj", "N_ifr_adj",
         N_ifr_adj);
-      current_statement__ = 455;
+      current_statement__ = 454;
       context__.validate_dims("data initialization", "ifr_adj", "double",
         std::vector<size_t>{static_cast<size_t>(N_ifr_adj)});
       ifr_adj_data__ = Eigen::Matrix<double,-1,1>::Constant(N_ifr_adj,
@@ -1234,25 +1234,25 @@ public:
         N_ifr_adj);
       {
         std::vector<local_scalar_t__> ifr_adj_flat__;
-        current_statement__ = 455;
+        current_statement__ = 454;
         ifr_adj_flat__ = context__.vals_r("ifr_adj");
-        current_statement__ = 455;
+        current_statement__ = 454;
         pos__ = 1;
-        current_statement__ = 455;
+        current_statement__ = 454;
         for (int sym1__ = 1; sym1__ <= N_ifr_adj; ++sym1__) {
-          current_statement__ = 455;
+          current_statement__ = 454;
           stan::model::assign(ifr_adj, ifr_adj_flat__[(pos__ - 1)],
             "assigning variable ifr_adj", stan::model::index_uni(sym1__));
-          current_statement__ = 455;
+          current_statement__ = 454;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 455;
+      current_statement__ = 454;
       stan::math::check_greater_or_equal(function__, "ifr_adj", ifr_adj, 0);
-      current_statement__ = 456;
+      current_statement__ = 455;
       stan::math::validate_non_negative_index("ifr_vac_adj",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 457;
+      current_statement__ = 456;
       context__.validate_dims("data initialization", "ifr_vac_adj", "double",
         std::vector<size_t>{static_cast<size_t>((N_weeks + N_weeks_before))});
       ifr_vac_adj_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
@@ -1263,165 +1263,177 @@ public:
         (N_weeks + N_weeks_before));
       {
         std::vector<local_scalar_t__> ifr_vac_adj_flat__;
-        current_statement__ = 457;
+        current_statement__ = 456;
         ifr_vac_adj_flat__ = context__.vals_r("ifr_vac_adj");
-        current_statement__ = 457;
+        current_statement__ = 456;
         pos__ = 1;
-        current_statement__ = 457;
+        current_statement__ = 456;
         for (int sym1__ = 1; sym1__ <= (N_weeks + N_weeks_before); ++sym1__) {
-          current_statement__ = 457;
+          current_statement__ = 456;
           stan::model::assign(ifr_vac_adj, ifr_vac_adj_flat__[(pos__ - 1)],
             "assigning variable ifr_vac_adj", stan::model::index_uni(sym1__));
-          current_statement__ = 457;
+          current_statement__ = 456;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 457;
+      current_statement__ = 456;
       stan::math::check_greater_or_equal(function__, "ifr_vac_adj",
         ifr_vac_adj, 0);
-      current_statement__ = 458;
+      current_statement__ = 457;
       context__.validate_dims("data initialization", "pri_ifr_decl_OR_a",
         "double", std::vector<size_t>{});
       pri_ifr_decl_OR_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 458;
+      current_statement__ = 457;
       pri_ifr_decl_OR_a = context__.vals_r("pri_ifr_decl_OR_a")[(1 - 1)];
-      current_statement__ = 458;
+      current_statement__ = 457;
       stan::math::check_greater_or_equal(function__, "pri_ifr_decl_OR_a",
         pri_ifr_decl_OR_a, 0);
-      current_statement__ = 459;
+      current_statement__ = 458;
       context__.validate_dims("data initialization", "pri_ifr_decl_OR_b",
         "double", std::vector<size_t>{});
       pri_ifr_decl_OR_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 459;
+      current_statement__ = 458;
       pri_ifr_decl_OR_b = context__.vals_r("pri_ifr_decl_OR_b")[(1 - 1)];
-      current_statement__ = 459;
+      current_statement__ = 458;
       stan::math::check_greater_or_equal(function__, "pri_ifr_decl_OR_b",
         pri_ifr_decl_OR_b, 0);
-      current_statement__ = 460;
+      current_statement__ = 459;
       context__.validate_dims("data initialization", "ifr_adj_fixed",
         "double", std::vector<size_t>{});
       ifr_adj_fixed = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 460;
+      current_statement__ = 459;
       ifr_adj_fixed = context__.vals_r("ifr_adj_fixed")[(1 - 1)];
-      current_statement__ = 460;
+      current_statement__ = 459;
       stan::math::check_greater_or_equal(function__, "ifr_adj_fixed",
         ifr_adj_fixed, 0);
-      current_statement__ = 461;
+      current_statement__ = 460;
       context__.validate_dims("data initialization", "infect_dist_rate",
         "double", std::vector<size_t>{});
       infect_dist_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 461;
+      current_statement__ = 460;
       infect_dist_rate = context__.vals_r("infect_dist_rate")[(1 - 1)];
-      current_statement__ = 461;
+      current_statement__ = 460;
       stan::math::check_greater_or_equal(function__, "infect_dist_rate",
         infect_dist_rate, 0);
-      current_statement__ = 462;
+      current_statement__ = 461;
       context__.validate_dims("data initialization", "infect_dist_shap",
         "double", std::vector<size_t>{});
       infect_dist_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 462;
+      current_statement__ = 461;
       infect_dist_shap = context__.vals_r("infect_dist_shap")[(1 - 1)];
-      current_statement__ = 462;
+      current_statement__ = 461;
       stan::math::check_greater_or_equal(function__, "infect_dist_shap",
         infect_dist_shap, 0);
-      current_statement__ = 463;
+      current_statement__ = 462;
       context__.validate_dims("data initialization", "seropos_dist_rate",
         "double", std::vector<size_t>{});
       seropos_dist_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 463;
+      current_statement__ = 462;
       seropos_dist_rate = context__.vals_r("seropos_dist_rate")[(1 - 1)];
-      current_statement__ = 463;
+      current_statement__ = 462;
       stan::math::check_greater_or_equal(function__, "seropos_dist_rate",
         seropos_dist_rate, 0);
-      current_statement__ = 464;
+      current_statement__ = 463;
       context__.validate_dims("data initialization", "seropos_dist_shap",
         "double", std::vector<size_t>{});
       seropos_dist_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 464;
+      current_statement__ = 463;
       seropos_dist_shap = context__.vals_r("seropos_dist_shap")[(1 - 1)];
-      current_statement__ = 464;
+      current_statement__ = 463;
       stan::math::check_greater_or_equal(function__, "seropos_dist_shap",
         seropos_dist_shap, 0);
-      current_statement__ = 465;
+      current_statement__ = 464;
       context__.validate_dims("data initialization", "waning_scalar",
         "double", std::vector<size_t>{});
       waning_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 465;
+      current_statement__ = 464;
       waning_scalar = context__.vals_r("waning_scalar")[(1 - 1)];
-      current_statement__ = 465;
+      current_statement__ = 464;
       stan::math::check_greater_or_equal(function__, "waning_scalar",
         waning_scalar, 0);
-      current_statement__ = 466;
+      current_statement__ = 465;
       context__.validate_dims("data initialization", "prot_scalar", "double",
         std::vector<size_t>{});
       prot_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 466;
+      current_statement__ = 465;
       prot_scalar = context__.vals_r("prot_scalar")[(1 - 1)];
-      current_statement__ = 466;
+      current_statement__ = 465;
       stan::math::check_greater_or_equal(function__, "prot_scalar",
         prot_scalar, 0);
-      current_statement__ = 467;
+      current_statement__ = 466;
       context__.validate_dims("data initialization", "waning_scalar_sev",
         "double", std::vector<size_t>{});
       waning_scalar_sev = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 467;
+      current_statement__ = 466;
       waning_scalar_sev = context__.vals_r("waning_scalar_sev")[(1 - 1)];
-      current_statement__ = 467;
+      current_statement__ = 466;
       stan::math::check_greater_or_equal(function__, "waning_scalar_sev",
         waning_scalar_sev, 0);
-      current_statement__ = 468;
+      current_statement__ = 467;
       context__.validate_dims("data initialization", "prot_sev_scalar",
         "double", std::vector<size_t>{});
       prot_sev_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 468;
+      current_statement__ = 467;
       prot_sev_scalar = context__.vals_r("prot_sev_scalar")[(1 - 1)];
-      current_statement__ = 468;
+      current_statement__ = 467;
       stan::math::check_greater_or_equal(function__, "prot_sev_scalar",
         prot_sev_scalar, 0);
-      current_statement__ = 469;
+      current_statement__ = 468;
       context__.validate_dims("data initialization", "waning_scalar_hybrid",
         "double", std::vector<size_t>{});
       waning_scalar_hybrid = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 469;
+      current_statement__ = 468;
       waning_scalar_hybrid = context__.vals_r("waning_scalar_hybrid")[(1 -
         1)];
-      current_statement__ = 469;
+      current_statement__ = 468;
       stan::math::check_greater_or_equal(function__, "waning_scalar_hybrid",
         waning_scalar_hybrid, 0);
-      current_statement__ = 470;
+      current_statement__ = 469;
       context__.validate_dims("data initialization",
         "waning_scalar_hybrid_sev", "double", std::vector<size_t>{});
       waning_scalar_hybrid_sev = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 470;
+      current_statement__ = 469;
       waning_scalar_hybrid_sev = context__.vals_r("waning_scalar_hybrid_sev")[(1
         - 1)];
-      current_statement__ = 470;
+      current_statement__ = 469;
       stan::math::check_greater_or_equal(function__,
         "waning_scalar_hybrid_sev", waning_scalar_hybrid_sev, 0);
-      current_statement__ = 471;
+      current_statement__ = 470;
       context__.validate_dims("data initialization", "vax_boost_scalar",
         "double", std::vector<size_t>{});
       vax_boost_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 471;
+      current_statement__ = 470;
       vax_boost_scalar = context__.vals_r("vax_boost_scalar")[(1 - 1)];
-      current_statement__ = 471;
+      current_statement__ = 470;
       stan::math::check_greater_or_equal(function__, "vax_boost_scalar",
         vax_boost_scalar, 0);
-      current_statement__ = 471;
+      current_statement__ = 470;
       stan::math::check_less_or_equal(function__, "vax_boost_scalar",
         vax_boost_scalar, 1);
-      current_statement__ = 472;
-      context__.validate_dims("data initialization", "omicron_scalar",
+      current_statement__ = 471;
+      context__.validate_dims("data initialization", "omicron_scalar_inf",
         "double", std::vector<size_t>{});
-      omicron_scalar = std::numeric_limits<double>::quiet_NaN();
+      omicron_scalar_inf = std::numeric_limits<double>::quiet_NaN();
+      current_statement__ = 471;
+      omicron_scalar_inf = context__.vals_r("omicron_scalar_inf")[(1 - 1)];
+      current_statement__ = 471;
+      stan::math::check_greater_or_equal(function__, "omicron_scalar_inf",
+        omicron_scalar_inf, 0);
+      current_statement__ = 471;
+      stan::math::check_less_or_equal(function__, "omicron_scalar_inf",
+        omicron_scalar_inf, 1);
       current_statement__ = 472;
-      omicron_scalar = context__.vals_r("omicron_scalar")[(1 - 1)];
+      context__.validate_dims("data initialization", "omicron_scalar_sev",
+        "double", std::vector<size_t>{});
+      omicron_scalar_sev = std::numeric_limits<double>::quiet_NaN();
       current_statement__ = 472;
-      stan::math::check_greater_or_equal(function__, "omicron_scalar",
-        omicron_scalar, 0);
+      omicron_scalar_sev = context__.vals_r("omicron_scalar_sev")[(1 - 1)];
       current_statement__ = 472;
-      stan::math::check_less_or_equal(function__, "omicron_scalar",
-        omicron_scalar, 1);
+      stan::math::check_greater_or_equal(function__, "omicron_scalar_sev",
+        omicron_scalar_sev, 0);
+      current_statement__ = 472;
+      stan::math::check_less_or_equal(function__, "omicron_scalar_sev",
+        omicron_scalar_sev, 1);
       current_statement__ = 473;
       context__.validate_dims("data initialization", "N_spl_par_rt", "int",
         std::vector<size_t>{});
@@ -2423,245 +2435,242 @@ public:
       stan::math::validate_non_negative_index("p_boost", "N_weeks_tot",
         N_weeks_tot);
       current_statement__ = 646;
-      stan::math::validate_non_negative_index("p_reinf", "N_weeks_tot",
-        N_weeks_tot);
-      current_statement__ = 647;
       stan::math::validate_non_negative_index("naive_to_vax", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 648;
+      current_statement__ = 647;
       stan::math::validate_non_negative_index("naive_to_inf", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 649;
+      current_statement__ = 648;
       stan::math::validate_non_negative_index("inf_to_reinf", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 650;
+      current_statement__ = 649;
       stan::math::validate_non_negative_index("inf_to_hybrid", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 651;
+      current_statement__ = 650;
       stan::math::validate_non_negative_index("hybrid_to_reinf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 652;
+      current_statement__ = 651;
       stan::math::validate_non_negative_index("vax_to_boost", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 653;
+      current_statement__ = 652;
       stan::math::validate_non_negative_index("vax_to_hybrid", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 654;
+      current_statement__ = 653;
       stan::math::validate_non_negative_index("first_inf_only_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 655;
+      current_statement__ = 654;
       stan::math::validate_non_negative_index("reinf_only_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 656;
+      current_statement__ = 655;
       stan::math::validate_non_negative_index("hybrid_last_inf_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 657;
+      current_statement__ = 656;
       stan::math::validate_non_negative_index("hybrid_to_boost",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 658;
+      current_statement__ = 657;
       stan::math::validate_non_negative_index("vax_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 659;
+      current_statement__ = 658;
       stan::math::validate_non_negative_index("inf_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 660;
+      current_statement__ = 659;
       stan::math::validate_non_negative_index("naive_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 661;
+      current_statement__ = 660;
       stan::math::validate_non_negative_index("hybrid_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 662;
+      current_statement__ = 661;
       stan::math::validate_non_negative_index("p1", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 663;
+      current_statement__ = 662;
       stan::math::validate_non_negative_index("p1max", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 664;
+      current_statement__ = 663;
       stan::math::validate_non_negative_index("p1min", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 665;
+      current_statement__ = 664;
       stan::math::validate_non_negative_index("susceptible_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 666;
+      current_statement__ = 665;
       stan::math::validate_non_negative_index("effective_protection_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 667;
+      current_statement__ = 666;
       stan::math::validate_non_negative_index(
         "effective_protection_prvl_lag", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 668;
+      current_statement__ = 667;
       stan::math::validate_non_negative_index("new_protection_inf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 669;
+      current_statement__ = 668;
       stan::math::validate_non_negative_index("new_protection_vax",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 670;
+      current_statement__ = 669;
       stan::math::validate_non_negative_index("new_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 671;
+      current_statement__ = 670;
       stan::math::validate_non_negative_index("lost_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 672;
+      current_statement__ = 671;
       stan::math::validate_non_negative_index("lost_protection_net",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 673;
+      current_statement__ = 672;
       stan::math::validate_non_negative_index("severe_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 674;
+      current_statement__ = 673;
       stan::math::validate_non_negative_index("population_protection_inf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 675;
+      current_statement__ = 674;
       stan::math::validate_non_negative_index("population_protection_hybrid",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 676;
+      current_statement__ = 675;
       stan::math::validate_non_negative_index("population_protection_vax",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 677;
+      current_statement__ = 676;
       stan::math::validate_non_negative_index(
         "population_protection_sev_inf", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 678;
+      current_statement__ = 677;
       stan::math::validate_non_negative_index(
         "population_protection_sev_vax", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 679;
+      current_statement__ = 678;
       stan::math::validate_non_negative_index(
         "population_protection_sev_hybrid", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 680;
+      current_statement__ = 679;
       stan::math::validate_non_negative_index("logRt0", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 681;
+      current_statement__ = 680;
       stan::math::validate_non_negative_index("logRt", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 682;
+      current_statement__ = 681;
       stan::math::validate_non_negative_index("r_t", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 683;
+      current_statement__ = 682;
       stan::math::validate_non_negative_index("r_0", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 684;
+      current_statement__ = 683;
       deriv1_spl_par_rt_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 684;
+      current_statement__ = 683;
       deriv1_spl_par_rt_1dim__ = (N_spl_par_rt - 1);
-      current_statement__ = 684;
+      current_statement__ = 683;
       stan::math::validate_non_negative_index("deriv1_spl_par_rt",
         "N_spl_par_rt - 1", deriv1_spl_par_rt_1dim__);
-      current_statement__ = 685;
+      current_statement__ = 684;
       deriv2_spl_par_rt_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 685;
+      current_statement__ = 684;
       deriv2_spl_par_rt_1dim__ = (N_spl_par_rt - 2);
-      current_statement__ = 685;
+      current_statement__ = 684;
       stan::math::validate_non_negative_index("deriv2_spl_par_rt",
         "N_spl_par_rt - 2", deriv2_spl_par_rt_1dim__);
-      current_statement__ = 686;
+      current_statement__ = 685;
       stan::math::validate_non_negative_index("p_die_if_sevt", "N_ifr_adj",
         N_ifr_adj);
-      current_statement__ = 687;
+      current_statement__ = 686;
       stan::math::validate_non_negative_index("p_sev_if_symt", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 688;
+      current_statement__ = 687;
       stan::math::validate_non_negative_index("p_sym_if_inft", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 689;
+      current_statement__ = 688;
       stan::math::validate_non_negative_index("rr_diag_sym_vs_sev",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 690;
+      current_statement__ = 689;
       stan::math::validate_non_negative_index("p_diag_if_asy", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 691;
+      current_statement__ = 690;
       stan::math::validate_non_negative_index("p_diag_if_sym", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 692;
+      current_statement__ = 691;
       stan::math::validate_non_negative_index("sym_diag_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 693;
+      current_statement__ = 692;
       stan::math::validate_non_negative_index("sev_diag_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 694;
+      current_statement__ = 693;
       stan::math::validate_non_negative_index("symptomatic", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 695;
+      current_statement__ = 694;
       stan::math::validate_non_negative_index("severe", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 696;
+      current_statement__ = 695;
       stan::math::validate_non_negative_index("deaths", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 697;
+      current_statement__ = 696;
       stan::math::validate_non_negative_index("new_asy_dx", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 698;
+      current_statement__ = 697;
       stan::math::validate_non_negative_index("diagnoses_of_symptomatic",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 699;
+      current_statement__ = 698;
       stan::math::validate_non_negative_index("diagnoses_severe",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 700;
+      current_statement__ = 699;
       stan::math::validate_non_negative_index("dx_sym_sev", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 701;
+      current_statement__ = 700;
       stan::math::validate_non_negative_index("dx_sym_die", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 702;
+      current_statement__ = 701;
       stan::math::validate_non_negative_index("dx_sev_die", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 703;
+      current_statement__ = 702;
       stan::math::validate_non_negative_index("diagnoses", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 704;
+      current_statement__ = 703;
       stan::math::validate_non_negative_index("deaths_of_diagnosed",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 705;
+      current_statement__ = 704;
       stan::math::validate_non_negative_index("fitted_cases", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 706;
+      current_statement__ = 705;
       stan::math::validate_non_negative_index("fitted_deaths", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 707;
+      current_statement__ = 706;
       stan::math::validate_non_negative_index("fitted_hospitalizations",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 708;
+      current_statement__ = 707;
       stan::math::validate_non_negative_index("fitted_cases_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 709;
+      current_statement__ = 708;
       stan::math::validate_non_negative_index("fitted_deaths_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 710;
+      current_statement__ = 709;
       stan::math::validate_non_negative_index("fitted_hospitalizations_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 711;
+      current_statement__ = 710;
       stan::math::validate_non_negative_index("susceptible_severe_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 712;
+      current_statement__ = 711;
       stan::math::validate_non_negative_index(
         "effective_protection_inf_prvl", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 713;
+      current_statement__ = 712;
       stan::math::validate_non_negative_index(
         "effective_protection_inf_vax_prvl", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 714;
+      current_statement__ = 713;
       stan::math::validate_non_negative_index(
         "effective_protection_inf_vax_boost_prvl", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 715;
+      current_statement__ = 714;
       stan::math::validate_non_negative_index(
         "effective_protection_vax_prvl", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 716;
+      current_statement__ = 715;
       stan::math::validate_non_negative_index(
         "effective_protection_vax_boost_prvl", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 717;
+      current_statement__ = 716;
       stan::math::validate_non_negative_index("fitted_wastewater_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 718;
+      current_statement__ = 717;
       stan::math::validate_non_negative_index("immunoexposed_cumulative",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 719;
+      current_statement__ = 718;
       stan::math::validate_non_negative_index("diag_cases", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 720;
+      current_statement__ = 719;
       stan::math::validate_non_negative_index("infections_cumulative",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 721;
+      current_statement__ = 720;
       stan::math::validate_non_negative_index("seropositive_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 722;
+      current_statement__ = 721;
       stan::math::validate_non_negative_index("infect_dist_rv", "Max_delay",
         Max_delay);
-      current_statement__ = 723;
+      current_statement__ = 722;
       stan::math::validate_non_negative_index("seropos_dist_rv", "Max_delay",
         Max_delay);
     } catch (const std::exception& e) {
@@ -2825,9 +2834,6 @@ public:
         Eigen::Matrix<local_scalar_t__,-1,1>::Constant(N_weeks_tot,
           DUMMY_VAR__);
       Eigen::Matrix<local_scalar_t__,-1,1> p_boost =
-        Eigen::Matrix<local_scalar_t__,-1,1>::Constant(N_weeks_tot,
-          DUMMY_VAR__);
-      Eigen::Matrix<local_scalar_t__,-1,1> p_reinf =
         Eigen::Matrix<local_scalar_t__,-1,1>::Constant(N_weeks_tot,
           DUMMY_VAR__);
       Eigen::Matrix<local_scalar_t__,-1,1> naive_to_vax =
@@ -3028,54 +3034,54 @@ public:
       local_scalar_t__ phi_cas = DUMMY_VAR__;
       local_scalar_t__ phi_die = DUMMY_VAR__;
       local_scalar_t__ phi_hosp = DUMMY_VAR__;
-      current_statement__ = 122;
+      current_statement__ = 121;
       stan::model::assign(p_die_if_sevt,
         stan::math::multiply((p_die_if_sev * ifr_adj_fixed),
           stan::math::add(1, stan::math::multiply(ifr_adj, ifr_decl_OR))),
         "assigning variable p_die_if_sevt");
-      current_statement__ = 123;
+      current_statement__ = 122;
       stan::model::assign(rr_diag_sym_vs_sev,
         stan::math::inv_logit(
           stan::math::multiply(spl_basis_dx,
             stan::math::logit(spl_par_sym_dx))),
         "assigning variable rr_diag_sym_vs_sev");
-      current_statement__ = 124;
+      current_statement__ = 123;
       stan::model::assign(p_diag_if_sym,
         stan::math::multiply(p_diag_if_sev, rr_diag_sym_vs_sev),
         "assigning variable p_diag_if_sym");
-      current_statement__ = 125;
+      current_statement__ = 124;
       stan::model::assign(p_diag_if_asy,
         stan::math::multiply(p_diag_if_sym, rr_diag_asy_vs_sym),
         "assigning variable p_diag_if_asy");
       {
-        current_statement__ = 126;
+        current_statement__ = 125;
         stan::math::validate_non_negative_index("sym_delay_gammas",
           "Max_delay + 1", (Max_delay + 1));
         Eigen::Matrix<local_scalar_t__,-1,1> sym_delay_gammas =
           Eigen::Matrix<local_scalar_t__,-1,1>::Constant((Max_delay + 1),
             DUMMY_VAR__);
-        current_statement__ = 128;
+        current_statement__ = 127;
         stan::math::validate_non_negative_index("sev_delay_gammas",
           "Max_delay + 1", (Max_delay + 1));
         Eigen::Matrix<local_scalar_t__,-1,1> sev_delay_gammas =
           Eigen::Matrix<local_scalar_t__,-1,1>::Constant((Max_delay + 1),
             DUMMY_VAR__);
-        current_statement__ = 133;
+        current_statement__ = 132;
         for (int i = 1; i <= (Max_delay + 1); ++i) {
-          current_statement__ = 130;
+          current_statement__ = 129;
           stan::model::assign(sym_delay_gammas,
             stan::math::gamma_cdf((i - 1), sym_prg_delay_shap,
               (sym_prg_delay_rate / scale_dx_delay_sym)),
             "assigning variable sym_delay_gammas", stan::model::index_uni(i));
-          current_statement__ = 131;
+          current_statement__ = 130;
           stan::model::assign(sev_delay_gammas,
             stan::math::gamma_cdf((i - 1), sev_prg_delay_shap,
               (sev_prg_delay_rate / scale_dx_delay_sev)),
             "assigning variable sev_delay_gammas", stan::model::index_uni(i));
         }
-        current_statement__ = 137;
+        current_statement__ = 136;
         for (int i = 1; i <= Max_delay; ++i) {
-          current_statement__ = 134;
+          current_statement__ = 133;
           stan::model::assign(sym_diag_delay_rv,
             (stan::model::rvalue(sym_delay_gammas, "sym_delay_gammas",
                stan::model::index_uni((i + 1))) -
@@ -3083,7 +3089,7 @@ public:
               stan::model::index_uni(i))),
             "assigning variable sym_diag_delay_rv",
             stan::model::index_uni(((1 + Max_delay) - i)));
-          current_statement__ = 135;
+          current_statement__ = 134;
           stan::model::assign(sev_diag_delay_rv,
             (stan::model::rvalue(sev_delay_gammas, "sev_delay_gammas",
                stan::model::index_uni((i + 1))) -
@@ -3093,136 +3099,136 @@ public:
             stan::model::index_uni(((1 + Max_delay) - i)));
         }
       }
-      current_statement__ = 139;
+      current_statement__ = 138;
       p_die_if_inf = ((p_sym_if_inf * p_sev_if_sym) * p_die_if_sev);
-      current_statement__ = 140;
+      current_statement__ = 139;
       p_die_if_inf_postO = ((p_sym_if_inf_postO * p_sev_if_sym) *
         p_die_if_sev);
-      current_statement__ = 141;
+      current_statement__ = 140;
       stan::model::assign(logRt0,
         stan::math::multiply(spl_basis_rt, spl_par_rt),
         "assigning variable logRt0");
-      current_statement__ = 142;
+      current_statement__ = 141;
       stan::model::assign(susceptible_prvl, pop_size,
         "assigning variable susceptible_prvl", stan::model::index_uni(1));
-      current_statement__ = 143;
+      current_statement__ = 142;
       stan::model::assign(num_uninf, pop_size,
         "assigning variable num_uninf", stan::model::index_uni(1));
-      current_statement__ = 144;
+      current_statement__ = 143;
       stan::model::assign(naive_prvl, pop_size,
         "assigning variable naive_prvl", stan::model::index_uni(1));
-      current_statement__ = 145;
+      current_statement__ = 144;
       stan::model::assign(effective_protection_prvl, 0.0,
         "assigning variable effective_protection_prvl",
         stan::model::index_uni(1));
-      current_statement__ = 146;
+      current_statement__ = 145;
       stan::model::assign(effective_protection_prvl_lag, 0.0,
         "assigning variable effective_protection_prvl_lag",
         stan::model::index_uni(1));
-      current_statement__ = 147;
+      current_statement__ = 146;
       stan::model::assign(severe_protection, 0.0,
         "assigning variable severe_protection", stan::model::index_uni(1));
-      current_statement__ = 148;
+      current_statement__ = 147;
       stan::model::assign(inf_to_reinf,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable inf_to_reinf",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 149;
+      current_statement__ = 148;
       stan::model::assign(inf_to_hybrid,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable inf_to_hybrid",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 150;
+      current_statement__ = 149;
       stan::model::assign(vax_to_boost,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable vax_to_boost",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 151;
+      current_statement__ = 150;
       stan::model::assign(vax_to_hybrid,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable vax_to_hybrid",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 152;
+      current_statement__ = 151;
       stan::model::assign(hybrid_to_reinf,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable hybrid_to_reinf",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 153;
+      current_statement__ = 152;
       stan::model::assign(hybrid_to_boost,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable hybrid_to_boost",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 154;
+      current_statement__ = 153;
       stan::model::assign(naive_to_vax,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable naive_to_vax",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 155;
+      current_statement__ = 154;
       stan::model::assign(naive_to_inf,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable naive_to_inf",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 156;
+      current_statement__ = 155;
       stan::model::assign(vax_prvl, stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable vax_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 157;
+      current_statement__ = 156;
       stan::model::assign(inf_prvl, stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable inf_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 158;
+      current_statement__ = 157;
       stan::model::assign(naive_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable naive_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 159;
+      current_statement__ = 158;
       stan::model::assign(first_inf_only_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable first_inf_only_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 160;
+      current_statement__ = 159;
       stan::model::assign(reinf_only_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable reinf_only_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 161;
+      current_statement__ = 160;
       stan::model::assign(hybrid_last_inf_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable hybrid_last_inf_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 162;
+      current_statement__ = 161;
       stan::model::assign(hybrid_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable hybrid_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 163;
+      current_statement__ = 162;
       stan::model::assign(new_protection_inf,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable new_protection_inf",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 164;
+      current_statement__ = 163;
       stan::model::assign(new_protection_vax,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable new_protection_vax",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 165;
+      current_statement__ = 164;
       stan::model::assign(new_protection,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable new_protection",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 166;
+      current_statement__ = 165;
       stan::model::assign(lost_protection,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable lost_protection",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 167;
+      current_statement__ = 166;
       stan::model::assign(lost_protection_net,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable lost_protection_net",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 357;
+      current_statement__ = 356;
       for (int i = 1; i <= N_weeks_tot; ++i) {
-        current_statement__ = 168;
+        current_statement__ = 167;
         stan::model::assign(p_die_if_sevt,
           (stan::model::rvalue(p_die_if_sevt, "p_die_if_sevt",
              stan::model::index_uni(i)) *
@@ -3232,9 +3238,9 @@ public:
             stan::model::rvalue(prob_vac, "prob_vac",
               stan::model::index_uni(1)))),
           "assigning variable p_die_if_sevt", stan::model::index_uni(i));
-        current_statement__ = 173;
+        current_statement__ = 172;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 171;
+          current_statement__ = 170;
           stan::model::assign(p_sev_if_symt, ((p_sev_if_sym *
             stan::math::pow(
               stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -3264,7 +3270,7 @@ public:
                 stan::model::index_uni(1)))),
             "assigning variable p_sev_if_symt", stan::model::index_uni(i));
         } else {
-          current_statement__ = 169;
+          current_statement__ = 168;
           stan::model::assign(p_sev_if_symt, (p_sev_if_sym *
             stan::math::pow(
               stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -3273,12 +3279,12 @@ public:
                 stan::model::index_uni(2)))),
             "assigning variable p_sev_if_symt", stan::model::index_uni(i));
         }
-        current_statement__ = 189;
+        current_statement__ = 188;
         if (stan::math::logical_lt(i, (N_weeks_start_omicron +
               N_weeks_before))) {
-          current_statement__ = 186;
+          current_statement__ = 185;
           if (stan::math::logical_gt(i, 1)) {
-            current_statement__ = 184;
+            current_statement__ = 183;
             stan::model::assign(p_sym_if_inft, ((p_sym_if_inf *
               stan::math::pow(
                 stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -3308,7 +3314,7 @@ public:
                   stan::model::index_uni(2)))),
               "assigning variable p_sym_if_inft", stan::model::index_uni(i));
           } else {
-            current_statement__ = 182;
+            current_statement__ = 181;
             stan::model::assign(p_sym_if_inft, (p_sym_if_inf *
               stan::math::pow(
                 stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -3317,14 +3323,14 @@ public:
                   stan::model::index_uni(3)))),
               "assigning variable p_sym_if_inft", stan::model::index_uni(i));
           }
-          current_statement__ = 187;
+          current_statement__ = 186;
           stan::model::assign(serial_i_vec, serial_i,
             "assigning variable serial_i_vec", stan::model::index_uni(i));
         } else {
-          current_statement__ = 180;
+          current_statement__ = 179;
           if (stan::math::logical_lte(i, ((N_weeks_start_omicron +
                 N_weeks_before) + N_weeks_transition))) {
-            current_statement__ = 177;
+            current_statement__ = 176;
             stan::model::assign(p_sym_if_inft, (((p_sym_if_inf -
               (((p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition +
               2)) *
@@ -3357,13 +3363,13 @@ public:
                 stan::model::rvalue(prob_vac2, "prob_vac2",
                   stan::model::index_uni(2)))),
               "assigning variable p_sym_if_inft", stan::model::index_uni(i));
-            current_statement__ = 178;
+            current_statement__ = 177;
             stan::model::assign(serial_i_vec, (serial_i - (((serial_i -
               serial_i_postO) / (N_weeks_transition + 2)) *
               stan::model::rvalue(idx4, "idx4", stan::model::index_uni(i)))),
               "assigning variable serial_i_vec", stan::model::index_uni(i));
           } else {
-            current_statement__ = 174;
+            current_statement__ = 173;
             stan::model::assign(p_sym_if_inft, ((p_sym_if_inf_postO *
               stan::math::pow(
                 stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -3392,35 +3398,35 @@ public:
                 stan::model::rvalue(prob_vac2, "prob_vac2",
                   stan::model::index_uni(2)))),
               "assigning variable p_sym_if_inft", stan::model::index_uni(i));
-            current_statement__ = 175;
+            current_statement__ = 174;
             stan::model::assign(serial_i_vec, serial_i_postO,
               "assigning variable serial_i_vec", stan::model::index_uni(i));
           }
         }
-        current_statement__ = 192;
+        current_statement__ = 191;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 190;
+          current_statement__ = 189;
           stan::model::assign(susceptible_prvl, (pop_size -
             stan::model::rvalue(effective_protection_prvl,
               "effective_protection_prvl", stan::model::index_uni(i))),
             "assigning variable susceptible_prvl", stan::model::index_uni(i));
         }
-        current_statement__ = 195;
+        current_statement__ = 194;
         if (stan::math::logical_lt(
               stan::model::rvalue(susceptible_prvl, "susceptible_prvl",
                 stan::model::index_uni(i)), 1)) {
-          current_statement__ = 193;
+          current_statement__ = 192;
           stan::model::assign(susceptible_prvl, 1,
             "assigning variable susceptible_prvl", stan::model::index_uni(i));
         }
-        current_statement__ = 200;
+        current_statement__ = 199;
         if (stan::math::logical_eq(i, 1)) {
-          current_statement__ = 198;
+          current_statement__ = 197;
           stan::model::assign(logRt,
             stan::model::rvalue(logRt0, "logRt0", stan::model::index_uni(i)),
             "assigning variable logRt", stan::model::index_uni(i));
         } else {
-          current_statement__ = 196;
+          current_statement__ = 195;
           stan::model::assign(logRt,
             (stan::model::rvalue(logRt0, "logRt0", stan::model::index_uni(i))
             +
@@ -3429,29 +3435,29 @@ public:
                  stan::model::index_uni(i)) / pop_size))),
             "assigning variable logRt", stan::model::index_uni(i));
         }
-        current_statement__ = 201;
+        current_statement__ = 200;
         stan::model::assign(deriv1_log_infections,
           (stan::model::rvalue(logRt, "logRt", stan::model::index_uni(i)) /
           stan::model::rvalue(serial_i_vec, "serial_i_vec",
             stan::model::index_uni(i))),
           "assigning variable deriv1_log_infections",
           stan::model::index_uni(i));
-        current_statement__ = 202;
+        current_statement__ = 201;
         stan::model::assign(log_infections,
           (stan::math::sum(
              stan::model::rvalue(deriv1_log_infections,
                "deriv1_log_infections", stan::model::index_min_max(1, i))) +
           log_infections_0), "assigning variable log_infections",
           stan::model::index_uni(i));
-        current_statement__ = 203;
+        current_statement__ = 202;
         stan::model::assign(infections,
           stan::math::exp(
             stan::model::rvalue(log_infections, "log_infections",
               stan::model::index_uni(i))), "assigning variable infections",
           stan::model::index_uni(i));
-        current_statement__ = 208;
+        current_statement__ = 207;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 206;
+          current_statement__ = 205;
           stan::model::assign(p_first,
             ((stan::model::rvalue(naive_prvl, "naive_prvl",
                 stan::model::index_uni((i - 1))) +
@@ -3478,7 +3484,7 @@ public:
               "population_protection_hybrid", stan::model::index_uni((i - 1)))))),
             "assigning variable p_first", stan::model::index_uni(i));
         } else {
-          current_statement__ = 204;
+          current_statement__ = 203;
           stan::model::assign(p_first,
             (stan::model::rvalue(num_uninf, "num_uninf",
                stan::model::index_uni(1)) /
@@ -3488,21 +3494,21 @@ public:
               stan::model::index_uni(1)))), "assigning variable p_first",
             stan::model::index_uni(i));
         }
-        current_statement__ = 209;
+        current_statement__ = 208;
         stan::model::assign(infections_premiere,
           (stan::model::rvalue(infections, "infections",
              stan::model::index_uni(i)) *
           stan::model::rvalue(p_first, "p_first", stan::model::index_uni(i))),
           "assigning variable infections_premiere", stan::model::index_uni(i));
-        current_statement__ = 210;
+        current_statement__ = 209;
         stan::model::assign(infections_repeat,
           (stan::model::rvalue(infections, "infections",
              stan::model::index_uni(i)) * (1 -
           stan::model::rvalue(p_first, "p_first", stan::model::index_uni(i)))),
           "assigning variable infections_repeat", stan::model::index_uni(i));
-        current_statement__ = 221;
+        current_statement__ = 220;
         if (stan::math::logical_gt(i, 2)) {
-          current_statement__ = 211;
+          current_statement__ = 210;
           stan::model::assign(inf_to_reinf,
             (stan::model::rvalue(infections_repeat, "infections_repeat",
                stan::model::index_uni(i)) *
@@ -3521,7 +3527,7 @@ public:
             stan::model::rvalue(population_protection_hybrid,
               "population_protection_hybrid", stan::model::index_uni((i - 1))))))),
             "assigning variable inf_to_reinf", stan::model::index_uni(i));
-          current_statement__ = 212;
+          current_statement__ = 211;
           stan::model::assign(hybrid_to_reinf,
             (stan::model::rvalue(infections_repeat, "infections_repeat",
                stan::model::index_uni(i)) *
@@ -3540,19 +3546,19 @@ public:
             stan::model::rvalue(population_protection_hybrid,
               "population_protection_hybrid", stan::model::index_uni((i - 1))))))),
             "assigning variable hybrid_to_reinf", stan::model::index_uni(i));
-          current_statement__ = 219;
+          current_statement__ = 218;
           if (stan::math::logical_eq(
                 stan::math::sum(
                   stan::model::rvalue(full_boost, "full_boost",
                     stan::model::index_min_max(1, i))), 0.0)) {
-            current_statement__ = 216;
+            current_statement__ = 215;
             stan::model::assign(vax_to_boost, 0.0,
               "assigning variable vax_to_boost", stan::model::index_uni(i));
-            current_statement__ = 217;
+            current_statement__ = 216;
             stan::model::assign(hybrid_to_boost, 0.0,
               "assigning variable hybrid_to_boost", stan::model::index_uni(i));
           } else {
-            current_statement__ = 213;
+            current_statement__ = 212;
             stan::model::assign(vax_to_boost,
               (stan::model::rvalue(full_boost, "full_boost",
                  stan::model::index_uni(i)) *
@@ -3563,7 +3569,7 @@ public:
               stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                 stan::model::index_uni((i - 1)))))),
               "assigning variable vax_to_boost", stan::model::index_uni(i));
-            current_statement__ = 214;
+            current_statement__ = 213;
             stan::model::assign(hybrid_to_boost,
               (stan::model::rvalue(full_boost, "full_boost",
                  stan::model::index_uni(i)) *
@@ -3576,7 +3582,7 @@ public:
               "assigning variable hybrid_to_boost", stan::model::index_uni(i));
           }
         }
-        current_statement__ = 222;
+        current_statement__ = 221;
         stan::model::assign(exposed_cumulative,
           (calcExposed(OR,
              (stan::math::sum(
@@ -3588,7 +3594,7 @@ public:
                   stan::model::index_min_max(1, i))) / pop_size), pstream__)
           * pop_size), "assigning variable exposed_cumulative",
           stan::model::index_uni(i));
-        current_statement__ = 223;
+        current_statement__ = 222;
         stan::model::assign(vax_only_cum,
           (stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
              stan::model::index_uni(i)) -
@@ -3596,7 +3602,7 @@ public:
             stan::model::rvalue(infections_premiere, "infections_premiere",
               stan::model::index_min_max(1, i)))),
           "assigning variable vax_only_cum", stan::model::index_uni(i));
-        current_statement__ = 224;
+        current_statement__ = 223;
         stan::model::assign(hybrid_cumulative,
           ((stan::math::sum(
               stan::model::rvalue(infections_premiere, "infections_premiere",
@@ -3607,39 +3613,39 @@ public:
           stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
             stan::model::index_uni(i))),
           "assigning variable hybrid_cumulative", stan::model::index_uni(i));
-        current_statement__ = 233;
+        current_statement__ = 232;
         if (stan::math::logical_eq(i, 1)) {
-          current_statement__ = 229;
+          current_statement__ = 228;
           stan::model::assign(exposed,
             stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
               stan::model::index_uni(i)), "assigning variable exposed",
             stan::model::index_uni(i));
-          current_statement__ = 230;
+          current_statement__ = 229;
           stan::model::assign(vax_only,
             stan::model::rvalue(vax_only_cum, "vax_only_cum",
               stan::model::index_uni(i)), "assigning variable vax_only",
             stan::model::index_uni(i));
-          current_statement__ = 231;
+          current_statement__ = 230;
           stan::model::assign(new_hybrid,
             stan::model::rvalue(hybrid_cumulative, "hybrid_cumulative",
               stan::model::index_uni(i)), "assigning variable new_hybrid",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 225;
+          current_statement__ = 224;
           stan::model::assign(exposed,
             (stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
                stan::model::index_uni(i)) -
             stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
               stan::model::index_uni((i - 1)))),
             "assigning variable exposed", stan::model::index_uni(i));
-          current_statement__ = 226;
+          current_statement__ = 225;
           stan::model::assign(vax_only,
             (stan::model::rvalue(vax_only_cum, "vax_only_cum",
                stan::model::index_uni(i)) -
             stan::model::rvalue(vax_only_cum, "vax_only_cum",
               stan::model::index_uni((i - 1)))),
             "assigning variable vax_only", stan::model::index_uni(i));
-          current_statement__ = 227;
+          current_statement__ = 226;
           stan::model::assign(new_hybrid,
             (stan::model::rvalue(hybrid_cumulative, "hybrid_cumulative",
                stan::model::index_uni(i)) -
@@ -3647,44 +3653,44 @@ public:
               stan::model::index_uni((i - 1)))),
             "assigning variable new_hybrid", stan::model::index_uni(i));
         }
-        current_statement__ = 235;
+        current_statement__ = 234;
         if (stan::math::logical_lt(
               stan::model::rvalue(vax_only, "vax_only",
                 stan::model::index_uni(i)), 0)) {
-          current_statement__ = 234;
+          current_statement__ = 233;
           stan::model::assign(vax_only, 0.0, "assigning variable vax_only",
             stan::model::index_uni(i));
         }
-        current_statement__ = 237;
+        current_statement__ = 236;
         if (stan::math::logical_gt(
               stan::model::rvalue(vax_only, "vax_only",
                 stan::model::index_uni(i)),
               stan::model::rvalue(full_vax, "full_vax",
                 stan::model::index_uni(i)))) {
-          current_statement__ = 236;
+          current_statement__ = 235;
           stan::model::assign(vax_only, 0.0, "assigning variable vax_only",
             stan::model::index_uni(i));
         }
-        current_statement__ = 239;
+        current_statement__ = 238;
         if (stan::math::logical_lt(
               stan::model::rvalue(new_hybrid, "new_hybrid",
                 stan::model::index_uni(i)), 0)) {
-          current_statement__ = 238;
+          current_statement__ = 237;
           stan::model::assign(new_hybrid, 0.0,
             "assigning variable new_hybrid", stan::model::index_uni(i));
         }
-        current_statement__ = 242;
+        current_statement__ = 241;
         if (stan::math::logical_eq(
               stan::math::sum(
                 stan::model::rvalue(full_vax, "full_vax",
                   stan::model::index_min_max(1, i))), 0.0)) {
-          current_statement__ = 240;
+          current_statement__ = 239;
           stan::model::assign(new_hybrid, 0.0,
             "assigning variable new_hybrid", stan::model::index_uni(i));
         }
-        current_statement__ = 265;
+        current_statement__ = 264;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 245;
+          current_statement__ = 244;
           stan::model::assign(p1,
             (stan::model::rvalue(naive_prvl, "naive_prvl",
                stan::model::index_uni((i - 1))) /
@@ -3695,7 +3701,7 @@ public:
             stan::model::rvalue(population_protection_vax,
               "population_protection_vax", stan::model::index_uni((i - 1)))))),
             "assigning variable p1", stan::model::index_uni(i));
-          current_statement__ = 246;
+          current_statement__ = 245;
           stan::model::assign(p1max,
             stan::math::fmin(
               (stan::model::rvalue(exposed, "exposed",
@@ -3703,7 +3709,7 @@ public:
               stan::model::rvalue(infections_premiere, "infections_premiere",
                 stan::model::index_uni(i))), 1.0),
             "assigning variable p1max", stan::model::index_uni(i));
-          current_statement__ = 247;
+          current_statement__ = 246;
           stan::model::assign(p1min,
             stan::math::fmax(
               ((stan::model::rvalue(infections_premiere,
@@ -3713,7 +3719,7 @@ public:
               stan::model::rvalue(infections_premiere, "infections_premiere",
                 stan::model::index_uni(i))), 0.0),
             "assigning variable p1min", stan::model::index_uni(i));
-          current_statement__ = 256;
+          current_statement__ = 255;
           if ((stan::math::primitive_value(
                  stan::math::logical_gt(
                    stan::model::rvalue(p1, "p1", stan::model::index_uni(i)),
@@ -3725,7 +3731,7 @@ public:
                   stan::model::rvalue(p1, "p1", stan::model::index_uni(i)),
                   stan::model::rvalue(p1min, "p1min",
                     stan::model::index_uni(i)))))) {} else {
-                                                      current_statement__ = 250;
+                                                      current_statement__ = 249;
                                                       if (stan::math::logical_gt(
                                                             stan::model::rvalue(
                                                               p1, "p1",
@@ -3735,7 +3741,7 @@ public:
                                                               p1max, "p1max",
                                                               stan::model::index_uni(
                                                                 i)))) {
-                                                        current_statement__ = 248;
+                                                        current_statement__ = 247;
                                                         stan::model::assign(
                                                           p1,
                                                           stan::model::rvalue(
@@ -3746,7 +3752,7 @@ public:
                                                           stan::model::index_uni(
                                                             i));
                                                       }
-                                                      current_statement__ = 253;
+                                                      current_statement__ = 252;
                                                       if (stan::math::logical_lt(
                                                             stan::model::rvalue(
                                                               p1, "p1",
@@ -3756,7 +3762,7 @@ public:
                                                               p1min, "p1min",
                                                               stan::model::index_uni(
                                                                 i)))) {
-                                                        current_statement__ = 251;
+                                                        current_statement__ = 250;
                                                         stan::model::assign(
                                                           p1,
                                                           stan::model::rvalue(
@@ -3768,28 +3774,28 @@ public:
                                                             i));
                                                       }
           }
-          current_statement__ = 257;
+          current_statement__ = 256;
           stan::model::assign(naive_to_inf,
             (stan::model::rvalue(p1, "p1", stan::model::index_uni(i)) *
             stan::model::rvalue(infections_premiere, "infections_premiere",
               stan::model::index_uni(i))), "assigning variable naive_to_inf",
             stan::model::index_uni(i));
-          current_statement__ = 259;
+          current_statement__ = 258;
           if (stan::math::logical_gt(
                 stan::model::rvalue(vax_prvl, "vax_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 258;
+            current_statement__ = 257;
             stan::model::assign(vax_to_hybrid, ((1 -
               stan::model::rvalue(p1, "p1", stan::model::index_uni(i))) *
               stan::model::rvalue(infections_premiere, "infections_premiere",
                 stan::model::index_uni(i))),
               "assigning variable vax_to_hybrid", stan::model::index_uni(i));
           }
-          current_statement__ = 261;
+          current_statement__ = 260;
           if (stan::math::logical_gt(
                 stan::model::rvalue(full_vax, "full_vax",
                   stan::model::index_uni(i)), 0.0)) {
-            current_statement__ = 260;
+            current_statement__ = 259;
             stan::model::assign(naive_to_vax,
               (stan::model::rvalue(exposed, "exposed",
                  stan::model::index_uni(i)) -
@@ -3797,11 +3803,11 @@ public:
                 stan::model::index_uni(i))),
               "assigning variable naive_to_vax", stan::model::index_uni(i));
           }
-          current_statement__ = 263;
+          current_statement__ = 262;
           if (stan::math::logical_gt(
                 stan::model::rvalue(full_vax, "full_vax",
                   stan::model::index_uni(i)), 0.0)) {
-            current_statement__ = 262;
+            current_statement__ = 261;
             stan::model::assign(inf_to_hybrid,
               (stan::model::rvalue(new_hybrid, "new_hybrid",
                  stan::model::index_uni(i)) -
@@ -3810,15 +3816,15 @@ public:
               "assigning variable inf_to_hybrid", stan::model::index_uni(i));
           }
         } else {
-          current_statement__ = 243;
+          current_statement__ = 242;
           stan::model::assign(naive_to_inf,
             stan::model::rvalue(infections_premiere, "infections_premiere",
               stan::model::index_uni(i)), "assigning variable naive_to_inf",
             stan::model::index_uni(i));
         }
-        current_statement__ = 286;
+        current_statement__ = 285;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 274;
+          current_statement__ = 273;
           stan::model::assign(inf_prvl,
             ((stan::model::rvalue(inf_prvl, "inf_prvl",
                 stan::model::index_uni((i - 1))) -
@@ -3827,7 +3833,7 @@ public:
             stan::model::rvalue(naive_to_inf, "naive_to_inf",
               stan::model::index_uni(i))), "assigning variable inf_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 275;
+          current_statement__ = 274;
           stan::model::assign(vax_prvl,
             ((stan::model::rvalue(vax_prvl, "vax_prvl",
                 stan::model::index_uni((i - 1))) -
@@ -3836,7 +3842,7 @@ public:
             stan::model::rvalue(naive_to_vax, "naive_to_vax",
               stan::model::index_uni(i))), "assigning variable vax_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 276;
+          current_statement__ = 275;
           stan::model::assign(naive_prvl,
             ((stan::model::rvalue(naive_prvl, "naive_prvl",
                 stan::model::index_uni((i - 1))) -
@@ -3845,7 +3851,7 @@ public:
             stan::model::rvalue(naive_to_vax, "naive_to_vax",
               stan::model::index_uni(i))), "assigning variable naive_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 277;
+          current_statement__ = 276;
           stan::model::assign(hybrid_prvl,
             ((stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                 stan::model::index_uni((i - 1))) +
@@ -3854,7 +3860,7 @@ public:
             stan::model::rvalue(vax_to_hybrid, "vax_to_hybrid",
               stan::model::index_uni(i))), "assigning variable hybrid_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 278;
+          current_statement__ = 277;
           stan::model::assign(first_inf_only_prvl,
             ((stan::model::rvalue(first_inf_only_prvl, "first_inf_only_prvl",
                 stan::model::index_uni((i - 1))) +
@@ -3870,7 +3876,7 @@ public:
               stan::model::index_uni(i))))),
             "assigning variable first_inf_only_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 279;
+          current_statement__ = 278;
           stan::model::assign(reinf_only_prvl,
             (((stan::model::rvalue(reinf_only_prvl, "reinf_only_prvl",
                  stan::model::index_uni((i - 1))) -
@@ -3889,11 +3895,11 @@ public:
             stan::model::rvalue(inf_prvl, "inf_prvl",
               stan::model::index_uni(i))))),
             "assigning variable reinf_only_prvl", stan::model::index_uni(i));
-          current_statement__ = 284;
+          current_statement__ = 283;
           if (stan::math::logical_eq(
                 stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 282;
+            current_statement__ = 281;
             stan::model::assign(hybrid_last_inf_prvl,
               ((stan::model::rvalue(hybrid_last_inf_prvl,
                   "hybrid_last_inf_prvl", stan::model::index_uni((i - 1))) +
@@ -3904,7 +3910,7 @@ public:
               "assigning variable hybrid_last_inf_prvl",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 280;
+            current_statement__ = 279;
             stan::model::assign(hybrid_last_inf_prvl,
               (((stan::model::rvalue(hybrid_last_inf_prvl,
                    "hybrid_last_inf_prvl", stan::model::index_uni((i - 1))) +
@@ -3922,39 +3928,39 @@ public:
               stan::model::index_uni(i));
           }
         } else {
-          current_statement__ = 266;
+          current_statement__ = 265;
           stan::model::assign(inf_prvl,
             stan::model::rvalue(infections, "infections",
               stan::model::index_uni(i)), "assigning variable inf_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 267;
+          current_statement__ = 266;
           stan::model::assign(first_inf_only_prvl,
             stan::model::rvalue(infections, "infections",
               stan::model::index_uni(i)),
             "assigning variable first_inf_only_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 268;
+          current_statement__ = 267;
           stan::model::assign(vax_prvl, 0.0, "assigning variable vax_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 269;
+          current_statement__ = 268;
           stan::model::assign(naive_prvl, (pop_size -
             stan::model::rvalue(infections, "infections",
               stan::model::index_uni(i))), "assigning variable naive_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 270;
+          current_statement__ = 269;
           stan::model::assign(hybrid_prvl, 0.0,
             "assigning variable hybrid_prvl", stan::model::index_uni(i));
-          current_statement__ = 271;
+          current_statement__ = 270;
           stan::model::assign(hybrid_last_inf_prvl, 0.0,
             "assigning variable hybrid_last_inf_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 272;
+          current_statement__ = 271;
           stan::model::assign(reinf_only_prvl, 0.0,
             "assigning variable reinf_only_prvl", stan::model::index_uni(i));
         }
-        current_statement__ = 288;
+        current_statement__ = 287;
         if (stan::math::logical_lt(i, N_weeks_tot)) {
-          current_statement__ = 287;
+          current_statement__ = 286;
           stan::model::assign(num_uninf,
             (stan::model::rvalue(num_uninf, "num_uninf",
                stan::model::index_uni(i)) -
@@ -3962,26 +3968,26 @@ public:
               stan::model::index_uni(i))), "assigning variable num_uninf",
             stan::model::index_uni((i + 1)));
         }
-        current_statement__ = 290;
+        current_statement__ = 289;
         if (stan::math::logical_lt(
               stan::model::rvalue(num_uninf, "num_uninf",
                 stan::model::index_uni(i)), 0)) {
-          current_statement__ = 289;
+          current_statement__ = 288;
           std::stringstream errmsg_stream__;
           stan::math::stan_print(&errmsg_stream__,
             "WARNING num_uninf invalid");
           throw std::domain_error(errmsg_stream__.str());
         }
-        current_statement__ = 295;
+        current_statement__ = 294;
         if (stan::math::logical_eq(
               stan::math::sum(
                 stan::model::rvalue(full_vax, "full_vax",
                   stan::model::index_min_max(1, i))), 0.0)) {
-          current_statement__ = 293;
+          current_statement__ = 292;
           stan::model::assign(p_boost, 1.0, "assigning variable p_boost",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 291;
+          current_statement__ = 290;
           stan::model::assign(p_boost, (1.0 -
             (stan::math::sum(
                stan::model::rvalue(full_boost, "full_boost",
@@ -3994,52 +4000,52 @@ public:
                 stan::model::index_min_max(1, i)))))),
             "assigning variable p_boost", stan::model::index_uni(i));
         }
-        current_statement__ = 334;
+        current_statement__ = 333;
         if (stan::math::logical_eq(i, 1)) {
-          current_statement__ = 325;
+          current_statement__ = 324;
           stan::model::assign(population_protection_inf,
             (stan::model::rvalue(infections, "infections",
                stan::model::index_uni(i)) * prot_scalar),
             "assigning variable population_protection_inf",
             stan::model::index_uni(i));
-          current_statement__ = 326;
+          current_statement__ = 325;
           stan::model::assign(population_protection_vax,
             (stan::model::rvalue(full_vax, "full_vax",
                stan::model::index_uni(i)) * prot_scalar),
             "assigning variable population_protection_vax",
             stan::model::index_uni(i));
-          current_statement__ = 327;
+          current_statement__ = 326;
           stan::model::assign(population_protection_hybrid, 0.0,
             "assigning variable population_protection_hybrid",
             stan::model::index_uni(i));
-          current_statement__ = 328;
+          current_statement__ = 327;
           stan::model::assign(population_protection_sev_inf,
             (stan::model::rvalue(infections, "infections",
                stan::model::index_uni(i)) * prot_sev_scalar),
             "assigning variable population_protection_sev_inf",
             stan::model::index_uni(i));
-          current_statement__ = 329;
+          current_statement__ = 328;
           stan::model::assign(population_protection_sev_vax,
             (stan::model::rvalue(full_vax, "full_vax",
                stan::model::index_uni(i)) * prot_sev_scalar),
             "assigning variable population_protection_sev_vax",
             stan::model::index_uni(i));
-          current_statement__ = 330;
+          current_statement__ = 329;
           stan::model::assign(population_protection_sev_hybrid, 0.0,
             "assigning variable population_protection_sev_hybrid",
             stan::model::index_uni(i));
-          current_statement__ = 331;
+          current_statement__ = 330;
           stan::model::assign(new_protection_inf,
             stan::model::rvalue(naive_to_inf, "naive_to_inf",
               stan::model::index_uni(i)),
             "assigning variable new_protection_inf",
             stan::model::index_uni(i));
-          current_statement__ = 332;
+          current_statement__ = 331;
           stan::model::assign(new_protection_vax, 0.0,
             "assigning variable new_protection_vax",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 296;
+          current_statement__ = 295;
           stan::model::assign(population_protection_inf,
             (((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                  stan::model::index_uni(i)) * prot_scalar) +
@@ -4057,7 +4063,7 @@ public:
             stan::math::exp((waning_scalar * -.008)))),
             "assigning variable population_protection_inf",
             stan::model::index_uni(i));
-          current_statement__ = 297;
+          current_statement__ = 296;
           stan::model::assign(population_protection_sev_inf,
             (((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                  stan::model::index_uni(i)) * prot_sev_scalar) +
@@ -4075,20 +4081,20 @@ public:
             stan::math::exp((waning_scalar_sev * -.008)))),
             "assigning variable population_protection_sev_inf",
             stan::model::index_uni(i));
-          current_statement__ = 304;
+          current_statement__ = 303;
           if (stan::math::logical_eq(
                 stan::model::rvalue(vax_prvl, "vax_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 301;
+            current_statement__ = 300;
             stan::model::assign(population_protection_vax, 0.0,
               "assigning variable population_protection_vax",
               stan::model::index_uni(i));
-            current_statement__ = 302;
+            current_statement__ = 301;
             stan::model::assign(population_protection_sev_vax, 0.0,
               "assigning variable population_protection_sev_vax",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 298;
+            current_statement__ = 297;
             stan::model::assign(population_protection_vax,
               (((stan::model::rvalue(naive_to_vax, "naive_to_vax",
                    stan::model::index_uni(i)) * prot_scalar) +
@@ -4106,7 +4112,7 @@ public:
               stan::math::exp((waning_scalar * -.008)))),
               "assigning variable population_protection_vax",
               stan::model::index_uni(i));
-            current_statement__ = 299;
+            current_statement__ = 298;
             stan::model::assign(population_protection_sev_vax,
               (((stan::model::rvalue(naive_to_vax, "naive_to_vax",
                    stan::model::index_uni(i)) * prot_sev_scalar) +
@@ -4125,20 +4131,20 @@ public:
               "assigning variable population_protection_sev_vax",
               stan::model::index_uni(i));
           }
-          current_statement__ = 311;
+          current_statement__ = 310;
           if (stan::math::logical_eq(
                 stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 308;
+            current_statement__ = 307;
             stan::model::assign(population_protection_hybrid, 0.0,
               "assigning variable population_protection_hybrid",
               stan::model::index_uni(i));
-            current_statement__ = 309;
+            current_statement__ = 308;
             stan::model::assign(population_protection_sev_hybrid, 0.0,
               "assigning variable population_protection_sev_hybrid",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 305;
+            current_statement__ = 304;
             stan::model::assign(population_protection_hybrid,
               (((((stan::model::rvalue(vax_to_hybrid, "vax_to_hybrid",
                      stan::model::index_uni(i)) * prot_scalar) +
@@ -4160,7 +4166,7 @@ public:
               stan::math::exp((waning_scalar_hybrid * -.008)))),
               "assigning variable population_protection_hybrid",
               stan::model::index_uni(i));
-            current_statement__ = 306;
+            current_statement__ = 305;
             stan::model::assign(population_protection_sev_hybrid,
               (((((stan::model::rvalue(vax_to_hybrid, "vax_to_hybrid",
                      stan::model::index_uni(i)) * prot_sev_scalar) +
@@ -4183,11 +4189,11 @@ public:
               "assigning variable population_protection_sev_hybrid",
               stan::model::index_uni(i));
           }
-          current_statement__ = 323;
+          current_statement__ = 322;
           if (stan::math::logical_eq(
                 stan::model::rvalue(vax_prvl, "vax_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 320;
+            current_statement__ = 319;
             stan::model::assign(new_protection_inf,
               ((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                   stan::model::index_uni(i)) * prot_scalar) +
@@ -4202,18 +4208,18 @@ public:
                 stan::model::index_uni((i - 1))))))),
               "assigning variable new_protection_inf",
               stan::model::index_uni(i));
-            current_statement__ = 321;
+            current_statement__ = 320;
             stan::model::assign(new_protection_vax,
               (stan::model::rvalue(naive_to_vax, "naive_to_vax",
                  stan::model::index_uni(i)) * prot_scalar),
               "assigning variable new_protection_vax",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 318;
+            current_statement__ = 317;
             if (stan::math::logical_eq(
                   stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                     stan::model::index_uni((i - 1))), 0.0)) {
-              current_statement__ = 315;
+              current_statement__ = 314;
               stan::model::assign(new_protection_inf,
                 (((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                      stan::model::index_uni(i)) * prot_scalar) +
@@ -4236,7 +4242,7 @@ public:
                   stan::model::index_uni((i - 1))))))),
                 "assigning variable new_protection_inf",
                 stan::model::index_uni(i));
-              current_statement__ = 316;
+              current_statement__ = 315;
               stan::model::assign(new_protection_vax,
                 (((stan::model::rvalue(naive_to_vax, "naive_to_vax",
                      stan::model::index_uni(i)) * prot_scalar) +
@@ -4261,7 +4267,7 @@ public:
                 "assigning variable new_protection_vax",
                 stan::model::index_uni(i));
             } else {
-              current_statement__ = 312;
+              current_statement__ = 311;
               stan::model::assign(new_protection_inf,
                 ((((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                       stan::model::index_uni(i)) * prot_scalar) +
@@ -4293,7 +4299,7 @@ public:
                   stan::model::index_uni((i - 1))))))),
                 "assigning variable new_protection_inf",
                 stan::model::index_uni(i));
-              current_statement__ = 313;
+              current_statement__ = 312;
               stan::model::assign(new_protection_vax,
                 ((((stan::model::rvalue(naive_to_vax, "naive_to_vax",
                       stan::model::index_uni(i)) * prot_scalar) +
@@ -4329,81 +4335,81 @@ public:
             }
           }
         }
-        current_statement__ = 344;
+        current_statement__ = 343;
         if (stan::math::logical_gte(i, (N_weeks_start_omicron +
               N_weeks_before))) {
-          current_statement__ = 342;
+          current_statement__ = 341;
           if (stan::math::logical_lt(i, ((N_weeks_start_omicron +
                 N_weeks_before) + N_weeks_transition))) {
-            current_statement__ = 335;
+            current_statement__ = 334;
             stan::model::assign(population_protection_inf,
               (stan::model::rvalue(population_protection_inf,
                  "population_protection_inf", stan::model::index_uni(i)) *
-              stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              stan::math::pow((1.0 - omicron_scalar_inf), 0.25)),
               "assigning variable population_protection_inf",
               stan::model::index_uni(i));
-            current_statement__ = 336;
+            current_statement__ = 335;
             stan::model::assign(population_protection_vax,
               (stan::model::rvalue(population_protection_vax,
                  "population_protection_vax", stan::model::index_uni(i)) *
-              stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              stan::math::pow((1.0 - omicron_scalar_inf), 0.25)),
               "assigning variable population_protection_vax",
               stan::model::index_uni(i));
-            current_statement__ = 337;
+            current_statement__ = 336;
             stan::model::assign(population_protection_hybrid,
               (stan::model::rvalue(population_protection_hybrid,
                  "population_protection_hybrid", stan::model::index_uni(i)) *
-              stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              stan::math::pow((1.0 - omicron_scalar_inf), 0.25)),
               "assigning variable population_protection_hybrid",
               stan::model::index_uni(i));
-            current_statement__ = 338;
+            current_statement__ = 337;
             stan::model::assign(population_protection_sev_inf,
               (stan::model::rvalue(population_protection_sev_inf,
                  "population_protection_sev_inf", stan::model::index_uni(i))
-              * stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              * stan::math::pow((1.0 - omicron_scalar_sev), 0.25)),
               "assigning variable population_protection_sev_inf",
               stan::model::index_uni(i));
-            current_statement__ = 339;
+            current_statement__ = 338;
             stan::model::assign(population_protection_sev_vax,
               (stan::model::rvalue(population_protection_sev_vax,
                  "population_protection_sev_vax", stan::model::index_uni(i))
-              * stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              * stan::math::pow((1.0 - omicron_scalar_sev), 0.25)),
               "assigning variable population_protection_sev_vax",
               stan::model::index_uni(i));
-            current_statement__ = 340;
+            current_statement__ = 339;
             stan::model::assign(population_protection_sev_hybrid,
               (stan::model::rvalue(population_protection_sev_hybrid,
                  "population_protection_sev_hybrid",
                  stan::model::index_uni(i)) *
-              stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              stan::math::pow((1.0 - omicron_scalar_sev), 0.25)),
               "assigning variable population_protection_sev_hybrid",
               stan::model::index_uni(i));
           }
         }
-        current_statement__ = 345;
+        current_statement__ = 344;
         stan::model::assign(new_protection,
           (stan::model::rvalue(new_protection_inf, "new_protection_inf",
              stan::model::index_uni(i)) +
           stan::model::rvalue(new_protection_vax, "new_protection_vax",
             stan::model::index_uni(i))), "assigning variable new_protection",
           stan::model::index_uni(i));
-        current_statement__ = 346;
+        current_statement__ = 345;
         stan::model::assign(lost_protection_net,
           (stan::model::rvalue(effective_protection_prvl,
              "effective_protection_prvl", stan::model::index_uni(i)) -
           stan::model::rvalue(effective_protection_prvl_lag,
             "effective_protection_prvl_lag", stan::model::index_uni(i))),
           "assigning variable lost_protection_net", stan::model::index_uni(i));
-        current_statement__ = 347;
+        current_statement__ = 346;
         stan::model::assign(lost_protection,
           (stan::model::rvalue(new_protection, "new_protection",
              stan::model::index_uni(i)) -
           stan::model::rvalue(lost_protection_net, "lost_protection_net",
             stan::model::index_uni(i))),
           "assigning variable lost_protection", stan::model::index_uni(i));
-        current_statement__ = 355;
+        current_statement__ = 354;
         if (stan::math::logical_lt(i, N_weeks_tot)) {
-          current_statement__ = 348;
+          current_statement__ = 347;
           stan::model::assign(effective_protection_prvl,
             ((stan::model::rvalue(population_protection_inf,
                 "population_protection_inf", stan::model::index_uni(i)) +
@@ -4413,7 +4419,7 @@ public:
               "population_protection_hybrid", stan::model::index_uni(i))),
             "assigning variable effective_protection_prvl",
             stan::model::index_uni((i + 1)));
-          current_statement__ = 349;
+          current_statement__ = 348;
           stan::model::assign(severe_protection,
             ((stan::model::rvalue(population_protection_sev_inf,
                 "population_protection_sev_inf", stan::model::index_uni(i)) +
@@ -4423,31 +4429,31 @@ public:
               "population_protection_sev_hybrid", stan::model::index_uni(i))),
             "assigning variable severe_protection",
             stan::model::index_uni((i + 1)));
-          current_statement__ = 350;
+          current_statement__ = 349;
           stan::model::assign(effective_protection_prvl_lag,
             stan::model::rvalue(effective_protection_prvl,
               "effective_protection_prvl", stan::model::index_uni(i)),
             "assigning variable effective_protection_prvl_lag",
             stan::model::index_uni((i + 1)));
-          current_statement__ = 353;
+          current_statement__ = 352;
           if (stan::math::logical_gt(
                 stan::model::rvalue(effective_protection_prvl,
                   "effective_protection_prvl",
                   stan::model::index_uni((i + 1))), pop_size)) {
-            current_statement__ = 351;
+            current_statement__ = 350;
             stan::model::assign(effective_protection_prvl, (pop_size - 1),
               "assigning variable effective_protection_prvl",
               stan::model::index_uni((i + 1)));
           }
         }
       }
-      current_statement__ = 358;
+      current_statement__ = 357;
       stan::model::assign(r_t, stan::math::exp(logRt),
         "assigning variable r_t");
-      current_statement__ = 359;
+      current_statement__ = 358;
       stan::model::assign(r_0, stan::math::exp(logRt0),
         "assigning variable r_0");
-      current_statement__ = 360;
+      current_statement__ = 359;
       stan::model::assign(deriv2_spl_par_rt,
         stan::math::subtract(
           stan::math::subtract(
@@ -4460,7 +4466,7 @@ public:
             stan::model::index_min_max(3, N_spl_par_rt))),
         "assigning variable deriv2_spl_par_rt",
         stan::model::index_min_max(1, (N_spl_par_rt - 2)));
-      current_statement__ = 361;
+      current_statement__ = 360;
       stan::model::assign(deriv1_spl_par_rt,
         stan::math::subtract(
           stan::model::rvalue(spl_par_rt, "spl_par_rt",
@@ -4469,51 +4475,51 @@ public:
             stan::model::index_min_max(1, (N_spl_par_rt - 1)))),
         "assigning variable deriv1_spl_par_rt",
         stan::model::index_min_max(1, (N_spl_par_rt - 1)));
-      current_statement__ = 362;
+      current_statement__ = 361;
       stan::model::assign(symptomatic,
         stan::math::elt_multiply(p_sym_if_inft,
           conv1d(infections, inf_prg_delay_rv, pstream__)),
         "assigning variable symptomatic");
-      current_statement__ = 363;
+      current_statement__ = 362;
       stan::model::assign(severe,
         stan::math::elt_multiply(p_sev_if_symt,
           conv1d(symptomatic, sym_prg_delay_rv, pstream__)),
         "assigning variable severe");
-      current_statement__ = 364;
+      current_statement__ = 363;
       stan::model::assign(deaths,
         stan::math::elt_multiply(
           stan::model::rvalue(p_die_if_sevt, "p_die_if_sevt",
             stan::model::index_min_max(1, N_weeks_tot)),
           conv1d(severe, sev_prg_delay_rv, pstream__)),
         "assigning variable deaths");
-      current_statement__ = 365;
+      current_statement__ = 364;
       stan::model::assign(new_asy_dx,
         stan::math::elt_multiply(stan::math::subtract(1, p_sym_if_inft),
           conv1d(stan::math::elt_multiply(infections, p_diag_if_asy),
             asy_rec_delay_rv, pstream__)), "assigning variable new_asy_dx");
-      current_statement__ = 366;
+      current_statement__ = 365;
       stan::model::assign(diagnoses_of_symptomatic,
         conv1d(stan::math::elt_multiply(symptomatic, p_diag_if_sym),
           sym_diag_delay_rv, pstream__),
         "assigning variable diagnoses_of_symptomatic");
-      current_statement__ = 367;
+      current_statement__ = 366;
       stan::model::assign(dx_sym_sev,
         stan::math::elt_multiply(p_sev_if_symt,
           conv1d(stan::math::elt_multiply(symptomatic, p_diag_if_sym),
             sym_prg_delay_rv, pstream__)), "assigning variable dx_sym_sev");
-      current_statement__ = 368;
+      current_statement__ = 367;
       stan::model::assign(dx_sym_die,
         stan::math::elt_multiply(
           stan::model::rvalue(p_die_if_sevt, "p_die_if_sevt",
             stan::model::index_min_max(1, N_weeks_tot)),
           conv1d(dx_sym_sev, sev_prg_delay_rv, pstream__)),
         "assigning variable dx_sym_die");
-      current_statement__ = 369;
+      current_statement__ = 368;
       stan::model::assign(diagnoses_severe,
         stan::math::multiply(p_diag_if_sev,
           conv1d(stan::math::subtract(severe, dx_sym_sev), sev_diag_delay_rv,
             pstream__)), "assigning variable diagnoses_severe");
-      current_statement__ = 370;
+      current_statement__ = 369;
       stan::model::assign(dx_sev_die,
         stan::math::elt_multiply(
           stan::math::multiply(p_diag_if_sev,
@@ -4521,165 +4527,165 @@ public:
               stan::model::index_min_max(1, N_weeks_tot))),
           conv1d(stan::math::subtract(severe, dx_sym_sev), sev_prg_delay_rv,
             pstream__)), "assigning variable dx_sev_die");
-      current_statement__ = 371;
+      current_statement__ = 370;
       stan::model::assign(diagnoses,
         stan::math::add(
           stan::math::add(new_asy_dx, diagnoses_of_symptomatic),
           diagnoses_severe), "assigning variable diagnoses");
-      current_statement__ = 372;
+      current_statement__ = 371;
       stan::model::assign(deaths_of_diagnosed,
         stan::math::add(dx_sym_die, dx_sev_die),
         "assigning variable deaths_of_diagnosed");
-      current_statement__ = 375;
+      current_statement__ = 374;
       if (stan::math::logical_eq(obs_cas_rep, 1)) {
-        current_statement__ = 374;
+        current_statement__ = 373;
         stan::model::assign(fitted_cases,
           conv1d(diagnoses, cas_rep_delay_rv, pstream__),
           "assigning variable fitted_cases");
       } else {
-        current_statement__ = 373;
+        current_statement__ = 372;
         stan::model::assign(fitted_cases,
           stan::math::elt_multiply(diagnoses, cas_cum_report_delay_rv),
           "assigning variable fitted_cases");
       }
-      current_statement__ = 376;
+      current_statement__ = 375;
       stan::model::assign(fitted_hospitalizations, diagnoses_severe,
         "assigning variable fitted_hospitalizations");
-      current_statement__ = 379;
+      current_statement__ = 378;
       if (stan::math::logical_eq(obs_die_rep, 1)) {
-        current_statement__ = 378;
+        current_statement__ = 377;
         stan::model::assign(fitted_deaths,
           conv1d(deaths_of_diagnosed, die_rep_delay_rv, pstream__),
           "assigning variable fitted_deaths");
       } else {
-        current_statement__ = 377;
+        current_statement__ = 376;
         stan::model::assign(fitted_deaths,
           stan::math::elt_multiply(deaths_of_diagnosed,
             die_cum_report_delay_rv), "assigning variable fitted_deaths");
       }
-      current_statement__ = 384;
+      current_statement__ = 383;
       for (int i = 1; i <= N_weeks_tot; ++i) {
-        current_statement__ = 380;
+        current_statement__ = 379;
         stan::model::assign(fitted_cases_mvs,
           stan::model::rvalue(fitted_cases, "fitted_cases",
             stan::model::index_uni(i)),
           "assigning variable fitted_cases_mvs", stan::model::index_uni(i));
-        current_statement__ = 381;
+        current_statement__ = 380;
         stan::model::assign(fitted_hospitalizations_mvs,
           stan::model::rvalue(fitted_hospitalizations,
             "fitted_hospitalizations", stan::model::index_uni(i)),
           "assigning variable fitted_hospitalizations_mvs",
           stan::model::index_uni(i));
-        current_statement__ = 382;
+        current_statement__ = 381;
         stan::model::assign(fitted_deaths_mvs,
           stan::model::rvalue(fitted_deaths, "fitted_deaths",
             stan::model::index_uni(i)),
           "assigning variable fitted_deaths_mvs", stan::model::index_uni(i));
       }
-      current_statement__ = 385;
+      current_statement__ = 384;
       phi_cas = stan::math::pow(inv_sqrt_phi_c, -2);
-      current_statement__ = 386;
+      current_statement__ = 385;
       phi_hosp = stan::math::pow(inv_sqrt_phi_h, -2);
-      current_statement__ = 387;
+      current_statement__ = 386;
       phi_die = stan::math::pow(inv_sqrt_phi_d, -2);
       {
-        current_statement__ = 397;
+        current_statement__ = 396;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(log_infections_0,
                          pri_log_infections_0_mu, pri_log_infections_0_sd));
-        current_statement__ = 398;
+        current_statement__ = 397;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(spl_par_rt,
                          pri_logRt_mu, pri_logRt_sd));
-        current_statement__ = 399;
+        current_statement__ = 398;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(serial_i,
                          pri_serial_i_shap, pri_serial_i_rate));
-        current_statement__ = 400;
+        current_statement__ = 399;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(serial_i_postO,
                          pri_serial_i_postO_shap, pri_serial_i_postO_rate));
-        current_statement__ = 401;
+        current_statement__ = 400;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(deriv1_spl_par_rt,
                          0, pri_deriv1_spl_par_sd));
-        current_statement__ = 402;
+        current_statement__ = 401;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(deriv2_spl_par_rt,
                          0, pri_deriv2_spl_par_sd));
-        current_statement__ = 403;
+        current_statement__ = 402;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_sym_if_inf,
                          pri_p_sym_if_inf_a, pri_p_sym_if_inf_b));
-        current_statement__ = 404;
+        current_statement__ = 403;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_sym_if_inf_postO,
                          pri_p_sym_if_inf_postO_a, pri_p_sym_if_inf_postO_b));
-        current_statement__ = 405;
+        current_statement__ = 404;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_sev_if_sym,
                          pri_p_sev_if_sym_a, pri_p_sev_if_sym_b));
-        current_statement__ = 406;
+        current_statement__ = 405;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_sev_if_sym_postO,
                          pri_p_sev_if_sym_a, pri_p_sev_if_sym_b));
-        current_statement__ = 407;
+        current_statement__ = 406;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_die_if_sev,
                          pri_p_die_if_sev_a, pri_p_die_if_sev_b));
-        current_statement__ = 408;
+        current_statement__ = 407;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(ifr_decl_OR,
                          pri_ifr_decl_OR_a, pri_ifr_decl_OR_b));
-        current_statement__ = 409;
+        current_statement__ = 408;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_die_if_inf,
                          pri_p_die_if_inf_a, pri_p_die_if_inf_b));
-        current_statement__ = 410;
+        current_statement__ = 409;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_die_if_inf_postO,
                          pri_p_die_if_inf_postO_a, pri_p_die_if_inf_postO_b));
-        current_statement__ = 411;
+        current_statement__ = 410;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(rr_diag_asy_vs_sym,
                          pri_rr_diag_asy_vs_sym_a, pri_rr_diag_asy_vs_sym_b));
-        current_statement__ = 412;
+        current_statement__ = 411;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(spl_par_sym_dx,
                          pri_rr_diag_sym_vs_sev_a, pri_rr_diag_sym_vs_sev_b));
-        current_statement__ = 413;
+        current_statement__ = 412;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(p_diag_if_sev,
                          pri_p_diag_if_sev_a, pri_p_diag_if_sev_b));
-        current_statement__ = 414;
+        current_statement__ = 413;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(scale_dx_delay_sym,
                          scale_dx_delay_sym_a, scale_dx_delay_sym_b));
-        current_statement__ = 415;
+        current_statement__ = 414;
         lp_accum__.add(stan::math::beta_lpdf<propto__>(scale_dx_delay_sev,
                          scale_dx_delay_sev_a, scale_dx_delay_sev_b));
-        current_statement__ = 416;
+        current_statement__ = 415;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(inv_sqrt_phi_c, 0, 1));
-        current_statement__ = 417;
+        current_statement__ = 416;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(inv_sqrt_phi_d, 0, 1));
-        current_statement__ = 418;
+        current_statement__ = 417;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(inv_sqrt_phi_h, 0, 1));
-        current_statement__ = 428;
+        current_statement__ = 427;
         if (stan::math::logical_eq(pre_period_zero, 1)) {
-          current_statement__ = 426;
+          current_statement__ = 425;
           if (stan::math::logical_gt(N_weeks_before, 0)) {
-            current_statement__ = 420;
+            current_statement__ = 419;
             if (stan::math::logical_lt(
                   stan::math::sum(
                     stan::model::rvalue(fitted_cases, "fitted_cases",
                       stan::model::index_min_max(1, N_weeks_before))), 0)) {
-              current_statement__ = 419;
+              current_statement__ = 418;
               std::stringstream errmsg_stream__;
               stan::math::stan_print(&errmsg_stream__,
                 "`sum(fitted_cases[1:N_weeks_before])` had a negative value");
               throw std::domain_error(errmsg_stream__.str());
             }
-            current_statement__ = 422;
+            current_statement__ = 421;
             if (stan::math::logical_lt(
                   stan::math::sum(
                     stan::model::rvalue(fitted_deaths, "fitted_deaths",
                       stan::model::index_min_max(1, N_weeks_before))), 0)) {
-              current_statement__ = 421;
+              current_statement__ = 420;
               std::stringstream errmsg_stream__;
               stan::math::stan_print(&errmsg_stream__,
                 "`sum(fitted_deaths[1:N_weeks_before])` had a negative value");
               throw std::domain_error(errmsg_stream__.str());
             }
-            current_statement__ = 423;
+            current_statement__ = 422;
             lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(0,
                              stan::math::sum(
                                stan::model::rvalue(fitted_cases,
                                  "fitted_cases",
                                  stan::model::index_min_max(1, N_weeks_before))),
                              phi_cas));
-            current_statement__ = 424;
+            current_statement__ = 423;
             lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(0,
                              stan::math::sum(
                                stan::model::rvalue(fitted_deaths,
@@ -4688,23 +4694,23 @@ public:
                              phi_die));
           }
         }
-        current_statement__ = 430;
+        current_statement__ = 429;
         if (stan::math::logical_lt(stan::math::min(fitted_cases), 0)) {
-          current_statement__ = 429;
+          current_statement__ = 428;
           std::stringstream errmsg_stream__;
           stan::math::stan_print(&errmsg_stream__,
             "`fitted_cases` had a negative value");
           throw std::domain_error(errmsg_stream__.str());
         }
-        current_statement__ = 432;
+        current_statement__ = 431;
         if (stan::math::logical_lt(stan::math::min(fitted_deaths), 0)) {
-          current_statement__ = 431;
+          current_statement__ = 430;
           std::stringstream errmsg_stream__;
           stan::math::stan_print(&errmsg_stream__,
             "`fitted_deaths` had a negative value");
           throw std::domain_error(errmsg_stream__.str());
         }
-        current_statement__ = 433;
+        current_statement__ = 432;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_cas_mvs, "obs_cas_mvs",
                            stan::model::index_min_max(1, lastCaseWeek)),
@@ -4712,7 +4718,7 @@ public:
                            "fitted_cases_mvs",
                            stan::model::index_min_max((N_weeks_before + 1),
                              (N_weeks_before + lastCaseWeek))), phi_cas));
-        current_statement__ = 434;
+        current_statement__ = 433;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_die_mvs, "obs_die_mvs",
                            stan::model::index_min_max(1, lastDeathWeek)),
@@ -4720,7 +4726,7 @@ public:
                            "fitted_deaths_mvs",
                            stan::model::index_min_max((N_weeks_before + 1),
                              (N_weeks_before + lastDeathWeek))), phi_die));
-        current_statement__ = 435;
+        current_statement__ = 434;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_hosp_mvs, "obs_hosp_mvs",
                            stan::model::index_min_max(firstHospWeek,
@@ -4898,9 +4904,6 @@ public:
         Eigen::Matrix<double,-1,1>::Constant(N_weeks_tot,
           std::numeric_limits<double>::quiet_NaN());
       Eigen::Matrix<double,-1,1> p_boost =
-        Eigen::Matrix<double,-1,1>::Constant(N_weeks_tot,
-          std::numeric_limits<double>::quiet_NaN());
-      Eigen::Matrix<double,-1,1> p_reinf =
         Eigen::Matrix<double,-1,1>::Constant(N_weeks_tot,
           std::numeric_limits<double>::quiet_NaN());
       Eigen::Matrix<double,-1,1> naive_to_vax =
@@ -5126,54 +5129,54 @@ public:
             stan::math::primitive_value(emit_generated_quantities__)))) {
         return ;
       }
-      current_statement__ = 122;
+      current_statement__ = 121;
       stan::model::assign(p_die_if_sevt,
         stan::math::multiply((p_die_if_sev * ifr_adj_fixed),
           stan::math::add(1, stan::math::multiply(ifr_adj, ifr_decl_OR))),
         "assigning variable p_die_if_sevt");
-      current_statement__ = 123;
+      current_statement__ = 122;
       stan::model::assign(rr_diag_sym_vs_sev,
         stan::math::inv_logit(
           stan::math::multiply(spl_basis_dx,
             stan::math::logit(spl_par_sym_dx))),
         "assigning variable rr_diag_sym_vs_sev");
-      current_statement__ = 124;
+      current_statement__ = 123;
       stan::model::assign(p_diag_if_sym,
         stan::math::multiply(p_diag_if_sev, rr_diag_sym_vs_sev),
         "assigning variable p_diag_if_sym");
-      current_statement__ = 125;
+      current_statement__ = 124;
       stan::model::assign(p_diag_if_asy,
         stan::math::multiply(p_diag_if_sym, rr_diag_asy_vs_sym),
         "assigning variable p_diag_if_asy");
       {
-        current_statement__ = 126;
+        current_statement__ = 125;
         stan::math::validate_non_negative_index("sym_delay_gammas",
           "Max_delay + 1", (Max_delay + 1));
         Eigen::Matrix<double,-1,1> sym_delay_gammas =
           Eigen::Matrix<double,-1,1>::Constant((Max_delay + 1),
             std::numeric_limits<double>::quiet_NaN());
-        current_statement__ = 128;
+        current_statement__ = 127;
         stan::math::validate_non_negative_index("sev_delay_gammas",
           "Max_delay + 1", (Max_delay + 1));
         Eigen::Matrix<double,-1,1> sev_delay_gammas =
           Eigen::Matrix<double,-1,1>::Constant((Max_delay + 1),
             std::numeric_limits<double>::quiet_NaN());
-        current_statement__ = 133;
+        current_statement__ = 132;
         for (int i = 1; i <= (Max_delay + 1); ++i) {
-          current_statement__ = 130;
+          current_statement__ = 129;
           stan::model::assign(sym_delay_gammas,
             stan::math::gamma_cdf((i - 1), sym_prg_delay_shap,
               (sym_prg_delay_rate / scale_dx_delay_sym)),
             "assigning variable sym_delay_gammas", stan::model::index_uni(i));
-          current_statement__ = 131;
+          current_statement__ = 130;
           stan::model::assign(sev_delay_gammas,
             stan::math::gamma_cdf((i - 1), sev_prg_delay_shap,
               (sev_prg_delay_rate / scale_dx_delay_sev)),
             "assigning variable sev_delay_gammas", stan::model::index_uni(i));
         }
-        current_statement__ = 137;
+        current_statement__ = 136;
         for (int i = 1; i <= Max_delay; ++i) {
-          current_statement__ = 134;
+          current_statement__ = 133;
           stan::model::assign(sym_diag_delay_rv,
             (stan::model::rvalue(sym_delay_gammas, "sym_delay_gammas",
                stan::model::index_uni((i + 1))) -
@@ -5181,7 +5184,7 @@ public:
               stan::model::index_uni(i))),
             "assigning variable sym_diag_delay_rv",
             stan::model::index_uni(((1 + Max_delay) - i)));
-          current_statement__ = 135;
+          current_statement__ = 134;
           stan::model::assign(sev_diag_delay_rv,
             (stan::model::rvalue(sev_delay_gammas, "sev_delay_gammas",
                stan::model::index_uni((i + 1))) -
@@ -5191,136 +5194,136 @@ public:
             stan::model::index_uni(((1 + Max_delay) - i)));
         }
       }
-      current_statement__ = 139;
+      current_statement__ = 138;
       p_die_if_inf = ((p_sym_if_inf * p_sev_if_sym) * p_die_if_sev);
-      current_statement__ = 140;
+      current_statement__ = 139;
       p_die_if_inf_postO = ((p_sym_if_inf_postO * p_sev_if_sym) *
         p_die_if_sev);
-      current_statement__ = 141;
+      current_statement__ = 140;
       stan::model::assign(logRt0,
         stan::math::multiply(spl_basis_rt, spl_par_rt),
         "assigning variable logRt0");
-      current_statement__ = 142;
+      current_statement__ = 141;
       stan::model::assign(susceptible_prvl, pop_size,
         "assigning variable susceptible_prvl", stan::model::index_uni(1));
-      current_statement__ = 143;
+      current_statement__ = 142;
       stan::model::assign(num_uninf, pop_size,
         "assigning variable num_uninf", stan::model::index_uni(1));
-      current_statement__ = 144;
+      current_statement__ = 143;
       stan::model::assign(naive_prvl, pop_size,
         "assigning variable naive_prvl", stan::model::index_uni(1));
-      current_statement__ = 145;
+      current_statement__ = 144;
       stan::model::assign(effective_protection_prvl, 0.0,
         "assigning variable effective_protection_prvl",
         stan::model::index_uni(1));
-      current_statement__ = 146;
+      current_statement__ = 145;
       stan::model::assign(effective_protection_prvl_lag, 0.0,
         "assigning variable effective_protection_prvl_lag",
         stan::model::index_uni(1));
-      current_statement__ = 147;
+      current_statement__ = 146;
       stan::model::assign(severe_protection, 0.0,
         "assigning variable severe_protection", stan::model::index_uni(1));
-      current_statement__ = 148;
+      current_statement__ = 147;
       stan::model::assign(inf_to_reinf,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable inf_to_reinf",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 149;
+      current_statement__ = 148;
       stan::model::assign(inf_to_hybrid,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable inf_to_hybrid",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 150;
+      current_statement__ = 149;
       stan::model::assign(vax_to_boost,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable vax_to_boost",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 151;
+      current_statement__ = 150;
       stan::model::assign(vax_to_hybrid,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable vax_to_hybrid",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 152;
+      current_statement__ = 151;
       stan::model::assign(hybrid_to_reinf,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable hybrid_to_reinf",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 153;
+      current_statement__ = 152;
       stan::model::assign(hybrid_to_boost,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable hybrid_to_boost",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 154;
+      current_statement__ = 153;
       stan::model::assign(naive_to_vax,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable naive_to_vax",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 155;
+      current_statement__ = 154;
       stan::model::assign(naive_to_inf,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable naive_to_inf",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 156;
+      current_statement__ = 155;
       stan::model::assign(vax_prvl, stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable vax_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 157;
+      current_statement__ = 156;
       stan::model::assign(inf_prvl, stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable inf_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 158;
+      current_statement__ = 157;
       stan::model::assign(naive_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable naive_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 159;
+      current_statement__ = 158;
       stan::model::assign(first_inf_only_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable first_inf_only_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 160;
+      current_statement__ = 159;
       stan::model::assign(reinf_only_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable reinf_only_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 161;
+      current_statement__ = 160;
       stan::model::assign(hybrid_last_inf_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable hybrid_last_inf_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 162;
+      current_statement__ = 161;
       stan::model::assign(hybrid_prvl,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable hybrid_prvl",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 163;
+      current_statement__ = 162;
       stan::model::assign(new_protection_inf,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable new_protection_inf",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 164;
+      current_statement__ = 163;
       stan::model::assign(new_protection_vax,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable new_protection_vax",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 165;
+      current_statement__ = 164;
       stan::model::assign(new_protection,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable new_protection",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 166;
+      current_statement__ = 165;
       stan::model::assign(lost_protection,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable lost_protection",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 167;
+      current_statement__ = 166;
       stan::model::assign(lost_protection_net,
         stan::math::rep_vector(0.0, N_weeks_tot),
         "assigning variable lost_protection_net",
         stan::model::index_min_max(1, N_weeks_tot));
-      current_statement__ = 357;
+      current_statement__ = 356;
       for (int i = 1; i <= N_weeks_tot; ++i) {
-        current_statement__ = 168;
+        current_statement__ = 167;
         stan::model::assign(p_die_if_sevt,
           (stan::model::rvalue(p_die_if_sevt, "p_die_if_sevt",
              stan::model::index_uni(i)) *
@@ -5330,9 +5333,9 @@ public:
             stan::model::rvalue(prob_vac, "prob_vac",
               stan::model::index_uni(1)))),
           "assigning variable p_die_if_sevt", stan::model::index_uni(i));
-        current_statement__ = 173;
+        current_statement__ = 172;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 171;
+          current_statement__ = 170;
           stan::model::assign(p_sev_if_symt, ((p_sev_if_sym *
             stan::math::pow(
               stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -5362,7 +5365,7 @@ public:
                 stan::model::index_uni(1)))),
             "assigning variable p_sev_if_symt", stan::model::index_uni(i));
         } else {
-          current_statement__ = 169;
+          current_statement__ = 168;
           stan::model::assign(p_sev_if_symt, (p_sev_if_sym *
             stan::math::pow(
               stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -5371,12 +5374,12 @@ public:
                 stan::model::index_uni(2)))),
             "assigning variable p_sev_if_symt", stan::model::index_uni(i));
         }
-        current_statement__ = 189;
+        current_statement__ = 188;
         if (stan::math::logical_lt(i, (N_weeks_start_omicron +
               N_weeks_before))) {
-          current_statement__ = 186;
+          current_statement__ = 185;
           if (stan::math::logical_gt(i, 1)) {
-            current_statement__ = 184;
+            current_statement__ = 183;
             stan::model::assign(p_sym_if_inft, ((p_sym_if_inf *
               stan::math::pow(
                 stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -5406,7 +5409,7 @@ public:
                   stan::model::index_uni(2)))),
               "assigning variable p_sym_if_inft", stan::model::index_uni(i));
           } else {
-            current_statement__ = 182;
+            current_statement__ = 181;
             stan::model::assign(p_sym_if_inft, (p_sym_if_inf *
               stan::math::pow(
                 stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -5415,14 +5418,14 @@ public:
                   stan::model::index_uni(3)))),
               "assigning variable p_sym_if_inft", stan::model::index_uni(i));
           }
-          current_statement__ = 187;
+          current_statement__ = 186;
           stan::model::assign(serial_i_vec, serial_i,
             "assigning variable serial_i_vec", stan::model::index_uni(i));
         } else {
-          current_statement__ = 180;
+          current_statement__ = 179;
           if (stan::math::logical_lte(i, ((N_weeks_start_omicron +
                 N_weeks_before) + N_weeks_transition))) {
-            current_statement__ = 177;
+            current_statement__ = 176;
             stan::model::assign(p_sym_if_inft, (((p_sym_if_inf -
               (((p_sym_if_inf - p_sym_if_inf_postO) / (N_weeks_transition +
               2)) *
@@ -5455,13 +5458,13 @@ public:
                 stan::model::rvalue(prob_vac2, "prob_vac2",
                   stan::model::index_uni(2)))),
               "assigning variable p_sym_if_inft", stan::model::index_uni(i));
-            current_statement__ = 178;
+            current_statement__ = 177;
             stan::model::assign(serial_i_vec, (serial_i - (((serial_i -
               serial_i_postO) / (N_weeks_transition + 2)) *
               stan::model::rvalue(idx4, "idx4", stan::model::index_uni(i)))),
               "assigning variable serial_i_vec", stan::model::index_uni(i));
           } else {
-            current_statement__ = 174;
+            current_statement__ = 173;
             stan::model::assign(p_sym_if_inft, ((p_sym_if_inf_postO *
               stan::math::pow(
                 stan::model::rvalue(ifr_vac_adj, "ifr_vac_adj",
@@ -5490,35 +5493,35 @@ public:
                 stan::model::rvalue(prob_vac2, "prob_vac2",
                   stan::model::index_uni(2)))),
               "assigning variable p_sym_if_inft", stan::model::index_uni(i));
-            current_statement__ = 175;
+            current_statement__ = 174;
             stan::model::assign(serial_i_vec, serial_i_postO,
               "assigning variable serial_i_vec", stan::model::index_uni(i));
           }
         }
-        current_statement__ = 192;
+        current_statement__ = 191;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 190;
+          current_statement__ = 189;
           stan::model::assign(susceptible_prvl, (pop_size -
             stan::model::rvalue(effective_protection_prvl,
               "effective_protection_prvl", stan::model::index_uni(i))),
             "assigning variable susceptible_prvl", stan::model::index_uni(i));
         }
-        current_statement__ = 195;
+        current_statement__ = 194;
         if (stan::math::logical_lt(
               stan::model::rvalue(susceptible_prvl, "susceptible_prvl",
                 stan::model::index_uni(i)), 1)) {
-          current_statement__ = 193;
+          current_statement__ = 192;
           stan::model::assign(susceptible_prvl, 1,
             "assigning variable susceptible_prvl", stan::model::index_uni(i));
         }
-        current_statement__ = 200;
+        current_statement__ = 199;
         if (stan::math::logical_eq(i, 1)) {
-          current_statement__ = 198;
+          current_statement__ = 197;
           stan::model::assign(logRt,
             stan::model::rvalue(logRt0, "logRt0", stan::model::index_uni(i)),
             "assigning variable logRt", stan::model::index_uni(i));
         } else {
-          current_statement__ = 196;
+          current_statement__ = 195;
           stan::model::assign(logRt,
             (stan::model::rvalue(logRt0, "logRt0", stan::model::index_uni(i))
             +
@@ -5527,29 +5530,29 @@ public:
                  stan::model::index_uni(i)) / pop_size))),
             "assigning variable logRt", stan::model::index_uni(i));
         }
-        current_statement__ = 201;
+        current_statement__ = 200;
         stan::model::assign(deriv1_log_infections,
           (stan::model::rvalue(logRt, "logRt", stan::model::index_uni(i)) /
           stan::model::rvalue(serial_i_vec, "serial_i_vec",
             stan::model::index_uni(i))),
           "assigning variable deriv1_log_infections",
           stan::model::index_uni(i));
-        current_statement__ = 202;
+        current_statement__ = 201;
         stan::model::assign(log_infections,
           (stan::math::sum(
              stan::model::rvalue(deriv1_log_infections,
                "deriv1_log_infections", stan::model::index_min_max(1, i))) +
           log_infections_0), "assigning variable log_infections",
           stan::model::index_uni(i));
-        current_statement__ = 203;
+        current_statement__ = 202;
         stan::model::assign(infections,
           stan::math::exp(
             stan::model::rvalue(log_infections, "log_infections",
               stan::model::index_uni(i))), "assigning variable infections",
           stan::model::index_uni(i));
-        current_statement__ = 208;
+        current_statement__ = 207;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 206;
+          current_statement__ = 205;
           stan::model::assign(p_first,
             ((stan::model::rvalue(naive_prvl, "naive_prvl",
                 stan::model::index_uni((i - 1))) +
@@ -5576,7 +5579,7 @@ public:
               "population_protection_hybrid", stan::model::index_uni((i - 1)))))),
             "assigning variable p_first", stan::model::index_uni(i));
         } else {
-          current_statement__ = 204;
+          current_statement__ = 203;
           stan::model::assign(p_first,
             (stan::model::rvalue(num_uninf, "num_uninf",
                stan::model::index_uni(1)) /
@@ -5586,21 +5589,21 @@ public:
               stan::model::index_uni(1)))), "assigning variable p_first",
             stan::model::index_uni(i));
         }
-        current_statement__ = 209;
+        current_statement__ = 208;
         stan::model::assign(infections_premiere,
           (stan::model::rvalue(infections, "infections",
              stan::model::index_uni(i)) *
           stan::model::rvalue(p_first, "p_first", stan::model::index_uni(i))),
           "assigning variable infections_premiere", stan::model::index_uni(i));
-        current_statement__ = 210;
+        current_statement__ = 209;
         stan::model::assign(infections_repeat,
           (stan::model::rvalue(infections, "infections",
              stan::model::index_uni(i)) * (1 -
           stan::model::rvalue(p_first, "p_first", stan::model::index_uni(i)))),
           "assigning variable infections_repeat", stan::model::index_uni(i));
-        current_statement__ = 221;
+        current_statement__ = 220;
         if (stan::math::logical_gt(i, 2)) {
-          current_statement__ = 211;
+          current_statement__ = 210;
           stan::model::assign(inf_to_reinf,
             (stan::model::rvalue(infections_repeat, "infections_repeat",
                stan::model::index_uni(i)) *
@@ -5619,7 +5622,7 @@ public:
             stan::model::rvalue(population_protection_hybrid,
               "population_protection_hybrid", stan::model::index_uni((i - 1))))))),
             "assigning variable inf_to_reinf", stan::model::index_uni(i));
-          current_statement__ = 212;
+          current_statement__ = 211;
           stan::model::assign(hybrid_to_reinf,
             (stan::model::rvalue(infections_repeat, "infections_repeat",
                stan::model::index_uni(i)) *
@@ -5638,19 +5641,19 @@ public:
             stan::model::rvalue(population_protection_hybrid,
               "population_protection_hybrid", stan::model::index_uni((i - 1))))))),
             "assigning variable hybrid_to_reinf", stan::model::index_uni(i));
-          current_statement__ = 219;
+          current_statement__ = 218;
           if (stan::math::logical_eq(
                 stan::math::sum(
                   stan::model::rvalue(full_boost, "full_boost",
                     stan::model::index_min_max(1, i))), 0.0)) {
-            current_statement__ = 216;
+            current_statement__ = 215;
             stan::model::assign(vax_to_boost, 0.0,
               "assigning variable vax_to_boost", stan::model::index_uni(i));
-            current_statement__ = 217;
+            current_statement__ = 216;
             stan::model::assign(hybrid_to_boost, 0.0,
               "assigning variable hybrid_to_boost", stan::model::index_uni(i));
           } else {
-            current_statement__ = 213;
+            current_statement__ = 212;
             stan::model::assign(vax_to_boost,
               (stan::model::rvalue(full_boost, "full_boost",
                  stan::model::index_uni(i)) *
@@ -5661,7 +5664,7 @@ public:
               stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                 stan::model::index_uni((i - 1)))))),
               "assigning variable vax_to_boost", stan::model::index_uni(i));
-            current_statement__ = 214;
+            current_statement__ = 213;
             stan::model::assign(hybrid_to_boost,
               (stan::model::rvalue(full_boost, "full_boost",
                  stan::model::index_uni(i)) *
@@ -5674,7 +5677,7 @@ public:
               "assigning variable hybrid_to_boost", stan::model::index_uni(i));
           }
         }
-        current_statement__ = 222;
+        current_statement__ = 221;
         stan::model::assign(exposed_cumulative,
           (calcExposed(OR,
              (stan::math::sum(
@@ -5686,7 +5689,7 @@ public:
                   stan::model::index_min_max(1, i))) / pop_size), pstream__)
           * pop_size), "assigning variable exposed_cumulative",
           stan::model::index_uni(i));
-        current_statement__ = 223;
+        current_statement__ = 222;
         stan::model::assign(vax_only_cum,
           (stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
              stan::model::index_uni(i)) -
@@ -5694,7 +5697,7 @@ public:
             stan::model::rvalue(infections_premiere, "infections_premiere",
               stan::model::index_min_max(1, i)))),
           "assigning variable vax_only_cum", stan::model::index_uni(i));
-        current_statement__ = 224;
+        current_statement__ = 223;
         stan::model::assign(hybrid_cumulative,
           ((stan::math::sum(
               stan::model::rvalue(infections_premiere, "infections_premiere",
@@ -5705,39 +5708,39 @@ public:
           stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
             stan::model::index_uni(i))),
           "assigning variable hybrid_cumulative", stan::model::index_uni(i));
-        current_statement__ = 233;
+        current_statement__ = 232;
         if (stan::math::logical_eq(i, 1)) {
-          current_statement__ = 229;
+          current_statement__ = 228;
           stan::model::assign(exposed,
             stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
               stan::model::index_uni(i)), "assigning variable exposed",
             stan::model::index_uni(i));
-          current_statement__ = 230;
+          current_statement__ = 229;
           stan::model::assign(vax_only,
             stan::model::rvalue(vax_only_cum, "vax_only_cum",
               stan::model::index_uni(i)), "assigning variable vax_only",
             stan::model::index_uni(i));
-          current_statement__ = 231;
+          current_statement__ = 230;
           stan::model::assign(new_hybrid,
             stan::model::rvalue(hybrid_cumulative, "hybrid_cumulative",
               stan::model::index_uni(i)), "assigning variable new_hybrid",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 225;
+          current_statement__ = 224;
           stan::model::assign(exposed,
             (stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
                stan::model::index_uni(i)) -
             stan::model::rvalue(exposed_cumulative, "exposed_cumulative",
               stan::model::index_uni((i - 1)))),
             "assigning variable exposed", stan::model::index_uni(i));
-          current_statement__ = 226;
+          current_statement__ = 225;
           stan::model::assign(vax_only,
             (stan::model::rvalue(vax_only_cum, "vax_only_cum",
                stan::model::index_uni(i)) -
             stan::model::rvalue(vax_only_cum, "vax_only_cum",
               stan::model::index_uni((i - 1)))),
             "assigning variable vax_only", stan::model::index_uni(i));
-          current_statement__ = 227;
+          current_statement__ = 226;
           stan::model::assign(new_hybrid,
             (stan::model::rvalue(hybrid_cumulative, "hybrid_cumulative",
                stan::model::index_uni(i)) -
@@ -5745,44 +5748,44 @@ public:
               stan::model::index_uni((i - 1)))),
             "assigning variable new_hybrid", stan::model::index_uni(i));
         }
-        current_statement__ = 235;
+        current_statement__ = 234;
         if (stan::math::logical_lt(
               stan::model::rvalue(vax_only, "vax_only",
                 stan::model::index_uni(i)), 0)) {
-          current_statement__ = 234;
+          current_statement__ = 233;
           stan::model::assign(vax_only, 0.0, "assigning variable vax_only",
             stan::model::index_uni(i));
         }
-        current_statement__ = 237;
+        current_statement__ = 236;
         if (stan::math::logical_gt(
               stan::model::rvalue(vax_only, "vax_only",
                 stan::model::index_uni(i)),
               stan::model::rvalue(full_vax, "full_vax",
                 stan::model::index_uni(i)))) {
-          current_statement__ = 236;
+          current_statement__ = 235;
           stan::model::assign(vax_only, 0.0, "assigning variable vax_only",
             stan::model::index_uni(i));
         }
-        current_statement__ = 239;
+        current_statement__ = 238;
         if (stan::math::logical_lt(
               stan::model::rvalue(new_hybrid, "new_hybrid",
                 stan::model::index_uni(i)), 0)) {
-          current_statement__ = 238;
+          current_statement__ = 237;
           stan::model::assign(new_hybrid, 0.0,
             "assigning variable new_hybrid", stan::model::index_uni(i));
         }
-        current_statement__ = 242;
+        current_statement__ = 241;
         if (stan::math::logical_eq(
               stan::math::sum(
                 stan::model::rvalue(full_vax, "full_vax",
                   stan::model::index_min_max(1, i))), 0.0)) {
-          current_statement__ = 240;
+          current_statement__ = 239;
           stan::model::assign(new_hybrid, 0.0,
             "assigning variable new_hybrid", stan::model::index_uni(i));
         }
-        current_statement__ = 265;
+        current_statement__ = 264;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 245;
+          current_statement__ = 244;
           stan::model::assign(p1,
             (stan::model::rvalue(naive_prvl, "naive_prvl",
                stan::model::index_uni((i - 1))) /
@@ -5793,7 +5796,7 @@ public:
             stan::model::rvalue(population_protection_vax,
               "population_protection_vax", stan::model::index_uni((i - 1)))))),
             "assigning variable p1", stan::model::index_uni(i));
-          current_statement__ = 246;
+          current_statement__ = 245;
           stan::model::assign(p1max,
             stan::math::fmin(
               (stan::model::rvalue(exposed, "exposed",
@@ -5801,7 +5804,7 @@ public:
               stan::model::rvalue(infections_premiere, "infections_premiere",
                 stan::model::index_uni(i))), 1.0),
             "assigning variable p1max", stan::model::index_uni(i));
-          current_statement__ = 247;
+          current_statement__ = 246;
           stan::model::assign(p1min,
             stan::math::fmax(
               ((stan::model::rvalue(infections_premiere,
@@ -5811,7 +5814,7 @@ public:
               stan::model::rvalue(infections_premiere, "infections_premiere",
                 stan::model::index_uni(i))), 0.0),
             "assigning variable p1min", stan::model::index_uni(i));
-          current_statement__ = 256;
+          current_statement__ = 255;
           if ((stan::math::primitive_value(
                  stan::math::logical_gt(
                    stan::model::rvalue(p1, "p1", stan::model::index_uni(i)),
@@ -5823,7 +5826,7 @@ public:
                   stan::model::rvalue(p1, "p1", stan::model::index_uni(i)),
                   stan::model::rvalue(p1min, "p1min",
                     stan::model::index_uni(i)))))) {} else {
-                                                      current_statement__ = 250;
+                                                      current_statement__ = 249;
                                                       if (stan::math::logical_gt(
                                                             stan::model::rvalue(
                                                               p1, "p1",
@@ -5833,7 +5836,7 @@ public:
                                                               p1max, "p1max",
                                                               stan::model::index_uni(
                                                                 i)))) {
-                                                        current_statement__ = 248;
+                                                        current_statement__ = 247;
                                                         stan::model::assign(
                                                           p1,
                                                           stan::model::rvalue(
@@ -5844,7 +5847,7 @@ public:
                                                           stan::model::index_uni(
                                                             i));
                                                       }
-                                                      current_statement__ = 253;
+                                                      current_statement__ = 252;
                                                       if (stan::math::logical_lt(
                                                             stan::model::rvalue(
                                                               p1, "p1",
@@ -5854,7 +5857,7 @@ public:
                                                               p1min, "p1min",
                                                               stan::model::index_uni(
                                                                 i)))) {
-                                                        current_statement__ = 251;
+                                                        current_statement__ = 250;
                                                         stan::model::assign(
                                                           p1,
                                                           stan::model::rvalue(
@@ -5866,28 +5869,28 @@ public:
                                                             i));
                                                       }
           }
-          current_statement__ = 257;
+          current_statement__ = 256;
           stan::model::assign(naive_to_inf,
             (stan::model::rvalue(p1, "p1", stan::model::index_uni(i)) *
             stan::model::rvalue(infections_premiere, "infections_premiere",
               stan::model::index_uni(i))), "assigning variable naive_to_inf",
             stan::model::index_uni(i));
-          current_statement__ = 259;
+          current_statement__ = 258;
           if (stan::math::logical_gt(
                 stan::model::rvalue(vax_prvl, "vax_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 258;
+            current_statement__ = 257;
             stan::model::assign(vax_to_hybrid, ((1 -
               stan::model::rvalue(p1, "p1", stan::model::index_uni(i))) *
               stan::model::rvalue(infections_premiere, "infections_premiere",
                 stan::model::index_uni(i))),
               "assigning variable vax_to_hybrid", stan::model::index_uni(i));
           }
-          current_statement__ = 261;
+          current_statement__ = 260;
           if (stan::math::logical_gt(
                 stan::model::rvalue(full_vax, "full_vax",
                   stan::model::index_uni(i)), 0.0)) {
-            current_statement__ = 260;
+            current_statement__ = 259;
             stan::model::assign(naive_to_vax,
               (stan::model::rvalue(exposed, "exposed",
                  stan::model::index_uni(i)) -
@@ -5895,11 +5898,11 @@ public:
                 stan::model::index_uni(i))),
               "assigning variable naive_to_vax", stan::model::index_uni(i));
           }
-          current_statement__ = 263;
+          current_statement__ = 262;
           if (stan::math::logical_gt(
                 stan::model::rvalue(full_vax, "full_vax",
                   stan::model::index_uni(i)), 0.0)) {
-            current_statement__ = 262;
+            current_statement__ = 261;
             stan::model::assign(inf_to_hybrid,
               (stan::model::rvalue(new_hybrid, "new_hybrid",
                  stan::model::index_uni(i)) -
@@ -5908,15 +5911,15 @@ public:
               "assigning variable inf_to_hybrid", stan::model::index_uni(i));
           }
         } else {
-          current_statement__ = 243;
+          current_statement__ = 242;
           stan::model::assign(naive_to_inf,
             stan::model::rvalue(infections_premiere, "infections_premiere",
               stan::model::index_uni(i)), "assigning variable naive_to_inf",
             stan::model::index_uni(i));
         }
-        current_statement__ = 286;
+        current_statement__ = 285;
         if (stan::math::logical_gt(i, 1)) {
-          current_statement__ = 274;
+          current_statement__ = 273;
           stan::model::assign(inf_prvl,
             ((stan::model::rvalue(inf_prvl, "inf_prvl",
                 stan::model::index_uni((i - 1))) -
@@ -5925,7 +5928,7 @@ public:
             stan::model::rvalue(naive_to_inf, "naive_to_inf",
               stan::model::index_uni(i))), "assigning variable inf_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 275;
+          current_statement__ = 274;
           stan::model::assign(vax_prvl,
             ((stan::model::rvalue(vax_prvl, "vax_prvl",
                 stan::model::index_uni((i - 1))) -
@@ -5934,7 +5937,7 @@ public:
             stan::model::rvalue(naive_to_vax, "naive_to_vax",
               stan::model::index_uni(i))), "assigning variable vax_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 276;
+          current_statement__ = 275;
           stan::model::assign(naive_prvl,
             ((stan::model::rvalue(naive_prvl, "naive_prvl",
                 stan::model::index_uni((i - 1))) -
@@ -5943,7 +5946,7 @@ public:
             stan::model::rvalue(naive_to_vax, "naive_to_vax",
               stan::model::index_uni(i))), "assigning variable naive_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 277;
+          current_statement__ = 276;
           stan::model::assign(hybrid_prvl,
             ((stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                 stan::model::index_uni((i - 1))) +
@@ -5952,7 +5955,7 @@ public:
             stan::model::rvalue(vax_to_hybrid, "vax_to_hybrid",
               stan::model::index_uni(i))), "assigning variable hybrid_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 278;
+          current_statement__ = 277;
           stan::model::assign(first_inf_only_prvl,
             ((stan::model::rvalue(first_inf_only_prvl, "first_inf_only_prvl",
                 stan::model::index_uni((i - 1))) +
@@ -5968,7 +5971,7 @@ public:
               stan::model::index_uni(i))))),
             "assigning variable first_inf_only_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 279;
+          current_statement__ = 278;
           stan::model::assign(reinf_only_prvl,
             (((stan::model::rvalue(reinf_only_prvl, "reinf_only_prvl",
                  stan::model::index_uni((i - 1))) -
@@ -5987,11 +5990,11 @@ public:
             stan::model::rvalue(inf_prvl, "inf_prvl",
               stan::model::index_uni(i))))),
             "assigning variable reinf_only_prvl", stan::model::index_uni(i));
-          current_statement__ = 284;
+          current_statement__ = 283;
           if (stan::math::logical_eq(
                 stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 282;
+            current_statement__ = 281;
             stan::model::assign(hybrid_last_inf_prvl,
               ((stan::model::rvalue(hybrid_last_inf_prvl,
                   "hybrid_last_inf_prvl", stan::model::index_uni((i - 1))) +
@@ -6002,7 +6005,7 @@ public:
               "assigning variable hybrid_last_inf_prvl",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 280;
+            current_statement__ = 279;
             stan::model::assign(hybrid_last_inf_prvl,
               (((stan::model::rvalue(hybrid_last_inf_prvl,
                    "hybrid_last_inf_prvl", stan::model::index_uni((i - 1))) +
@@ -6020,39 +6023,39 @@ public:
               stan::model::index_uni(i));
           }
         } else {
-          current_statement__ = 266;
+          current_statement__ = 265;
           stan::model::assign(inf_prvl,
             stan::model::rvalue(infections, "infections",
               stan::model::index_uni(i)), "assigning variable inf_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 267;
+          current_statement__ = 266;
           stan::model::assign(first_inf_only_prvl,
             stan::model::rvalue(infections, "infections",
               stan::model::index_uni(i)),
             "assigning variable first_inf_only_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 268;
+          current_statement__ = 267;
           stan::model::assign(vax_prvl, 0.0, "assigning variable vax_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 269;
+          current_statement__ = 268;
           stan::model::assign(naive_prvl, (pop_size -
             stan::model::rvalue(infections, "infections",
               stan::model::index_uni(i))), "assigning variable naive_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 270;
+          current_statement__ = 269;
           stan::model::assign(hybrid_prvl, 0.0,
             "assigning variable hybrid_prvl", stan::model::index_uni(i));
-          current_statement__ = 271;
+          current_statement__ = 270;
           stan::model::assign(hybrid_last_inf_prvl, 0.0,
             "assigning variable hybrid_last_inf_prvl",
             stan::model::index_uni(i));
-          current_statement__ = 272;
+          current_statement__ = 271;
           stan::model::assign(reinf_only_prvl, 0.0,
             "assigning variable reinf_only_prvl", stan::model::index_uni(i));
         }
-        current_statement__ = 288;
+        current_statement__ = 287;
         if (stan::math::logical_lt(i, N_weeks_tot)) {
-          current_statement__ = 287;
+          current_statement__ = 286;
           stan::model::assign(num_uninf,
             (stan::model::rvalue(num_uninf, "num_uninf",
                stan::model::index_uni(i)) -
@@ -6060,26 +6063,26 @@ public:
               stan::model::index_uni(i))), "assigning variable num_uninf",
             stan::model::index_uni((i + 1)));
         }
-        current_statement__ = 290;
+        current_statement__ = 289;
         if (stan::math::logical_lt(
               stan::model::rvalue(num_uninf, "num_uninf",
                 stan::model::index_uni(i)), 0)) {
-          current_statement__ = 289;
+          current_statement__ = 288;
           std::stringstream errmsg_stream__;
           stan::math::stan_print(&errmsg_stream__,
             "WARNING num_uninf invalid");
           throw std::domain_error(errmsg_stream__.str());
         }
-        current_statement__ = 295;
+        current_statement__ = 294;
         if (stan::math::logical_eq(
               stan::math::sum(
                 stan::model::rvalue(full_vax, "full_vax",
                   stan::model::index_min_max(1, i))), 0.0)) {
-          current_statement__ = 293;
+          current_statement__ = 292;
           stan::model::assign(p_boost, 1.0, "assigning variable p_boost",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 291;
+          current_statement__ = 290;
           stan::model::assign(p_boost, (1.0 -
             (stan::math::sum(
                stan::model::rvalue(full_boost, "full_boost",
@@ -6092,52 +6095,52 @@ public:
                 stan::model::index_min_max(1, i)))))),
             "assigning variable p_boost", stan::model::index_uni(i));
         }
-        current_statement__ = 334;
+        current_statement__ = 333;
         if (stan::math::logical_eq(i, 1)) {
-          current_statement__ = 325;
+          current_statement__ = 324;
           stan::model::assign(population_protection_inf,
             (stan::model::rvalue(infections, "infections",
                stan::model::index_uni(i)) * prot_scalar),
             "assigning variable population_protection_inf",
             stan::model::index_uni(i));
-          current_statement__ = 326;
+          current_statement__ = 325;
           stan::model::assign(population_protection_vax,
             (stan::model::rvalue(full_vax, "full_vax",
                stan::model::index_uni(i)) * prot_scalar),
             "assigning variable population_protection_vax",
             stan::model::index_uni(i));
-          current_statement__ = 327;
+          current_statement__ = 326;
           stan::model::assign(population_protection_hybrid, 0.0,
             "assigning variable population_protection_hybrid",
             stan::model::index_uni(i));
-          current_statement__ = 328;
+          current_statement__ = 327;
           stan::model::assign(population_protection_sev_inf,
             (stan::model::rvalue(infections, "infections",
                stan::model::index_uni(i)) * prot_sev_scalar),
             "assigning variable population_protection_sev_inf",
             stan::model::index_uni(i));
-          current_statement__ = 329;
+          current_statement__ = 328;
           stan::model::assign(population_protection_sev_vax,
             (stan::model::rvalue(full_vax, "full_vax",
                stan::model::index_uni(i)) * prot_sev_scalar),
             "assigning variable population_protection_sev_vax",
             stan::model::index_uni(i));
-          current_statement__ = 330;
+          current_statement__ = 329;
           stan::model::assign(population_protection_sev_hybrid, 0.0,
             "assigning variable population_protection_sev_hybrid",
             stan::model::index_uni(i));
-          current_statement__ = 331;
+          current_statement__ = 330;
           stan::model::assign(new_protection_inf,
             stan::model::rvalue(naive_to_inf, "naive_to_inf",
               stan::model::index_uni(i)),
             "assigning variable new_protection_inf",
             stan::model::index_uni(i));
-          current_statement__ = 332;
+          current_statement__ = 331;
           stan::model::assign(new_protection_vax, 0.0,
             "assigning variable new_protection_vax",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 296;
+          current_statement__ = 295;
           stan::model::assign(population_protection_inf,
             (((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                  stan::model::index_uni(i)) * prot_scalar) +
@@ -6155,7 +6158,7 @@ public:
             stan::math::exp((waning_scalar * -.008)))),
             "assigning variable population_protection_inf",
             stan::model::index_uni(i));
-          current_statement__ = 297;
+          current_statement__ = 296;
           stan::model::assign(population_protection_sev_inf,
             (((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                  stan::model::index_uni(i)) * prot_sev_scalar) +
@@ -6173,20 +6176,20 @@ public:
             stan::math::exp((waning_scalar_sev * -.008)))),
             "assigning variable population_protection_sev_inf",
             stan::model::index_uni(i));
-          current_statement__ = 304;
+          current_statement__ = 303;
           if (stan::math::logical_eq(
                 stan::model::rvalue(vax_prvl, "vax_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 301;
+            current_statement__ = 300;
             stan::model::assign(population_protection_vax, 0.0,
               "assigning variable population_protection_vax",
               stan::model::index_uni(i));
-            current_statement__ = 302;
+            current_statement__ = 301;
             stan::model::assign(population_protection_sev_vax, 0.0,
               "assigning variable population_protection_sev_vax",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 298;
+            current_statement__ = 297;
             stan::model::assign(population_protection_vax,
               (((stan::model::rvalue(naive_to_vax, "naive_to_vax",
                    stan::model::index_uni(i)) * prot_scalar) +
@@ -6204,7 +6207,7 @@ public:
               stan::math::exp((waning_scalar * -.008)))),
               "assigning variable population_protection_vax",
               stan::model::index_uni(i));
-            current_statement__ = 299;
+            current_statement__ = 298;
             stan::model::assign(population_protection_sev_vax,
               (((stan::model::rvalue(naive_to_vax, "naive_to_vax",
                    stan::model::index_uni(i)) * prot_sev_scalar) +
@@ -6223,20 +6226,20 @@ public:
               "assigning variable population_protection_sev_vax",
               stan::model::index_uni(i));
           }
-          current_statement__ = 311;
+          current_statement__ = 310;
           if (stan::math::logical_eq(
                 stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 308;
+            current_statement__ = 307;
             stan::model::assign(population_protection_hybrid, 0.0,
               "assigning variable population_protection_hybrid",
               stan::model::index_uni(i));
-            current_statement__ = 309;
+            current_statement__ = 308;
             stan::model::assign(population_protection_sev_hybrid, 0.0,
               "assigning variable population_protection_sev_hybrid",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 305;
+            current_statement__ = 304;
             stan::model::assign(population_protection_hybrid,
               (((((stan::model::rvalue(vax_to_hybrid, "vax_to_hybrid",
                      stan::model::index_uni(i)) * prot_scalar) +
@@ -6258,7 +6261,7 @@ public:
               stan::math::exp((waning_scalar_hybrid * -.008)))),
               "assigning variable population_protection_hybrid",
               stan::model::index_uni(i));
-            current_statement__ = 306;
+            current_statement__ = 305;
             stan::model::assign(population_protection_sev_hybrid,
               (((((stan::model::rvalue(vax_to_hybrid, "vax_to_hybrid",
                      stan::model::index_uni(i)) * prot_sev_scalar) +
@@ -6281,11 +6284,11 @@ public:
               "assigning variable population_protection_sev_hybrid",
               stan::model::index_uni(i));
           }
-          current_statement__ = 323;
+          current_statement__ = 322;
           if (stan::math::logical_eq(
                 stan::model::rvalue(vax_prvl, "vax_prvl",
                   stan::model::index_uni((i - 1))), 0.0)) {
-            current_statement__ = 320;
+            current_statement__ = 319;
             stan::model::assign(new_protection_inf,
               ((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                   stan::model::index_uni(i)) * prot_scalar) +
@@ -6300,18 +6303,18 @@ public:
                 stan::model::index_uni((i - 1))))))),
               "assigning variable new_protection_inf",
               stan::model::index_uni(i));
-            current_statement__ = 321;
+            current_statement__ = 320;
             stan::model::assign(new_protection_vax,
               (stan::model::rvalue(naive_to_vax, "naive_to_vax",
                  stan::model::index_uni(i)) * prot_scalar),
               "assigning variable new_protection_vax",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 318;
+            current_statement__ = 317;
             if (stan::math::logical_eq(
                   stan::model::rvalue(hybrid_prvl, "hybrid_prvl",
                     stan::model::index_uni((i - 1))), 0.0)) {
-              current_statement__ = 315;
+              current_statement__ = 314;
               stan::model::assign(new_protection_inf,
                 (((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                      stan::model::index_uni(i)) * prot_scalar) +
@@ -6334,7 +6337,7 @@ public:
                   stan::model::index_uni((i - 1))))))),
                 "assigning variable new_protection_inf",
                 stan::model::index_uni(i));
-              current_statement__ = 316;
+              current_statement__ = 315;
               stan::model::assign(new_protection_vax,
                 (((stan::model::rvalue(naive_to_vax, "naive_to_vax",
                      stan::model::index_uni(i)) * prot_scalar) +
@@ -6359,7 +6362,7 @@ public:
                 "assigning variable new_protection_vax",
                 stan::model::index_uni(i));
             } else {
-              current_statement__ = 312;
+              current_statement__ = 311;
               stan::model::assign(new_protection_inf,
                 ((((stan::model::rvalue(naive_to_inf, "naive_to_inf",
                       stan::model::index_uni(i)) * prot_scalar) +
@@ -6391,7 +6394,7 @@ public:
                   stan::model::index_uni((i - 1))))))),
                 "assigning variable new_protection_inf",
                 stan::model::index_uni(i));
-              current_statement__ = 313;
+              current_statement__ = 312;
               stan::model::assign(new_protection_vax,
                 ((((stan::model::rvalue(naive_to_vax, "naive_to_vax",
                       stan::model::index_uni(i)) * prot_scalar) +
@@ -6427,81 +6430,81 @@ public:
             }
           }
         }
-        current_statement__ = 344;
+        current_statement__ = 343;
         if (stan::math::logical_gte(i, (N_weeks_start_omicron +
               N_weeks_before))) {
-          current_statement__ = 342;
+          current_statement__ = 341;
           if (stan::math::logical_lt(i, ((N_weeks_start_omicron +
                 N_weeks_before) + N_weeks_transition))) {
-            current_statement__ = 335;
+            current_statement__ = 334;
             stan::model::assign(population_protection_inf,
               (stan::model::rvalue(population_protection_inf,
                  "population_protection_inf", stan::model::index_uni(i)) *
-              stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              stan::math::pow((1.0 - omicron_scalar_inf), 0.25)),
               "assigning variable population_protection_inf",
               stan::model::index_uni(i));
-            current_statement__ = 336;
+            current_statement__ = 335;
             stan::model::assign(population_protection_vax,
               (stan::model::rvalue(population_protection_vax,
                  "population_protection_vax", stan::model::index_uni(i)) *
-              stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              stan::math::pow((1.0 - omicron_scalar_inf), 0.25)),
               "assigning variable population_protection_vax",
               stan::model::index_uni(i));
-            current_statement__ = 337;
+            current_statement__ = 336;
             stan::model::assign(population_protection_hybrid,
               (stan::model::rvalue(population_protection_hybrid,
                  "population_protection_hybrid", stan::model::index_uni(i)) *
-              stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              stan::math::pow((1.0 - omicron_scalar_inf), 0.25)),
               "assigning variable population_protection_hybrid",
               stan::model::index_uni(i));
-            current_statement__ = 338;
+            current_statement__ = 337;
             stan::model::assign(population_protection_sev_inf,
               (stan::model::rvalue(population_protection_sev_inf,
                  "population_protection_sev_inf", stan::model::index_uni(i))
-              * stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              * stan::math::pow((1.0 - omicron_scalar_sev), 0.25)),
               "assigning variable population_protection_sev_inf",
               stan::model::index_uni(i));
-            current_statement__ = 339;
+            current_statement__ = 338;
             stan::model::assign(population_protection_sev_vax,
               (stan::model::rvalue(population_protection_sev_vax,
                  "population_protection_sev_vax", stan::model::index_uni(i))
-              * stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              * stan::math::pow((1.0 - omicron_scalar_sev), 0.25)),
               "assigning variable population_protection_sev_vax",
               stan::model::index_uni(i));
-            current_statement__ = 340;
+            current_statement__ = 339;
             stan::model::assign(population_protection_sev_hybrid,
               (stan::model::rvalue(population_protection_sev_hybrid,
                  "population_protection_sev_hybrid",
                  stan::model::index_uni(i)) *
-              stan::math::pow((1.0 - omicron_scalar), 0.25)),
+              stan::math::pow((1.0 - omicron_scalar_sev), 0.25)),
               "assigning variable population_protection_sev_hybrid",
               stan::model::index_uni(i));
           }
         }
-        current_statement__ = 345;
+        current_statement__ = 344;
         stan::model::assign(new_protection,
           (stan::model::rvalue(new_protection_inf, "new_protection_inf",
              stan::model::index_uni(i)) +
           stan::model::rvalue(new_protection_vax, "new_protection_vax",
             stan::model::index_uni(i))), "assigning variable new_protection",
           stan::model::index_uni(i));
-        current_statement__ = 346;
+        current_statement__ = 345;
         stan::model::assign(lost_protection_net,
           (stan::model::rvalue(effective_protection_prvl,
              "effective_protection_prvl", stan::model::index_uni(i)) -
           stan::model::rvalue(effective_protection_prvl_lag,
             "effective_protection_prvl_lag", stan::model::index_uni(i))),
           "assigning variable lost_protection_net", stan::model::index_uni(i));
-        current_statement__ = 347;
+        current_statement__ = 346;
         stan::model::assign(lost_protection,
           (stan::model::rvalue(new_protection, "new_protection",
              stan::model::index_uni(i)) -
           stan::model::rvalue(lost_protection_net, "lost_protection_net",
             stan::model::index_uni(i))),
           "assigning variable lost_protection", stan::model::index_uni(i));
-        current_statement__ = 355;
+        current_statement__ = 354;
         if (stan::math::logical_lt(i, N_weeks_tot)) {
-          current_statement__ = 348;
+          current_statement__ = 347;
           stan::model::assign(effective_protection_prvl,
             ((stan::model::rvalue(population_protection_inf,
                 "population_protection_inf", stan::model::index_uni(i)) +
@@ -6511,7 +6514,7 @@ public:
               "population_protection_hybrid", stan::model::index_uni(i))),
             "assigning variable effective_protection_prvl",
             stan::model::index_uni((i + 1)));
-          current_statement__ = 349;
+          current_statement__ = 348;
           stan::model::assign(severe_protection,
             ((stan::model::rvalue(population_protection_sev_inf,
                 "population_protection_sev_inf", stan::model::index_uni(i)) +
@@ -6521,31 +6524,31 @@ public:
               "population_protection_sev_hybrid", stan::model::index_uni(i))),
             "assigning variable severe_protection",
             stan::model::index_uni((i + 1)));
-          current_statement__ = 350;
+          current_statement__ = 349;
           stan::model::assign(effective_protection_prvl_lag,
             stan::model::rvalue(effective_protection_prvl,
               "effective_protection_prvl", stan::model::index_uni(i)),
             "assigning variable effective_protection_prvl_lag",
             stan::model::index_uni((i + 1)));
-          current_statement__ = 353;
+          current_statement__ = 352;
           if (stan::math::logical_gt(
                 stan::model::rvalue(effective_protection_prvl,
                   "effective_protection_prvl",
                   stan::model::index_uni((i + 1))), pop_size)) {
-            current_statement__ = 351;
+            current_statement__ = 350;
             stan::model::assign(effective_protection_prvl, (pop_size - 1),
               "assigning variable effective_protection_prvl",
               stan::model::index_uni((i + 1)));
           }
         }
       }
-      current_statement__ = 358;
+      current_statement__ = 357;
       stan::model::assign(r_t, stan::math::exp(logRt),
         "assigning variable r_t");
-      current_statement__ = 359;
+      current_statement__ = 358;
       stan::model::assign(r_0, stan::math::exp(logRt0),
         "assigning variable r_0");
-      current_statement__ = 360;
+      current_statement__ = 359;
       stan::model::assign(deriv2_spl_par_rt,
         stan::math::subtract(
           stan::math::subtract(
@@ -6558,7 +6561,7 @@ public:
             stan::model::index_min_max(3, N_spl_par_rt))),
         "assigning variable deriv2_spl_par_rt",
         stan::model::index_min_max(1, (N_spl_par_rt - 2)));
-      current_statement__ = 361;
+      current_statement__ = 360;
       stan::model::assign(deriv1_spl_par_rt,
         stan::math::subtract(
           stan::model::rvalue(spl_par_rt, "spl_par_rt",
@@ -6567,51 +6570,51 @@ public:
             stan::model::index_min_max(1, (N_spl_par_rt - 1)))),
         "assigning variable deriv1_spl_par_rt",
         stan::model::index_min_max(1, (N_spl_par_rt - 1)));
-      current_statement__ = 362;
+      current_statement__ = 361;
       stan::model::assign(symptomatic,
         stan::math::elt_multiply(p_sym_if_inft,
           conv1d(infections, inf_prg_delay_rv, pstream__)),
         "assigning variable symptomatic");
-      current_statement__ = 363;
+      current_statement__ = 362;
       stan::model::assign(severe,
         stan::math::elt_multiply(p_sev_if_symt,
           conv1d(symptomatic, sym_prg_delay_rv, pstream__)),
         "assigning variable severe");
-      current_statement__ = 364;
+      current_statement__ = 363;
       stan::model::assign(deaths,
         stan::math::elt_multiply(
           stan::model::rvalue(p_die_if_sevt, "p_die_if_sevt",
             stan::model::index_min_max(1, N_weeks_tot)),
           conv1d(severe, sev_prg_delay_rv, pstream__)),
         "assigning variable deaths");
-      current_statement__ = 365;
+      current_statement__ = 364;
       stan::model::assign(new_asy_dx,
         stan::math::elt_multiply(stan::math::subtract(1, p_sym_if_inft),
           conv1d(stan::math::elt_multiply(infections, p_diag_if_asy),
             asy_rec_delay_rv, pstream__)), "assigning variable new_asy_dx");
-      current_statement__ = 366;
+      current_statement__ = 365;
       stan::model::assign(diagnoses_of_symptomatic,
         conv1d(stan::math::elt_multiply(symptomatic, p_diag_if_sym),
           sym_diag_delay_rv, pstream__),
         "assigning variable diagnoses_of_symptomatic");
-      current_statement__ = 367;
+      current_statement__ = 366;
       stan::model::assign(dx_sym_sev,
         stan::math::elt_multiply(p_sev_if_symt,
           conv1d(stan::math::elt_multiply(symptomatic, p_diag_if_sym),
             sym_prg_delay_rv, pstream__)), "assigning variable dx_sym_sev");
-      current_statement__ = 368;
+      current_statement__ = 367;
       stan::model::assign(dx_sym_die,
         stan::math::elt_multiply(
           stan::model::rvalue(p_die_if_sevt, "p_die_if_sevt",
             stan::model::index_min_max(1, N_weeks_tot)),
           conv1d(dx_sym_sev, sev_prg_delay_rv, pstream__)),
         "assigning variable dx_sym_die");
-      current_statement__ = 369;
+      current_statement__ = 368;
       stan::model::assign(diagnoses_severe,
         stan::math::multiply(p_diag_if_sev,
           conv1d(stan::math::subtract(severe, dx_sym_sev), sev_diag_delay_rv,
             pstream__)), "assigning variable diagnoses_severe");
-      current_statement__ = 370;
+      current_statement__ = 369;
       stan::model::assign(dx_sev_die,
         stan::math::elt_multiply(
           stan::math::multiply(p_diag_if_sev,
@@ -6619,66 +6622,66 @@ public:
               stan::model::index_min_max(1, N_weeks_tot))),
           conv1d(stan::math::subtract(severe, dx_sym_sev), sev_prg_delay_rv,
             pstream__)), "assigning variable dx_sev_die");
-      current_statement__ = 371;
+      current_statement__ = 370;
       stan::model::assign(diagnoses,
         stan::math::add(
           stan::math::add(new_asy_dx, diagnoses_of_symptomatic),
           diagnoses_severe), "assigning variable diagnoses");
-      current_statement__ = 372;
+      current_statement__ = 371;
       stan::model::assign(deaths_of_diagnosed,
         stan::math::add(dx_sym_die, dx_sev_die),
         "assigning variable deaths_of_diagnosed");
-      current_statement__ = 375;
+      current_statement__ = 374;
       if (stan::math::logical_eq(obs_cas_rep, 1)) {
-        current_statement__ = 374;
+        current_statement__ = 373;
         stan::model::assign(fitted_cases,
           conv1d(diagnoses, cas_rep_delay_rv, pstream__),
           "assigning variable fitted_cases");
       } else {
-        current_statement__ = 373;
+        current_statement__ = 372;
         stan::model::assign(fitted_cases,
           stan::math::elt_multiply(diagnoses, cas_cum_report_delay_rv),
           "assigning variable fitted_cases");
       }
-      current_statement__ = 376;
+      current_statement__ = 375;
       stan::model::assign(fitted_hospitalizations, diagnoses_severe,
         "assigning variable fitted_hospitalizations");
-      current_statement__ = 379;
+      current_statement__ = 378;
       if (stan::math::logical_eq(obs_die_rep, 1)) {
-        current_statement__ = 378;
+        current_statement__ = 377;
         stan::model::assign(fitted_deaths,
           conv1d(deaths_of_diagnosed, die_rep_delay_rv, pstream__),
           "assigning variable fitted_deaths");
       } else {
-        current_statement__ = 377;
+        current_statement__ = 376;
         stan::model::assign(fitted_deaths,
           stan::math::elt_multiply(deaths_of_diagnosed,
             die_cum_report_delay_rv), "assigning variable fitted_deaths");
       }
-      current_statement__ = 384;
+      current_statement__ = 383;
       for (int i = 1; i <= N_weeks_tot; ++i) {
-        current_statement__ = 380;
+        current_statement__ = 379;
         stan::model::assign(fitted_cases_mvs,
           stan::model::rvalue(fitted_cases, "fitted_cases",
             stan::model::index_uni(i)),
           "assigning variable fitted_cases_mvs", stan::model::index_uni(i));
-        current_statement__ = 381;
+        current_statement__ = 380;
         stan::model::assign(fitted_hospitalizations_mvs,
           stan::model::rvalue(fitted_hospitalizations,
             "fitted_hospitalizations", stan::model::index_uni(i)),
           "assigning variable fitted_hospitalizations_mvs",
           stan::model::index_uni(i));
-        current_statement__ = 382;
+        current_statement__ = 381;
         stan::model::assign(fitted_deaths_mvs,
           stan::model::rvalue(fitted_deaths, "fitted_deaths",
             stan::model::index_uni(i)),
           "assigning variable fitted_deaths_mvs", stan::model::index_uni(i));
       }
-      current_statement__ = 385;
+      current_statement__ = 384;
       phi_cas = stan::math::pow(inv_sqrt_phi_c, -2);
-      current_statement__ = 386;
+      current_statement__ = 385;
       phi_hosp = stan::math::pow(inv_sqrt_phi_h, -2);
-      current_statement__ = 387;
+      current_statement__ = 386;
       phi_die = stan::math::pow(inv_sqrt_phi_d, -2);
       if (emit_transformed_parameters__) {
         out__.write(serial_i_vec);
@@ -6696,7 +6699,6 @@ public:
         out__.write(num_uninf);
         out__.write(p_first);
         out__.write(p_boost);
-        out__.write(p_reinf);
         out__.write(naive_to_vax);
         out__.write(naive_to_inf);
         out__.write(inf_to_reinf);
@@ -6812,39 +6814,39 @@ public:
       Eigen::Matrix<double,-1,1> seropos_dist_rv =
         Eigen::Matrix<double,-1,1>::Constant(Max_delay,
           std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 388;
+      current_statement__ = 387;
       stan::model::assign(infections_cumulative,
         stan::math::cumulative_sum(
           stan::model::rvalue(infections, "infections",
             stan::model::index_min((N_weeks_before + 1)))),
         "assigning variable infections_cumulative",
         stan::model::index_min((N_weeks_before + 1)));
-      current_statement__ = 389;
+      current_statement__ = 388;
       p_die_if_sym = (p_die_if_sev * p_sev_if_sym);
-      current_statement__ = 390;
+      current_statement__ = 389;
       p_die_if_sym_postO = (p_die_if_sev * p_sev_if_sym);
-      current_statement__ = 391;
+      current_statement__ = 390;
       stan::model::assign(diag_cases,
         stan::math::add(diagnoses_of_symptomatic, diagnoses_severe),
         "assigning variable diag_cases");
-      current_statement__ = 393;
+      current_statement__ = 392;
       for (int i = 1; i <= Max_delay; ++i) {
-        current_statement__ = 392;
+        current_statement__ = 391;
         stan::model::assign(infect_dist_rv,
           (stan::math::gamma_cdf(i, infect_dist_shap, infect_dist_rate) -
           stan::math::gamma_cdf((i - 1), infect_dist_shap, infect_dist_rate)),
           "assigning variable infect_dist_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
       }
-      current_statement__ = 395;
+      current_statement__ = 394;
       for (int i = 1; i <= Max_delay; ++i) {
-        current_statement__ = 394;
+        current_statement__ = 393;
         stan::model::assign(seropos_dist_rv, (1.0 -
           stan::math::gamma_cdf(i, seropos_dist_shap, seropos_dist_rate)),
           "assigning variable seropos_dist_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
       }
-      current_statement__ = 396;
+      current_statement__ = 395;
       stan::model::assign(seropositive_prvl,
         conv1d(infections, seropos_dist_rv, pstream__),
         "assigning variable seropositive_prvl");
@@ -7214,7 +7216,7 @@ public:
              "infections", "vax_only", "vax_only_cum", "exposed",
              "exposed_cumulative", "new_hybrid", "hybrid_cumulative",
              "infections_premiere", "infections_repeat", "num_uninf",
-             "p_first", "p_boost", "p_reinf", "naive_to_vax", "naive_to_inf",
+             "p_first", "p_boost", "naive_to_vax", "naive_to_inf",
              "inf_to_reinf", "inf_to_hybrid", "hybrid_to_reinf",
              "vax_to_boost", "vax_to_hybrid", "first_inf_only_prvl",
              "reinf_only_prvl", "hybrid_last_inf_prvl", "hybrid_to_boost",
@@ -7276,7 +7278,6 @@ public:
     if (emit_transformed_parameters__) {
       std::vector<std::vector<size_t>>
         temp{std::vector<size_t>{static_cast<size_t>(N_weeks_tot)},
-             std::vector<size_t>{static_cast<size_t>(N_weeks_tot)},
              std::vector<size_t>{static_cast<size_t>(N_weeks_tot)},
              std::vector<size_t>{static_cast<size_t>(N_weeks_tot)},
              std::vector<size_t>{static_cast<size_t>(N_weeks_tot)},
@@ -7477,10 +7478,6 @@ public:
       }
       for (int sym1__ = 1; sym1__ <= N_weeks_tot; ++sym1__) {
         param_names__.emplace_back(std::string() + "p_boost" + '.' +
-          std::to_string(sym1__));
-      }
-      for (int sym1__ = 1; sym1__ <= N_weeks_tot; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p_reinf" + '.' +
           std::to_string(sym1__));
       }
       for (int sym1__ = 1; sym1__ <= N_weeks_tot; ++sym1__) {
@@ -7903,10 +7900,6 @@ public:
           std::to_string(sym1__));
       }
       for (int sym1__ = 1; sym1__ <= N_weeks_tot; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p_reinf" + '.' +
-          std::to_string(sym1__));
-      }
-      for (int sym1__ = 1; sym1__ <= N_weeks_tot; ++sym1__) {
         param_names__.emplace_back(std::string() + "naive_to_vax" + '.' +
           std::to_string(sym1__));
       }
@@ -8229,10 +8222,10 @@ public:
     }
   }
   inline std::string get_constrained_sizedtypes() const {
-    return std::string("[{\"name\":\"log_infections_0\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"serial_i\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"serial_i_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_spl_par_rt) + "},\"block\":\"parameters\"},{\"name\":\"p_sym_if_inf\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sym_if_inf_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sev_if_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sev_if_sym_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_die_if_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"ifr_decl_OR\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"scale_dx_delay_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"scale_dx_delay_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"rr_diag_asy_vs_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_diag_if_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"spl_par_sym_dx\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_spl_par_dx) + "},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_c\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_d\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_h\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"prob_vac\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(3) + "},\"block\":\"parameters\"},{\"name\":\"prob_vac2\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(2) + "},\"block\":\"parameters\"},{\"name\":\"serial_i_vec\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"log_infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv1_log_infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_only\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_only_cum\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"exposed\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"exposed_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections_premiere\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections_repeat\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"num_uninf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_first\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_to_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_to_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_to_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_to_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_to_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_to_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_to_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"first_inf_only_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"reinf_only_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_last_inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_to_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"ever_inf\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p1\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p1max\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p1min\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"susceptible_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"effective_protection_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"effective_protection_prvl_lag\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"lost_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"lost_protection_net\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"severe_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"logRt0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"logRt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"r_t\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"r_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv1_spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(deriv1_spl_par_rt_1dim__) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv2_spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(deriv2_spl_par_rt_1dim__) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_sevt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_ifr_adj) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_sev_if_symt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_sym_if_inft\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"rr_diag_sym_vs_sev\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_diag_if_asy\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_diag_if_sym\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sym_diag_delay_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sev_diag_delay_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_inf\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_inf_postO\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"symptomatic\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"severe\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deaths\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_asy_dx\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses_of_symptomatic\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses_severe\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sym_sev\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sym_die\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sev_die\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deaths_of_diagnosed\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_cases\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_deaths\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_hospitalizations\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_cases_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_deaths_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_hospitalizations_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"phi_cas\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"phi_die\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"phi_hosp\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_sym\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"p_die_if_sym_postO\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"susceptible_severe_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_vax_boost_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_vax_boost_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"fitted_wastewater_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"immunoexposed_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"diag_cases\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"infections_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"seropositive_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"infect_dist_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"generated_quantities\"},{\"name\":\"seropos_dist_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"log_infections_0\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"serial_i\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"serial_i_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_spl_par_rt) + "},\"block\":\"parameters\"},{\"name\":\"p_sym_if_inf\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sym_if_inf_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sev_if_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sev_if_sym_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_die_if_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"ifr_decl_OR\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"scale_dx_delay_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"scale_dx_delay_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"rr_diag_asy_vs_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_diag_if_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"spl_par_sym_dx\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_spl_par_dx) + "},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_c\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_d\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_h\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"prob_vac\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(3) + "},\"block\":\"parameters\"},{\"name\":\"prob_vac2\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(2) + "},\"block\":\"parameters\"},{\"name\":\"serial_i_vec\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"log_infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv1_log_infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_only\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_only_cum\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"exposed\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"exposed_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections_premiere\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections_repeat\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"num_uninf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_first\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_to_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_to_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_to_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_to_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_to_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_to_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_to_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"first_inf_only_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"reinf_only_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_last_inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_to_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"ever_inf\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p1\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p1max\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p1min\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"susceptible_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"effective_protection_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"effective_protection_prvl_lag\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"lost_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"lost_protection_net\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"severe_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"logRt0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"logRt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"r_t\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"r_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv1_spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(deriv1_spl_par_rt_1dim__) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv2_spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(deriv2_spl_par_rt_1dim__) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_sevt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_ifr_adj) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_sev_if_symt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_sym_if_inft\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"rr_diag_sym_vs_sev\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_diag_if_asy\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_diag_if_sym\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sym_diag_delay_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sev_diag_delay_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_inf\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_inf_postO\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"symptomatic\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"severe\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deaths\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_asy_dx\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses_of_symptomatic\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses_severe\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sym_sev\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sym_die\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sev_die\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deaths_of_diagnosed\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_cases\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_deaths\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_hospitalizations\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_cases_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_deaths_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_hospitalizations_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"phi_cas\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"phi_die\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"phi_hosp\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_sym\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"p_die_if_sym_postO\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"susceptible_severe_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_vax_boost_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_vax_boost_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"fitted_wastewater_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"immunoexposed_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"diag_cases\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"infections_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"seropositive_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"infect_dist_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"generated_quantities\"},{\"name\":\"seropos_dist_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"generated_quantities\"}]");
   }
   inline std::string get_unconstrained_sizedtypes() const {
-    return std::string("[{\"name\":\"log_infections_0\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"serial_i\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"serial_i_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_spl_par_rt) + "},\"block\":\"parameters\"},{\"name\":\"p_sym_if_inf\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sym_if_inf_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sev_if_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sev_if_sym_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_die_if_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"ifr_decl_OR\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"scale_dx_delay_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"scale_dx_delay_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"rr_diag_asy_vs_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_diag_if_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"spl_par_sym_dx\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_spl_par_dx) + "},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_c\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_d\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_h\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"prob_vac\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string((3 -1)) + "},\"block\":\"parameters\"},{\"name\":\"prob_vac2\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string((2 -1)) + "},\"block\":\"parameters\"},{\"name\":\"serial_i_vec\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"log_infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv1_log_infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_only\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_only_cum\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"exposed\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"exposed_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections_premiere\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections_repeat\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"num_uninf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_first\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_to_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_to_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_to_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_to_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_to_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_to_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_to_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"first_inf_only_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"reinf_only_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_last_inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_to_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"ever_inf\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p1\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p1max\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p1min\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"susceptible_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"effective_protection_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"effective_protection_prvl_lag\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"lost_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"lost_protection_net\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"severe_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"logRt0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"logRt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"r_t\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"r_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv1_spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(deriv1_spl_par_rt_1dim__) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv2_spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(deriv2_spl_par_rt_1dim__) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_sevt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_ifr_adj) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_sev_if_symt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_sym_if_inft\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"rr_diag_sym_vs_sev\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_diag_if_asy\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_diag_if_sym\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sym_diag_delay_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sev_diag_delay_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_inf\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_inf_postO\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"symptomatic\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"severe\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deaths\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_asy_dx\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses_of_symptomatic\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses_severe\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sym_sev\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sym_die\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sev_die\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deaths_of_diagnosed\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_cases\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_deaths\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_hospitalizations\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_cases_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_deaths_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_hospitalizations_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"phi_cas\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"phi_die\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"phi_hosp\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_sym\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"p_die_if_sym_postO\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"susceptible_severe_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_vax_boost_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_vax_boost_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"fitted_wastewater_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"immunoexposed_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"diag_cases\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"infections_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"seropositive_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"infect_dist_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"generated_quantities\"},{\"name\":\"seropos_dist_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"log_infections_0\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"serial_i\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"serial_i_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_spl_par_rt) + "},\"block\":\"parameters\"},{\"name\":\"p_sym_if_inf\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sym_if_inf_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sev_if_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_sev_if_sym_postO\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_die_if_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"ifr_decl_OR\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"scale_dx_delay_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"scale_dx_delay_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"rr_diag_asy_vs_sym\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_diag_if_sev\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"spl_par_sym_dx\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_spl_par_dx) + "},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_c\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_d\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"inv_sqrt_phi_h\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"prob_vac\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string((3 -1)) + "},\"block\":\"parameters\"},{\"name\":\"prob_vac2\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string((2 -1)) + "},\"block\":\"parameters\"},{\"name\":\"serial_i_vec\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"log_infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv1_log_infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_only\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_only_cum\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"exposed\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"exposed_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections_premiere\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"infections_repeat\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"num_uninf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_first\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_to_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_to_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_to_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_to_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_to_reinf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_to_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_to_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"first_inf_only_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"reinf_only_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_last_inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_to_boost\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"naive_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"hybrid_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"ever_inf\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p1\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p1max\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p1min\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"susceptible_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"effective_protection_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"effective_protection_prvl_lag\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"lost_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"lost_protection_net\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"severe_protection\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_inf\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_vax\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"population_protection_sev_hybrid\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"logRt0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"logRt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"r_t\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"r_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv1_spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(deriv1_spl_par_rt_1dim__) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deriv2_spl_par_rt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(deriv2_spl_par_rt_1dim__) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_sevt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_ifr_adj) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_sev_if_symt\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_sym_if_inft\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"rr_diag_sym_vs_sev\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_diag_if_asy\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_diag_if_sym\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sym_diag_delay_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sev_diag_delay_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_inf\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_inf_postO\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"symptomatic\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"severe\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deaths\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"new_asy_dx\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses_of_symptomatic\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses_severe\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sym_sev\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sym_die\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"dx_sev_die\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"diagnoses\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"deaths_of_diagnosed\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_cases\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_deaths\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_hospitalizations\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_cases_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_deaths_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"fitted_hospitalizations_mvs\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"transformed_parameters\"},{\"name\":\"phi_cas\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"phi_die\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"phi_hosp\",\"type\":{\"name\":\"real\"},\"block\":\"transformed_parameters\"},{\"name\":\"p_die_if_sym\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"p_die_if_sym_postO\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"susceptible_severe_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_inf_vax_boost_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_vax_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"effective_protection_vax_boost_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"fitted_wastewater_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"immunoexposed_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"diag_cases\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"infections_cumulative\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"seropositive_prvl\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(N_weeks_tot) + "},\"block\":\"generated_quantities\"},{\"name\":\"infect_dist_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"generated_quantities\"},{\"name\":\"seropos_dist_rv\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(Max_delay) + "},\"block\":\"generated_quantities\"}]");
   }
   // Begin method overload boilerplate
   template <typename RNG> inline void
@@ -8245,7 +8238,7 @@ public:
       N_spl_par_rt) + 1) + 1) + 1) + 1) + 1) + 1) + 1) + 1) + 1) + 1) +
       N_spl_par_dx) + 1) + 1) + 1) + 3) + 2);
     const size_t num_transformed = emit_transformed_parameters *
-      ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((N_weeks_tot
+      (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((N_weeks_tot
       + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
@@ -8253,20 +8246,19 @@ public:
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      N_weeks_tot) + N_weeks_tot) + 1) + N_weeks_tot) + N_weeks_tot) +
+      N_weeks_tot) + 1) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
+      N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + deriv1_spl_par_rt_1dim__)
+      + deriv2_spl_par_rt_1dim__) + N_ifr_adj) + N_weeks_tot) + N_weeks_tot)
+      + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + Max_delay) + Max_delay)
+      + 1) + 1) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      deriv1_spl_par_rt_1dim__) + deriv2_spl_par_rt_1dim__) + N_ifr_adj) +
-      N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      N_weeks_tot) + Max_delay) + Max_delay) + 1) + 1) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + 1) + 1) +
-      1));
+      N_weeks_tot) + 1) + 1) + 1));
     const size_t num_gen_quantities = emit_generated_quantities *
       (((((((((((((((1 + 1) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
@@ -8290,7 +8282,7 @@ public:
       N_spl_par_rt) + 1) + 1) + 1) + 1) + 1) + 1) + 1) + 1) + 1) + 1) +
       N_spl_par_dx) + 1) + 1) + 1) + 3) + 2);
     const size_t num_transformed = emit_transformed_parameters *
-      ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((N_weeks_tot
+      (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((N_weeks_tot
       + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
@@ -8298,20 +8290,19 @@ public:
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      N_weeks_tot) + N_weeks_tot) + 1) + N_weeks_tot) + N_weeks_tot) +
+      N_weeks_tot) + 1) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
+      N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + deriv1_spl_par_rt_1dim__)
+      + deriv2_spl_par_rt_1dim__) + N_ifr_adj) + N_weeks_tot) + N_weeks_tot)
+      + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + Max_delay) + Max_delay)
+      + 1) + 1) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      deriv1_spl_par_rt_1dim__) + deriv2_spl_par_rt_1dim__) + N_ifr_adj) +
-      N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      N_weeks_tot) + Max_delay) + Max_delay) + 1) + 1) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
-      N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + 1) + 1) +
-      1));
+      N_weeks_tot) + 1) + 1) + 1));
     const size_t num_gen_quantities = emit_generated_quantities *
       (((((((((((((((1 + 1) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +
       N_weeks_tot) + N_weeks_tot) + N_weeks_tot) + N_weeks_tot) +

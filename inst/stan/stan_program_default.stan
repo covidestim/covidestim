@@ -92,7 +92,8 @@ data {
   real<lower=0>          waning_scalar_hybrid;
   real<lower=0>          waning_scalar_hybrid_sev;
   real<lower=0, upper=1> vax_boost_scalar;
-  real<lower=0, upper=1> omicron_scalar;
+  real<lower=0, upper=1> omicron_scalar_inf;
+  real<lower=0, upper=1> omicron_scalar_sev;
 
   // terms for splines
   // spline parameters and bases
@@ -422,7 +423,6 @@ transformed parameters {
   vector[N_weeks_tot]     num_uninf;
   vector[N_weeks_tot]     p_first;
   vector[N_weeks_tot]     p_boost;
-  vector[N_weeks_tot]     p_reinf;
   vector[N_weeks_tot]     naive_to_vax;
   vector[N_weeks_tot]     naive_to_inf;
   vector[N_weeks_tot]     inf_to_reinf;
@@ -890,12 +890,12 @@ if(sum(full_vax[1:i]) == 0.0){
     
     if(i >= N_weeks_start_omicron + N_weeks_before){
       if(i < N_weeks_start_omicron + N_weeks_before + N_weeks_transition){
-      population_protection_inf[i] = population_protection_inf[i] * pow((1.0 - omicron_scalar), 0.25);
-      population_protection_vax[i] = population_protection_vax[i] * pow((1.0 - omicron_scalar), 0.25);
-      population_protection_hybrid[i] = population_protection_hybrid[i] * pow((1.0 - omicron_scalar), 0.25);
-      population_protection_sev_inf[i] = population_protection_sev_inf[i] * pow((1.0 - omicron_scalar), 0.25);
-      population_protection_sev_vax[i] = population_protection_sev_vax[i] * pow((1.0 - omicron_scalar), 0.25);
-      population_protection_sev_hybrid[i] = population_protection_sev_hybrid[i] * pow((1.0 - omicron_scalar), 0.25);
+      population_protection_inf[i] = population_protection_inf[i] * pow((1.0 - omicron_scalar_inf), 0.25);
+      population_protection_vax[i] = population_protection_vax[i] * pow((1.0 - omicron_scalar_inf), 0.25);
+      population_protection_hybrid[i] = population_protection_hybrid[i] * pow((1.0 - omicron_scalar_inf), 0.25);
+      population_protection_sev_inf[i] = population_protection_sev_inf[i] * pow((1.0 - omicron_scalar_sev), 0.25);
+      population_protection_sev_vax[i] = population_protection_sev_vax[i] * pow((1.0 - omicron_scalar_sev), 0.25);
+      population_protection_sev_hybrid[i] = population_protection_sev_hybrid[i] * pow((1.0 - omicron_scalar_sev), 0.25);
     }
     }
     // 
