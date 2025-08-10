@@ -766,7 +766,7 @@ transformed parameters {
     // if(i == 1){
     //   naive_to_inf[i] = infections_premiere[i];
     // }  else{
-      if(i > 1){
+    if(i > 1){
     p1[i] = (naive_prvl[i-1]/(naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])));
     p1max[i] = fmin(exposed[i] / infections_premiere[i],1.0);
     p1min[i] = fmax((infections_premiere[i]-new_hybrid[i])/ infections_premiere[i], 0.0);
@@ -794,6 +794,9 @@ if(full_vax[i] > 0.0)  inf_to_hybrid[i] = new_hybrid[i] - vax_to_hybrid[i];
 // print("week ", i, " p1 ", p1, " exposed ", exposed[i], " hybrid ", new_hybrid[i], " naive inf ", naive_to_inf[i], " naive_vax ", naive_to_vax[i], " inf hybrid ", inf_to_hybrid[i], "vax hybrid ", vax_to_hybrid[i],
 // " inf prem ", infections_premiere[i], " vax prvl prsv ", vax_prvl[i-1], " pop prot vax ", population_protection_vax[i-1]);
 } else{
+  p1[i] <- 1; 
+  p1min[i] <- 1; 
+  p1max[i] <- 1; 
   naive_to_inf[i] = infections_premiere[i];
 }
 
@@ -1350,17 +1353,15 @@ generated quantities {
   // vector[N_weeks_tot]     num_uninf;
   real                p_die_if_sym;
   real                p_die_if_sym_postO;
-  vector[N_weeks_tot] susceptible_severe_prvl;
-  vector[N_weeks_tot] effective_protection_inf_prvl; //calculated above
-  vector[N_weeks_tot] effective_protection_inf_vax_prvl;
-  vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
-  vector[N_weeks_tot] effective_protection_vax_prvl;
-  vector[N_weeks_tot] effective_protection_vax_boost_prvl;
-  vector[N_weeks_tot] fitted_wastewater_prvl;
-  vector[N_weeks_tot] immunoexposed_cumulative;
+  // vector[N_weeks_tot] effective_protection_inf_vax_prvl;
+  // vector[N_weeks_tot] effective_protection_inf_vax_boost_prvl;
+  // vector[N_weeks_tot] effective_protection_vax_prvl;
+  // vector[N_weeks_tot] effective_protection_vax_boost_prvl;
+  // vector[N_weeks_tot] fitted_wastewater_prvl;
+  // vector[N_weeks_tot] immunoexposed_cumulative;
 
   vector[N_weeks_tot]  diag_cases;
-  vector[N_weeks_tot]  infections_cumulative;  
+  vector[N_weeks_tot-N_weeks_before]  infections_cumulative;  
   vector[N_weeks_tot]  seropositive_prvl;
   // vector[N_days_tot]  pop_infectiousness;  
   // 
@@ -1388,7 +1389,7 @@ generated quantities {
 // }
   // cumulative incidence
   // cumulative incidence is only calculated for the data weeks! any prior infections are added through cum_p_inf_init.
-  infections_cumulative[N_weeks_before+1:] = cumulative_sum(infections[N_weeks_before+1:]) ; 
+  infections_cumulative[1:] = cumulative_sum(infections[N_weeks_before+1:]) ; 
   // needs to be substracted with the vaccinated + boosted (minus the overlap)
   // to be developed
   // immunoexposed_cumulative = infections_cumulative;
