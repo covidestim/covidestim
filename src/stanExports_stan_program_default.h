@@ -27,489 +27,490 @@ namespace model_stan_program_default_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 746> locations_array__ =
+static constexpr std::array<const char*, 750> locations_array__ =
   {" (found before start of program)",
-  " (in 'stan_program_default', line 333, column 2 to column 24)",
-  " (in 'stan_program_default', line 335, column 2 to column 16)",
-  " (in 'stan_program_default', line 336, column 2 to column 22)",
-  " (in 'stan_program_default', line 338, column 2 to column 34)",
-  " (in 'stan_program_default', line 341, column 2 to column 38)",
-  " (in 'stan_program_default', line 342, column 2 to column 44)",
-  " (in 'stan_program_default', line 343, column 2 to column 38)",
-  " (in 'stan_program_default', line 344, column 2 to column 44)",
-  " (in 'stan_program_default', line 345, column 2 to column 38)",
-  " (in 'stan_program_default', line 346, column 2 to column 28)",
-  " (in 'stan_program_default', line 348, column 2 to column 42)",
-  " (in 'stan_program_default', line 351, column 2 to column 44)",
+  " (in 'stan_program_default', line 334, column 2 to column 24)",
+  " (in 'stan_program_default', line 336, column 2 to column 16)",
+  " (in 'stan_program_default', line 337, column 2 to column 22)",
+  " (in 'stan_program_default', line 339, column 2 to column 34)",
+  " (in 'stan_program_default', line 342, column 2 to column 38)",
+  " (in 'stan_program_default', line 343, column 2 to column 44)",
+  " (in 'stan_program_default', line 344, column 2 to column 38)",
+  " (in 'stan_program_default', line 345, column 2 to column 44)",
+  " (in 'stan_program_default', line 346, column 2 to column 38)",
+  " (in 'stan_program_default', line 347, column 2 to column 28)",
+  " (in 'stan_program_default', line 349, column 2 to column 42)",
   " (in 'stan_program_default', line 352, column 2 to column 44)",
-  " (in 'stan_program_default', line 354, column 2 to column 44)",
-  " (in 'stan_program_default', line 355, column 2 to column 39)",
-  " (in 'stan_program_default', line 356, column 2 to column 56)",
-  " (in 'stan_program_default', line 359, column 2 to column 31)",
+  " (in 'stan_program_default', line 353, column 2 to column 44)",
+  " (in 'stan_program_default', line 355, column 2 to column 44)",
+  " (in 'stan_program_default', line 356, column 2 to column 39)",
+  " (in 'stan_program_default', line 357, column 2 to column 56)",
   " (in 'stan_program_default', line 360, column 2 to column 31)",
   " (in 'stan_program_default', line 361, column 2 to column 31)",
-  " (in 'stan_program_default', line 363, column 2 to column 22)",
-  " (in 'stan_program_default', line 364, column 2 to column 23)",
-  " (in 'stan_program_default', line 370, column 2 to column 35)",
-  " (in 'stan_program_default', line 371, column 2 to column 37)",
-  " (in 'stan_program_default', line 372, column 2 to column 44)",
-  " (in 'stan_program_default', line 373, column 2 to column 33)",
-  " (in 'stan_program_default', line 374, column 2 to column 31)",
-  " (in 'stan_program_default', line 375, column 2 to column 35)",
-  " (in 'stan_program_default', line 376, column 2 to column 30)",
-  " (in 'stan_program_default', line 377, column 2 to column 41)",
-  " (in 'stan_program_default', line 378, column 2 to column 33)",
-  " (in 'stan_program_default', line 379, column 2 to column 40)",
-  " (in 'stan_program_default', line 380, column 2 to column 42)",
-  " (in 'stan_program_default', line 381, column 2 to column 40)",
-  " (in 'stan_program_default', line 382, column 2 to column 32)",
-  " (in 'stan_program_default', line 383, column 2 to column 30)",
+  " (in 'stan_program_default', line 362, column 2 to column 31)",
+  " (in 'stan_program_default', line 364, column 2 to column 22)",
+  " (in 'stan_program_default', line 365, column 2 to column 23)",
+  " (in 'stan_program_default', line 371, column 2 to column 35)",
+  " (in 'stan_program_default', line 372, column 2 to column 37)",
+  " (in 'stan_program_default', line 373, column 2 to column 44)",
+  " (in 'stan_program_default', line 374, column 2 to column 33)",
+  " (in 'stan_program_default', line 375, column 2 to column 31)",
+  " (in 'stan_program_default', line 376, column 2 to column 35)",
+  " (in 'stan_program_default', line 377, column 2 to column 30)",
+  " (in 'stan_program_default', line 378, column 2 to column 41)",
+  " (in 'stan_program_default', line 379, column 2 to column 33)",
+  " (in 'stan_program_default', line 380, column 2 to column 40)",
+  " (in 'stan_program_default', line 381, column 2 to column 42)",
+  " (in 'stan_program_default', line 382, column 2 to column 40)",
+  " (in 'stan_program_default', line 383, column 2 to column 32)",
   " (in 'stan_program_default', line 384, column 2 to column 30)",
-  " (in 'stan_program_default', line 387, column 2 to column 35)",
+  " (in 'stan_program_default', line 385, column 2 to column 30)",
   " (in 'stan_program_default', line 388, column 2 to column 35)",
   " (in 'stan_program_default', line 389, column 2 to column 35)",
-  " (in 'stan_program_default', line 390, column 2 to column 36)",
-  " (in 'stan_program_default', line 391, column 2 to column 38)",
-  " (in 'stan_program_default', line 392, column 2 to column 35)",
-  " (in 'stan_program_default', line 393, column 2 to column 36)",
-  " (in 'stan_program_default', line 394, column 2 to column 42)",
-  " (in 'stan_program_default', line 395, column 2 to column 38)",
-  " (in 'stan_program_default', line 396, column 2 to column 43)",
-  " (in 'stan_program_default', line 397, column 2 to column 38)",
-  " (in 'stan_program_default', line 398, column 2 to column 31)",
+  " (in 'stan_program_default', line 390, column 2 to column 35)",
+  " (in 'stan_program_default', line 391, column 2 to column 36)",
+  " (in 'stan_program_default', line 392, column 2 to column 38)",
+  " (in 'stan_program_default', line 393, column 2 to column 35)",
+  " (in 'stan_program_default', line 394, column 2 to column 36)",
+  " (in 'stan_program_default', line 395, column 2 to column 42)",
+  " (in 'stan_program_default', line 396, column 2 to column 38)",
+  " (in 'stan_program_default', line 397, column 2 to column 43)",
+  " (in 'stan_program_default', line 398, column 2 to column 38)",
   " (in 'stan_program_default', line 399, column 2 to column 31)",
-  " (in 'stan_program_default', line 400, column 2 to column 33)",
-  " (in 'stan_program_default', line 401, column 2 to column 34)",
-  " (in 'stan_program_default', line 403, column 2 to column 25)",
-  " (in 'stan_program_default', line 404, column 2 to column 28)",
+  " (in 'stan_program_default', line 400, column 2 to column 31)",
+  " (in 'stan_program_default', line 401, column 2 to column 33)",
+  " (in 'stan_program_default', line 402, column 2 to column 34)",
+  " (in 'stan_program_default', line 404, column 2 to column 25)",
   " (in 'stan_program_default', line 405, column 2 to column 28)",
-  " (in 'stan_program_default', line 406, column 2 to column 39)",
-  " (in 'stan_program_default', line 407, column 2 to column 48)",
-  " (in 'stan_program_default', line 408, column 2 to column 52)",
-  " (in 'stan_program_default', line 409, column 2 to column 41)",
+  " (in 'stan_program_default', line 406, column 2 to column 28)",
+  " (in 'stan_program_default', line 407, column 2 to column 39)",
+  " (in 'stan_program_default', line 408, column 2 to column 48)",
+  " (in 'stan_program_default', line 409, column 2 to column 52)",
   " (in 'stan_program_default', line 410, column 2 to column 41)",
-  " (in 'stan_program_default', line 411, column 2 to column 37)",
-  " (in 'stan_program_default', line 412, column 2 to column 38)",
-  " (in 'stan_program_default', line 413, column 2 to column 42)",
-  " (in 'stan_program_default', line 414, column 2 to column 40)",
-  " (in 'stan_program_default', line 415, column 2 to column 48)",
-  " (in 'stan_program_default', line 416, column 2 to column 51)",
-  " (in 'stan_program_default', line 417, column 2 to column 48)",
-  " (in 'stan_program_default', line 418, column 2 to column 52)",
+  " (in 'stan_program_default', line 411, column 2 to column 41)",
+  " (in 'stan_program_default', line 412, column 2 to column 37)",
+  " (in 'stan_program_default', line 413, column 2 to column 38)",
+  " (in 'stan_program_default', line 414, column 2 to column 42)",
+  " (in 'stan_program_default', line 415, column 2 to column 40)",
+  " (in 'stan_program_default', line 416, column 2 to column 48)",
+  " (in 'stan_program_default', line 417, column 2 to column 51)",
+  " (in 'stan_program_default', line 418, column 2 to column 48)",
   " (in 'stan_program_default', line 419, column 2 to column 52)",
-  " (in 'stan_program_default', line 420, column 2 to column 55)",
-  " (in 'stan_program_default', line 423, column 2 to column 29)",
-  " (in 'stan_program_default', line 424, column 2 to column 28)",
-  " (in 'stan_program_default', line 425, column 2 to column 26)",
+  " (in 'stan_program_default', line 420, column 2 to column 52)",
+  " (in 'stan_program_default', line 421, column 2 to column 55)",
+  " (in 'stan_program_default', line 424, column 2 to column 29)",
+  " (in 'stan_program_default', line 425, column 2 to column 28)",
   " (in 'stan_program_default', line 426, column 2 to column 26)",
-  " (in 'stan_program_default', line 427, column 2 to column 43)",
+  " (in 'stan_program_default', line 427, column 2 to column 26)",
   " (in 'stan_program_default', line 428, column 2 to column 43)",
-  " (in 'stan_program_default', line 430, column 2 to column 34)",
-  " (in 'stan_program_default', line 431, column 2 to column 36)",
+  " (in 'stan_program_default', line 429, column 2 to column 43)",
+  " (in 'stan_program_default', line 431, column 2 to column 34)",
   " (in 'stan_program_default', line 432, column 2 to column 36)",
-  " (in 'stan_program_default', line 435, column 2 to column 41)",
-  " (in 'stan_program_default', line 436, column 2 to column 36)",
+  " (in 'stan_program_default', line 433, column 2 to column 36)",
+  " (in 'stan_program_default', line 436, column 2 to column 41)",
   " (in 'stan_program_default', line 437, column 2 to column 36)",
-  " (in 'stan_program_default', line 440, column 2 to column 38)",
+  " (in 'stan_program_default', line 438, column 2 to column 36)",
   " (in 'stan_program_default', line 441, column 2 to column 38)",
-  " (in 'stan_program_default', line 444, column 2 to column 20)",
-  " (in 'stan_program_default', line 445, column 2 to column 26)",
-  " (in 'stan_program_default', line 447, column 2 to column 34)",
-  " (in 'stan_program_default', line 448, column 2 to column 29)",
+  " (in 'stan_program_default', line 442, column 2 to column 38)",
+  " (in 'stan_program_default', line 445, column 2 to column 20)",
+  " (in 'stan_program_default', line 446, column 2 to column 26)",
+  " (in 'stan_program_default', line 448, column 2 to column 34)",
   " (in 'stan_program_default', line 449, column 2 to column 29)",
-  " (in 'stan_program_default', line 451, column 2 to column 33)",
-  " (in 'stan_program_default', line 452, column 2 to column 47)",
-  " (in 'stan_program_default', line 453, column 2 to column 39)",
-  " (in 'stan_program_default', line 457, column 2 to column 49)",
-  " (in 'stan_program_default', line 458, column 2 to column 46)",
-  " (in 'stan_program_default', line 460, column 2 to column 33)",
+  " (in 'stan_program_default', line 450, column 2 to column 29)",
+  " (in 'stan_program_default', line 452, column 2 to column 33)",
+  " (in 'stan_program_default', line 453, column 2 to column 47)",
+  " (in 'stan_program_default', line 454, column 2 to column 39)",
+  " (in 'stan_program_default', line 458, column 2 to column 49)",
+  " (in 'stan_program_default', line 459, column 2 to column 46)",
   " (in 'stan_program_default', line 461, column 2 to column 33)",
   " (in 'stan_program_default', line 462, column 2 to column 33)",
-  " (in 'stan_program_default', line 464, column 2 to column 32)",
-  " (in 'stan_program_default', line 465, column 2 to column 42)",
-  " (in 'stan_program_default', line 468, column 2 to column 35)",
-  " (in 'stan_program_default', line 469, column 2 to column 36)",
-  " (in 'stan_program_default', line 470, column 2 to column 46)",
-  " (in 'stan_program_default', line 472, column 2 to column 39)",
-  " (in 'stan_program_default', line 473, column 2 to column 40)",
-  " (in 'stan_program_default', line 474, column 2 to column 50)",
-  " (in 'stan_program_default', line 477, column 2 to column 15)",
+  " (in 'stan_program_default', line 463, column 2 to column 33)",
+  " (in 'stan_program_default', line 465, column 2 to column 32)",
+  " (in 'stan_program_default', line 466, column 2 to column 42)",
+  " (in 'stan_program_default', line 469, column 2 to column 35)",
+  " (in 'stan_program_default', line 470, column 2 to column 36)",
+  " (in 'stan_program_default', line 471, column 2 to column 46)",
+  " (in 'stan_program_default', line 473, column 2 to column 39)",
+  " (in 'stan_program_default', line 474, column 2 to column 40)",
+  " (in 'stan_program_default', line 475, column 2 to column 50)",
   " (in 'stan_program_default', line 478, column 2 to column 15)",
-  " (in 'stan_program_default', line 479, column 2 to column 16)",
-  " (in 'stan_program_default', line 1212, column 2 to column 20)",
-  " (in 'stan_program_default', line 1213, column 2 to column 26)",
-  " (in 'stan_program_default', line 1220, column 2 to column 33)",
-  " (in 'stan_program_default', line 1221, column 2 to column 59)",
-  " (in 'stan_program_default', line 1222, column 2 to column 40)",
-  " (in 'stan_program_default', line 1225, column 2 to column 35)",
-  " (in 'stan_program_default', line 1227, column 2 to column 36)",
-  " (in 'stan_program_default', line 481, column 2 to column 77)",
-  " (in 'stan_program_default', line 484, column 2 to column 71)",
-  " (in 'stan_program_default', line 486, column 2 to column 53)",
+  " (in 'stan_program_default', line 479, column 2 to column 15)",
+  " (in 'stan_program_default', line 480, column 2 to column 16)",
+  " (in 'stan_program_default', line 1215, column 2 to column 20)",
+  " (in 'stan_program_default', line 1216, column 2 to column 26)",
+  " (in 'stan_program_default', line 1223, column 2 to column 33)",
+  " (in 'stan_program_default', line 1224, column 2 to column 59)",
+  " (in 'stan_program_default', line 1225, column 2 to column 40)",
+  " (in 'stan_program_default', line 1228, column 2 to column 35)",
+  " (in 'stan_program_default', line 1230, column 2 to column 36)",
+  " (in 'stan_program_default', line 482, column 2 to column 77)",
+  " (in 'stan_program_default', line 485, column 2 to column 71)",
   " (in 'stan_program_default', line 487, column 2 to column 53)",
-  " (in 'stan_program_default', line 497, column 11 to column 22)",
-  " (in 'stan_program_default', line 497, column 4 to column 41)",
+  " (in 'stan_program_default', line 488, column 2 to column 53)",
   " (in 'stan_program_default', line 498, column 11 to column 22)",
   " (in 'stan_program_default', line 498, column 4 to column 41)",
-  " (in 'stan_program_default', line 500, column 6 to column 103)",
+  " (in 'stan_program_default', line 499, column 11 to column 22)",
+  " (in 'stan_program_default', line 499, column 4 to column 41)",
   " (in 'stan_program_default', line 501, column 6 to column 103)",
-  " (in 'stan_program_default', line 499, column 29 to line 502, column 5)",
-  " (in 'stan_program_default', line 499, column 4 to line 502, column 5)",
-  " (in 'stan_program_default', line 507, column 4 to column 83)",
+  " (in 'stan_program_default', line 502, column 6 to column 103)",
+  " (in 'stan_program_default', line 500, column 29 to line 503, column 5)",
+  " (in 'stan_program_default', line 500, column 4 to line 503, column 5)",
   " (in 'stan_program_default', line 508, column 4 to column 83)",
-  " (in 'stan_program_default', line 506, column 25 to line 509, column 5)",
-  " (in 'stan_program_default', line 506, column 4 to line 509, column 5)",
-  " (in 'stan_program_default', line 494, column 2 to line 510, column 3)",
-  " (in 'stan_program_default', line 515, column 2 to column 60)",
-  " (in 'stan_program_default', line 516, column 2 to column 72)",
-  " (in 'stan_program_default', line 524, column 2 to column 37)",
-  " (in 'stan_program_default', line 525, column 2 to column 33)",
-  " (in 'stan_program_default', line 526, column 2 to column 26)",
-  " (in 'stan_program_default', line 527, column 2 to column 27)",
-  " (in 'stan_program_default', line 528, column 2 to column 37)",
-  " (in 'stan_program_default', line 529, column 2 to column 41)",
-  " (in 'stan_program_default', line 530, column 2 to column 29)",
-  " (in 'stan_program_default', line 531, column 2 to column 61)",
-  " (in 'stan_program_default', line 532, column 2 to column 62)",
-  " (in 'stan_program_default', line 533, column 2 to column 61)",
-  " (in 'stan_program_default', line 534, column 2 to column 62)",
-  " (in 'stan_program_default', line 535, column 2 to column 64)",
+  " (in 'stan_program_default', line 509, column 4 to column 83)",
+  " (in 'stan_program_default', line 507, column 25 to line 510, column 5)",
+  " (in 'stan_program_default', line 507, column 4 to line 510, column 5)",
+  " (in 'stan_program_default', line 495, column 2 to line 511, column 3)",
+  " (in 'stan_program_default', line 516, column 2 to column 60)",
+  " (in 'stan_program_default', line 517, column 2 to column 72)",
+  " (in 'stan_program_default', line 525, column 2 to column 37)",
+  " (in 'stan_program_default', line 526, column 2 to column 33)",
+  " (in 'stan_program_default', line 527, column 2 to column 26)",
+  " (in 'stan_program_default', line 528, column 2 to column 27)",
+  " (in 'stan_program_default', line 529, column 2 to column 37)",
+  " (in 'stan_program_default', line 530, column 2 to column 41)",
+  " (in 'stan_program_default', line 531, column 2 to column 29)",
+  " (in 'stan_program_default', line 532, column 2 to column 61)",
+  " (in 'stan_program_default', line 533, column 2 to column 62)",
+  " (in 'stan_program_default', line 534, column 2 to column 61)",
+  " (in 'stan_program_default', line 535, column 2 to column 62)",
   " (in 'stan_program_default', line 536, column 2 to column 64)",
-  " (in 'stan_program_default', line 537, column 2 to column 61)",
+  " (in 'stan_program_default', line 537, column 2 to column 64)",
   " (in 'stan_program_default', line 538, column 2 to column 61)",
-  " (in 'stan_program_default', line 539, column 2 to column 57)",
+  " (in 'stan_program_default', line 539, column 2 to column 61)",
   " (in 'stan_program_default', line 540, column 2 to column 57)",
-  " (in 'stan_program_default', line 541, column 2 to column 59)",
-  " (in 'stan_program_default', line 542, column 2 to column 68)",
-  " (in 'stan_program_default', line 543, column 2 to column 64)",
-  " (in 'stan_program_default', line 544, column 2 to column 69)",
-  " (in 'stan_program_default', line 545, column 2 to column 60)",
-  " (in 'stan_program_default', line 546, column 2 to column 67)",
+  " (in 'stan_program_default', line 541, column 2 to column 57)",
+  " (in 'stan_program_default', line 542, column 2 to column 59)",
+  " (in 'stan_program_default', line 543, column 2 to column 68)",
+  " (in 'stan_program_default', line 544, column 2 to column 64)",
+  " (in 'stan_program_default', line 545, column 2 to column 69)",
+  " (in 'stan_program_default', line 546, column 2 to column 60)",
   " (in 'stan_program_default', line 547, column 2 to column 67)",
-  " (in 'stan_program_default', line 548, column 2 to column 63)",
-  " (in 'stan_program_default', line 549, column 2 to column 64)",
-  " (in 'stan_program_default', line 550, column 2 to column 68)",
-  " (in 'stan_program_default', line 561, column 2 to column 74)",
-  " (in 'stan_program_default', line 566, column 2 to column 71)",
-  " (in 'stan_program_default', line 565, column 6 to line 567, column 1)",
-  " (in 'stan_program_default', line 564, column 2 to column 334)",
-  " (in 'stan_program_default', line 562, column 11 to line 565, column 1)",
-  " (in 'stan_program_default', line 562, column 2 to line 567, column 1)",
-  " (in 'stan_program_default', line 586, column 8 to line 587, column 292)",
-  " (in 'stan_program_default', line 591, column 8 to column 41)",
-  " (in 'stan_program_default', line 582, column 9 to line 593, column 3)",
-  " (in 'stan_program_default', line 578, column 2 to column 409)",
-  " (in 'stan_program_default', line 581, column 1 to column 95)",
-  " (in 'stan_program_default', line 577, column 68 to line 582, column 3)",
-  " (in 'stan_program_default', line 577, column 4 to line 593, column 3)",
-  " (in 'stan_program_default', line 576, column 9 to line 594, column 3)",
-  " (in 'stan_program_default', line 573, column 2 to column 72)",
-  " (in 'stan_program_default', line 572, column 8 to line 574, column 3)",
-  " (in 'stan_program_default', line 570, column 2 to column 334)",
-  " (in 'stan_program_default', line 569, column 11 to line 572, column 3)",
-  " (in 'stan_program_default', line 569, column 2 to line 574, column 3)",
-  " (in 'stan_program_default', line 575, column 2 to column 29)",
-  " (in 'stan_program_default', line 568, column 46 to line 576, column 3)",
-  " (in 'stan_program_default', line 568, column 2 to line 594, column 3)",
-  " (in 'stan_program_default', line 595, column 14 to column 76)",
-  " (in 'stan_program_default', line 595, column 13 to column 77)",
-  " (in 'stan_program_default', line 595, column 4 to column 77)",
-  " (in 'stan_program_default', line 596, column 35 to column 59)",
-  " (in 'stan_program_default', line 596, column 33 to column 60)",
-  " (in 'stan_program_default', line 596, column 4 to column 60)",
-  " (in 'stan_program_default', line 600, column 6 to column 63)",
-  " (in 'stan_program_default', line 599, column 11 to line 601, column 5)",
-  " (in 'stan_program_default', line 598, column 6 to column 27)",
-  " (in 'stan_program_default', line 597, column 14 to line 599, column 5)",
-  " (in 'stan_program_default', line 597, column 4 to line 601, column 5)",
-  " (in 'stan_program_default', line 602, column 4 to column 56)",
-  " (in 'stan_program_default', line 603, column 4 to column 75)",
-  " (in 'stan_program_default', line 604, column 4 to column 43)",
-  " (in 'stan_program_default', line 613, column 4 to column 63)",
-  " (in 'stan_program_default', line 611, column 11 to line 614, column 5)",
+  " (in 'stan_program_default', line 548, column 2 to column 67)",
+  " (in 'stan_program_default', line 549, column 2 to column 63)",
+  " (in 'stan_program_default', line 550, column 2 to column 64)",
+  " (in 'stan_program_default', line 551, column 2 to column 68)",
+  " (in 'stan_program_default', line 562, column 2 to column 74)",
+  " (in 'stan_program_default', line 567, column 2 to column 71)",
+  " (in 'stan_program_default', line 566, column 6 to line 568, column 1)",
+  " (in 'stan_program_default', line 565, column 2 to column 334)",
+  " (in 'stan_program_default', line 563, column 11 to line 566, column 1)",
+  " (in 'stan_program_default', line 563, column 2 to line 568, column 1)",
+  " (in 'stan_program_default', line 587, column 8 to line 588, column 292)",
+  " (in 'stan_program_default', line 592, column 8 to column 41)",
+  " (in 'stan_program_default', line 583, column 9 to line 594, column 3)",
+  " (in 'stan_program_default', line 579, column 2 to column 409)",
+  " (in 'stan_program_default', line 582, column 1 to column 95)",
+  " (in 'stan_program_default', line 578, column 68 to line 583, column 3)",
+  " (in 'stan_program_default', line 578, column 4 to line 594, column 3)",
+  " (in 'stan_program_default', line 577, column 9 to line 595, column 3)",
+  " (in 'stan_program_default', line 574, column 2 to column 72)",
+  " (in 'stan_program_default', line 573, column 8 to line 575, column 3)",
+  " (in 'stan_program_default', line 571, column 2 to column 334)",
+  " (in 'stan_program_default', line 570, column 11 to line 573, column 3)",
+  " (in 'stan_program_default', line 570, column 2 to line 575, column 3)",
+  " (in 'stan_program_default', line 576, column 2 to column 29)",
+  " (in 'stan_program_default', line 569, column 46 to line 577, column 3)",
+  " (in 'stan_program_default', line 569, column 2 to line 595, column 3)",
+  " (in 'stan_program_default', line 596, column 14 to column 76)",
+  " (in 'stan_program_default', line 596, column 13 to column 77)",
+  " (in 'stan_program_default', line 596, column 4 to column 77)",
+  " (in 'stan_program_default', line 597, column 35 to column 59)",
+  " (in 'stan_program_default', line 597, column 33 to column 60)",
+  " (in 'stan_program_default', line 597, column 4 to column 60)",
+  " (in 'stan_program_default', line 601, column 6 to column 63)",
+  " (in 'stan_program_default', line 600, column 11 to line 602, column 5)",
+  " (in 'stan_program_default', line 599, column 6 to column 27)",
+  " (in 'stan_program_default', line 598, column 14 to line 600, column 5)",
+  " (in 'stan_program_default', line 598, column 4 to line 602, column 5)",
+  " (in 'stan_program_default', line 603, column 4 to column 56)",
+  " (in 'stan_program_default', line 604, column 4 to column 75)",
+  " (in 'stan_program_default', line 605, column 4 to column 43)",
+  " (in 'stan_program_default', line 612, column 4 to column 63)",
+  " (in 'stan_program_default', line 611, column 11 to line 613, column 5)",
   " (in 'stan_program_default', line 609, column 4 to line 610, column 111)",
-  " (in 'stan_program_default', line 607, column 13 to line 611, column 5)",
-  " (in 'stan_program_default', line 607, column 4 to line 614, column 5)",
-  " (in 'stan_program_default', line 615, column 4 to column 56)",
-  " (in 'stan_program_default', line 616, column 4 to column 58)",
-  " (in 'stan_program_default', line 619, column 4 to column 204)",
-  " (in 'stan_program_default', line 620, column 4 to column 213)",
-  " (in 'stan_program_default', line 625, column 4 to column 92)",
-  " (in 'stan_program_default', line 626, column 4 to column 98)",
-  " (in 'stan_program_default', line 624, column 11 to line 627, column 5)",
-  " (in 'stan_program_default', line 622, column 6 to column 28)",
-  " (in 'stan_program_default', line 623, column 6 to column 31)",
-  " (in 'stan_program_default', line 621, column 35 to line 624, column 5)",
-  " (in 'stan_program_default', line 621, column 4 to line 627, column 5)",
-  " (in 'stan_program_default', line 618, column 13 to line 628, column 5)",
-  " (in 'stan_program_default', line 618, column 4 to line 628, column 5)",
-  " (in 'stan_program_default', line 632, column 4 to column 124)",
-  " (in 'stan_program_default', line 633, column 4 to column 76)",
-  " (in 'stan_program_default', line 634, column 4 to column 104)",
-  " (in 'stan_program_default', line 640, column 6 to column 67)",
-  " (in 'stan_program_default', line 641, column 6 to column 56)",
-  " (in 'stan_program_default', line 642, column 6 to column 68)",
-  " (in 'stan_program_default', line 639, column 11 to line 643, column 5)",
-  " (in 'stan_program_default', line 636, column 6 to column 41)",
-  " (in 'stan_program_default', line 637, column 6 to column 36)",
-  " (in 'stan_program_default', line 638, column 6 to column 43)",
-  " (in 'stan_program_default', line 635, column 14 to line 639, column 5)",
-  " (in 'stan_program_default', line 635, column 4 to line 643, column 5)",
-  " (in 'stan_program_default', line 644, column 25 to column 43)",
-  " (in 'stan_program_default', line 644, column 4 to column 43)",
-  " (in 'stan_program_default', line 645, column 34 to column 52)",
-  " (in 'stan_program_default', line 645, column 4 to column 52)",
-  " (in 'stan_program_default', line 646, column 27 to column 47)",
-  " (in 'stan_program_default', line 646, column 4 to column 47)",
-  " (in 'stan_program_default', line 647, column 35 to column 55)",
-  " (in 'stan_program_default', line 647, column 34 to column 56)",
-  " (in 'stan_program_default', line 647, column 4 to column 56)",
-  " (in 'stan_program_default', line 705, column 2 to column 13)",
+  " (in 'stan_program_default', line 608, column 13 to line 611, column 5)",
+  " (in 'stan_program_default', line 608, column 4 to line 613, column 5)",
+  " (in 'stan_program_default', line 614, column 4 to column 56)",
+  " (in 'stan_program_default', line 615, column 4 to column 58)",
+  " (in 'stan_program_default', line 618, column 4 to column 204)",
+  " (in 'stan_program_default', line 619, column 4 to column 213)",
+  " (in 'stan_program_default', line 624, column 4 to column 92)",
+  " (in 'stan_program_default', line 625, column 4 to column 98)",
+  " (in 'stan_program_default', line 623, column 11 to line 626, column 5)",
+  " (in 'stan_program_default', line 621, column 6 to column 28)",
+  " (in 'stan_program_default', line 622, column 6 to column 31)",
+  " (in 'stan_program_default', line 620, column 35 to line 623, column 5)",
+  " (in 'stan_program_default', line 620, column 4 to line 626, column 5)",
+  " (in 'stan_program_default', line 617, column 13 to line 627, column 5)",
+  " (in 'stan_program_default', line 617, column 4 to line 627, column 5)",
+  " (in 'stan_program_default', line 631, column 4 to column 124)",
+  " (in 'stan_program_default', line 632, column 4 to column 76)",
+  " (in 'stan_program_default', line 633, column 4 to column 104)",
+  " (in 'stan_program_default', line 639, column 6 to column 67)",
+  " (in 'stan_program_default', line 640, column 6 to column 56)",
+  " (in 'stan_program_default', line 641, column 6 to column 68)",
+  " (in 'stan_program_default', line 638, column 11 to line 642, column 5)",
+  " (in 'stan_program_default', line 635, column 6 to column 41)",
+  " (in 'stan_program_default', line 636, column 6 to column 36)",
+  " (in 'stan_program_default', line 637, column 6 to column 43)",
+  " (in 'stan_program_default', line 634, column 14 to line 638, column 5)",
+  " (in 'stan_program_default', line 634, column 4 to line 642, column 5)",
+  " (in 'stan_program_default', line 643, column 25 to column 43)",
+  " (in 'stan_program_default', line 643, column 4 to column 43)",
+  " (in 'stan_program_default', line 644, column 34 to column 52)",
+  " (in 'stan_program_default', line 644, column 4 to column 52)",
+  " (in 'stan_program_default', line 645, column 27 to column 47)",
+  " (in 'stan_program_default', line 645, column 4 to column 47)",
+  " (in 'stan_program_default', line 646, column 35 to column 55)",
+  " (in 'stan_program_default', line 646, column 34 to column 56)",
+  " (in 'stan_program_default', line 646, column 4 to column 56)",
+  " (in 'stan_program_default', line 704, column 2 to column 13)",
+  " (in 'stan_program_default', line 705, column 2 to column 16)",
   " (in 'stan_program_default', line 706, column 2 to column 16)",
-  " (in 'stan_program_default', line 707, column 2 to column 16)",
-  " (in 'stan_program_default', line 708, column 2 to column 43)",
-  " (in 'stan_program_default', line 704, column 6 to line 709, column 1)",
-  " (in 'stan_program_default', line 679, column 4 to column 99)",
-  " (in 'stan_program_default', line 680, column 4 to column 61)",
-  " (in 'stan_program_default', line 681, column 4 to column 89)",
-  " (in 'stan_program_default', line 690, column 9 to column 26)",
-  " (in 'stan_program_default', line 687, column 28 to line 691, column 8)",
-  " (in 'stan_program_default', line 687, column 7 to line 691, column 8)",
-  " (in 'stan_program_default', line 695, column 9 to column 26)",
-  " (in 'stan_program_default', line 692, column 28 to line 696, column 7)",
-  " (in 'stan_program_default', line 692, column 7 to line 696, column 7)",
-  " (in 'stan_program_default', line 686, column 13 to line 697, column 7)",
-  " (in 'stan_program_default', line 683, column 48 to line 686, column 7)",
-  " (in 'stan_program_default', line 683, column 4 to line 697, column 7)",
-  " (in 'stan_program_default', line 698, column 2 to column 49)",
-  " (in 'stan_program_default', line 699, column 24 to column 76)",
-  " (in 'stan_program_default', line 699, column 0 to column 76)",
-  " (in 'stan_program_default', line 700, column 22 to column 69)",
-  " (in 'stan_program_default', line 700, column 0 to column 69)",
-  " (in 'stan_program_default', line 701, column 22 to column 74)",
-  " (in 'stan_program_default', line 701, column 0 to column 74)",
-  " (in 'stan_program_default', line 678, column 13 to line 704, column 1)",
-  " (in 'stan_program_default', line 678, column 4 to line 709, column 1)",
-  " (in 'stan_program_default', line 732, column 2 to column 30)",
-  " (in 'stan_program_default', line 733, column 2 to column 41)",
-  " (in 'stan_program_default', line 734, column 2 to column 20)",
-  " (in 'stan_program_default', line 735, column 2 to column 43)",
-  " (in 'stan_program_default', line 736, column 2 to column 23)",
-  " (in 'stan_program_default', line 737, column 2 to column 32)",
-  " (in 'stan_program_default', line 738, column 2 to column 27)",
-  " (in 'stan_program_default', line 731, column 6 to line 739, column 1)",
+  " (in 'stan_program_default', line 707, column 2 to column 43)",
+  " (in 'stan_program_default', line 703, column 6 to line 708, column 1)",
+  " (in 'stan_program_default', line 678, column 4 to column 99)",
+  " (in 'stan_program_default', line 679, column 4 to column 61)",
+  " (in 'stan_program_default', line 680, column 4 to column 89)",
+  " (in 'stan_program_default', line 689, column 9 to column 26)",
+  " (in 'stan_program_default', line 686, column 28 to line 690, column 8)",
+  " (in 'stan_program_default', line 686, column 7 to line 690, column 8)",
+  " (in 'stan_program_default', line 694, column 9 to column 26)",
+  " (in 'stan_program_default', line 691, column 28 to line 695, column 7)",
+  " (in 'stan_program_default', line 691, column 7 to line 695, column 7)",
+  " (in 'stan_program_default', line 685, column 13 to line 696, column 7)",
+  " (in 'stan_program_default', line 682, column 48 to line 685, column 7)",
+  " (in 'stan_program_default', line 682, column 4 to line 696, column 7)",
+  " (in 'stan_program_default', line 697, column 2 to column 49)",
+  " (in 'stan_program_default', line 698, column 24 to column 76)",
+  " (in 'stan_program_default', line 698, column 0 to column 76)",
+  " (in 'stan_program_default', line 699, column 22 to column 69)",
+  " (in 'stan_program_default', line 699, column 0 to column 69)",
+  " (in 'stan_program_default', line 700, column 22 to column 74)",
+  " (in 'stan_program_default', line 700, column 0 to column 74)",
+  " (in 'stan_program_default', line 677, column 13 to line 703, column 1)",
+  " (in 'stan_program_default', line 677, column 4 to line 708, column 1)",
+  " (in 'stan_program_default', line 731, column 2 to column 30)",
+  " (in 'stan_program_default', line 732, column 2 to column 41)",
+  " (in 'stan_program_default', line 733, column 2 to column 20)",
+  " (in 'stan_program_default', line 734, column 2 to column 43)",
+  " (in 'stan_program_default', line 735, column 2 to column 23)",
+  " (in 'stan_program_default', line 736, column 2 to column 32)",
+  " (in 'stan_program_default', line 737, column 2 to column 27)",
+  " (in 'stan_program_default', line 730, column 6 to line 738, column 1)",
+  " (in 'stan_program_default', line 718, column 0 to column 65)",
   " (in 'stan_program_default', line 719, column 0 to column 65)",
-  " (in 'stan_program_default', line 720, column 0 to column 65)",
-  " (in 'stan_program_default', line 721, column 0 to column 68)",
-  " (in 'stan_program_default', line 722, column 0 to column 72)",
-  " (in 'stan_program_default', line 723, column 0 to column 152)",
-  " (in 'stan_program_default', line 724, column 0 to column 177)",
-  " (in 'stan_program_default', line 728, column 0 to column 162)",
-  " (in 'stan_program_default', line 727, column 6 to line 729, column 1)",
-  " (in 'stan_program_default', line 726, column 0 to column 92)",
-  " (in 'stan_program_default', line 725, column 25 to line 727, column 1)",
-  " (in 'stan_program_default', line 725, column 0 to line 729, column 1)",
-  " (in 'stan_program_default', line 718, column 9 to line 731, column 1)",
-  " (in 'stan_program_default', line 718, column 0 to line 739, column 1)",
-  " (in 'stan_program_default', line 742, column 24 to column 79)",
-  " (in 'stan_program_default', line 742, column 4 to column 79)",
-  " (in 'stan_program_default', line 743, column 25 to column 61)",
-  " (in 'stan_program_default', line 743, column 4 to column 61)",
-  " (in 'stan_program_default', line 747, column 4 to column 88)",
-  " (in 'stan_program_default', line 746, column 7 to line 748, column 3)",
-  " (in 'stan_program_default', line 745, column 2 to column 19)",
-  " (in 'stan_program_default', line 744, column 29 to line 746, column 3)",
-  " (in 'stan_program_default', line 744, column 0 to line 748, column 3)",
-  " (in 'stan_program_default', line 763, column 4 to line 766, column 129)",
-  " (in 'stan_program_default', line 767, column 4 to line 770, column 137)",
-  " (in 'stan_program_default', line 775, column 4 to line 778, column 129)",
-  " (in 'stan_program_default', line 779, column 4 to line 782, column 137)",
-  " (in 'stan_program_default', line 774, column 11 to line 783, column 5)",
-  " (in 'stan_program_default', line 772, column 6 to column 41)",
-  " (in 'stan_program_default', line 773, column 6 to column 45)",
-  " (in 'stan_program_default', line 771, column 28 to line 774, column 5)",
-  " (in 'stan_program_default', line 771, column 4 to line 783, column 5)",
-  " (in 'stan_program_default', line 788, column 4 to line 793, column 147)",
-  " (in 'stan_program_default', line 794, column 4 to line 799, column 155)",
-  " (in 'stan_program_default', line 787, column 11 to line 800, column 5)",
-  " (in 'stan_program_default', line 785, column 6 to column 44)",
-  " (in 'stan_program_default', line 786, column 6 to column 48)",
-  " (in 'stan_program_default', line 784, column 31 to line 787, column 5)",
-  " (in 'stan_program_default', line 784, column 4 to line 800, column 5)",
-  " (in 'stan_program_default', line 814, column 10 to line 817, column 121)",
-  " (in 'stan_program_default', line 818, column 10 to line 821, column 121)",
-  " (in 'stan_program_default', line 813, column 15 to line 822, column 9)",
-  " (in 'stan_program_default', line 807, column 10 to line 809, column 109)",
-  " (in 'stan_program_default', line 810, column 10 to line 812, column 111)",
-  " (in 'stan_program_default', line 806, column 35 to line 813, column 9)",
-  " (in 'stan_program_default', line 806, column 8 to line 822, column 9)",
-  " (in 'stan_program_default', line 805, column 12 to line 823, column 5)",
-  " (in 'stan_program_default', line 803, column 8 to column 151)",
-  " (in 'stan_program_default', line 804, column 8 to column 64)",
-  " (in 'stan_program_default', line 802, column 30 to line 805, column 7)",
-  " (in 'stan_program_default', line 802, column 6 to line 823, column 5)",
-  " (in 'stan_program_default', line 760, column 10 to line 824, column 5)",
-  " (in 'stan_program_default', line 752, column 6 to column 65)",
-  " (in 'stan_program_default', line 753, column 6 to column 63)",
-  " (in 'stan_program_default', line 754, column 6 to column 44)",
-  " (in 'stan_program_default', line 755, column 6 to column 73)",
-  " (in 'stan_program_default', line 756, column 6 to column 71)",
-  " (in 'stan_program_default', line 757, column 6 to column 48)",
-  " (in 'stan_program_default', line 758, column 6 to column 46)",
-  " (in 'stan_program_default', line 759, column 6 to column 34)",
-  " (in 'stan_program_default', line 751, column 14 to line 760, column 5)",
-  " (in 'stan_program_default', line 751, column 4 to line 824, column 5)",
+  " (in 'stan_program_default', line 720, column 0 to column 68)",
+  " (in 'stan_program_default', line 721, column 0 to column 72)",
+  " (in 'stan_program_default', line 722, column 0 to column 152)",
+  " (in 'stan_program_default', line 723, column 0 to column 177)",
+  " (in 'stan_program_default', line 727, column 0 to column 162)",
+  " (in 'stan_program_default', line 726, column 6 to line 728, column 1)",
+  " (in 'stan_program_default', line 725, column 0 to column 92)",
+  " (in 'stan_program_default', line 724, column 25 to line 726, column 1)",
+  " (in 'stan_program_default', line 724, column 0 to line 728, column 1)",
+  " (in 'stan_program_default', line 717, column 9 to line 730, column 1)",
+  " (in 'stan_program_default', line 717, column 0 to line 738, column 1)",
+  " (in 'stan_program_default', line 741, column 24 to column 79)",
+  " (in 'stan_program_default', line 741, column 4 to column 79)",
+  " (in 'stan_program_default', line 742, column 25 to column 61)",
+  " (in 'stan_program_default', line 742, column 4 to column 61)",
+  " (in 'stan_program_default', line 746, column 4 to column 88)",
+  " (in 'stan_program_default', line 745, column 7 to line 747, column 3)",
+  " (in 'stan_program_default', line 744, column 2 to column 19)",
+  " (in 'stan_program_default', line 743, column 29 to line 745, column 3)",
+  " (in 'stan_program_default', line 743, column 0 to line 747, column 3)",
+  " (in 'stan_program_default', line 762, column 4 to line 765, column 129)",
+  " (in 'stan_program_default', line 766, column 4 to line 769, column 137)",
+  " (in 'stan_program_default', line 774, column 4 to line 777, column 129)",
+  " (in 'stan_program_default', line 778, column 4 to line 781, column 137)",
+  " (in 'stan_program_default', line 773, column 11 to line 782, column 5)",
+  " (in 'stan_program_default', line 771, column 6 to column 41)",
+  " (in 'stan_program_default', line 772, column 6 to column 45)",
+  " (in 'stan_program_default', line 770, column 28 to line 773, column 5)",
+  " (in 'stan_program_default', line 770, column 4 to line 782, column 5)",
+  " (in 'stan_program_default', line 787, column 4 to line 792, column 147)",
+  " (in 'stan_program_default', line 793, column 4 to line 798, column 155)",
+  " (in 'stan_program_default', line 786, column 11 to line 799, column 5)",
+  " (in 'stan_program_default', line 784, column 6 to column 44)",
+  " (in 'stan_program_default', line 785, column 6 to column 48)",
+  " (in 'stan_program_default', line 783, column 31 to line 786, column 5)",
+  " (in 'stan_program_default', line 783, column 4 to line 799, column 5)",
+  " (in 'stan_program_default', line 813, column 10 to line 816, column 121)",
+  " (in 'stan_program_default', line 817, column 10 to line 820, column 121)",
+  " (in 'stan_program_default', line 812, column 15 to line 821, column 9)",
+  " (in 'stan_program_default', line 806, column 10 to line 808, column 109)",
+  " (in 'stan_program_default', line 809, column 10 to line 811, column 111)",
+  " (in 'stan_program_default', line 805, column 35 to line 812, column 9)",
+  " (in 'stan_program_default', line 805, column 8 to line 821, column 9)",
+  " (in 'stan_program_default', line 804, column 12 to line 822, column 5)",
+  " (in 'stan_program_default', line 802, column 8 to column 151)",
+  " (in 'stan_program_default', line 803, column 8 to column 64)",
+  " (in 'stan_program_default', line 801, column 30 to line 804, column 7)",
+  " (in 'stan_program_default', line 801, column 6 to line 822, column 5)",
+  " (in 'stan_program_default', line 759, column 10 to line 823, column 5)",
+  " (in 'stan_program_default', line 751, column 6 to column 65)",
+  " (in 'stan_program_default', line 752, column 6 to column 63)",
+  " (in 'stan_program_default', line 753, column 6 to column 44)",
+  " (in 'stan_program_default', line 754, column 6 to column 73)",
+  " (in 'stan_program_default', line 755, column 6 to column 71)",
+  " (in 'stan_program_default', line 756, column 6 to column 48)",
+  " (in 'stan_program_default', line 757, column 6 to column 46)",
+  " (in 'stan_program_default', line 758, column 6 to column 34)",
+  " (in 'stan_program_default', line 750, column 14 to line 759, column 5)",
+  " (in 'stan_program_default', line 750, column 4 to line 823, column 5)",
+  " (in 'stan_program_default', line 826, column 6 to column 106)",
   " (in 'stan_program_default', line 827, column 6 to column 106)",
-  " (in 'stan_program_default', line 828, column 6 to column 106)",
-  " (in 'stan_program_default', line 829, column 6 to column 112)",
+  " (in 'stan_program_default', line 828, column 6 to column 112)",
+  " (in 'stan_program_default', line 829, column 6 to column 114)",
   " (in 'stan_program_default', line 830, column 6 to column 114)",
-  " (in 'stan_program_default', line 831, column 6 to column 114)",
-  " (in 'stan_program_default', line 832, column 6 to column 120)",
-  " (in 'stan_program_default', line 826, column 73 to line 833, column 5)",
-  " (in 'stan_program_default', line 826, column 6 to line 833, column 5)",
-  " (in 'stan_program_default', line 825, column 51 to line 834, column 5)",
-  " (in 'stan_program_default', line 825, column 4 to line 834, column 5)",
-  " (in 'stan_program_default', line 844, column 4 to column 70)",
-  " (in 'stan_program_default', line 845, column 4 to column 94)",
-  " (in 'stan_program_default', line 846, column 4 to column 68)",
-  " (in 'stan_program_default', line 914, column 2 to column 129)",
-  " (in 'stan_program_default', line 915, column 2 to column 133)",
-  " (in 'stan_program_default', line 917, column 2 to column 68)",
-  " (in 'stan_program_default', line 920, column 2 to column 48)",
-  " (in 'stan_program_default', line 918, column 45 to line 921, column 1)",
-  " (in 'stan_program_default', line 918, column 0 to line 921, column 1)",
-  " (in 'stan_program_default', line 912, column 19 to line 922, column 1)",
-  " (in 'stan_program_default', line 912, column 0 to line 922, column 1)",
-  " (in 'stan_program_default', line 553, column 26 to line 926, column 3)",
-  " (in 'stan_program_default', line 553, column 2 to line 926, column 3)",
-  " (in 'stan_program_default', line 969, column 2 to column 19)",
-  " (in 'stan_program_default', line 970, column 2 to column 20)",
-  " (in 'stan_program_default', line 972, column 2 to line 975, column 35)",
-  " (in 'stan_program_default', line 977, column 2 to line 979, column 35)",
-  " (in 'stan_program_default', line 987, column 2 to line 988, column 59)",
-  " (in 'stan_program_default', line 989, column 2 to column 66)",
-  " (in 'stan_program_default', line 991, column 2 to column 76)",
-  " (in 'stan_program_default', line 999, column 2 to line 1002, column 4)",
-  " (in 'stan_program_default', line 1007, column 2 to column 85)",
-  " (in 'stan_program_default', line 1011, column 2 to line 1014, column 4)",
-  " (in 'stan_program_default', line 1016, column 2 to column 84)",
-  " (in 'stan_program_default', line 1019, column 2 to column 84)",
-  " (in 'stan_program_default', line 1026, column 2 to line 1029, column 4)",
-  " (in 'stan_program_default', line 1031, column 2 to column 71)",
-  " (in 'stan_program_default', line 1032, column 2 to column 48)",
-  " (in 'stan_program_default', line 1044, column 4 to column 56)",
-  " (in 'stan_program_default', line 1042, column 4 to column 55)",
-  " (in 'stan_program_default', line 1041, column 2 to line 1044, column 56)",
-  " (in 'stan_program_default', line 1047, column 0 to column 43)",
-  " (in 'stan_program_default', line 1048, column 0 to column 88)",
-  " (in 'stan_program_default', line 1049, column 0 to column 79)",
-  " (in 'stan_program_default', line 1058, column 4 to column 67)",
-  " (in 'stan_program_default', line 1056, column 4 to column 66)",
-  " (in 'stan_program_default', line 1055, column 2 to line 1058, column 67)",
-  " (in 'stan_program_default', line 1071, column 8 to column 46)",
-  " (in 'stan_program_default', line 1072, column 8 to column 68)",
-  " (in 'stan_program_default', line 1073, column 8 to column 48)",
-  " (in 'stan_program_default', line 1070, column 26 to line 1074, column 3)",
-  " (in 'stan_program_default', line 1070, column 2 to line 1074, column 3)",
-  " (in 'stan_program_default', line 1076, column 2 to column 36)",
-  " (in 'stan_program_default', line 1077, column 2 to column 37)",
-  " (in 'stan_program_default', line 1078, column 2 to column 36)",
-  " (in 'stan_program_default', line 1247, column 2 to column 77)",
-  " (in 'stan_program_default', line 1256, column 2 to column 45)",
-  " (in 'stan_program_default', line 1257, column 2 to column 51)",
-  " (in 'stan_program_default', line 1259, column 2 to column 59)",
-  " (in 'stan_program_default', line 1262, column 4 to line 1264, column 58)",
-  " (in 'stan_program_default', line 1261, column 2 to line 1264, column 58)",
-  " (in 'stan_program_default', line 1268, column 4 to line 1269, column 64)",
-  " (in 'stan_program_default', line 1267, column 2 to line 1269, column 64)",
-  " (in 'stan_program_default', line 1274, column 2 to column 58)",
-  " (in 'stan_program_default', line 1083, column 2 to column 78)",
-  " (in 'stan_program_default', line 1085, column 2 to column 50)",
-  " (in 'stan_program_default', line 1086, column 2 to column 57)",
-  " (in 'stan_program_default', line 1087, column 2 to column 75)",
+  " (in 'stan_program_default', line 831, column 6 to column 120)",
+  " (in 'stan_program_default', line 825, column 73 to line 832, column 5)",
+  " (in 'stan_program_default', line 825, column 6 to line 832, column 5)",
+  " (in 'stan_program_default', line 824, column 51 to line 833, column 5)",
+  " (in 'stan_program_default', line 824, column 4 to line 833, column 5)",
+  " (in 'stan_program_default', line 843, column 4 to column 70)",
+  " (in 'stan_program_default', line 844, column 4 to column 94)",
+  " (in 'stan_program_default', line 845, column 4 to column 68)",
+  " (in 'stan_program_default', line 913, column 2 to column 129)",
+  " (in 'stan_program_default', line 914, column 2 to column 133)",
+  " (in 'stan_program_default', line 916, column 2 to column 68)",
+  " (in 'stan_program_default', line 919, column 2 to column 48)",
+  " (in 'stan_program_default', line 917, column 45 to line 920, column 1)",
+  " (in 'stan_program_default', line 917, column 0 to line 920, column 1)",
+  " (in 'stan_program_default', line 911, column 19 to line 921, column 1)",
+  " (in 'stan_program_default', line 911, column 0 to line 921, column 1)",
+  " (in 'stan_program_default', line 554, column 26 to line 925, column 3)",
+  " (in 'stan_program_default', line 554, column 2 to line 925, column 3)",
+  " (in 'stan_program_default', line 968, column 2 to column 19)",
+  " (in 'stan_program_default', line 969, column 2 to column 20)",
+  " (in 'stan_program_default', line 971, column 2 to line 974, column 35)",
+  " (in 'stan_program_default', line 976, column 2 to line 978, column 35)",
+  " (in 'stan_program_default', line 986, column 2 to line 987, column 59)",
+  " (in 'stan_program_default', line 988, column 2 to column 66)",
+  " (in 'stan_program_default', line 990, column 2 to column 76)",
+  " (in 'stan_program_default', line 998, column 2 to line 1001, column 4)",
+  " (in 'stan_program_default', line 1006, column 2 to column 85)",
+  " (in 'stan_program_default', line 1010, column 2 to line 1013, column 4)",
+  " (in 'stan_program_default', line 1015, column 2 to column 84)",
+  " (in 'stan_program_default', line 1018, column 2 to column 84)",
+  " (in 'stan_program_default', line 1025, column 2 to line 1028, column 4)",
+  " (in 'stan_program_default', line 1030, column 2 to column 71)",
+  " (in 'stan_program_default', line 1031, column 2 to column 48)",
+  " (in 'stan_program_default', line 1043, column 4 to column 56)",
+  " (in 'stan_program_default', line 1041, column 4 to column 55)",
+  " (in 'stan_program_default', line 1040, column 2 to line 1043, column 56)",
+  " (in 'stan_program_default', line 1046, column 0 to column 43)",
+  " (in 'stan_program_default', line 1047, column 0 to column 88)",
+  " (in 'stan_program_default', line 1048, column 0 to column 79)",
+  " (in 'stan_program_default', line 1057, column 4 to column 67)",
+  " (in 'stan_program_default', line 1055, column 4 to column 66)",
+  " (in 'stan_program_default', line 1054, column 2 to line 1057, column 67)",
+  " (in 'stan_program_default', line 1070, column 8 to column 46)",
+  " (in 'stan_program_default', line 1071, column 8 to column 68)",
+  " (in 'stan_program_default', line 1072, column 8 to column 48)",
+  " (in 'stan_program_default', line 1069, column 26 to line 1073, column 3)",
+  " (in 'stan_program_default', line 1069, column 2 to line 1073, column 3)",
+  " (in 'stan_program_default', line 1075, column 2 to column 36)",
+  " (in 'stan_program_default', line 1076, column 2 to column 37)",
+  " (in 'stan_program_default', line 1077, column 2 to column 36)",
+  " (in 'stan_program_default', line 1250, column 2 to column 77)",
+  " (in 'stan_program_default', line 1259, column 2 to column 45)",
+  " (in 'stan_program_default', line 1260, column 2 to column 51)",
+  " (in 'stan_program_default', line 1262, column 2 to column 59)",
+  " (in 'stan_program_default', line 1265, column 4 to line 1267, column 58)",
+  " (in 'stan_program_default', line 1264, column 2 to line 1267, column 58)",
+  " (in 'stan_program_default', line 1271, column 4 to line 1272, column 64)",
+  " (in 'stan_program_default', line 1270, column 2 to line 1272, column 64)",
+  " (in 'stan_program_default', line 1277, column 2 to column 58)",
+  " (in 'stan_program_default', line 1082, column 2 to column 78)",
+  " (in 'stan_program_default', line 1084, column 2 to column 50)",
+  " (in 'stan_program_default', line 1085, column 2 to column 57)",
+  " (in 'stan_program_default', line 1086, column 2 to column 75)",
+  " (in 'stan_program_default', line 1087, column 2 to column 55)",
   " (in 'stan_program_default', line 1088, column 2 to column 55)",
-  " (in 'stan_program_default', line 1089, column 2 to column 55)",
-  " (in 'stan_program_default', line 1092, column 2 to column 62)",
-  " (in 'stan_program_default', line 1093, column 2 to column 80)",
-  " (in 'stan_program_default', line 1094, column 2 to column 62)",
-  " (in 'stan_program_default', line 1095, column 2 to column 68)",
-  " (in 'stan_program_default', line 1096, column 2 to column 62)",
-  " (in 'stan_program_default', line 1097, column 2 to column 60)",
-  " (in 'stan_program_default', line 1099, column 2 to column 62)",
-  " (in 'stan_program_default', line 1100, column 2 to column 80)",
-  " (in 'stan_program_default', line 1103, column 2 to column 80)",
-  " (in 'stan_program_default', line 1104, column 2 to column 75)",
-  " (in 'stan_program_default', line 1105, column 2 to column 65)",
+  " (in 'stan_program_default', line 1091, column 2 to column 62)",
+  " (in 'stan_program_default', line 1092, column 2 to column 80)",
+  " (in 'stan_program_default', line 1093, column 2 to column 62)",
+  " (in 'stan_program_default', line 1094, column 2 to column 68)",
+  " (in 'stan_program_default', line 1095, column 2 to column 62)",
+  " (in 'stan_program_default', line 1096, column 2 to column 60)",
+  " (in 'stan_program_default', line 1098, column 2 to column 62)",
+  " (in 'stan_program_default', line 1099, column 2 to column 80)",
+  " (in 'stan_program_default', line 1102, column 2 to column 80)",
+  " (in 'stan_program_default', line 1103, column 2 to column 75)",
+  " (in 'stan_program_default', line 1104, column 2 to column 65)",
+  " (in 'stan_program_default', line 1106, column 2 to column 72)",
   " (in 'stan_program_default', line 1107, column 2 to column 72)",
-  " (in 'stan_program_default', line 1108, column 2 to column 72)",
-  " (in 'stan_program_default', line 1111, column 2 to column 66)",
+  " (in 'stan_program_default', line 1110, column 2 to column 66)",
+  " (in 'stan_program_default', line 1112, column 2 to column 32)",
   " (in 'stan_program_default', line 1113, column 2 to column 32)",
   " (in 'stan_program_default', line 1114, column 2 to column 32)",
-  " (in 'stan_program_default', line 1115, column 2 to column 32)",
-  " (in 'stan_program_default', line 1129, column 8 to column 77)",
-  " (in 'stan_program_default', line 1128, column 6 to line 1129, column 77)",
-  " (in 'stan_program_default', line 1131, column 8 to column 78)",
-  " (in 'stan_program_default', line 1130, column 6 to line 1131, column 78)",
-  " (in 'stan_program_default', line 1134, column 6 to column 87)",
-  " (in 'stan_program_default', line 1135, column 6 to column 88)",
-  " (in 'stan_program_default', line 1122, column 24 to line 1136, column 5)",
-  " (in 'stan_program_default', line 1122, column 4 to line 1136, column 5)",
-  " (in 'stan_program_default', line 1120, column 24 to line 1137, column 3)",
-  " (in 'stan_program_default', line 1120, column 2 to line 1137, column 3)",
-  " (in 'stan_program_default', line 1139, column 4 to column 50)",
-  " (in 'stan_program_default', line 1138, column 2 to line 1139, column 50)",
-  " (in 'stan_program_default', line 1141, column 4 to column 51)",
-  " (in 'stan_program_default', line 1140, column 2 to line 1141, column 51)",
-  " (in 'stan_program_default', line 1167, column 2 to line 1174, column 5)",
-  " (in 'stan_program_default', line 1188, column 2 to line 1195, column 4)",
-  " (in 'stan_program_default', line 1198, column 0 to line 1205, column 2)",
-  " (in 'stan_program_default', line 56, column 2 to column 23)",
-  " (in 'stan_program_default', line 57, column 2 to column 37)",
-  " (in 'stan_program_default', line 58, column 2 to column 30)",
-  " (in 'stan_program_default', line 59, column 2 to column 34)",
-  " (in 'stan_program_default', line 60, column 2 to column 25)",
-  " (in 'stan_program_default', line 63, column 23 to column 30)",
-  " (in 'stan_program_default', line 63, column 2 to column 32)",
+  " (in 'stan_program_default', line 1116, column 2 to column 37)",
+  " (in 'stan_program_default', line 1118, column 2 to column 39)",
+  " (in 'stan_program_default', line 1132, column 8 to column 77)",
+  " (in 'stan_program_default', line 1131, column 6 to line 1132, column 77)",
+  " (in 'stan_program_default', line 1134, column 8 to column 78)",
+  " (in 'stan_program_default', line 1133, column 6 to line 1134, column 78)",
+  " (in 'stan_program_default', line 1137, column 6 to column 87)",
+  " (in 'stan_program_default', line 1138, column 6 to column 88)",
+  " (in 'stan_program_default', line 1125, column 24 to line 1139, column 5)",
+  " (in 'stan_program_default', line 1125, column 4 to line 1139, column 5)",
+  " (in 'stan_program_default', line 1123, column 24 to line 1140, column 3)",
+  " (in 'stan_program_default', line 1123, column 2 to line 1140, column 3)",
+  " (in 'stan_program_default', line 1142, column 4 to column 50)",
+  " (in 'stan_program_default', line 1141, column 2 to line 1142, column 50)",
+  " (in 'stan_program_default', line 1144, column 4 to column 51)",
+  " (in 'stan_program_default', line 1143, column 2 to line 1144, column 51)",
+  " (in 'stan_program_default', line 1170, column 2 to line 1177, column 5)",
+  " (in 'stan_program_default', line 1191, column 2 to line 1198, column 4)",
+  " (in 'stan_program_default', line 1201, column 0 to line 1208, column 2)",
+  " (in 'stan_program_default', line 57, column 2 to column 23)",
+  " (in 'stan_program_default', line 58, column 2 to column 37)",
+  " (in 'stan_program_default', line 59, column 2 to column 30)",
+  " (in 'stan_program_default', line 60, column 2 to column 34)",
+  " (in 'stan_program_default', line 61, column 2 to column 25)",
   " (in 'stan_program_default', line 64, column 23 to column 30)",
   " (in 'stan_program_default', line 64, column 2 to column 32)",
-  " (in 'stan_program_default', line 65, column 24 to column 31)",
-  " (in 'stan_program_default', line 65, column 2 to column 33)",
-  " (in 'stan_program_default', line 66, column 18 to column 25)",
-  " (in 'stan_program_default', line 66, column 2 to column 37)",
+  " (in 'stan_program_default', line 65, column 23 to column 30)",
+  " (in 'stan_program_default', line 65, column 2 to column 32)",
+  " (in 'stan_program_default', line 66, column 24 to column 31)",
+  " (in 'stan_program_default', line 66, column 2 to column 33)",
   " (in 'stan_program_default', line 67, column 18 to column 25)",
-  " (in 'stan_program_default', line 67, column 2 to column 35)",
-  " (in 'stan_program_default', line 68, column 2 to column 25)",
-  " (in 'stan_program_default', line 69, column 2 to column 19)",
-  " (in 'stan_program_default', line 71, column 2 to column 25)",
-  " (in 'stan_program_default', line 72, column 18 to column 27)",
-  " (in 'stan_program_default', line 72, column 2 to column 37)",
-  " (in 'stan_program_default', line 73, column 18 to column 40)",
-  " (in 'stan_program_default', line 73, column 2 to column 54)",
-  " (in 'stan_program_default', line 74, column 2 to column 34)",
+  " (in 'stan_program_default', line 67, column 2 to column 37)",
+  " (in 'stan_program_default', line 68, column 18 to column 25)",
+  " (in 'stan_program_default', line 68, column 2 to column 35)",
+  " (in 'stan_program_default', line 69, column 2 to column 25)",
+  " (in 'stan_program_default', line 70, column 2 to column 19)",
+  " (in 'stan_program_default', line 72, column 2 to column 25)",
+  " (in 'stan_program_default', line 73, column 18 to column 27)",
+  " (in 'stan_program_default', line 73, column 2 to column 37)",
+  " (in 'stan_program_default', line 74, column 18 to column 40)",
+  " (in 'stan_program_default', line 74, column 2 to column 54)",
   " (in 'stan_program_default', line 75, column 2 to column 34)",
-  " (in 'stan_program_default', line 76, column 2 to column 30)",
-  " (in 'stan_program_default', line 77, column 2 to column 33)",
+  " (in 'stan_program_default', line 76, column 2 to column 34)",
+  " (in 'stan_program_default', line 77, column 2 to column 30)",
   " (in 'stan_program_default', line 78, column 2 to column 33)",
-  " (in 'stan_program_default', line 79, column 2 to column 34)",
+  " (in 'stan_program_default', line 79, column 2 to column 33)",
   " (in 'stan_program_default', line 80, column 2 to column 34)",
-  " (in 'stan_program_default', line 81, column 2 to column 30)",
-  " (in 'stan_program_default', line 82, column 2 to column 28)",
-  " (in 'stan_program_default', line 83, column 2 to column 34)",
-  " (in 'stan_program_default', line 84, column 2 to column 32)",
-  " (in 'stan_program_default', line 85, column 2 to column 37)",
-  " (in 'stan_program_default', line 86, column 2 to column 41)",
-  " (in 'stan_program_default', line 87, column 2 to column 42)",
-  " (in 'stan_program_default', line 88, column 2 to column 44)",
+  " (in 'stan_program_default', line 81, column 2 to column 34)",
+  " (in 'stan_program_default', line 82, column 2 to column 30)",
+  " (in 'stan_program_default', line 83, column 2 to column 28)",
+  " (in 'stan_program_default', line 84, column 2 to column 34)",
+  " (in 'stan_program_default', line 85, column 2 to column 32)",
+  " (in 'stan_program_default', line 86, column 2 to column 37)",
+  " (in 'stan_program_default', line 87, column 2 to column 41)",
+  " (in 'stan_program_default', line 88, column 2 to column 42)",
   " (in 'stan_program_default', line 89, column 2 to column 44)",
-  " (in 'stan_program_default', line 92, column 2 to column 28)",
-  " (in 'stan_program_default', line 94, column 9 to column 31)",
-  " (in 'stan_program_default', line 94, column 32 to column 44)",
-  " (in 'stan_program_default', line 94, column 2 to column 59)",
-  " (in 'stan_program_default', line 95, column 2 to column 28)",
-  " (in 'stan_program_default', line 97, column 9 to column 31)",
-  " (in 'stan_program_default', line 97, column 32 to column 44)",
-  " (in 'stan_program_default', line 97, column 2 to column 59)",
-  " (in 'stan_program_default', line 100, column 2 to column 35)",
+  " (in 'stan_program_default', line 90, column 2 to column 44)",
+  " (in 'stan_program_default', line 93, column 2 to column 28)",
+  " (in 'stan_program_default', line 95, column 9 to column 31)",
+  " (in 'stan_program_default', line 95, column 32 to column 44)",
+  " (in 'stan_program_default', line 95, column 2 to column 59)",
+  " (in 'stan_program_default', line 96, column 2 to column 28)",
+  " (in 'stan_program_default', line 98, column 9 to column 31)",
+  " (in 'stan_program_default', line 98, column 32 to column 44)",
+  " (in 'stan_program_default', line 98, column 2 to column 59)",
   " (in 'stan_program_default', line 101, column 2 to column 35)",
   " (in 'stan_program_default', line 102, column 2 to column 35)",
   " (in 'stan_program_default', line 103, column 2 to column 35)",
@@ -517,151 +518,153 @@ static constexpr std::array<const char*, 746> locations_array__ =
   " (in 'stan_program_default', line 105, column 2 to column 35)",
   " (in 'stan_program_default', line 106, column 2 to column 35)",
   " (in 'stan_program_default', line 107, column 2 to column 35)",
-  " (in 'stan_program_default', line 109, column 2 to column 35)",
+  " (in 'stan_program_default', line 108, column 2 to column 35)",
   " (in 'stan_program_default', line 110, column 2 to column 35)",
   " (in 'stan_program_default', line 111, column 2 to column 35)",
   " (in 'stan_program_default', line 112, column 2 to column 35)",
-  " (in 'stan_program_default', line 115, column 2 to column 44)",
-  " (in 'stan_program_default', line 117, column 2 to column 36)",
+  " (in 'stan_program_default', line 113, column 2 to column 35)",
+  " (in 'stan_program_default', line 116, column 2 to column 44)",
   " (in 'stan_program_default', line 118, column 2 to column 36)",
-  " (in 'stan_program_default', line 119, column 2 to column 37)",
-  " (in 'stan_program_default', line 121, column 2 to column 40)",
+  " (in 'stan_program_default', line 119, column 2 to column 36)",
+  " (in 'stan_program_default', line 120, column 2 to column 37)",
   " (in 'stan_program_default', line 122, column 2 to column 40)",
-  " (in 'stan_program_default', line 123, column 2 to column 41)",
-  " (in 'stan_program_default', line 130, column 2 to column 29)",
-  " (in 'stan_program_default', line 131, column 2 to column 28)",
-  " (in 'stan_program_default', line 132, column 2 to column 29)",
-  " (in 'stan_program_default', line 135, column 2 to column 28)",
-  " (in 'stan_program_default', line 139, column 2 to column 31)",
-  " (in 'stan_program_default', line 140, column 2 to column 40)",
-  " (in 'stan_program_default', line 141, column 2 to column 20)",
-  " (in 'stan_program_default', line 142, column 2 to column 29)",
-  " (in 'stan_program_default', line 143, column 2 to column 34)",
+  " (in 'stan_program_default', line 123, column 2 to column 40)",
+  " (in 'stan_program_default', line 124, column 2 to column 41)",
+  " (in 'stan_program_default', line 131, column 2 to column 29)",
+  " (in 'stan_program_default', line 132, column 2 to column 28)",
+  " (in 'stan_program_default', line 133, column 2 to column 29)",
+  " (in 'stan_program_default', line 136, column 2 to column 28)",
+  " (in 'stan_program_default', line 140, column 2 to column 31)",
+  " (in 'stan_program_default', line 141, column 2 to column 40)",
+  " (in 'stan_program_default', line 142, column 2 to column 20)",
+  " (in 'stan_program_default', line 143, column 2 to column 29)",
   " (in 'stan_program_default', line 144, column 2 to column 34)",
-  " (in 'stan_program_default', line 145, column 2 to column 40)",
+  " (in 'stan_program_default', line 145, column 2 to column 34)",
   " (in 'stan_program_default', line 146, column 2 to column 40)",
-  " (in 'stan_program_default', line 147, column 2 to column 38)",
+  " (in 'stan_program_default', line 147, column 2 to column 40)",
   " (in 'stan_program_default', line 148, column 2 to column 38)",
-  " (in 'stan_program_default', line 150, column 2 to column 35)",
+  " (in 'stan_program_default', line 149, column 2 to column 38)",
   " (in 'stan_program_default', line 151, column 2 to column 35)",
-  " (in 'stan_program_default', line 152, column 2 to column 41)",
+  " (in 'stan_program_default', line 152, column 2 to column 35)",
   " (in 'stan_program_default', line 153, column 2 to column 41)",
-  " (in 'stan_program_default', line 154, column 2 to column 35)",
+  " (in 'stan_program_default', line 154, column 2 to column 41)",
   " (in 'stan_program_default', line 155, column 2 to column 35)",
   " (in 'stan_program_default', line 156, column 2 to column 35)",
   " (in 'stan_program_default', line 157, column 2 to column 35)",
-  " (in 'stan_program_default', line 159, column 2 to column 35)",
+  " (in 'stan_program_default', line 158, column 2 to column 35)",
   " (in 'stan_program_default', line 160, column 2 to column 35)",
-  " (in 'stan_program_default', line 161, column 2 to column 41)",
+  " (in 'stan_program_default', line 161, column 2 to column 35)",
   " (in 'stan_program_default', line 162, column 2 to column 41)",
-  " (in 'stan_program_default', line 165, column 2 to column 41)",
+  " (in 'stan_program_default', line 163, column 2 to column 41)",
   " (in 'stan_program_default', line 166, column 2 to column 41)",
-  " (in 'stan_program_default', line 168, column 2 to column 41)",
+  " (in 'stan_program_default', line 167, column 2 to column 41)",
   " (in 'stan_program_default', line 169, column 2 to column 41)",
-  " (in 'stan_program_default', line 171, column 2 to column 36)",
+  " (in 'stan_program_default', line 170, column 2 to column 41)",
   " (in 'stan_program_default', line 172, column 2 to column 36)",
-  " (in 'stan_program_default', line 175, column 2 to column 37)",
+  " (in 'stan_program_default', line 173, column 2 to column 36)",
   " (in 'stan_program_default', line 176, column 2 to column 37)",
   " (in 'stan_program_default', line 177, column 2 to column 37)",
   " (in 'stan_program_default', line 178, column 2 to column 37)",
+  " (in 'stan_program_default', line 179, column 2 to column 37)",
   " (in 'stan_program_default', line 181, column 2 to column 35)",
   " (in 'stan_program_default', line 182, column 2 to column 35)",
-  " (in 'stan_program_default', line 190, column 2 to column 18)",
-  " (in 'stan_program_default', line 195, column 27 to column 34)",
-  " (in 'stan_program_default', line 195, column 2 to column 36)",
+  " (in 'stan_program_default', line 184, column 2 to column 34)",
+  " (in 'stan_program_default', line 186, column 4 to column 37)",
+  " (in 'stan_program_default', line 191, column 2 to column 18)",
   " (in 'stan_program_default', line 196, column 27 to column 34)",
   " (in 'stan_program_default', line 196, column 2 to column 36)",
-  " (in 'stan_program_default', line 197, column 28 to column 35)",
-  " (in 'stan_program_default', line 197, column 2 to column 37)",
-  " (in 'stan_program_default', line 200, column 9 to column 18)",
-  " (in 'stan_program_default', line 200, column 2 to column 37)",
+  " (in 'stan_program_default', line 197, column 27 to column 34)",
+  " (in 'stan_program_default', line 197, column 2 to column 36)",
+  " (in 'stan_program_default', line 198, column 28 to column 35)",
+  " (in 'stan_program_default', line 198, column 2 to column 37)",
   " (in 'stan_program_default', line 201, column 9 to column 18)",
   " (in 'stan_program_default', line 201, column 2 to column 37)",
   " (in 'stan_program_default', line 202, column 9 to column 18)",
   " (in 'stan_program_default', line 202, column 2 to column 37)",
   " (in 'stan_program_default', line 203, column 9 to column 18)",
   " (in 'stan_program_default', line 203, column 2 to column 37)",
-  " (in 'stan_program_default', line 205, column 9 to column 18)",
-  " (in 'stan_program_default', line 205, column 2 to column 37)",
+  " (in 'stan_program_default', line 204, column 9 to column 18)",
+  " (in 'stan_program_default', line 204, column 2 to column 37)",
   " (in 'stan_program_default', line 206, column 9 to column 18)",
   " (in 'stan_program_default', line 206, column 2 to column 37)",
-  " (in 'stan_program_default', line 210, column 9 to column 33)",
-  " (in 'stan_program_default', line 210, column 2 to column 59)",
+  " (in 'stan_program_default', line 207, column 9 to column 18)",
+  " (in 'stan_program_default', line 207, column 2 to column 37)",
   " (in 'stan_program_default', line 211, column 9 to column 33)",
   " (in 'stan_program_default', line 211, column 2 to column 59)",
-  " (in 'stan_program_default', line 215, column 10 to column 34)",
-  " (in 'stan_program_default', line 215, column 1 to column 36)",
+  " (in 'stan_program_default', line 212, column 9 to column 33)",
+  " (in 'stan_program_default', line 212, column 2 to column 59)",
   " (in 'stan_program_default', line 216, column 10 to column 34)",
   " (in 'stan_program_default', line 216, column 1 to column 36)",
-  " (in 'stan_program_default', line 217, column 8 to column 32)",
-  " (in 'stan_program_default', line 217, column 1 to column 39)",
+  " (in 'stan_program_default', line 217, column 10 to column 34)",
+  " (in 'stan_program_default', line 217, column 1 to column 36)",
   " (in 'stan_program_default', line 218, column 8 to column 32)",
   " (in 'stan_program_default', line 218, column 1 to column 39)",
   " (in 'stan_program_default', line 219, column 8 to column 32)",
-  " (in 'stan_program_default', line 219, column 1 to column 43)",
+  " (in 'stan_program_default', line 219, column 1 to column 39)",
   " (in 'stan_program_default', line 220, column 8 to column 32)",
-  " (in 'stan_program_default', line 220, column 1 to column 45)",
-  " (in 'stan_program_default', line 225, column 2 to column 41)",
-  " (in 'stan_program_default', line 226, column 2 to column 63)",
-  " (in 'stan_program_default', line 227, column 2 to column 51)",
-  " (in 'stan_program_default', line 228, column 2 to column 65)",
-  " (in 'stan_program_default', line 229, column 2 to column 55)",
-  " (in 'stan_program_default', line 238, column 4 to column 16)",
-  " (in 'stan_program_default', line 239, column 4 to column 28)",
-  " (in 'stan_program_default', line 237, column 9 to line 240, column 3)",
-  " (in 'stan_program_default', line 235, column 4 to column 28)",
-  " (in 'stan_program_default', line 236, column 4 to column 16)",
-  " (in 'stan_program_default', line 234, column 19 to line 237, column 3)",
-  " (in 'stan_program_default', line 234, column 2 to line 240, column 3)",
-  " (in 'stan_program_default', line 246, column 4 to column 16)",
-  " (in 'stan_program_default', line 245, column 9 to line 247, column 3)",
-  " (in 'stan_program_default', line 244, column 2 to column 28)",
-  " (in 'stan_program_default', line 243, column 27 to line 245, column 3)",
-  " (in 'stan_program_default', line 243, column 2 to line 247, column 3)",
-  " (in 'stan_program_default', line 256, column 6 to column 67)",
-  " (in 'stan_program_default', line 253, column 10 to line 257, column 5)",
-  " (in 'stan_program_default', line 252, column 6 to column 18)",
-  " (in 'stan_program_default', line 251, column 71 to line 253, column 5)",
-  " (in 'stan_program_default', line 251, column 4 to line 257, column 5)",
-  " (in 'stan_program_default', line 250, column 9 to line 258, column 3)",
-  " (in 'stan_program_default', line 249, column 4 to column 16)",
-  " (in 'stan_program_default', line 248, column 46 to line 250, column 3)",
-  " (in 'stan_program_default', line 248, column 2 to line 258, column 3)",
-  " (in 'stan_program_default', line 233, column 24 to line 259, column 1)",
-  " (in 'stan_program_default', line 233, column 0 to line 259, column 1)",
-  " (in 'stan_program_default', line 271, column 4 to column 32)",
-  " (in 'stan_program_default', line 272, column 4 to column 34)",
-  " (in 'stan_program_default', line 273, column 4 to column 32)",
-  " (in 'stan_program_default', line 270, column 22 to line 274, column 3)",
-  " (in 'stan_program_default', line 270, column 2 to line 274, column 3)",
-  " (in 'stan_program_default', line 278, column 4 to line 280, column 62)",
-  " (in 'stan_program_default', line 281, column 4 to line 283, column 64)",
-  " (in 'stan_program_default', line 286, column 4 to line 288, column 62)",
-  " (in 'stan_program_default', line 289, column 4 to line 291, column 62)",
-  " (in 'stan_program_default', line 277, column 24 to line 292, column 3)",
-  " (in 'stan_program_default', line 277, column 2 to line 292, column 3)",
-  " (in 'stan_program_default', line 296, column 4 to line 298, column 62)",
-  " (in 'stan_program_default', line 299, column 4 to line 301, column 62)",
-  " (in 'stan_program_default', line 295, column 24 to line 302, column 3)",
-  " (in 'stan_program_default', line 295, column 2 to line 302, column 3)",
-  " (in 'stan_program_default', line 304, column 2 to column 60)",
+  " (in 'stan_program_default', line 220, column 1 to column 43)",
+  " (in 'stan_program_default', line 221, column 8 to column 32)",
+  " (in 'stan_program_default', line 221, column 1 to column 45)",
+  " (in 'stan_program_default', line 226, column 2 to column 41)",
+  " (in 'stan_program_default', line 227, column 2 to column 63)",
+  " (in 'stan_program_default', line 228, column 2 to column 51)",
+  " (in 'stan_program_default', line 229, column 2 to column 65)",
+  " (in 'stan_program_default', line 230, column 2 to column 55)",
+  " (in 'stan_program_default', line 239, column 4 to column 16)",
+  " (in 'stan_program_default', line 240, column 4 to column 28)",
+  " (in 'stan_program_default', line 238, column 9 to line 241, column 3)",
+  " (in 'stan_program_default', line 236, column 4 to column 28)",
+  " (in 'stan_program_default', line 237, column 4 to column 16)",
+  " (in 'stan_program_default', line 235, column 19 to line 238, column 3)",
+  " (in 'stan_program_default', line 235, column 2 to line 241, column 3)",
+  " (in 'stan_program_default', line 247, column 4 to column 16)",
+  " (in 'stan_program_default', line 246, column 9 to line 248, column 3)",
+  " (in 'stan_program_default', line 245, column 2 to column 28)",
+  " (in 'stan_program_default', line 244, column 27 to line 246, column 3)",
+  " (in 'stan_program_default', line 244, column 2 to line 248, column 3)",
+  " (in 'stan_program_default', line 257, column 6 to column 67)",
+  " (in 'stan_program_default', line 254, column 10 to line 258, column 5)",
+  " (in 'stan_program_default', line 253, column 6 to column 18)",
+  " (in 'stan_program_default', line 252, column 71 to line 254, column 5)",
+  " (in 'stan_program_default', line 252, column 4 to line 258, column 5)",
+  " (in 'stan_program_default', line 251, column 9 to line 259, column 3)",
+  " (in 'stan_program_default', line 250, column 4 to column 16)",
+  " (in 'stan_program_default', line 249, column 46 to line 251, column 3)",
+  " (in 'stan_program_default', line 249, column 2 to line 259, column 3)",
+  " (in 'stan_program_default', line 234, column 24 to line 260, column 1)",
+  " (in 'stan_program_default', line 234, column 0 to line 260, column 1)",
+  " (in 'stan_program_default', line 272, column 4 to column 32)",
+  " (in 'stan_program_default', line 273, column 4 to column 34)",
+  " (in 'stan_program_default', line 274, column 4 to column 32)",
+  " (in 'stan_program_default', line 271, column 22 to line 275, column 3)",
+  " (in 'stan_program_default', line 271, column 2 to line 275, column 3)",
+  " (in 'stan_program_default', line 279, column 4 to line 281, column 62)",
+  " (in 'stan_program_default', line 282, column 4 to line 284, column 64)",
+  " (in 'stan_program_default', line 287, column 4 to line 289, column 62)",
+  " (in 'stan_program_default', line 290, column 4 to line 292, column 62)",
+  " (in 'stan_program_default', line 278, column 24 to line 293, column 3)",
+  " (in 'stan_program_default', line 278, column 2 to line 293, column 3)",
+  " (in 'stan_program_default', line 297, column 4 to line 299, column 62)",
+  " (in 'stan_program_default', line 300, column 4 to line 302, column 62)",
+  " (in 'stan_program_default', line 296, column 24 to line 303, column 3)",
+  " (in 'stan_program_default', line 296, column 2 to line 303, column 3)",
   " (in 'stan_program_default', line 305, column 2 to column 60)",
   " (in 'stan_program_default', line 306, column 2 to column 60)",
   " (in 'stan_program_default', line 307, column 2 to column 60)",
   " (in 'stan_program_default', line 308, column 2 to column 60)",
   " (in 'stan_program_default', line 309, column 2 to column 60)",
-  " (in 'stan_program_default', line 325, column 6 to column 53)",
+  " (in 'stan_program_default', line 310, column 2 to column 60)",
   " (in 'stan_program_default', line 326, column 6 to column 53)",
-  " (in 'stan_program_default', line 324, column 11 to line 327, column 5)",
-  " (in 'stan_program_default', line 322, column 6 to column 103)",
+  " (in 'stan_program_default', line 327, column 6 to column 53)",
+  " (in 'stan_program_default', line 325, column 11 to line 328, column 5)",
   " (in 'stan_program_default', line 323, column 6 to column 103)",
-  " (in 'stan_program_default', line 321, column 21 to line 324, column 5)",
-  " (in 'stan_program_default', line 321, column 4 to line 327, column 5)",
-  " (in 'stan_program_default', line 320, column 26 to line 328, column 3)",
-  " (in 'stan_program_default', line 320, column 2 to line 328, column 3)",
-  " (in 'stan_program_default', line 338, column 9 to column 21)",
-  " (in 'stan_program_default', line 356, column 27 to column 39)",
-  " (in 'stan_program_default', line 370, column 9 to column 20)",
+  " (in 'stan_program_default', line 324, column 6 to column 103)",
+  " (in 'stan_program_default', line 322, column 21 to line 325, column 5)",
+  " (in 'stan_program_default', line 322, column 4 to line 328, column 5)",
+  " (in 'stan_program_default', line 321, column 26 to line 329, column 3)",
+  " (in 'stan_program_default', line 321, column 2 to line 329, column 3)",
+  " (in 'stan_program_default', line 339, column 9 to column 21)",
+  " (in 'stan_program_default', line 357, column 27 to column 39)",
   " (in 'stan_program_default', line 371, column 9 to column 20)",
   " (in 'stan_program_default', line 372, column 9 to column 20)",
   " (in 'stan_program_default', line 373, column 9 to column 20)",
@@ -676,7 +679,7 @@ static constexpr std::array<const char*, 746> locations_array__ =
   " (in 'stan_program_default', line 382, column 9 to column 20)",
   " (in 'stan_program_default', line 383, column 9 to column 20)",
   " (in 'stan_program_default', line 384, column 9 to column 20)",
-  " (in 'stan_program_default', line 387, column 9 to column 20)",
+  " (in 'stan_program_default', line 385, column 9 to column 20)",
   " (in 'stan_program_default', line 388, column 9 to column 20)",
   " (in 'stan_program_default', line 389, column 9 to column 20)",
   " (in 'stan_program_default', line 390, column 9 to column 20)",
@@ -691,7 +694,7 @@ static constexpr std::array<const char*, 746> locations_array__ =
   " (in 'stan_program_default', line 399, column 9 to column 20)",
   " (in 'stan_program_default', line 400, column 9 to column 20)",
   " (in 'stan_program_default', line 401, column 9 to column 20)",
-  " (in 'stan_program_default', line 403, column 9 to column 20)",
+  " (in 'stan_program_default', line 402, column 9 to column 20)",
   " (in 'stan_program_default', line 404, column 9 to column 20)",
   " (in 'stan_program_default', line 405, column 9 to column 20)",
   " (in 'stan_program_default', line 406, column 9 to column 20)",
@@ -709,44 +712,45 @@ static constexpr std::array<const char*, 746> locations_array__ =
   " (in 'stan_program_default', line 418, column 9 to column 20)",
   " (in 'stan_program_default', line 419, column 9 to column 20)",
   " (in 'stan_program_default', line 420, column 9 to column 20)",
-  " (in 'stan_program_default', line 423, column 9 to column 20)",
+  " (in 'stan_program_default', line 421, column 9 to column 20)",
   " (in 'stan_program_default', line 424, column 9 to column 20)",
   " (in 'stan_program_default', line 425, column 9 to column 20)",
   " (in 'stan_program_default', line 426, column 9 to column 20)",
-  " (in 'stan_program_default', line 427, column 9 to column 23)",
+  " (in 'stan_program_default', line 427, column 9 to column 20)",
   " (in 'stan_program_default', line 428, column 9 to column 23)",
-  " (in 'stan_program_default', line 430, column 9 to column 18)",
-  " (in 'stan_program_default', line 431, column 9 to column 20)",
+  " (in 'stan_program_default', line 429, column 9 to column 23)",
+  " (in 'stan_program_default', line 431, column 9 to column 18)",
   " (in 'stan_program_default', line 432, column 9 to column 20)",
-  " (in 'stan_program_default', line 435, column 9 to column 20)",
+  " (in 'stan_program_default', line 433, column 9 to column 20)",
   " (in 'stan_program_default', line 436, column 9 to column 20)",
   " (in 'stan_program_default', line 437, column 9 to column 20)",
-  " (in 'stan_program_default', line 440, column 9 to column 18)",
+  " (in 'stan_program_default', line 438, column 9 to column 20)",
   " (in 'stan_program_default', line 441, column 9 to column 18)",
-  " (in 'stan_program_default', line 447, column 9 to column 20)",
+  " (in 'stan_program_default', line 442, column 9 to column 18)",
   " (in 'stan_program_default', line 448, column 9 to column 20)",
   " (in 'stan_program_default', line 449, column 9 to column 20)",
-  " (in 'stan_program_default', line 451, column 9 to column 20)",
+  " (in 'stan_program_default', line 450, column 9 to column 20)",
   " (in 'stan_program_default', line 452, column 9 to column 20)",
   " (in 'stan_program_default', line 453, column 9 to column 20)",
-  " (in 'stan_program_default', line 457, column 9 to column 20)",
+  " (in 'stan_program_default', line 454, column 9 to column 20)",
   " (in 'stan_program_default', line 458, column 9 to column 20)",
-  " (in 'stan_program_default', line 460, column 9 to column 20)",
+  " (in 'stan_program_default', line 459, column 9 to column 20)",
   " (in 'stan_program_default', line 461, column 9 to column 20)",
   " (in 'stan_program_default', line 462, column 9 to column 20)",
-  " (in 'stan_program_default', line 464, column 9 to column 20)",
+  " (in 'stan_program_default', line 463, column 9 to column 20)",
   " (in 'stan_program_default', line 465, column 9 to column 20)",
-  " (in 'stan_program_default', line 468, column 9 to column 20)",
+  " (in 'stan_program_default', line 466, column 9 to column 20)",
   " (in 'stan_program_default', line 469, column 9 to column 20)",
   " (in 'stan_program_default', line 470, column 9 to column 20)",
-  " (in 'stan_program_default', line 472, column 9 to column 20)",
+  " (in 'stan_program_default', line 471, column 9 to column 20)",
   " (in 'stan_program_default', line 473, column 9 to column 20)",
   " (in 'stan_program_default', line 474, column 9 to column 20)",
-  " (in 'stan_program_default', line 1220, column 9 to column 20)",
-  " (in 'stan_program_default', line 1221, column 9 to column 35)",
-  " (in 'stan_program_default', line 1222, column 9 to column 20)",
-  " (in 'stan_program_default', line 1225, column 9 to column 18)",
-  " (in 'stan_program_default', line 1227, column 9 to column 18)",
+  " (in 'stan_program_default', line 475, column 9 to column 20)",
+  " (in 'stan_program_default', line 1223, column 9 to column 20)",
+  " (in 'stan_program_default', line 1224, column 9 to column 35)",
+  " (in 'stan_program_default', line 1225, column 9 to column 20)",
+  " (in 'stan_program_default', line 1228, column 9 to column 18)",
+  " (in 'stan_program_default', line 1230, column 9 to column 18)",
   " (in 'stan_program_default', line 3, column 4 to column 26)",
   " (in 'stan_program_default', line 4, column 4 to column 21)",
   " (in 'stan_program_default', line 5, column 11 to column 13)",
@@ -810,36 +814,36 @@ conv1d(const T0__& x_arg__, const T1__& kernel_arg__, std::ostream* pstream__) {
   (void) DUMMY_VAR__;
   try {
     int nk = std::numeric_limits<int>::min();
-    current_statement__ = 719;
+    current_statement__ = 723;
     nk = stan::math::rows(kernel);
     int nx = std::numeric_limits<int>::min();
-    current_statement__ = 720;
+    current_statement__ = 724;
     nx = stan::math::rows(x);
-    current_statement__ = 721;
+    current_statement__ = 725;
     stan::math::validate_non_negative_index("X", "nx", nx);
-    current_statement__ = 722;
+    current_statement__ = 726;
     stan::math::validate_non_negative_index("X", "nk", nk);
     Eigen::Matrix<local_scalar_t__,-1,-1> X =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(nx, nk, DUMMY_VAR__);
-    current_statement__ = 725;
+    current_statement__ = 729;
     if (stan::math::logical_lt(nx, nk)) {
-      current_statement__ = 724;
+      current_statement__ = 728;
       std::stringstream errmsg_stream__;
       stan::math::stan_print(&errmsg_stream__,
         "nrow(x) must be >= nrow(kernel). x had nrow =");
       stan::math::stan_print(&errmsg_stream__, nx);
       throw std::domain_error(errmsg_stream__.str());
     }
-    current_statement__ = 730;
+    current_statement__ = 734;
     for (int i = 1; i <= nk; ++i) {
-      current_statement__ = 727;
+      current_statement__ = 731;
       if (stan::math::logical_lt(i, nk)) {
-        current_statement__ = 726;
+        current_statement__ = 730;
         stan::model::assign(X, stan::math::rep_vector(0, (nk - i)),
           "assigning variable X", stan::model::index_min_max(1, (nk - i)),
           stan::model::index_uni(i));
       }
-      current_statement__ = 728;
+      current_statement__ = 732;
       stan::model::assign(X,
         stan::model::rvalue(x, "x",
           stan::model::index_min_max(1, ((nx - nk) + i))),
@@ -847,7 +851,7 @@ conv1d(const T0__& x_arg__, const T1__& kernel_arg__, std::ostream* pstream__) {
         stan::model::index_min_max(((nk - i) + 1), nx),
         stan::model::index_uni(i));
     }
-    current_statement__ = 731;
+    current_statement__ = 735;
     return stan::math::multiply(X, kernel);
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -870,41 +874,41 @@ calcExposed(const T0__& OR, const T1__& cumInf, const T2__& cumVac,
   (void) DUMMY_VAR__;
   try {
     local_scalar_t__ t1 = DUMMY_VAR__;
-    current_statement__ = 733;
+    current_statement__ = 737;
     t1 = ((((1 + (OR * cumInf)) - cumInf) - (OR * cumVac)) - cumVac);
     local_scalar_t__ t2 = DUMMY_VAR__;
-    current_statement__ = 734;
+    current_statement__ = 738;
     t2 = (OR - (cumVac * OR));
     local_scalar_t__ b = DUMMY_VAR__;
-    current_statement__ = 735;
+    current_statement__ = 739;
     b = ((-t1 +
       stan::math::pow((stan::math::pow(t1, 2) + ((4 * cumVac) * t2)), 0.5)) /
       (2 * t2));
     local_scalar_t__ o_inf = DUMMY_VAR__;
-    current_statement__ = 736;
+    current_statement__ = 740;
     o_inf = (b * OR);
     local_scalar_t__ cp_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 737;
+    current_statement__ = 741;
     cp_vac_not_inf = (b / (1 + b));
     local_scalar_t__ cp_vac_inf = DUMMY_VAR__;
-    current_statement__ = 738;
+    current_statement__ = 742;
     cp_vac_inf = (o_inf / (1 + o_inf));
     local_scalar_t__ p_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 739;
+    current_statement__ = 743;
     p_vac_not_inf = (cp_vac_not_inf * (1 - cumInf));
     local_scalar_t__ p_vac_inf = DUMMY_VAR__;
-    current_statement__ = 740;
+    current_statement__ = 744;
     p_vac_inf = (cp_vac_inf * cumInf);
     local_scalar_t__ p_not_vac_not_inf = DUMMY_VAR__;
-    current_statement__ = 741;
+    current_statement__ = 745;
     p_not_vac_not_inf = ((1 - cp_vac_not_inf) * (1 - cumInf));
     local_scalar_t__ p_not_vac_inf = DUMMY_VAR__;
-    current_statement__ = 742;
+    current_statement__ = 746;
     p_not_vac_inf = ((1 - cp_vac_inf) * cumInf);
     local_scalar_t__ pct_imm = DUMMY_VAR__;
-    current_statement__ = 743;
+    current_statement__ = 747;
     pct_imm = ((p_vac_inf + p_vac_not_inf) + p_not_vac_inf);
-    current_statement__ = 744;
+    current_statement__ = 748;
     return pct_imm;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1005,6 +1009,8 @@ private:
   double scale_dx_delay_sev_b;
   double p_hosp_nonsevere_a;
   double p_hosp_nonsevere_b;
+  Eigen::Matrix<double,-1,1> prob_vac_shp_data__;
+  Eigen::Matrix<double,-1,1> prob_vac2_shp_data__;
   int N_weeks_tot;
   std::vector<int> obs_cas_mvs;
   std::vector<int> obs_die_mvs;
@@ -1032,6 +1038,8 @@ private:
   Eigen::Map<Eigen::Matrix<double,-1,1>> ifr_vac_adj{nullptr, 0};
   Eigen::Map<Eigen::Matrix<double,-1,-1>> spl_basis_rt{nullptr, 0, 0};
   Eigen::Map<Eigen::Matrix<double,-1,-1>> spl_basis_dx{nullptr, 0, 0};
+  Eigen::Map<Eigen::Matrix<double,-1,1>> prob_vac_shp{nullptr, 0};
+  Eigen::Map<Eigen::Matrix<double,-1,1>> prob_vac2_shp{nullptr, 0};
   Eigen::Map<Eigen::Matrix<double,-1,1>> inf_prg_delay_rv{nullptr, 0};
   Eigen::Map<Eigen::Matrix<double,-1,1>> asy_rec_delay_rv{nullptr, 0};
   Eigen::Map<Eigen::Matrix<double,-1,1>> sym_prg_delay_rv{nullptr, 0};
@@ -1065,84 +1073,84 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      current_statement__ = 435;
+      current_statement__ = 437;
       context__.validate_dims("data initialization", "N_weeks", "int",
         std::vector<size_t>{});
       N_weeks = std::numeric_limits<int>::min();
-      current_statement__ = 435;
+      current_statement__ = 437;
       N_weeks = context__.vals_i("N_weeks")[(1 - 1)];
-      current_statement__ = 435;
+      current_statement__ = 437;
       stan::math::check_greater_or_equal(function__, "N_weeks", N_weeks, 0);
-      current_statement__ = 436;
+      current_statement__ = 438;
       context__.validate_dims("data initialization", "N_weeks_start_omicron",
         "int", std::vector<size_t>{});
       N_weeks_start_omicron = std::numeric_limits<int>::min();
-      current_statement__ = 436;
+      current_statement__ = 438;
       N_weeks_start_omicron = context__.vals_i("N_weeks_start_omicron")[(1 -
         1)];
-      current_statement__ = 436;
+      current_statement__ = 438;
       stan::math::check_greater_or_equal(function__, "N_weeks_start_omicron",
         N_weeks_start_omicron, 0);
-      current_statement__ = 437;
+      current_statement__ = 439;
       context__.validate_dims("data initialization", "N_weeks_before", "int",
         std::vector<size_t>{});
       N_weeks_before = std::numeric_limits<int>::min();
-      current_statement__ = 437;
+      current_statement__ = 439;
       N_weeks_before = context__.vals_i("N_weeks_before")[(1 - 1)];
-      current_statement__ = 437;
+      current_statement__ = 439;
       stan::math::check_greater_or_equal(function__, "N_weeks_before",
         N_weeks_before, 0);
-      current_statement__ = 438;
+      current_statement__ = 440;
       context__.validate_dims("data initialization", "N_weeks_transition",
         "int", std::vector<size_t>{});
       N_weeks_transition = std::numeric_limits<int>::min();
-      current_statement__ = 438;
+      current_statement__ = 440;
       N_weeks_transition = context__.vals_i("N_weeks_transition")[(1 - 1)];
-      current_statement__ = 438;
+      current_statement__ = 440;
       stan::math::check_greater_or_equal(function__, "N_weeks_transition",
         N_weeks_transition, 0);
-      current_statement__ = 439;
+      current_statement__ = 441;
       context__.validate_dims("data initialization", "Max_delay", "int",
         std::vector<size_t>{});
       Max_delay = std::numeric_limits<int>::min();
-      current_statement__ = 439;
+      current_statement__ = 441;
       Max_delay = context__.vals_i("Max_delay")[(1 - 1)];
-      current_statement__ = 439;
+      current_statement__ = 441;
       stan::math::check_greater_or_equal(function__, "Max_delay", Max_delay,
         0);
-      current_statement__ = 440;
+      current_statement__ = 442;
       stan::math::validate_non_negative_index("obs_cas", "N_weeks", N_weeks);
-      current_statement__ = 441;
+      current_statement__ = 443;
       context__.validate_dims("data initialization", "obs_cas", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_cas = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 441;
-      obs_cas = context__.vals_i("obs_cas");
-      current_statement__ = 441;
-      stan::math::check_greater_or_equal(function__, "obs_cas", obs_cas, 0);
-      current_statement__ = 442;
-      stan::math::validate_non_negative_index("obs_die", "N_weeks", N_weeks);
       current_statement__ = 443;
+      obs_cas = context__.vals_i("obs_cas");
+      current_statement__ = 443;
+      stan::math::check_greater_or_equal(function__, "obs_cas", obs_cas, 0);
+      current_statement__ = 444;
+      stan::math::validate_non_negative_index("obs_die", "N_weeks", N_weeks);
+      current_statement__ = 445;
       context__.validate_dims("data initialization", "obs_die", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_die = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 443;
-      obs_die = context__.vals_i("obs_die");
-      current_statement__ = 443;
-      stan::math::check_greater_or_equal(function__, "obs_die", obs_die, 0);
-      current_statement__ = 444;
-      stan::math::validate_non_negative_index("obs_hosp", "N_weeks", N_weeks);
       current_statement__ = 445;
+      obs_die = context__.vals_i("obs_die");
+      current_statement__ = 445;
+      stan::math::check_greater_or_equal(function__, "obs_die", obs_die, 0);
+      current_statement__ = 446;
+      stan::math::validate_non_negative_index("obs_hosp", "N_weeks", N_weeks);
+      current_statement__ = 447;
       context__.validate_dims("data initialization", "obs_hosp", "int",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_hosp = std::vector<int>(N_weeks, std::numeric_limits<int>::min());
-      current_statement__ = 445;
-      obs_hosp = context__.vals_i("obs_hosp");
-      current_statement__ = 445;
-      stan::math::check_greater_or_equal(function__, "obs_hosp", obs_hosp, 0);
-      current_statement__ = 446;
-      stan::math::validate_non_negative_index("obs_boost", "N_weeks", N_weeks);
       current_statement__ = 447;
+      obs_hosp = context__.vals_i("obs_hosp");
+      current_statement__ = 447;
+      stan::math::check_greater_or_equal(function__, "obs_hosp", obs_hosp, 0);
+      current_statement__ = 448;
+      stan::math::validate_non_negative_index("obs_boost", "N_weeks", N_weeks);
+      current_statement__ = 449;
       context__.validate_dims("data initialization", "obs_boost", "double",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_boost_data__ = Eigen::Matrix<double,-1,1>::Constant(N_weeks,
@@ -1152,25 +1160,25 @@ public:
         N_weeks);
       {
         std::vector<local_scalar_t__> obs_boost_flat__;
-        current_statement__ = 447;
+        current_statement__ = 449;
         obs_boost_flat__ = context__.vals_r("obs_boost");
-        current_statement__ = 447;
+        current_statement__ = 449;
         pos__ = 1;
-        current_statement__ = 447;
+        current_statement__ = 449;
         for (int sym1__ = 1; sym1__ <= N_weeks; ++sym1__) {
-          current_statement__ = 447;
+          current_statement__ = 449;
           stan::model::assign(obs_boost, obs_boost_flat__[(pos__ - 1)],
             "assigning variable obs_boost", stan::model::index_uni(sym1__));
-          current_statement__ = 447;
+          current_statement__ = 449;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 447;
+      current_statement__ = 449;
       stan::math::check_greater_or_equal(function__, "obs_boost", obs_boost,
         0);
-      current_statement__ = 448;
+      current_statement__ = 450;
       stan::math::validate_non_negative_index("obs_vax", "N_weeks", N_weeks);
-      current_statement__ = 449;
+      current_statement__ = 451;
       context__.validate_dims("data initialization", "obs_vax", "double",
         std::vector<size_t>{static_cast<size_t>(N_weeks)});
       obs_vax_data__ = Eigen::Matrix<double,-1,1>::Constant(N_weeks,
@@ -1180,50 +1188,50 @@ public:
         N_weeks);
       {
         std::vector<local_scalar_t__> obs_vax_flat__;
-        current_statement__ = 449;
+        current_statement__ = 451;
         obs_vax_flat__ = context__.vals_r("obs_vax");
-        current_statement__ = 449;
+        current_statement__ = 451;
         pos__ = 1;
-        current_statement__ = 449;
+        current_statement__ = 451;
         for (int sym1__ = 1; sym1__ <= N_weeks; ++sym1__) {
-          current_statement__ = 449;
+          current_statement__ = 451;
           stan::model::assign(obs_vax, obs_vax_flat__[(pos__ - 1)],
             "assigning variable obs_vax", stan::model::index_uni(sym1__));
-          current_statement__ = 449;
+          current_statement__ = 451;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 449;
+      current_statement__ = 451;
       stan::math::check_greater_or_equal(function__, "obs_vax", obs_vax, 0);
-      current_statement__ = 450;
+      current_statement__ = 452;
       context__.validate_dims("data initialization", "pop_size", "double",
         std::vector<size_t>{});
       pop_size = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 450;
+      current_statement__ = 452;
       pop_size = context__.vals_r("pop_size")[(1 - 1)];
-      current_statement__ = 450;
+      current_statement__ = 452;
       stan::math::check_greater_or_equal(function__, "pop_size", pop_size, 0);
-      current_statement__ = 451;
+      current_statement__ = 453;
       context__.validate_dims("data initialization", "OR", "double",
         std::vector<size_t>{});
       OR = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 451;
+      current_statement__ = 453;
       OR = context__.vals_r("OR")[(1 - 1)];
-      current_statement__ = 451;
+      current_statement__ = 453;
       stan::math::check_greater_or_equal(function__, "OR", OR, 0);
-      current_statement__ = 452;
+      current_statement__ = 454;
       context__.validate_dims("data initialization", "N_ifr_adj", "int",
         std::vector<size_t>{});
       N_ifr_adj = std::numeric_limits<int>::min();
-      current_statement__ = 452;
+      current_statement__ = 454;
       N_ifr_adj = context__.vals_i("N_ifr_adj")[(1 - 1)];
-      current_statement__ = 452;
+      current_statement__ = 454;
       stan::math::check_greater_or_equal(function__, "N_ifr_adj", N_ifr_adj,
         0);
-      current_statement__ = 453;
+      current_statement__ = 455;
       stan::math::validate_non_negative_index("ifr_adj", "N_ifr_adj",
         N_ifr_adj);
-      current_statement__ = 454;
+      current_statement__ = 456;
       context__.validate_dims("data initialization", "ifr_adj", "double",
         std::vector<size_t>{static_cast<size_t>(N_ifr_adj)});
       ifr_adj_data__ = Eigen::Matrix<double,-1,1>::Constant(N_ifr_adj,
@@ -1233,25 +1241,25 @@ public:
         N_ifr_adj);
       {
         std::vector<local_scalar_t__> ifr_adj_flat__;
-        current_statement__ = 454;
+        current_statement__ = 456;
         ifr_adj_flat__ = context__.vals_r("ifr_adj");
-        current_statement__ = 454;
+        current_statement__ = 456;
         pos__ = 1;
-        current_statement__ = 454;
+        current_statement__ = 456;
         for (int sym1__ = 1; sym1__ <= N_ifr_adj; ++sym1__) {
-          current_statement__ = 454;
+          current_statement__ = 456;
           stan::model::assign(ifr_adj, ifr_adj_flat__[(pos__ - 1)],
             "assigning variable ifr_adj", stan::model::index_uni(sym1__));
-          current_statement__ = 454;
+          current_statement__ = 456;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 454;
+      current_statement__ = 456;
       stan::math::check_greater_or_equal(function__, "ifr_adj", ifr_adj, 0);
-      current_statement__ = 455;
+      current_statement__ = 457;
       stan::math::validate_non_negative_index("ifr_vac_adj",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 456;
+      current_statement__ = 458;
       context__.validate_dims("data initialization", "ifr_vac_adj", "double",
         std::vector<size_t>{static_cast<size_t>((N_weeks + N_weeks_before))});
       ifr_vac_adj_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
@@ -1262,193 +1270,193 @@ public:
         (N_weeks + N_weeks_before));
       {
         std::vector<local_scalar_t__> ifr_vac_adj_flat__;
-        current_statement__ = 456;
+        current_statement__ = 458;
         ifr_vac_adj_flat__ = context__.vals_r("ifr_vac_adj");
-        current_statement__ = 456;
+        current_statement__ = 458;
         pos__ = 1;
-        current_statement__ = 456;
+        current_statement__ = 458;
         for (int sym1__ = 1; sym1__ <= (N_weeks + N_weeks_before); ++sym1__) {
-          current_statement__ = 456;
+          current_statement__ = 458;
           stan::model::assign(ifr_vac_adj, ifr_vac_adj_flat__[(pos__ - 1)],
             "assigning variable ifr_vac_adj", stan::model::index_uni(sym1__));
-          current_statement__ = 456;
+          current_statement__ = 458;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 456;
+      current_statement__ = 458;
       stan::math::check_greater_or_equal(function__, "ifr_vac_adj",
         ifr_vac_adj, 0);
-      current_statement__ = 457;
+      current_statement__ = 459;
       context__.validate_dims("data initialization", "pri_ifr_decl_OR_a",
         "double", std::vector<size_t>{});
       pri_ifr_decl_OR_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 457;
+      current_statement__ = 459;
       pri_ifr_decl_OR_a = context__.vals_r("pri_ifr_decl_OR_a")[(1 - 1)];
-      current_statement__ = 457;
+      current_statement__ = 459;
       stan::math::check_greater_or_equal(function__, "pri_ifr_decl_OR_a",
         pri_ifr_decl_OR_a, 0);
-      current_statement__ = 458;
+      current_statement__ = 460;
       context__.validate_dims("data initialization", "pri_ifr_decl_OR_b",
         "double", std::vector<size_t>{});
       pri_ifr_decl_OR_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 458;
+      current_statement__ = 460;
       pri_ifr_decl_OR_b = context__.vals_r("pri_ifr_decl_OR_b")[(1 - 1)];
-      current_statement__ = 458;
+      current_statement__ = 460;
       stan::math::check_greater_or_equal(function__, "pri_ifr_decl_OR_b",
         pri_ifr_decl_OR_b, 0);
-      current_statement__ = 459;
+      current_statement__ = 461;
       context__.validate_dims("data initialization", "ifr_adj_fixed",
         "double", std::vector<size_t>{});
       ifr_adj_fixed = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 459;
+      current_statement__ = 461;
       ifr_adj_fixed = context__.vals_r("ifr_adj_fixed")[(1 - 1)];
-      current_statement__ = 459;
+      current_statement__ = 461;
       stan::math::check_greater_or_equal(function__, "ifr_adj_fixed",
         ifr_adj_fixed, 0);
-      current_statement__ = 460;
+      current_statement__ = 462;
       context__.validate_dims("data initialization", "infect_dist_rate",
         "double", std::vector<size_t>{});
       infect_dist_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 460;
+      current_statement__ = 462;
       infect_dist_rate = context__.vals_r("infect_dist_rate")[(1 - 1)];
-      current_statement__ = 460;
+      current_statement__ = 462;
       stan::math::check_greater_or_equal(function__, "infect_dist_rate",
         infect_dist_rate, 0);
-      current_statement__ = 461;
+      current_statement__ = 463;
       context__.validate_dims("data initialization", "infect_dist_shap",
         "double", std::vector<size_t>{});
       infect_dist_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 461;
+      current_statement__ = 463;
       infect_dist_shap = context__.vals_r("infect_dist_shap")[(1 - 1)];
-      current_statement__ = 461;
+      current_statement__ = 463;
       stan::math::check_greater_or_equal(function__, "infect_dist_shap",
         infect_dist_shap, 0);
-      current_statement__ = 462;
+      current_statement__ = 464;
       context__.validate_dims("data initialization", "seropos_dist_rate",
         "double", std::vector<size_t>{});
       seropos_dist_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 462;
+      current_statement__ = 464;
       seropos_dist_rate = context__.vals_r("seropos_dist_rate")[(1 - 1)];
-      current_statement__ = 462;
+      current_statement__ = 464;
       stan::math::check_greater_or_equal(function__, "seropos_dist_rate",
         seropos_dist_rate, 0);
-      current_statement__ = 463;
+      current_statement__ = 465;
       context__.validate_dims("data initialization", "seropos_dist_shap",
         "double", std::vector<size_t>{});
       seropos_dist_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 463;
+      current_statement__ = 465;
       seropos_dist_shap = context__.vals_r("seropos_dist_shap")[(1 - 1)];
-      current_statement__ = 463;
+      current_statement__ = 465;
       stan::math::check_greater_or_equal(function__, "seropos_dist_shap",
         seropos_dist_shap, 0);
-      current_statement__ = 464;
+      current_statement__ = 466;
       context__.validate_dims("data initialization", "waning_scalar",
         "double", std::vector<size_t>{});
       waning_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 464;
+      current_statement__ = 466;
       waning_scalar = context__.vals_r("waning_scalar")[(1 - 1)];
-      current_statement__ = 464;
+      current_statement__ = 466;
       stan::math::check_greater_or_equal(function__, "waning_scalar",
         waning_scalar, 0);
-      current_statement__ = 465;
+      current_statement__ = 467;
       context__.validate_dims("data initialization", "prot_scalar", "double",
         std::vector<size_t>{});
       prot_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 465;
+      current_statement__ = 467;
       prot_scalar = context__.vals_r("prot_scalar")[(1 - 1)];
-      current_statement__ = 465;
+      current_statement__ = 467;
       stan::math::check_greater_or_equal(function__, "prot_scalar",
         prot_scalar, 0);
-      current_statement__ = 466;
+      current_statement__ = 468;
       context__.validate_dims("data initialization", "waning_scalar_sev",
         "double", std::vector<size_t>{});
       waning_scalar_sev = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 466;
+      current_statement__ = 468;
       waning_scalar_sev = context__.vals_r("waning_scalar_sev")[(1 - 1)];
-      current_statement__ = 466;
+      current_statement__ = 468;
       stan::math::check_greater_or_equal(function__, "waning_scalar_sev",
         waning_scalar_sev, 0);
-      current_statement__ = 467;
+      current_statement__ = 469;
       context__.validate_dims("data initialization", "prot_sev_scalar",
         "double", std::vector<size_t>{});
       prot_sev_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 467;
+      current_statement__ = 469;
       prot_sev_scalar = context__.vals_r("prot_sev_scalar")[(1 - 1)];
-      current_statement__ = 467;
+      current_statement__ = 469;
       stan::math::check_greater_or_equal(function__, "prot_sev_scalar",
         prot_sev_scalar, 0);
-      current_statement__ = 468;
+      current_statement__ = 470;
       context__.validate_dims("data initialization", "waning_scalar_hybrid",
         "double", std::vector<size_t>{});
       waning_scalar_hybrid = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 468;
+      current_statement__ = 470;
       waning_scalar_hybrid = context__.vals_r("waning_scalar_hybrid")[(1 -
         1)];
-      current_statement__ = 468;
+      current_statement__ = 470;
       stan::math::check_greater_or_equal(function__, "waning_scalar_hybrid",
         waning_scalar_hybrid, 0);
-      current_statement__ = 469;
+      current_statement__ = 471;
       context__.validate_dims("data initialization",
         "waning_scalar_hybrid_sev", "double", std::vector<size_t>{});
       waning_scalar_hybrid_sev = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 469;
+      current_statement__ = 471;
       waning_scalar_hybrid_sev = context__.vals_r("waning_scalar_hybrid_sev")[(1
         - 1)];
-      current_statement__ = 469;
+      current_statement__ = 471;
       stan::math::check_greater_or_equal(function__,
         "waning_scalar_hybrid_sev", waning_scalar_hybrid_sev, 0);
-      current_statement__ = 470;
+      current_statement__ = 472;
       context__.validate_dims("data initialization", "vax_boost_scalar",
         "double", std::vector<size_t>{});
       vax_boost_scalar = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 470;
+      current_statement__ = 472;
       vax_boost_scalar = context__.vals_r("vax_boost_scalar")[(1 - 1)];
-      current_statement__ = 470;
+      current_statement__ = 472;
       stan::math::check_greater_or_equal(function__, "vax_boost_scalar",
         vax_boost_scalar, 0);
-      current_statement__ = 470;
+      current_statement__ = 472;
       stan::math::check_less_or_equal(function__, "vax_boost_scalar",
         vax_boost_scalar, 1);
-      current_statement__ = 471;
+      current_statement__ = 473;
       context__.validate_dims("data initialization", "omicron_scalar_inf",
         "double", std::vector<size_t>{});
       omicron_scalar_inf = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 471;
+      current_statement__ = 473;
       omicron_scalar_inf = context__.vals_r("omicron_scalar_inf")[(1 - 1)];
-      current_statement__ = 471;
+      current_statement__ = 473;
       stan::math::check_greater_or_equal(function__, "omicron_scalar_inf",
         omicron_scalar_inf, 0);
-      current_statement__ = 471;
+      current_statement__ = 473;
       stan::math::check_less_or_equal(function__, "omicron_scalar_inf",
         omicron_scalar_inf, 1);
-      current_statement__ = 472;
+      current_statement__ = 474;
       context__.validate_dims("data initialization", "omicron_scalar_sev",
         "double", std::vector<size_t>{});
       omicron_scalar_sev = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 472;
+      current_statement__ = 474;
       omicron_scalar_sev = context__.vals_r("omicron_scalar_sev")[(1 - 1)];
-      current_statement__ = 472;
+      current_statement__ = 474;
       stan::math::check_greater_or_equal(function__, "omicron_scalar_sev",
         omicron_scalar_sev, 0);
-      current_statement__ = 472;
+      current_statement__ = 474;
       stan::math::check_less_or_equal(function__, "omicron_scalar_sev",
         omicron_scalar_sev, 1);
-      current_statement__ = 473;
+      current_statement__ = 475;
       context__.validate_dims("data initialization", "N_spl_par_rt", "int",
         std::vector<size_t>{});
       N_spl_par_rt = std::numeric_limits<int>::min();
-      current_statement__ = 473;
+      current_statement__ = 475;
       N_spl_par_rt = context__.vals_i("N_spl_par_rt")[(1 - 1)];
-      current_statement__ = 473;
+      current_statement__ = 475;
       stan::math::check_greater_or_equal(function__, "N_spl_par_rt",
         N_spl_par_rt, 0);
-      current_statement__ = 474;
+      current_statement__ = 476;
       stan::math::validate_non_negative_index("spl_basis_rt",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 475;
+      current_statement__ = 477;
       stan::math::validate_non_negative_index("spl_basis_rt", "N_spl_par_rt",
         N_spl_par_rt);
-      current_statement__ = 476;
+      current_statement__ = 478;
       context__.validate_dims("data initialization", "spl_basis_rt",
         "double",
         std::vector<size_t>{static_cast<size_t>((N_weeks + N_weeks_before)),
@@ -1461,39 +1469,39 @@ public:
         (N_weeks + N_weeks_before), N_spl_par_rt);
       {
         std::vector<local_scalar_t__> spl_basis_rt_flat__;
-        current_statement__ = 476;
+        current_statement__ = 478;
         spl_basis_rt_flat__ = context__.vals_r("spl_basis_rt");
-        current_statement__ = 476;
+        current_statement__ = 478;
         pos__ = 1;
-        current_statement__ = 476;
+        current_statement__ = 478;
         for (int sym1__ = 1; sym1__ <= N_spl_par_rt; ++sym1__) {
-          current_statement__ = 476;
+          current_statement__ = 478;
           for (int sym2__ = 1; sym2__ <= (N_weeks + N_weeks_before); ++sym2__) {
-            current_statement__ = 476;
+            current_statement__ = 478;
             stan::model::assign(spl_basis_rt, spl_basis_rt_flat__[(pos__ -
               1)], "assigning variable spl_basis_rt",
               stan::model::index_uni(sym2__), stan::model::index_uni(sym1__));
-            current_statement__ = 476;
+            current_statement__ = 478;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 477;
+      current_statement__ = 479;
       context__.validate_dims("data initialization", "N_spl_par_dx", "int",
         std::vector<size_t>{});
       N_spl_par_dx = std::numeric_limits<int>::min();
-      current_statement__ = 477;
+      current_statement__ = 479;
       N_spl_par_dx = context__.vals_i("N_spl_par_dx")[(1 - 1)];
-      current_statement__ = 477;
+      current_statement__ = 479;
       stan::math::check_greater_or_equal(function__, "N_spl_par_dx",
         N_spl_par_dx, 0);
-      current_statement__ = 478;
+      current_statement__ = 480;
       stan::math::validate_non_negative_index("spl_basis_dx",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 479;
+      current_statement__ = 481;
       stan::math::validate_non_negative_index("spl_basis_dx", "N_spl_par_dx",
         N_spl_par_dx);
-      current_statement__ = 480;
+      current_statement__ = 482;
       context__.validate_dims("data initialization", "spl_basis_dx",
         "double",
         std::vector<size_t>{static_cast<size_t>((N_weeks + N_weeks_before)),
@@ -1506,641 +1514,693 @@ public:
         (N_weeks + N_weeks_before), N_spl_par_dx);
       {
         std::vector<local_scalar_t__> spl_basis_dx_flat__;
-        current_statement__ = 480;
+        current_statement__ = 482;
         spl_basis_dx_flat__ = context__.vals_r("spl_basis_dx");
-        current_statement__ = 480;
+        current_statement__ = 482;
         pos__ = 1;
-        current_statement__ = 480;
+        current_statement__ = 482;
         for (int sym1__ = 1; sym1__ <= N_spl_par_dx; ++sym1__) {
-          current_statement__ = 480;
+          current_statement__ = 482;
           for (int sym2__ = 1; sym2__ <= (N_weeks + N_weeks_before); ++sym2__) {
-            current_statement__ = 480;
+            current_statement__ = 482;
             stan::model::assign(spl_basis_dx, spl_basis_dx_flat__[(pos__ -
               1)], "assigning variable spl_basis_dx",
               stan::model::index_uni(sym2__), stan::model::index_uni(sym1__));
-            current_statement__ = 480;
+            current_statement__ = 482;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 481;
+      current_statement__ = 483;
       context__.validate_dims("data initialization", "inf_prg_delay_shap",
         "double", std::vector<size_t>{});
       inf_prg_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 481;
+      current_statement__ = 483;
       inf_prg_delay_shap = context__.vals_r("inf_prg_delay_shap")[(1 - 1)];
-      current_statement__ = 481;
+      current_statement__ = 483;
       stan::math::check_greater_or_equal(function__, "inf_prg_delay_shap",
         inf_prg_delay_shap, 0);
-      current_statement__ = 482;
+      current_statement__ = 484;
       context__.validate_dims("data initialization", "inf_prg_delay_rate",
         "double", std::vector<size_t>{});
       inf_prg_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 482;
+      current_statement__ = 484;
       inf_prg_delay_rate = context__.vals_r("inf_prg_delay_rate")[(1 - 1)];
-      current_statement__ = 482;
+      current_statement__ = 484;
       stan::math::check_greater_or_equal(function__, "inf_prg_delay_rate",
         inf_prg_delay_rate, 0);
-      current_statement__ = 483;
+      current_statement__ = 485;
       context__.validate_dims("data initialization", "asy_rec_delay_shap",
         "double", std::vector<size_t>{});
       asy_rec_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 483;
+      current_statement__ = 485;
       asy_rec_delay_shap = context__.vals_r("asy_rec_delay_shap")[(1 - 1)];
-      current_statement__ = 483;
+      current_statement__ = 485;
       stan::math::check_greater_or_equal(function__, "asy_rec_delay_shap",
         asy_rec_delay_shap, 0);
-      current_statement__ = 484;
+      current_statement__ = 486;
       context__.validate_dims("data initialization", "asy_rec_delay_rate",
         "double", std::vector<size_t>{});
       asy_rec_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 484;
+      current_statement__ = 486;
       asy_rec_delay_rate = context__.vals_r("asy_rec_delay_rate")[(1 - 1)];
-      current_statement__ = 484;
+      current_statement__ = 486;
       stan::math::check_greater_or_equal(function__, "asy_rec_delay_rate",
         asy_rec_delay_rate, 0);
-      current_statement__ = 485;
+      current_statement__ = 487;
       context__.validate_dims("data initialization", "sym_prg_delay_shap",
         "double", std::vector<size_t>{});
       sym_prg_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 485;
+      current_statement__ = 487;
       sym_prg_delay_shap = context__.vals_r("sym_prg_delay_shap")[(1 - 1)];
-      current_statement__ = 485;
+      current_statement__ = 487;
       stan::math::check_greater_or_equal(function__, "sym_prg_delay_shap",
         sym_prg_delay_shap, 0);
-      current_statement__ = 486;
+      current_statement__ = 488;
       context__.validate_dims("data initialization", "sym_prg_delay_rate",
         "double", std::vector<size_t>{});
       sym_prg_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 486;
+      current_statement__ = 488;
       sym_prg_delay_rate = context__.vals_r("sym_prg_delay_rate")[(1 - 1)];
-      current_statement__ = 486;
+      current_statement__ = 488;
       stan::math::check_greater_or_equal(function__, "sym_prg_delay_rate",
         sym_prg_delay_rate, 0);
-      current_statement__ = 487;
+      current_statement__ = 489;
       context__.validate_dims("data initialization", "sev_prg_delay_shap",
         "double", std::vector<size_t>{});
       sev_prg_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 487;
+      current_statement__ = 489;
       sev_prg_delay_shap = context__.vals_r("sev_prg_delay_shap")[(1 - 1)];
-      current_statement__ = 487;
+      current_statement__ = 489;
       stan::math::check_greater_or_equal(function__, "sev_prg_delay_shap",
         sev_prg_delay_shap, 0);
-      current_statement__ = 488;
+      current_statement__ = 490;
       context__.validate_dims("data initialization", "sev_prg_delay_rate",
         "double", std::vector<size_t>{});
       sev_prg_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 488;
+      current_statement__ = 490;
       sev_prg_delay_rate = context__.vals_r("sev_prg_delay_rate")[(1 - 1)];
-      current_statement__ = 488;
+      current_statement__ = 490;
       stan::math::check_greater_or_equal(function__, "sev_prg_delay_rate",
         sev_prg_delay_rate, 0);
-      current_statement__ = 489;
+      current_statement__ = 491;
       context__.validate_dims("data initialization", "cas_rep_delay_shap",
         "double", std::vector<size_t>{});
       cas_rep_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 489;
+      current_statement__ = 491;
       cas_rep_delay_shap = context__.vals_r("cas_rep_delay_shap")[(1 - 1)];
-      current_statement__ = 489;
+      current_statement__ = 491;
       stan::math::check_greater_or_equal(function__, "cas_rep_delay_shap",
         cas_rep_delay_shap, 0);
-      current_statement__ = 490;
+      current_statement__ = 492;
       context__.validate_dims("data initialization", "cas_rep_delay_rate",
         "double", std::vector<size_t>{});
       cas_rep_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 490;
+      current_statement__ = 492;
       cas_rep_delay_rate = context__.vals_r("cas_rep_delay_rate")[(1 - 1)];
-      current_statement__ = 490;
+      current_statement__ = 492;
       stan::math::check_greater_or_equal(function__, "cas_rep_delay_rate",
         cas_rep_delay_rate, 0);
-      current_statement__ = 491;
+      current_statement__ = 493;
       context__.validate_dims("data initialization", "die_rep_delay_shap",
         "double", std::vector<size_t>{});
       die_rep_delay_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 491;
+      current_statement__ = 493;
       die_rep_delay_shap = context__.vals_r("die_rep_delay_shap")[(1 - 1)];
-      current_statement__ = 491;
+      current_statement__ = 493;
       stan::math::check_greater_or_equal(function__, "die_rep_delay_shap",
         die_rep_delay_shap, 0);
-      current_statement__ = 492;
+      current_statement__ = 494;
       context__.validate_dims("data initialization", "die_rep_delay_rate",
         "double", std::vector<size_t>{});
       die_rep_delay_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 492;
+      current_statement__ = 494;
       die_rep_delay_rate = context__.vals_r("die_rep_delay_rate")[(1 - 1)];
-      current_statement__ = 492;
+      current_statement__ = 494;
       stan::math::check_greater_or_equal(function__, "die_rep_delay_rate",
         die_rep_delay_rate, 0);
-      current_statement__ = 493;
+      current_statement__ = 495;
       context__.validate_dims("data initialization", "pre_period_zero",
         "int", std::vector<size_t>{});
       pre_period_zero = std::numeric_limits<int>::min();
-      current_statement__ = 493;
+      current_statement__ = 495;
       pre_period_zero = context__.vals_i("pre_period_zero")[(1 - 1)];
-      current_statement__ = 493;
+      current_statement__ = 495;
       stan::math::check_greater_or_equal(function__, "pre_period_zero",
         pre_period_zero, 0);
-      current_statement__ = 493;
+      current_statement__ = 495;
       stan::math::check_less_or_equal(function__, "pre_period_zero",
         pre_period_zero, 1);
-      current_statement__ = 494;
+      current_statement__ = 496;
       context__.validate_dims("data initialization", "cas_yes", "int",
         std::vector<size_t>{});
       cas_yes = std::numeric_limits<int>::min();
-      current_statement__ = 494;
+      current_statement__ = 496;
       cas_yes = context__.vals_i("cas_yes")[(1 - 1)];
-      current_statement__ = 494;
+      current_statement__ = 496;
       stan::math::check_greater_or_equal(function__, "cas_yes", cas_yes, 0);
-      current_statement__ = 494;
+      current_statement__ = 496;
       stan::math::check_less_or_equal(function__, "cas_yes", cas_yes, 1);
-      current_statement__ = 495;
+      current_statement__ = 497;
       context__.validate_dims("data initialization", "die_yes", "int",
         std::vector<size_t>{});
       die_yes = std::numeric_limits<int>::min();
-      current_statement__ = 495;
+      current_statement__ = 497;
       die_yes = context__.vals_i("die_yes")[(1 - 1)];
-      current_statement__ = 495;
+      current_statement__ = 497;
       stan::math::check_greater_or_equal(function__, "die_yes", die_yes, 0);
-      current_statement__ = 495;
+      current_statement__ = 497;
       stan::math::check_less_or_equal(function__, "die_yes", die_yes, 1);
-      current_statement__ = 496;
+      current_statement__ = 498;
       context__.validate_dims("data initialization", "hosp_yes", "int",
         std::vector<size_t>{});
       hosp_yes = std::numeric_limits<int>::min();
-      current_statement__ = 496;
+      current_statement__ = 498;
       hosp_yes = context__.vals_i("hosp_yes")[(1 - 1)];
-      current_statement__ = 496;
+      current_statement__ = 498;
       stan::math::check_greater_or_equal(function__, "hosp_yes", hosp_yes, 0);
-      current_statement__ = 496;
+      current_statement__ = 498;
       stan::math::check_less_or_equal(function__, "hosp_yes", hosp_yes, 1);
-      current_statement__ = 497;
+      current_statement__ = 499;
       context__.validate_dims("data initialization", "obs_cas_rep", "int",
         std::vector<size_t>{});
       obs_cas_rep = std::numeric_limits<int>::min();
-      current_statement__ = 497;
+      current_statement__ = 499;
       obs_cas_rep = context__.vals_i("obs_cas_rep")[(1 - 1)];
-      current_statement__ = 497;
+      current_statement__ = 499;
       stan::math::check_greater_or_equal(function__, "obs_cas_rep",
         obs_cas_rep, 0);
-      current_statement__ = 497;
+      current_statement__ = 499;
       stan::math::check_less_or_equal(function__, "obs_cas_rep", obs_cas_rep,
         1);
-      current_statement__ = 498;
+      current_statement__ = 500;
       context__.validate_dims("data initialization", "obs_die_rep", "int",
         std::vector<size_t>{});
       obs_die_rep = std::numeric_limits<int>::min();
-      current_statement__ = 498;
+      current_statement__ = 500;
       obs_die_rep = context__.vals_i("obs_die_rep")[(1 - 1)];
-      current_statement__ = 498;
+      current_statement__ = 500;
       stan::math::check_greater_or_equal(function__, "obs_die_rep",
         obs_die_rep, 0);
-      current_statement__ = 498;
+      current_statement__ = 500;
       stan::math::check_less_or_equal(function__, "obs_die_rep", obs_die_rep,
         1);
-      current_statement__ = 499;
+      current_statement__ = 501;
       context__.validate_dims("data initialization", "obs_hosp_rep", "int",
         std::vector<size_t>{});
       obs_hosp_rep = std::numeric_limits<int>::min();
-      current_statement__ = 499;
+      current_statement__ = 501;
       obs_hosp_rep = context__.vals_i("obs_hosp_rep")[(1 - 1)];
-      current_statement__ = 499;
+      current_statement__ = 501;
       stan::math::check_greater_or_equal(function__, "obs_hosp_rep",
         obs_hosp_rep, 0);
-      current_statement__ = 499;
+      current_statement__ = 501;
       stan::math::check_less_or_equal(function__, "obs_hosp_rep",
         obs_hosp_rep, 1);
-      current_statement__ = 500;
+      current_statement__ = 502;
       context__.validate_dims("data initialization", "lastDeathWeek", "int",
         std::vector<size_t>{});
       lastDeathWeek = std::numeric_limits<int>::min();
-      current_statement__ = 500;
+      current_statement__ = 502;
       lastDeathWeek = context__.vals_i("lastDeathWeek")[(1 - 1)];
-      current_statement__ = 500;
+      current_statement__ = 502;
       stan::math::check_greater_or_equal(function__, "lastDeathWeek",
         lastDeathWeek, 0);
-      current_statement__ = 501;
+      current_statement__ = 503;
       context__.validate_dims("data initialization", "lastHospWeek", "int",
         std::vector<size_t>{});
       lastHospWeek = std::numeric_limits<int>::min();
-      current_statement__ = 501;
+      current_statement__ = 503;
       lastHospWeek = context__.vals_i("lastHospWeek")[(1 - 1)];
-      current_statement__ = 501;
+      current_statement__ = 503;
       stan::math::check_greater_or_equal(function__, "lastHospWeek",
         lastHospWeek, 0);
-      current_statement__ = 502;
+      current_statement__ = 504;
       context__.validate_dims("data initialization", "firstHospWeek", "int",
         std::vector<size_t>{});
       firstHospWeek = std::numeric_limits<int>::min();
-      current_statement__ = 502;
+      current_statement__ = 504;
       firstHospWeek = context__.vals_i("firstHospWeek")[(1 - 1)];
-      current_statement__ = 502;
+      current_statement__ = 504;
       stan::math::check_greater_or_equal(function__, "firstHospWeek",
         firstHospWeek, 0);
-      current_statement__ = 503;
+      current_statement__ = 505;
       context__.validate_dims("data initialization", "lastCaseWeek", "int",
         std::vector<size_t>{});
       lastCaseWeek = std::numeric_limits<int>::min();
-      current_statement__ = 503;
+      current_statement__ = 505;
       lastCaseWeek = context__.vals_i("lastCaseWeek")[(1 - 1)];
-      current_statement__ = 503;
+      current_statement__ = 505;
       stan::math::check_greater_or_equal(function__, "lastCaseWeek",
         lastCaseWeek, 0);
-      current_statement__ = 504;
+      current_statement__ = 506;
       context__.validate_dims("data initialization",
         "pri_log_infections_0_mu", "double", std::vector<size_t>{});
       pri_log_infections_0_mu = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 504;
+      current_statement__ = 506;
       pri_log_infections_0_mu = context__.vals_r("pri_log_infections_0_mu")[(1
         - 1)];
-      current_statement__ = 505;
+      current_statement__ = 507;
       context__.validate_dims("data initialization",
         "pri_log_infections_0_sd", "double", std::vector<size_t>{});
       pri_log_infections_0_sd = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 505;
+      current_statement__ = 507;
       pri_log_infections_0_sd = context__.vals_r("pri_log_infections_0_sd")[(1
         - 1)];
-      current_statement__ = 505;
+      current_statement__ = 507;
       stan::math::check_greater_or_equal(function__,
         "pri_log_infections_0_sd", pri_log_infections_0_sd, 0);
-      current_statement__ = 506;
+      current_statement__ = 508;
       context__.validate_dims("data initialization", "pri_logRt_mu",
         "double", std::vector<size_t>{});
       pri_logRt_mu = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 506;
+      current_statement__ = 508;
       pri_logRt_mu = context__.vals_r("pri_logRt_mu")[(1 - 1)];
-      current_statement__ = 507;
+      current_statement__ = 509;
       context__.validate_dims("data initialization", "pri_logRt_sd",
         "double", std::vector<size_t>{});
       pri_logRt_sd = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 507;
+      current_statement__ = 509;
       pri_logRt_sd = context__.vals_r("pri_logRt_sd")[(1 - 1)];
-      current_statement__ = 507;
+      current_statement__ = 509;
       stan::math::check_greater_or_equal(function__, "pri_logRt_sd",
         pri_logRt_sd, 0);
-      current_statement__ = 508;
+      current_statement__ = 510;
       context__.validate_dims("data initialization", "pri_serial_i_shap",
         "double", std::vector<size_t>{});
       pri_serial_i_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 508;
+      current_statement__ = 510;
       pri_serial_i_shap = context__.vals_r("pri_serial_i_shap")[(1 - 1)];
-      current_statement__ = 508;
+      current_statement__ = 510;
       stan::math::check_greater_or_equal(function__, "pri_serial_i_shap",
         pri_serial_i_shap, 0);
-      current_statement__ = 509;
+      current_statement__ = 511;
       context__.validate_dims("data initialization", "pri_serial_i_rate",
         "double", std::vector<size_t>{});
       pri_serial_i_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 509;
+      current_statement__ = 511;
       pri_serial_i_rate = context__.vals_r("pri_serial_i_rate")[(1 - 1)];
-      current_statement__ = 509;
+      current_statement__ = 511;
       stan::math::check_greater_or_equal(function__, "pri_serial_i_rate",
         pri_serial_i_rate, 0);
-      current_statement__ = 510;
+      current_statement__ = 512;
       context__.validate_dims("data initialization",
         "pri_serial_i_postO_shap", "double", std::vector<size_t>{});
       pri_serial_i_postO_shap = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 510;
+      current_statement__ = 512;
       pri_serial_i_postO_shap = context__.vals_r("pri_serial_i_postO_shap")[(1
         - 1)];
-      current_statement__ = 510;
+      current_statement__ = 512;
       stan::math::check_greater_or_equal(function__,
         "pri_serial_i_postO_shap", pri_serial_i_postO_shap, 0);
-      current_statement__ = 511;
+      current_statement__ = 513;
       context__.validate_dims("data initialization",
         "pri_serial_i_postO_rate", "double", std::vector<size_t>{});
       pri_serial_i_postO_rate = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 511;
+      current_statement__ = 513;
       pri_serial_i_postO_rate = context__.vals_r("pri_serial_i_postO_rate")[(1
         - 1)];
-      current_statement__ = 511;
+      current_statement__ = 513;
       stan::math::check_greater_or_equal(function__,
         "pri_serial_i_postO_rate", pri_serial_i_postO_rate, 0);
-      current_statement__ = 512;
+      current_statement__ = 514;
       context__.validate_dims("data initialization", "pri_deriv1_spl_par_sd",
         "double", std::vector<size_t>{});
       pri_deriv1_spl_par_sd = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 512;
+      current_statement__ = 514;
       pri_deriv1_spl_par_sd = context__.vals_r("pri_deriv1_spl_par_sd")[(1 -
         1)];
-      current_statement__ = 512;
+      current_statement__ = 514;
       stan::math::check_greater_or_equal(function__, "pri_deriv1_spl_par_sd",
         pri_deriv1_spl_par_sd, 0);
-      current_statement__ = 513;
+      current_statement__ = 515;
       context__.validate_dims("data initialization", "pri_deriv2_spl_par_sd",
         "double", std::vector<size_t>{});
       pri_deriv2_spl_par_sd = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 513;
+      current_statement__ = 515;
       pri_deriv2_spl_par_sd = context__.vals_r("pri_deriv2_spl_par_sd")[(1 -
         1)];
-      current_statement__ = 513;
+      current_statement__ = 515;
       stan::math::check_greater_or_equal(function__, "pri_deriv2_spl_par_sd",
         pri_deriv2_spl_par_sd, 0);
-      current_statement__ = 514;
+      current_statement__ = 516;
       context__.validate_dims("data initialization", "pri_p_sym_if_inf_a",
         "double", std::vector<size_t>{});
       pri_p_sym_if_inf_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 514;
+      current_statement__ = 516;
       pri_p_sym_if_inf_a = context__.vals_r("pri_p_sym_if_inf_a")[(1 - 1)];
-      current_statement__ = 514;
+      current_statement__ = 516;
       stan::math::check_greater_or_equal(function__, "pri_p_sym_if_inf_a",
         pri_p_sym_if_inf_a, 0);
-      current_statement__ = 515;
+      current_statement__ = 517;
       context__.validate_dims("data initialization", "pri_p_sym_if_inf_b",
         "double", std::vector<size_t>{});
       pri_p_sym_if_inf_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 515;
+      current_statement__ = 517;
       pri_p_sym_if_inf_b = context__.vals_r("pri_p_sym_if_inf_b")[(1 - 1)];
-      current_statement__ = 515;
+      current_statement__ = 517;
       stan::math::check_greater_or_equal(function__, "pri_p_sym_if_inf_b",
         pri_p_sym_if_inf_b, 0);
-      current_statement__ = 516;
+      current_statement__ = 518;
       context__.validate_dims("data initialization",
         "pri_p_sym_if_inf_postO_a", "double", std::vector<size_t>{});
       pri_p_sym_if_inf_postO_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 516;
+      current_statement__ = 518;
       pri_p_sym_if_inf_postO_a = context__.vals_r("pri_p_sym_if_inf_postO_a")[(1
         - 1)];
-      current_statement__ = 516;
+      current_statement__ = 518;
       stan::math::check_greater_or_equal(function__,
         "pri_p_sym_if_inf_postO_a", pri_p_sym_if_inf_postO_a, 0);
-      current_statement__ = 517;
+      current_statement__ = 519;
       context__.validate_dims("data initialization",
         "pri_p_sym_if_inf_postO_b", "double", std::vector<size_t>{});
       pri_p_sym_if_inf_postO_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 517;
+      current_statement__ = 519;
       pri_p_sym_if_inf_postO_b = context__.vals_r("pri_p_sym_if_inf_postO_b")[(1
         - 1)];
-      current_statement__ = 517;
+      current_statement__ = 519;
       stan::math::check_greater_or_equal(function__,
         "pri_p_sym_if_inf_postO_b", pri_p_sym_if_inf_postO_b, 0);
-      current_statement__ = 518;
+      current_statement__ = 520;
       context__.validate_dims("data initialization", "pri_p_sev_if_sym_a",
         "double", std::vector<size_t>{});
       pri_p_sev_if_sym_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 518;
+      current_statement__ = 520;
       pri_p_sev_if_sym_a = context__.vals_r("pri_p_sev_if_sym_a")[(1 - 1)];
-      current_statement__ = 518;
+      current_statement__ = 520;
       stan::math::check_greater_or_equal(function__, "pri_p_sev_if_sym_a",
         pri_p_sev_if_sym_a, 0);
-      current_statement__ = 519;
+      current_statement__ = 521;
       context__.validate_dims("data initialization", "pri_p_sev_if_sym_b",
         "double", std::vector<size_t>{});
       pri_p_sev_if_sym_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 519;
+      current_statement__ = 521;
       pri_p_sev_if_sym_b = context__.vals_r("pri_p_sev_if_sym_b")[(1 - 1)];
-      current_statement__ = 519;
+      current_statement__ = 521;
       stan::math::check_greater_or_equal(function__, "pri_p_sev_if_sym_b",
         pri_p_sev_if_sym_b, 0);
-      current_statement__ = 520;
+      current_statement__ = 522;
       context__.validate_dims("data initialization", "pri_p_die_if_sev_a",
         "double", std::vector<size_t>{});
       pri_p_die_if_sev_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 520;
+      current_statement__ = 522;
       pri_p_die_if_sev_a = context__.vals_r("pri_p_die_if_sev_a")[(1 - 1)];
-      current_statement__ = 520;
+      current_statement__ = 522;
       stan::math::check_greater_or_equal(function__, "pri_p_die_if_sev_a",
         pri_p_die_if_sev_a, 0);
-      current_statement__ = 521;
+      current_statement__ = 523;
       context__.validate_dims("data initialization", "pri_p_die_if_sev_b",
         "double", std::vector<size_t>{});
       pri_p_die_if_sev_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 521;
+      current_statement__ = 523;
       pri_p_die_if_sev_b = context__.vals_r("pri_p_die_if_sev_b")[(1 - 1)];
-      current_statement__ = 521;
+      current_statement__ = 523;
       stan::math::check_greater_or_equal(function__, "pri_p_die_if_sev_b",
         pri_p_die_if_sev_b, 0);
-      current_statement__ = 522;
+      current_statement__ = 524;
       context__.validate_dims("data initialization", "pri_p_die_if_inf_a",
         "double", std::vector<size_t>{});
       pri_p_die_if_inf_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 522;
+      current_statement__ = 524;
       pri_p_die_if_inf_a = context__.vals_r("pri_p_die_if_inf_a")[(1 - 1)];
-      current_statement__ = 522;
+      current_statement__ = 524;
       stan::math::check_greater_or_equal(function__, "pri_p_die_if_inf_a",
         pri_p_die_if_inf_a, 0);
-      current_statement__ = 523;
+      current_statement__ = 525;
       context__.validate_dims("data initialization", "pri_p_die_if_inf_b",
         "double", std::vector<size_t>{});
       pri_p_die_if_inf_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 523;
+      current_statement__ = 525;
       pri_p_die_if_inf_b = context__.vals_r("pri_p_die_if_inf_b")[(1 - 1)];
-      current_statement__ = 523;
+      current_statement__ = 525;
       stan::math::check_greater_or_equal(function__, "pri_p_die_if_inf_b",
         pri_p_die_if_inf_b, 0);
-      current_statement__ = 524;
+      current_statement__ = 526;
       context__.validate_dims("data initialization",
         "pri_p_die_if_inf_postO_a", "double", std::vector<size_t>{});
       pri_p_die_if_inf_postO_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 524;
+      current_statement__ = 526;
       pri_p_die_if_inf_postO_a = context__.vals_r("pri_p_die_if_inf_postO_a")[(1
         - 1)];
-      current_statement__ = 524;
+      current_statement__ = 526;
       stan::math::check_greater_or_equal(function__,
         "pri_p_die_if_inf_postO_a", pri_p_die_if_inf_postO_a, 0);
-      current_statement__ = 525;
+      current_statement__ = 527;
       context__.validate_dims("data initialization",
         "pri_p_die_if_inf_postO_b", "double", std::vector<size_t>{});
       pri_p_die_if_inf_postO_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 525;
+      current_statement__ = 527;
       pri_p_die_if_inf_postO_b = context__.vals_r("pri_p_die_if_inf_postO_b")[(1
         - 1)];
-      current_statement__ = 525;
+      current_statement__ = 527;
       stan::math::check_greater_or_equal(function__,
         "pri_p_die_if_inf_postO_b", pri_p_die_if_inf_postO_b, 0);
-      current_statement__ = 526;
+      current_statement__ = 528;
       context__.validate_dims("data initialization",
         "pri_rr_diag_asy_vs_sym_a", "double", std::vector<size_t>{});
       pri_rr_diag_asy_vs_sym_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 526;
+      current_statement__ = 528;
       pri_rr_diag_asy_vs_sym_a = context__.vals_r("pri_rr_diag_asy_vs_sym_a")[(1
         - 1)];
-      current_statement__ = 526;
+      current_statement__ = 528;
       stan::math::check_greater_or_equal(function__,
         "pri_rr_diag_asy_vs_sym_a", pri_rr_diag_asy_vs_sym_a, 0);
-      current_statement__ = 527;
+      current_statement__ = 529;
       context__.validate_dims("data initialization",
         "pri_rr_diag_asy_vs_sym_b", "double", std::vector<size_t>{});
       pri_rr_diag_asy_vs_sym_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 527;
+      current_statement__ = 529;
       pri_rr_diag_asy_vs_sym_b = context__.vals_r("pri_rr_diag_asy_vs_sym_b")[(1
         - 1)];
-      current_statement__ = 527;
+      current_statement__ = 529;
       stan::math::check_greater_or_equal(function__,
         "pri_rr_diag_asy_vs_sym_b", pri_rr_diag_asy_vs_sym_b, 0);
-      current_statement__ = 528;
+      current_statement__ = 530;
       context__.validate_dims("data initialization",
         "pri_rr_diag_sym_vs_sev_a", "double", std::vector<size_t>{});
       pri_rr_diag_sym_vs_sev_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 528;
+      current_statement__ = 530;
       pri_rr_diag_sym_vs_sev_a = context__.vals_r("pri_rr_diag_sym_vs_sev_a")[(1
         - 1)];
-      current_statement__ = 528;
+      current_statement__ = 530;
       stan::math::check_greater_or_equal(function__,
         "pri_rr_diag_sym_vs_sev_a", pri_rr_diag_sym_vs_sev_a, 0);
-      current_statement__ = 529;
+      current_statement__ = 531;
       context__.validate_dims("data initialization",
         "pri_rr_diag_sym_vs_sev_b", "double", std::vector<size_t>{});
       pri_rr_diag_sym_vs_sev_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 529;
+      current_statement__ = 531;
       pri_rr_diag_sym_vs_sev_b = context__.vals_r("pri_rr_diag_sym_vs_sev_b")[(1
         - 1)];
-      current_statement__ = 529;
+      current_statement__ = 531;
       stan::math::check_greater_or_equal(function__,
         "pri_rr_diag_sym_vs_sev_b", pri_rr_diag_sym_vs_sev_b, 0);
-      current_statement__ = 530;
+      current_statement__ = 532;
       context__.validate_dims("data initialization", "pri_p_diag_if_sev_a",
         "double", std::vector<size_t>{});
       pri_p_diag_if_sev_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 530;
+      current_statement__ = 532;
       pri_p_diag_if_sev_a = context__.vals_r("pri_p_diag_if_sev_a")[(1 - 1)];
-      current_statement__ = 530;
+      current_statement__ = 532;
       stan::math::check_greater_or_equal(function__, "pri_p_diag_if_sev_a",
         pri_p_diag_if_sev_a, 0);
-      current_statement__ = 531;
+      current_statement__ = 533;
       context__.validate_dims("data initialization", "pri_p_diag_if_sev_b",
         "double", std::vector<size_t>{});
       pri_p_diag_if_sev_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 531;
+      current_statement__ = 533;
       pri_p_diag_if_sev_b = context__.vals_r("pri_p_diag_if_sev_b")[(1 - 1)];
-      current_statement__ = 531;
+      current_statement__ = 533;
       stan::math::check_greater_or_equal(function__, "pri_p_diag_if_sev_b",
         pri_p_diag_if_sev_b, 0);
-      current_statement__ = 532;
+      current_statement__ = 534;
       context__.validate_dims("data initialization", "scale_dx_delay_sym_a",
         "double", std::vector<size_t>{});
       scale_dx_delay_sym_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 532;
+      current_statement__ = 534;
       scale_dx_delay_sym_a = context__.vals_r("scale_dx_delay_sym_a")[(1 -
         1)];
-      current_statement__ = 532;
+      current_statement__ = 534;
       stan::math::check_greater_or_equal(function__, "scale_dx_delay_sym_a",
         scale_dx_delay_sym_a, 0);
-      current_statement__ = 533;
+      current_statement__ = 535;
       context__.validate_dims("data initialization", "scale_dx_delay_sym_b",
         "double", std::vector<size_t>{});
       scale_dx_delay_sym_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 533;
+      current_statement__ = 535;
       scale_dx_delay_sym_b = context__.vals_r("scale_dx_delay_sym_b")[(1 -
         1)];
-      current_statement__ = 533;
+      current_statement__ = 535;
       stan::math::check_greater_or_equal(function__, "scale_dx_delay_sym_b",
         scale_dx_delay_sym_b, 0);
-      current_statement__ = 534;
+      current_statement__ = 536;
       context__.validate_dims("data initialization", "scale_dx_delay_sev_a",
         "double", std::vector<size_t>{});
       scale_dx_delay_sev_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 534;
+      current_statement__ = 536;
       scale_dx_delay_sev_a = context__.vals_r("scale_dx_delay_sev_a")[(1 -
         1)];
-      current_statement__ = 534;
+      current_statement__ = 536;
       stan::math::check_greater_or_equal(function__, "scale_dx_delay_sev_a",
         scale_dx_delay_sev_a, 0);
-      current_statement__ = 535;
+      current_statement__ = 537;
       context__.validate_dims("data initialization", "scale_dx_delay_sev_b",
         "double", std::vector<size_t>{});
       scale_dx_delay_sev_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 535;
+      current_statement__ = 537;
       scale_dx_delay_sev_b = context__.vals_r("scale_dx_delay_sev_b")[(1 -
         1)];
-      current_statement__ = 535;
+      current_statement__ = 537;
       stan::math::check_greater_or_equal(function__, "scale_dx_delay_sev_b",
         scale_dx_delay_sev_b, 0);
-      current_statement__ = 536;
+      current_statement__ = 538;
       context__.validate_dims("data initialization", "p_hosp_nonsevere_a",
         "double", std::vector<size_t>{});
       p_hosp_nonsevere_a = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 536;
+      current_statement__ = 538;
       p_hosp_nonsevere_a = context__.vals_r("p_hosp_nonsevere_a")[(1 - 1)];
-      current_statement__ = 536;
+      current_statement__ = 538;
       stan::math::check_greater_or_equal(function__, "p_hosp_nonsevere_a",
         p_hosp_nonsevere_a, 0);
-      current_statement__ = 537;
+      current_statement__ = 539;
       context__.validate_dims("data initialization", "p_hosp_nonsevere_b",
         "double", std::vector<size_t>{});
       p_hosp_nonsevere_b = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 537;
+      current_statement__ = 539;
       p_hosp_nonsevere_b = context__.vals_r("p_hosp_nonsevere_b")[(1 - 1)];
-      current_statement__ = 537;
+      current_statement__ = 539;
       stan::math::check_greater_or_equal(function__, "p_hosp_nonsevere_b",
         p_hosp_nonsevere_b, 0);
-      current_statement__ = 538;
+      current_statement__ = 540;
+      context__.validate_dims("data initialization", "prob_vac_shp",
+        "double", std::vector<size_t>{static_cast<size_t>(3)});
+      prob_vac_shp_data__ = Eigen::Matrix<double,-1,1>::Constant(3,
+                              std::numeric_limits<double>::quiet_NaN());
+      new (&prob_vac_shp)
+        Eigen::Map<Eigen::Matrix<double,-1,1>>(prob_vac_shp_data__.data(), 3);
+      {
+        std::vector<local_scalar_t__> prob_vac_shp_flat__;
+        current_statement__ = 540;
+        prob_vac_shp_flat__ = context__.vals_r("prob_vac_shp");
+        current_statement__ = 540;
+        pos__ = 1;
+        current_statement__ = 540;
+        for (int sym1__ = 1; sym1__ <= 3; ++sym1__) {
+          current_statement__ = 540;
+          stan::model::assign(prob_vac_shp, prob_vac_shp_flat__[(pos__ - 1)],
+            "assigning variable prob_vac_shp", stan::model::index_uni(sym1__));
+          current_statement__ = 540;
+          pos__ = (pos__ + 1);
+        }
+      }
+      current_statement__ = 540;
+      stan::math::check_greater_or_equal(function__, "prob_vac_shp",
+        prob_vac_shp, 0);
+      current_statement__ = 541;
+      context__.validate_dims("data initialization", "prob_vac2_shp",
+        "double", std::vector<size_t>{static_cast<size_t>(2)});
+      prob_vac2_shp_data__ = Eigen::Matrix<double,-1,1>::Constant(2,
+                               std::numeric_limits<double>::quiet_NaN());
+      new (&prob_vac2_shp)
+        Eigen::Map<Eigen::Matrix<double,-1,1>>(prob_vac2_shp_data__.data(),
+        2);
+      {
+        std::vector<local_scalar_t__> prob_vac2_shp_flat__;
+        current_statement__ = 541;
+        prob_vac2_shp_flat__ = context__.vals_r("prob_vac2_shp");
+        current_statement__ = 541;
+        pos__ = 1;
+        current_statement__ = 541;
+        for (int sym1__ = 1; sym1__ <= 2; ++sym1__) {
+          current_statement__ = 541;
+          stan::model::assign(prob_vac2_shp, prob_vac2_shp_flat__[(pos__ -
+            1)], "assigning variable prob_vac2_shp",
+            stan::model::index_uni(sym1__));
+          current_statement__ = 541;
+          pos__ = (pos__ + 1);
+        }
+      }
+      current_statement__ = 541;
+      stan::math::check_greater_or_equal(function__, "prob_vac2_shp",
+        prob_vac2_shp, 0);
+      current_statement__ = 542;
       N_weeks_tot = std::numeric_limits<int>::min();
-      current_statement__ = 539;
+      current_statement__ = 543;
       stan::math::validate_non_negative_index("obs_cas_mvs", "N_weeks",
         N_weeks);
-      current_statement__ = 540;
+      current_statement__ = 544;
       obs_cas_mvs = std::vector<int>(N_weeks,
                       std::numeric_limits<int>::min());
-      current_statement__ = 541;
+      current_statement__ = 545;
       stan::math::validate_non_negative_index("obs_die_mvs", "N_weeks",
         N_weeks);
-      current_statement__ = 542;
+      current_statement__ = 546;
       obs_die_mvs = std::vector<int>(N_weeks,
                       std::numeric_limits<int>::min());
-      current_statement__ = 543;
+      current_statement__ = 547;
       stan::math::validate_non_negative_index("obs_hosp_mvs", "N_weeks",
         N_weeks);
-      current_statement__ = 544;
+      current_statement__ = 548;
       obs_hosp_mvs = std::vector<int>(N_weeks,
                        std::numeric_limits<int>::min());
-      current_statement__ = 545;
+      current_statement__ = 549;
       stan::math::validate_non_negative_index("inf_prg_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 546;
+      current_statement__ = 550;
       inf_prg_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&inf_prg_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(inf_prg_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 547;
+      current_statement__ = 551;
       stan::math::validate_non_negative_index("asy_rec_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 548;
+      current_statement__ = 552;
       asy_rec_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&asy_rec_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(asy_rec_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 549;
+      current_statement__ = 553;
       stan::math::validate_non_negative_index("sym_prg_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 550;
+      current_statement__ = 554;
       sym_prg_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&sym_prg_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(sym_prg_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 551;
+      current_statement__ = 555;
       stan::math::validate_non_negative_index("sev_prg_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 552;
+      current_statement__ = 556;
       sev_prg_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&sev_prg_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(sev_prg_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 553;
+      current_statement__ = 557;
       stan::math::validate_non_negative_index("cas_rep_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 554;
+      current_statement__ = 558;
       cas_rep_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&cas_rep_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(cas_rep_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 555;
+      current_statement__ = 559;
       stan::math::validate_non_negative_index("die_rep_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 556;
+      current_statement__ = 560;
       die_rep_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant(Max_delay,
                                   std::numeric_limits<double>::quiet_NaN());
       new (&die_rep_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(die_rep_delay_rv_data__.data(),
         Max_delay);
-      current_statement__ = 557;
+      current_statement__ = 561;
       stan::math::validate_non_negative_index("cas_cum_report_delay_rv",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 558;
+      current_statement__ = 562;
       cas_cum_report_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks
                                          + N_weeks_before),
                                          std::numeric_limits<double>::quiet_NaN(
@@ -2148,10 +2208,10 @@ public:
       new (&cas_cum_report_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(cas_cum_report_delay_rv_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 559;
+      current_statement__ = 563;
       stan::math::validate_non_negative_index("die_cum_report_delay_rv",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 560;
+      current_statement__ = 564;
       die_cum_report_delay_rv_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks
                                          + N_weeks_before),
                                          std::numeric_limits<double>::quiet_NaN(
@@ -2159,148 +2219,148 @@ public:
       new (&die_cum_report_delay_rv)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(die_cum_report_delay_rv_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 561;
+      current_statement__ = 565;
       stan::math::validate_non_negative_index("idx1",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 562;
+      current_statement__ = 566;
       idx1 = std::vector<int>((N_weeks + N_weeks_before),
                std::numeric_limits<int>::min());
-      current_statement__ = 563;
+      current_statement__ = 567;
       stan::math::validate_non_negative_index("idx2",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 564;
+      current_statement__ = 568;
       idx2 = std::vector<int>((N_weeks + N_weeks_before),
                std::numeric_limits<int>::min());
-      current_statement__ = 565;
+      current_statement__ = 569;
       stan::math::validate_non_negative_index("idx3",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 566;
+      current_statement__ = 570;
       idx3_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
                       N_weeks_before),
                       std::numeric_limits<double>::quiet_NaN());
       new (&idx3) Eigen::Map<Eigen::Matrix<double,-1,1>>(idx3_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 567;
+      current_statement__ = 571;
       stan::math::validate_non_negative_index("idx4",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 568;
+      current_statement__ = 572;
       idx4_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
                       N_weeks_before),
                       std::numeric_limits<double>::quiet_NaN());
       new (&idx4) Eigen::Map<Eigen::Matrix<double,-1,1>>(idx4_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 569;
+      current_statement__ = 573;
       stan::math::validate_non_negative_index("full_vax",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 570;
+      current_statement__ = 574;
       full_vax_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
                           N_weeks_before),
                           std::numeric_limits<double>::quiet_NaN());
       new (&full_vax)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(full_vax_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 571;
+      current_statement__ = 575;
       stan::math::validate_non_negative_index("full_boost",
         "N_weeks + N_weeks_before", (N_weeks + N_weeks_before));
-      current_statement__ = 572;
+      current_statement__ = 576;
       full_boost_data__ = Eigen::Matrix<double,-1,1>::Constant((N_weeks +
                             N_weeks_before),
                             std::numeric_limits<double>::quiet_NaN());
       new (&full_boost)
         Eigen::Map<Eigen::Matrix<double,-1,1>>(full_boost_data__.data(),
         (N_weeks + N_weeks_before));
-      current_statement__ = 573;
+      current_statement__ = 577;
       N_weeks_tot = (N_weeks + N_weeks_before);
-      current_statement__ = 574;
+      current_statement__ = 578;
       stan::model::assign(full_vax,
         stan::math::rep_vector(0.0, N_weeks_before),
         "assigning variable full_vax",
         stan::model::index_min_max(1, N_weeks_before));
-      current_statement__ = 575;
+      current_statement__ = 579;
       stan::model::assign(full_vax, obs_vax, "assigning variable full_vax",
         stan::model::index_min_max((N_weeks_before + 1), N_weeks_tot));
-      current_statement__ = 576;
+      current_statement__ = 580;
       stan::model::assign(full_boost,
         stan::math::rep_vector(0.0, N_weeks_before),
         "assigning variable full_boost",
         stan::model::index_min_max(1, N_weeks_before));
-      current_statement__ = 577;
+      current_statement__ = 581;
       stan::model::assign(full_boost, obs_boost,
         "assigning variable full_boost",
         stan::model::index_min_max((N_weeks_before + 1), N_weeks_tot));
-      current_statement__ = 600;
+      current_statement__ = 604;
       for (int i = 1; i <= N_weeks_tot; ++i) {
-        current_statement__ = 584;
+        current_statement__ = 588;
         if (stan::math::logical_gt((i - Max_delay), 0)) {
-          current_statement__ = 581;
+          current_statement__ = 585;
           stan::model::assign(idx1, ((i - Max_delay) + 1),
             "assigning variable idx1", stan::model::index_uni(i));
-          current_statement__ = 582;
+          current_statement__ = 586;
           stan::model::assign(idx2, 1, "assigning variable idx2",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 578;
+          current_statement__ = 582;
           stan::model::assign(idx1, 1, "assigning variable idx1",
             stan::model::index_uni(i));
-          current_statement__ = 579;
+          current_statement__ = 583;
           stan::model::assign(idx2, ((Max_delay - i) + 1),
             "assigning variable idx2", stan::model::index_uni(i));
         }
-        current_statement__ = 589;
+        current_statement__ = 593;
         if (stan::math::logical_lt(i, (N_weeks_tot - 1))) {
-          current_statement__ = 587;
+          current_statement__ = 591;
           stan::model::assign(idx3, ((N_weeks_tot - 1) - i),
             "assigning variable idx3", stan::model::index_uni(i));
         } else {
-          current_statement__ = 585;
+          current_statement__ = 589;
           stan::model::assign(idx3, 1, "assigning variable idx3",
             stan::model::index_uni(i));
         }
-        current_statement__ = 598;
+        current_statement__ = 602;
         if (stan::math::logical_lt(i, (N_weeks_start_omicron +
               N_weeks_before))) {
-          current_statement__ = 596;
+          current_statement__ = 600;
           stan::model::assign(idx4, 0, "assigning variable idx4",
             stan::model::index_uni(i));
         } else {
-          current_statement__ = 594;
+          current_statement__ = 598;
           if (stan::math::logical_gt(i, ((N_weeks_start_omicron +
                 N_weeks_before) + N_weeks_transition))) {
-            current_statement__ = 592;
+            current_statement__ = 596;
             stan::model::assign(idx4, 0, "assigning variable idx4",
               stan::model::index_uni(i));
           } else {
-            current_statement__ = 590;
+            current_statement__ = 594;
             stan::model::assign(idx4, ((i - (N_weeks_start_omicron +
               N_weeks_before)) + 1.0), "assigning variable idx4",
               stan::model::index_uni(i));
           }
         }
       }
-      current_statement__ = 605;
+      current_statement__ = 609;
       for (int i = 1; i <= N_weeks; ++i) {
-        current_statement__ = 601;
+        current_statement__ = 605;
         stan::model::assign(obs_cas_mvs,
           stan::model::rvalue(obs_cas, "obs_cas", stan::model::index_uni(i)),
           "assigning variable obs_cas_mvs", stan::model::index_uni(i));
-        current_statement__ = 602;
+        current_statement__ = 606;
         stan::model::assign(obs_hosp_mvs,
           stan::model::rvalue(obs_hosp, "obs_hosp", stan::model::index_uni(i)),
           "assigning variable obs_hosp_mvs", stan::model::index_uni(i));
-        current_statement__ = 603;
+        current_statement__ = 607;
         stan::model::assign(obs_die_mvs,
           stan::model::rvalue(obs_die, "obs_die", stan::model::index_uni(i)),
           "assigning variable obs_die_mvs", stan::model::index_uni(i));
       }
-      current_statement__ = 611;
+      current_statement__ = 615;
       for (int i = 1; i <= Max_delay; ++i) {
-        current_statement__ = 606;
+        current_statement__ = 610;
         stan::model::assign(inf_prg_delay_rv,
           (stan::math::gamma_cdf(i, inf_prg_delay_shap, inf_prg_delay_rate) -
           stan::math::gamma_cdf((i - 1), inf_prg_delay_shap,
             inf_prg_delay_rate)), "assigning variable inf_prg_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
-        current_statement__ = 607;
+        current_statement__ = 611;
         stan::model::assign(asy_rec_delay_rv,
           (stan::math::gamma_cdf(i, asy_rec_delay_shap, (asy_rec_delay_rate *
              2)) -
@@ -2308,372 +2368,372 @@ public:
             (asy_rec_delay_rate * 2))),
           "assigning variable asy_rec_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
-        current_statement__ = 608;
+        current_statement__ = 612;
         stan::model::assign(sym_prg_delay_rv,
           (stan::math::gamma_cdf(i, sym_prg_delay_shap, sym_prg_delay_rate) -
           stan::math::gamma_cdf((i - 1), sym_prg_delay_shap,
             sym_prg_delay_rate)), "assigning variable sym_prg_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
-        current_statement__ = 609;
+        current_statement__ = 613;
         stan::model::assign(sev_prg_delay_rv,
           (stan::math::gamma_cdf(i, sev_prg_delay_shap, sev_prg_delay_rate) -
           stan::math::gamma_cdf((i - 1), sev_prg_delay_shap,
             sev_prg_delay_rate)), "assigning variable sev_prg_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
       }
-      current_statement__ = 615;
+      current_statement__ = 619;
       for (int i = 1; i <= Max_delay; ++i) {
-        current_statement__ = 612;
+        current_statement__ = 616;
         stan::model::assign(cas_rep_delay_rv,
           (stan::math::gamma_cdf(i, cas_rep_delay_shap, cas_rep_delay_rate) -
           stan::math::gamma_cdf((i - 1), cas_rep_delay_shap,
             cas_rep_delay_rate)), "assigning variable cas_rep_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
-        current_statement__ = 613;
+        current_statement__ = 617;
         stan::model::assign(die_rep_delay_rv,
           (stan::math::gamma_cdf(i, die_rep_delay_shap, die_rep_delay_rate) -
           stan::math::gamma_cdf((i - 1), die_rep_delay_shap,
             die_rep_delay_rate)), "assigning variable die_rep_delay_rv",
           stan::model::index_uni(((1 + Max_delay) - i)));
       }
-      current_statement__ = 616;
+      current_statement__ = 620;
       stan::model::assign(inf_prg_delay_rv,
         stan::math::divide(stan::model::deep_copy(inf_prg_delay_rv),
           stan::math::sum(inf_prg_delay_rv)),
         "assigning variable inf_prg_delay_rv");
-      current_statement__ = 617;
+      current_statement__ = 621;
       stan::model::assign(asy_rec_delay_rv,
         stan::math::divide(stan::model::deep_copy(asy_rec_delay_rv),
           stan::math::sum(asy_rec_delay_rv)),
         "assigning variable asy_rec_delay_rv");
-      current_statement__ = 618;
+      current_statement__ = 622;
       stan::model::assign(sym_prg_delay_rv,
         stan::math::divide(stan::model::deep_copy(sym_prg_delay_rv),
           stan::math::sum(sym_prg_delay_rv)),
         "assigning variable sym_prg_delay_rv");
-      current_statement__ = 619;
+      current_statement__ = 623;
       stan::model::assign(sev_prg_delay_rv,
         stan::math::divide(stan::model::deep_copy(sev_prg_delay_rv),
           stan::math::sum(sev_prg_delay_rv)),
         "assigning variable sev_prg_delay_rv");
-      current_statement__ = 620;
+      current_statement__ = 624;
       stan::model::assign(cas_rep_delay_rv,
         stan::math::divide(stan::model::deep_copy(cas_rep_delay_rv),
           stan::math::sum(cas_rep_delay_rv)),
         "assigning variable cas_rep_delay_rv");
-      current_statement__ = 621;
+      current_statement__ = 625;
       stan::model::assign(die_rep_delay_rv,
         stan::math::divide(stan::model::deep_copy(die_rep_delay_rv),
           stan::math::sum(die_rep_delay_rv)),
         "assigning variable die_rep_delay_rv");
-      current_statement__ = 630;
+      current_statement__ = 634;
       for (int i = 1; i <= N_weeks_tot; ++i) {
-        current_statement__ = 628;
+        current_statement__ = 632;
         if (stan::math::logical_lt(i, Max_delay)) {
-          current_statement__ = 625;
+          current_statement__ = 629;
           stan::model::assign(cas_cum_report_delay_rv,
             stan::math::gamma_cdf(i, cas_rep_delay_shap, cas_rep_delay_rate),
             "assigning variable cas_cum_report_delay_rv",
             stan::model::index_uni(((1 + N_weeks_tot) - i)));
-          current_statement__ = 626;
+          current_statement__ = 630;
           stan::model::assign(die_cum_report_delay_rv,
             stan::math::gamma_cdf(i, die_rep_delay_shap, die_rep_delay_rate),
             "assigning variable die_cum_report_delay_rv",
             stan::model::index_uni(((1 + N_weeks_tot) - i)));
         } else {
-          current_statement__ = 622;
+          current_statement__ = 626;
           stan::model::assign(cas_cum_report_delay_rv, 1.0,
             "assigning variable cas_cum_report_delay_rv",
             stan::model::index_uni(((1 + N_weeks_tot) - i)));
-          current_statement__ = 623;
+          current_statement__ = 627;
           stan::model::assign(die_cum_report_delay_rv, 1.0,
             "assigning variable die_cum_report_delay_rv",
             stan::model::index_uni(((1 + N_weeks_tot) - i)));
         }
       }
-      current_statement__ = 540;
+      current_statement__ = 544;
       stan::math::check_greater_or_equal(function__, "obs_cas_mvs",
         obs_cas_mvs, 0);
-      current_statement__ = 542;
+      current_statement__ = 546;
       stan::math::check_greater_or_equal(function__, "obs_die_mvs",
         obs_die_mvs, 0);
-      current_statement__ = 544;
+      current_statement__ = 548;
       stan::math::check_greater_or_equal(function__, "obs_hosp_mvs",
         obs_hosp_mvs, 0);
-      current_statement__ = 631;
+      current_statement__ = 635;
       stan::math::validate_non_negative_index("spl_par_rt", "N_spl_par_rt",
         N_spl_par_rt);
-      current_statement__ = 632;
+      current_statement__ = 636;
       stan::math::validate_non_negative_index("spl_par_sym_dx",
         "N_spl_par_dx", N_spl_par_dx);
-      current_statement__ = 633;
+      current_statement__ = 637;
       stan::math::validate_non_negative_index("serial_i_vec", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 634;
+      current_statement__ = 638;
       stan::math::validate_non_negative_index("log_infections",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 635;
+      current_statement__ = 639;
       stan::math::validate_non_negative_index("deriv1_log_infections",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 636;
+      current_statement__ = 640;
       stan::math::validate_non_negative_index("infections", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 637;
+      current_statement__ = 641;
       stan::math::validate_non_negative_index("vax_only", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 638;
+      current_statement__ = 642;
       stan::math::validate_non_negative_index("vax_only_cum", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 639;
+      current_statement__ = 643;
       stan::math::validate_non_negative_index("exposed", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 640;
+      current_statement__ = 644;
       stan::math::validate_non_negative_index("exposed_cumulative",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 641;
+      current_statement__ = 645;
       stan::math::validate_non_negative_index("new_hybrid", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 642;
+      current_statement__ = 646;
       stan::math::validate_non_negative_index("hybrid_cumulative",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 643;
+      current_statement__ = 647;
       stan::math::validate_non_negative_index("infections_premiere",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 644;
+      current_statement__ = 648;
       stan::math::validate_non_negative_index("infections_repeat",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 645;
+      current_statement__ = 649;
       stan::math::validate_non_negative_index("num_uninf", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 646;
+      current_statement__ = 650;
       stan::math::validate_non_negative_index("p_first", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 647;
+      current_statement__ = 651;
       stan::math::validate_non_negative_index("p_boost", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 648;
+      current_statement__ = 652;
       stan::math::validate_non_negative_index("naive_to_vax", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 649;
+      current_statement__ = 653;
       stan::math::validate_non_negative_index("naive_to_inf", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 650;
+      current_statement__ = 654;
       stan::math::validate_non_negative_index("inf_to_reinf", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 651;
+      current_statement__ = 655;
       stan::math::validate_non_negative_index("inf_to_hybrid", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 652;
+      current_statement__ = 656;
       stan::math::validate_non_negative_index("hybrid_to_reinf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 653;
+      current_statement__ = 657;
       stan::math::validate_non_negative_index("vax_to_boost", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 654;
+      current_statement__ = 658;
       stan::math::validate_non_negative_index("vax_to_hybrid", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 655;
+      current_statement__ = 659;
       stan::math::validate_non_negative_index("first_inf_only_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 656;
+      current_statement__ = 660;
       stan::math::validate_non_negative_index("reinf_only_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 657;
+      current_statement__ = 661;
       stan::math::validate_non_negative_index("hybrid_last_inf_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 658;
+      current_statement__ = 662;
       stan::math::validate_non_negative_index("hybrid_to_boost",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 659;
+      current_statement__ = 663;
       stan::math::validate_non_negative_index("vax_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 660;
+      current_statement__ = 664;
       stan::math::validate_non_negative_index("inf_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 661;
+      current_statement__ = 665;
       stan::math::validate_non_negative_index("naive_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 662;
+      current_statement__ = 666;
       stan::math::validate_non_negative_index("hybrid_prvl", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 663;
+      current_statement__ = 667;
       stan::math::validate_non_negative_index("p1", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 664;
+      current_statement__ = 668;
       stan::math::validate_non_negative_index("p1max", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 665;
+      current_statement__ = 669;
       stan::math::validate_non_negative_index("p1min", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 666;
+      current_statement__ = 670;
       stan::math::validate_non_negative_index("susceptible_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 667;
+      current_statement__ = 671;
       stan::math::validate_non_negative_index("effective_protection_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 668;
+      current_statement__ = 672;
       stan::math::validate_non_negative_index(
         "effective_protection_prvl_lag", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 669;
+      current_statement__ = 673;
       stan::math::validate_non_negative_index("new_protection_inf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 670;
+      current_statement__ = 674;
       stan::math::validate_non_negative_index("new_protection_vax",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 671;
+      current_statement__ = 675;
       stan::math::validate_non_negative_index("new_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 672;
+      current_statement__ = 676;
       stan::math::validate_non_negative_index("lost_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 673;
+      current_statement__ = 677;
       stan::math::validate_non_negative_index("lost_protection_net",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 674;
+      current_statement__ = 678;
       stan::math::validate_non_negative_index("severe_protection",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 675;
+      current_statement__ = 679;
       stan::math::validate_non_negative_index("population_protection_inf",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 676;
+      current_statement__ = 680;
       stan::math::validate_non_negative_index("population_protection_hybrid",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 677;
+      current_statement__ = 681;
       stan::math::validate_non_negative_index("population_protection_vax",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 678;
+      current_statement__ = 682;
       stan::math::validate_non_negative_index(
         "population_protection_sev_inf", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 679;
+      current_statement__ = 683;
       stan::math::validate_non_negative_index(
         "population_protection_sev_vax", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 680;
+      current_statement__ = 684;
       stan::math::validate_non_negative_index(
         "population_protection_sev_hybrid", "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 681;
+      current_statement__ = 685;
       stan::math::validate_non_negative_index("logRt0", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 682;
+      current_statement__ = 686;
       stan::math::validate_non_negative_index("logRt", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 683;
+      current_statement__ = 687;
       stan::math::validate_non_negative_index("r_t", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 684;
+      current_statement__ = 688;
       stan::math::validate_non_negative_index("r_0", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 685;
+      current_statement__ = 689;
       deriv1_spl_par_rt_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 685;
+      current_statement__ = 689;
       deriv1_spl_par_rt_1dim__ = (N_spl_par_rt - 1);
-      current_statement__ = 685;
+      current_statement__ = 689;
       stan::math::validate_non_negative_index("deriv1_spl_par_rt",
         "N_spl_par_rt - 1", deriv1_spl_par_rt_1dim__);
-      current_statement__ = 686;
+      current_statement__ = 690;
       deriv2_spl_par_rt_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 686;
+      current_statement__ = 690;
       deriv2_spl_par_rt_1dim__ = (N_spl_par_rt - 2);
-      current_statement__ = 686;
+      current_statement__ = 690;
       stan::math::validate_non_negative_index("deriv2_spl_par_rt",
         "N_spl_par_rt - 2", deriv2_spl_par_rt_1dim__);
-      current_statement__ = 687;
+      current_statement__ = 691;
       stan::math::validate_non_negative_index("p_die_if_sevt", "N_ifr_adj",
         N_ifr_adj);
-      current_statement__ = 688;
+      current_statement__ = 692;
       stan::math::validate_non_negative_index("p_sev_if_symt", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 689;
+      current_statement__ = 693;
       stan::math::validate_non_negative_index("p_sym_if_inft", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 690;
+      current_statement__ = 694;
       stan::math::validate_non_negative_index("rr_diag_sym_vs_sev",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 691;
+      current_statement__ = 695;
       stan::math::validate_non_negative_index("p_diag_if_asy", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 692;
+      current_statement__ = 696;
       stan::math::validate_non_negative_index("p_diag_if_sym", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 693;
+      current_statement__ = 697;
       stan::math::validate_non_negative_index("sym_diag_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 694;
+      current_statement__ = 698;
       stan::math::validate_non_negative_index("sev_diag_delay_rv",
         "Max_delay", Max_delay);
-      current_statement__ = 695;
+      current_statement__ = 699;
       stan::math::validate_non_negative_index("symptomatic", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 696;
+      current_statement__ = 700;
       stan::math::validate_non_negative_index("severe", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 697;
+      current_statement__ = 701;
       stan::math::validate_non_negative_index("deaths", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 698;
+      current_statement__ = 702;
       stan::math::validate_non_negative_index("new_asy_dx", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 699;
+      current_statement__ = 703;
       stan::math::validate_non_negative_index("diagnoses_of_symptomatic",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 700;
+      current_statement__ = 704;
       stan::math::validate_non_negative_index("diagnoses_severe",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 701;
+      current_statement__ = 705;
       stan::math::validate_non_negative_index("hospitalizations_nonsevere",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 702;
+      current_statement__ = 706;
       stan::math::validate_non_negative_index("hospitalizations_severe",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 703;
+      current_statement__ = 707;
       stan::math::validate_non_negative_index("dx_sym_sev", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 704;
+      current_statement__ = 708;
       stan::math::validate_non_negative_index("dx_sym_die", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 705;
+      current_statement__ = 709;
       stan::math::validate_non_negative_index("dx_sev_die", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 706;
+      current_statement__ = 710;
       stan::math::validate_non_negative_index("diagnoses", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 707;
+      current_statement__ = 711;
       stan::math::validate_non_negative_index("deaths_of_diagnosed",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 708;
+      current_statement__ = 712;
       stan::math::validate_non_negative_index("fitted_cases", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 709;
+      current_statement__ = 713;
       stan::math::validate_non_negative_index("fitted_deaths", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 710;
+      current_statement__ = 714;
       stan::math::validate_non_negative_index("fitted_hospitalizations",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 711;
+      current_statement__ = 715;
       stan::math::validate_non_negative_index("fitted_cases_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 712;
+      current_statement__ = 716;
       stan::math::validate_non_negative_index("fitted_deaths_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 713;
+      current_statement__ = 717;
       stan::math::validate_non_negative_index("fitted_hospitalizations_mvs",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 714;
+      current_statement__ = 718;
       stan::math::validate_non_negative_index("diag_cases", "N_weeks_tot",
         N_weeks_tot);
-      current_statement__ = 715;
+      current_statement__ = 719;
       infections_cumulative_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 715;
+      current_statement__ = 719;
       infections_cumulative_1dim__ = (N_weeks_tot - N_weeks_before);
-      current_statement__ = 715;
+      current_statement__ = 719;
       stan::math::validate_non_negative_index("infections_cumulative",
         "N_weeks_tot - N_weeks_before", infections_cumulative_1dim__);
-      current_statement__ = 716;
+      current_statement__ = 720;
       stan::math::validate_non_negative_index("seropositive_prvl",
         "N_weeks_tot", N_weeks_tot);
-      current_statement__ = 717;
+      current_statement__ = 721;
       stan::math::validate_non_negative_index("infect_dist_rv", "Max_delay",
         Max_delay);
-      current_statement__ = 718;
+      current_statement__ = 722;
       stan::math::validate_non_negative_index("seropos_dist_rv", "Max_delay",
         Max_delay);
     } catch (const std::exception& e) {
@@ -4685,40 +4745,46 @@ public:
         lp_accum__.add(stan::math::normal_lpdf<propto__>(inv_sqrt_phi_d, 0, 1));
         current_statement__ = 417;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(inv_sqrt_phi_h, 0, 1));
-        current_statement__ = 427;
+        current_statement__ = 418;
+        lp_accum__.add(stan::math::dirichlet_lpdf<propto__>(prob_vac,
+                         prob_vac_shp));
+        current_statement__ = 419;
+        lp_accum__.add(stan::math::dirichlet_lpdf<propto__>(prob_vac2,
+                         prob_vac2_shp));
+        current_statement__ = 429;
         if (stan::math::logical_eq(pre_period_zero, 1)) {
-          current_statement__ = 425;
+          current_statement__ = 427;
           if (stan::math::logical_gt(N_weeks_before, 0)) {
-            current_statement__ = 419;
+            current_statement__ = 421;
             if (stan::math::logical_lt(
                   stan::math::sum(
                     stan::model::rvalue(fitted_cases, "fitted_cases",
                       stan::model::index_min_max(1, N_weeks_before))), 0)) {
-              current_statement__ = 418;
+              current_statement__ = 420;
               std::stringstream errmsg_stream__;
               stan::math::stan_print(&errmsg_stream__,
                 "`sum(fitted_cases[1:N_weeks_before])` had a negative value");
               throw std::domain_error(errmsg_stream__.str());
             }
-            current_statement__ = 421;
+            current_statement__ = 423;
             if (stan::math::logical_lt(
                   stan::math::sum(
                     stan::model::rvalue(fitted_deaths, "fitted_deaths",
                       stan::model::index_min_max(1, N_weeks_before))), 0)) {
-              current_statement__ = 420;
+              current_statement__ = 422;
               std::stringstream errmsg_stream__;
               stan::math::stan_print(&errmsg_stream__,
                 "`sum(fitted_deaths[1:N_weeks_before])` had a negative value");
               throw std::domain_error(errmsg_stream__.str());
             }
-            current_statement__ = 422;
+            current_statement__ = 424;
             lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(0,
                              stan::math::sum(
                                stan::model::rvalue(fitted_cases,
                                  "fitted_cases",
                                  stan::model::index_min_max(1, N_weeks_before))),
                              phi_cas));
-            current_statement__ = 423;
+            current_statement__ = 425;
             lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(0,
                              stan::math::sum(
                                stan::model::rvalue(fitted_deaths,
@@ -4727,23 +4793,23 @@ public:
                              phi_die));
           }
         }
-        current_statement__ = 429;
+        current_statement__ = 431;
         if (stan::math::logical_lt(stan::math::min(fitted_cases), 0)) {
-          current_statement__ = 428;
+          current_statement__ = 430;
           std::stringstream errmsg_stream__;
           stan::math::stan_print(&errmsg_stream__,
             "`fitted_cases` had a negative value");
           throw std::domain_error(errmsg_stream__.str());
         }
-        current_statement__ = 431;
+        current_statement__ = 433;
         if (stan::math::logical_lt(stan::math::min(fitted_deaths), 0)) {
-          current_statement__ = 430;
+          current_statement__ = 432;
           std::stringstream errmsg_stream__;
           stan::math::stan_print(&errmsg_stream__,
             "`fitted_deaths` had a negative value");
           throw std::domain_error(errmsg_stream__.str());
         }
-        current_statement__ = 432;
+        current_statement__ = 434;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_cas_mvs, "obs_cas_mvs",
                            stan::model::index_min_max(1, lastCaseWeek)),
@@ -4751,7 +4817,7 @@ public:
                            "fitted_cases_mvs",
                            stan::model::index_min_max((N_weeks_before + 1),
                              (N_weeks_before + lastCaseWeek))), phi_cas));
-        current_statement__ = 433;
+        current_statement__ = 435;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_die_mvs, "obs_die_mvs",
                            stan::model::index_min_max(1, lastDeathWeek)),
@@ -4759,7 +4825,7 @@ public:
                            "fitted_deaths_mvs",
                            stan::model::index_min_max((N_weeks_before + 1),
                              (N_weeks_before + lastDeathWeek))), phi_die));
-        current_statement__ = 434;
+        current_statement__ = 436;
         lp_accum__.add(stan::math::neg_binomial_2_lpmf<false>(
                          stan::model::rvalue(obs_hosp_mvs, "obs_hosp_mvs",
                            stan::model::index_min_max(firstHospWeek,

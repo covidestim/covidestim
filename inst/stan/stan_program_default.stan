@@ -60,6 +60,7 @@ real calcExposed(real OR, real cumInf, real cumVac) {
 
 data {
   // INPUT DATA
+  // simplex[2]                prob_vac2;
   // int<lower=0>           N_days; // days of data
   // int<lower=0>           N_days_before; // days before data to init epi model
   int<lower=0>           N_weeks; // weeks of data
@@ -206,14 +207,15 @@ data {
   real<lower=0> scale_dx_delay_sev_a; 
   real<lower=0> scale_dx_delay_sev_b;
 
-  // probabilities of diagnosis 
-  // rate ratio, pr(dx) asymptomatic to symptomatic
-  real<lower=0> p_hosp_nonsevere_a; 
+  // probabilities of hospitalization among non-severe COVID-19 cases
+  real<lower=0> p_hosp_nonsevere_a;
   real<lower=0> p_hosp_nonsevere_b;
   
-  // input for the number of days to put the Rt prior on
-  // int<lower=0>  N_days_pri_Rt;
-  // real<lower=0> sd_pri_Rt;
+  // probVac
+  vector<lower=0>[3] prob_vac_shp;
+  
+  // probVac2
+    vector<lower=0>[2] prob_vac2_shp;
 
 }
 ///////////////////////////////////////////////////////////
@@ -693,13 +695,12 @@ transformed parameters {
 //calculate the probability that an infection is a first infection
 // as ratio of the uninfected population vs the susceptible for (first/re)infection
     if(i > 1){
-    // p_first[i] = num_uninf[i] / (num_uninf[i] + sum(infections[1:i]) - population_protection_inf[i-1]);
     p_first[i] = (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1])) / (naive_prvl[i-1] + (vax_prvl[i-1] - population_protection_vax[i-1]) +
     (inf_prvl[i-1] - population_protection_inf[i-1]) + (hybrid_prvl[i-1] - population_protection_hybrid[i-1]));
     } else {
-    // p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
     p_first[i] = num_uninf[1] / (num_uninf[1] + infections[1]);
     }
+    
     infections_premiere[i] = infections[i] * p_first[i];
     infections_repeat[i] = infections[i] * (1-p_first[i]);
     
@@ -1247,6 +1248,12 @@ model {
   inv_sqrt_phi_c       ~ normal(0, 1);
   inv_sqrt_phi_d       ~ normal(0, 1);
   inv_sqrt_phi_h       ~ normal(0, 1);
+  
+  // probVac
+  prob_vac       ~ dirichlet(prob_vac_shp);
+  
+  // probVac2
+  prob_vac2      ~ dirichlet(prob_vac2_shp);
 
   // if(N_days_pri_Rt > 0)
   //   logRt[(N_days_tot-N_days_pri_Rt+1) : N_days_tot] ~ normal(0, sd_pri_Rt);
